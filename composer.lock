@@ -2413,6 +2413,7 @@
         },
         {
             "name": "laravel/framework",
+
             "version": "v12.27.0",
             "source": {
                 "type": "git",
@@ -2626,7 +2627,11 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
+
+            "time": "2025-08-29T14:15:53+00:00"
+
             "time": "2025-09-02T15:32:28+00:00"
+
         },
         {
             "name": "laravel/jetstream",
