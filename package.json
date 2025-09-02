@@ -28,7 +28,7 @@
         "less-loader": "^12.3.0",
         "postcss": "^8.4.32",
         "prettier": "3.4.2",
-        "sass": "^1.56.1",
+        "sass": "^1.91.0",
         "tailwindcss": "^4.1.12",
         "vite": "^6.1.0",
         "vue": "^3.5.13"
