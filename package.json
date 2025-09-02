@@ -47,7 +47,7 @@
         "@inertiajs/inertia-vue3": "^0.6.0",
         "@vitejs/plugin-vue": "^6.0.0",
         "blueimp-md5": "^2.19.0",
-        "dayjs": "^1.11.13",
+        "dayjs": "^1.11.18",
         "esbuild": "^0.25.9",
         "form-data": "^4.0.4",
         "gsap": "^3.13.0",
