@@ -6524,16 +6524,16 @@
         },
         {
             "name": "spatie/laravel-sitemap",
-            "version": "7.3.6",
+            "version": "7.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-sitemap.git",
-                "reference": "506b2acdd350c7ff868a7711b4f30e486b20e9b0"
+                "reference": "077b36c64bc4f373f4d95a1ac6ee1c0624acfdd3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-sitemap/zipball/506b2acdd350c7ff868a7711b4f30e486b20e9b0",
-                "reference": "506b2acdd350c7ff868a7711b4f30e486b20e9b0",
+                "url": "https://api.github.com/repos/spatie/laravel-sitemap/zipball/077b36c64bc4f373f4d95a1ac6ee1c0624acfdd3",
+                "reference": "077b36c64bc4f373f4d95a1ac6ee1c0624acfdd3",
                 "shasum": ""
             },
             "require": {
@@ -6585,7 +6585,7 @@
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/laravel-sitemap/tree/7.3.6"
+                "source": "https://github.com/spatie/laravel-sitemap/tree/7.3.7"
             },
             "funding": [
                 {
@@ -6593,7 +6593,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-04-10T12:13:41+00:00"
+            "time": "2025-08-25T08:07:09+00:00"
         },
         {
             "name": "spatie/robots-txt",
@@ -7505,16 +7505,16 @@
         },
         {
             "name": "symfony/dom-crawler",
-            "version": "v7.3.1",
+            "version": "v7.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dom-crawler.git",
-                "reference": "8b2ee2e06ab99fa5f067b6699296d4e35c156bb9"
+                "reference": "efa076ea0eeff504383ff0dcf827ea5ce15690ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/8b2ee2e06ab99fa5f067b6699296d4e35c156bb9",
-                "reference": "8b2ee2e06ab99fa5f067b6699296d4e35c156bb9",
+                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/efa076ea0eeff504383ff0dcf827ea5ce15690ba",
+                "reference": "efa076ea0eeff504383ff0dcf827ea5ce15690ba",
                 "shasum": ""
             },
             "require": {
@@ -7552,7 +7552,7 @@
             "description": "Eases DOM navigation for HTML and XML documents",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/dom-crawler/tree/v7.3.1"
+                "source": "https://github.com/symfony/dom-crawler/tree/v7.3.3"
             },
             "funding": [
                 {
@@ -7564,11 +7564,15 @@
                     "type": "github"
                 },
                 {
+                    "url": "https://github.com/nicolas-grekas",
+                    "type": "github"
+                },
+                {
                     "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-06-15T10:07:06+00:00"
+            "time": "2025-08-06T20:13:54+00:00"
         },
         {
             "name": "symfony/error-handler",
