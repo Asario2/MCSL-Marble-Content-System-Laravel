@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e4a5ed55adf97340aaa4dfbc606a9535",
+    "content-hash": "8388d0be5760e976d0cc76661f58c8e4",
     "packages": [
         {
             "name": "arnoson/kirby-vite",
@@ -10346,16 +10346,16 @@
         },
         {
             "name": "tightenco/ziggy",
-            "version": "v2.4.2",
+            "version": "v2.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tighten/ziggy.git",
-                "reference": "6612c8c9b2d5b3e74fd67c58c11465df1273f384"
+                "reference": "0b3b521d2c55fbdb04b6721532f7f5f49d32f52b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tighten/ziggy/zipball/6612c8c9b2d5b3e74fd67c58c11465df1273f384",
-                "reference": "6612c8c9b2d5b3e74fd67c58c11465df1273f384",
+                "url": "https://api.github.com/repos/tighten/ziggy/zipball/0b3b521d2c55fbdb04b6721532f7f5f49d32f52b",
+                "reference": "0b3b521d2c55fbdb04b6721532f7f5f49d32f52b",
                 "shasum": ""
             },
             "require": {
@@ -10365,9 +10365,9 @@
             },
             "require-dev": {
                 "laravel/folio": "^1.1",
-                "orchestra/testbench": "^7.0 || ^8.0 || ^9.0",
-                "pestphp/pest": "^2.26",
-                "pestphp/pest-plugin-laravel": "^2.4"
+                "orchestra/testbench": "^7.0 || ^8.0 || ^9.0 || ^10.0",
+                "pestphp/pest": "^2.26|^3.0",
+                "pestphp/pest-plugin-laravel": "^2.4|^3.0"
             },
             "type": "library",
             "extra": {
@@ -10410,9 +10410,9 @@
             ],
             "support": {
                 "issues": "https://github.com/tighten/ziggy/issues",
-                "source": "https://github.com/tighten/ziggy/tree/v2.4.2"
+                "source": "https://github.com/tighten/ziggy/tree/v2.5.3"
             },
-            "time": "2025-01-02T20:06:52+00:00"
+            "time": "2025-05-17T18:15:19+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
