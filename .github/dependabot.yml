@@ -1,0 +1,32 @@
+version: 2
+updates:
+  # PHP / Laravel
+  - package-ecosystem: "composer"
+    directory: "/"             # Wo die composer.json liegt
+    schedule:
+      interval: "weekly"       # oder "daily" / "monthly"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+    ignore:                     # Optional: bestimmte Pakete ignorieren
+      - dependency-name: "phpunit/phpunit"
+        versions:
+          - "9.x"
+
+  # Node / Vue
+  - package-ecosystem: "npm"
+    directory: "/"             # Wo die package.json liegt
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+
+  # GitHub Actions Updates (optional)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
