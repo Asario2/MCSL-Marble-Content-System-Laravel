@@ -23,7 +23,7 @@
         "eslint": "^9.22.0",
         "eslint-plugin-vue": "^9.32.0",
         "globals": "^15.14.0",
-        "laravel-vite-plugin": "^1.2.0",
+        "laravel-vite-plugin": "^2.0.1",
         "less": "^4.4.0",
         "less-loader": "^12.3.0",
         "postcss": "^8.4.32",
