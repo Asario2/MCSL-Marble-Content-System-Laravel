@@ -262,6 +262,7 @@ return Inertia::render('Homepage/Pictures', [
         $images = DB::table('images')
             ->where('id', $id)
             ->whereIn('pub', [1, 2])
+
             ->first();
 
         $def = str_replace("_mfx/images/pix/",'',@$images->imgdir_content)   ;
@@ -296,7 +297,8 @@ return Inertia::render('Homepage/Pictures', [
                       ->orWhere("images.created_at", "like", "%{$search}%");
                 });
             })
-            ->orderByDesc("images.created_at")
+
+            ->orderBy("position")
             ->paginate(20);
 
         // \Log::info("cr:".CheckRights(Auth::id(),"images","date"));
@@ -666,7 +668,7 @@ return Inertia::render('Homepage/Pictures', [
         if(SD() != "ab"){
             return $this->home_ri();
         }
-        return Inertia::render("Homepage/ab/Home");
+        return Inertia::location('/');
     }
     public function home_ri(){
         return Inertia::render("Homepage/ri");
@@ -764,7 +766,7 @@ return Inertia::render('Homepage/Pictures', [
         $data = DB::table("infos")->where("pub","1")->where("id",$id)->select("id","headline","message","img_big")->orderBy("position","DESC")->first();
         return Inertia::render('Homepage/mfx/infos_show',compact('data'));
     }
-    public function home_usershow($id)
+    public function home_usershow($nick,$id='')
     {
         $users = DB::table("users")->where("id",$id)->where("pub","1")->where("xis_disabled","0")->select("users.*", "users.xis_aiImage as madewithai")->first();
         \Log::info("HU:".json_encode($users,JSON_PRETTY_PRINT));
@@ -774,7 +776,7 @@ return Inertia::render('Homepage/Pictures', [
     }
     public function home_about()
     {
-        return $this->home_usershow("1");
+        return $this->home_usershow("Asario","1");
     }
     //
     public function AddUserAI($val = 0)

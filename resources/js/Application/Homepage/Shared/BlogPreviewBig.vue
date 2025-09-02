@@ -10,10 +10,10 @@
 
         <img
             :src="`/images/_ab/blogs/image_path/${blog.url}`"
+            style='min-width:300px;'
             :alt="blog.name"
-            width="1000"
-            height="390"
-            style="max-height:500px;margin-right:-10px;"
+
+
             :class="['object-cover w-full rounded lg:col-span-7 object-cover rounded bg-layout-sun-100 dark:bg-layout-night-100', blog.madewithai ? 'ai-image-corner' : '']"
 
         />

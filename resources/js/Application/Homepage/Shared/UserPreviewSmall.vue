@@ -2,7 +2,7 @@
 
     <div class="blog-container w-full max-w-sm mx-auto group rounded hover:no-underline focus:no-underline bg-layout-sun-100 dark:bg-layout-night-100">
         <Link
-            :href="route('home.user.show', user.id)"
+            :href="'/home/users/show/' + user.name + '/' + user.id"
             class="block"
         >
 

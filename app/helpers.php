@@ -923,6 +923,12 @@ if(!function_exists("SD"))
             case "localhost":
             $subb = "ab";
             break;
+            case "241":
+                $subb = "ab";
+            break;
+            case "217":
+                $subb = "ab";
+            break;
             default:
             $subb = $subb;
             break;

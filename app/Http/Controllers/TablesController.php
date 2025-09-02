@@ -692,16 +692,19 @@ class TablesController extends Controller
         {
             return [];
         }
-        if(Schema::hasColumn($table,"name")){
-            $hd = "name";
-        }
-        if(Schema::hasColumn($table,"title")){
-            $hd = "title";
-        }
         if(Schema::hasColumn($table,"headline")){
             $hd = "headline";
         }
-        return DB::table($table)->select('id', $hd,"position")->orderBy('position')->get();
+        elseif(Schema::hasColumn($table,"name")){
+            $hd = "name";
+        }
+        elseif(Schema::hasColumn($table,"title")){
+            $hd = "title";
+        }
+        $query = DB::table($table)->select('id',"$hd as title","position")->orderBy('position')->get();
+        \Log::info($query);
+
+        return $query;
     }
     public function updatePosition(Request $request, $table)
 {

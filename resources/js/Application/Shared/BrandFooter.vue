@@ -72,7 +72,7 @@ export default {
     GetLogin()
     {
         const url = location.href;
-        if(!url.includes("/login") && !url.includes("/forgot-password") && !url.includes("/register") && !url.includes("/email/verify"))
+        if(!url.includes("/login") && !url.includes("/forgot-password") && !url.includes("/register") && !url.includes("/email/verify") && !url.includes("reset-password") && !url.includes("/confirm-password") && !url.includes("/verify-email"))
         {
             return "";
         }

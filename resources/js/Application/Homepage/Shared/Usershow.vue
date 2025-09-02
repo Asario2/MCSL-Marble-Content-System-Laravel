@@ -1,5 +1,6 @@
 <template>
 <MetaHeader :title="'Benutzer:  '+ data.author_name2" />
+<back-btn url="/home/users">Benutzerliste</back-btn>
      <div id="teaser-img2" class="block max-w-sm gap-3 mx-auto mh_65 sm:max-w-full group hover:no-underline focus:no-underline lg:grid lg:grid-cols-12 bg-layout-sun-100 dark:bg-layout-night-100 overfl" style="z-index:0;margin-bottom:-0px;" :class="{ 'disable-link': isCommentActive }"
     >
         <!-- Das Bild des Blog-Posts -->
@@ -86,11 +87,12 @@ import DisplayNumber from "@/Application/Components/Content/DisplayNumber.vue";
 import AiButton from "@/Application/Components/Content/AiButton.vue";
 import editbtns from "@/Application/Components/Form/editbtns.vue";
 import SocialButtons from "@/Application/Components/Social/socialButtons.vue";
-
+import BackBtn from "@/Application/Components/Form/BackBtn.vue";
 export default {
     name: "Homepage_Shared_BlogPreviewBig",
     components: {
         Link,
+        BackBtn,
         DisplayDate,
         DisplayNumber,
         AiButton,

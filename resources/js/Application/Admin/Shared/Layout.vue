@@ -313,6 +313,7 @@
 
                             <!-- Authentication -->
                             <form method="POST" @submit.prevent="logoutUser">
+                                @csrf
                                 <ResponsiveNavLink as="button">
                                     Abmelden
                                 </ResponsiveNavLink>

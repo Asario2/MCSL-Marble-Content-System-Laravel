@@ -22,8 +22,10 @@ class ImageUploadController extends Controller
         //     'path' => 'string',
         //     'name' => "string"
         // ]);
+
             // \Log::info($request->all());
         // Das hochgeladene Bild holen
+
         $image = $request->file('image');
         $is_imgdir = $request->is_imgdir;
             if($is_imgdir){
@@ -69,7 +71,7 @@ class ImageUploadController extends Controller
         $sizes = [1200];
         $tmpname = $_FILES['image']['tmp_name'];
        if(!$Message && !array_key_exists($table, Settings::$impath)){
-        $IMOpath =  public_path("images/_{$subdomain}/{$table}/{$column}/${is_imgdir}/orig/".basename($filename)."");
+        $IMOpath =  public_path("images/_{$subdomain}/{$table}/{$column}/{$is_imgdir}/orig/".basename($filename)."");
 
         copy($tmpname,$IMOpath);
 

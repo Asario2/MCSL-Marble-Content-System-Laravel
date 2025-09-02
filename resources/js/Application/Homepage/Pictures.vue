@@ -1,9 +1,12 @@
 <template>
     <Layout>
         <MetaHeader :title="'Bilder - ' + ocont?.slug || 'Suchergebnisse'" />
+        <back-btn url="/home/pictures">Bildergalerien</back-btn>
         <div @click="handleBodyClick">
         <div v-if="ocont?.id" class="p-4 bg-layout-sun-200 dark:bg-layout-night-200">
-        <hgroup>
+
+            <hgroup>
+
             <h1 class="text-2xl font-bold">{{ decodeEntities(ocont?.slug) }}</h1>
             <h4 v-html="ocont?.description.replace('fx_year()', new Date().getFullYear()).replace(/\n/g, '<br />')"></h4>
 
@@ -16,6 +19,8 @@
         <newbtn table="images">
 
         </newbtn>
+
+
                         </div>
                         <div class="flex justify-between items-center">
                             <search-filter
@@ -166,6 +171,7 @@ import throttle from "lodash/throttle";
 import PhotoSwipeLightbox from "photoswipe/lightbox";
 import "photoswipe/style.css";
 import he from "he";
+import BackBtn from "@/Application/Components/Form/BackBtn.vue";
 import Alert from "@/Application/Components/Content/Alert.vue";
 
 export default {
@@ -181,6 +187,7 @@ export default {
     IconCamera,
     SearchFilter,
     Alert,
+    BackBtn,
   },
   props: {
     entries: {

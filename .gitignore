@@ -1,3 +1,4 @@
+_work/*
 **/orig
 /.phpunit.cache
 /node_modules
@@ -5,7 +6,7 @@
 /public/hot
 /public/storage
 /storage/*.key
-/storage/debugbar
+/storage/debugbar/**
 README.md
 /public/*.sql
 /vendor
@@ -26,8 +27,11 @@ yarn-error.log
 /.idea
 /.vscode
 handbook/
+storage/**
+public/build/**
 storage/logs
 handbook_admin/.vitepress/dist
 handbook_admin/.vitepress/cache
 database/migrations/2025_06_28_000000_create_tenants_table.php_old
 database/migrations/2025_06_15_132002_add_commentedit_to_users_rights_table.php_old
+chain.pem

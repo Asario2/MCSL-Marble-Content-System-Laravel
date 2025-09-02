@@ -199,7 +199,7 @@
 <button type="button" @click="openModal(field.name)"><b>{{ field.label }}</b><br />
     <p  v-if="(previewImages[field.name] ?? field.value) ">
 
-            <img :src="getPreviewSrc(field)" width="100" alt="Vorschau1" title="Vorschau1" :id="'com_'+field.name" style="float:left;margin-right:12px;"/></p>
+            <img :src="getPreviewSrc(field)" alt="Vorschau1" title="Vorschau1" :id="'com_'+field.name" style="float:left;margin-right:12px;max-height:120px;max-width:100px;"/></p>
                     <p
         v-else-if="localFfo.original[this.column] && localFfo.original[this.column].value && localFfo.original[this.column].value !== '008.jpg'"
         >
@@ -647,7 +647,7 @@ import { computed } from "vue";
 // import { usePage } from '@inertiajs/vue3';
 import { ref, watch } from "vue";
 // const page2 = usePage();
-import { CleanTable, CleanId } from '@/helpers';
+import { CleanTable, CleanId,cc } from '@/helpers';
 import ImageUploadModal from '@/Application/Components/ImageUploadModal.vue';
 import InputPosition from '@/Application/Components/InputPosition.vue';
 // import { Ziggy } from 'ziggy-js';
@@ -1280,6 +1280,7 @@ export default defineComponent({
 
 
                 },
+                cc,
                 updatePreviewImage({ column, url }) {
                     this.previewImages[column] = url;
 
@@ -1313,7 +1314,7 @@ export default defineComponent({
                     for (let i = 0; i < Math.min(5, this.images.length); i++) {
 
                         const filename = this.images[i]['filename'];
-                        const src = `/images/_${window.subdomain}/images/${field.name}/${field.value}/thumbs/${filename}`;
+                        const src = `/images/_${window.subdomain}/images/${field.name}/${field.value}/thumbs/${cc(filename)}`;
                         conta += `<img width="100" class='mt-3' alt="Vorschau33" title="Vorschau33" id="comm_${field.name}"
                                     style="float:left;margin-right:12px;" src="${src}" />`;
                     }

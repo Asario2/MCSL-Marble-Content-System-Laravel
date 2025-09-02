@@ -12,7 +12,7 @@ class UpdatePositions extends Command
 
     public function handle()
     {
-        $table = $this->argument('table');
+        $table = "cleo.".$this->argument('table');
 
         // Hole alle vorhandenen Positionen
         $existing = DB::table($table)
@@ -33,7 +33,8 @@ class UpdatePositions extends Command
 
         foreach ($rows as $row) {
             // solange Position schon vergeben ist oder im verbotenen Bereich 166–177 liegt → hochzählen
-            while ($usedPositions->contains($position) && ($position >= 166 && $position <= 177)) {
+            //  && ($position >= 166 && $position <= 177)
+            while ($usedPositions->contains($position)) {
                 $position++;
             }
 

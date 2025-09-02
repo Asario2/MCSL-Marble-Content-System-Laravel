@@ -1,9 +1,9 @@
 <template>
     <div
       v-if="isModalOpen"
-      class="fixed inset-0 z-100 flex items-start justify-center bg-black bg-opacity-50 overflow-y-auto pt-[160px]"
+      class="fixed inset-0 z-100 flex items-start justify-center bg-black bg-opacity-50 pt-[160px] overflow-y-auto mb-[50px]"
     >
-      <div class="bg-layout-sun-100 dark:bg-layout-night-100 rounded-lg shadow-lg w-full max-w-lg p-6 max-h-[calc(100vh-200px)] overflow-y-auto">
+      <div class="bg-layout-sun-100 dark:bg-layout-night-100 rounded-lg shadow-lg w-full max-w-lg p-6 max-h-[calc(100vh-200px)] ">
 
         <!-- Tabs & Inhalte -->
         <div v-if="!pxa">

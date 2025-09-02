@@ -61,6 +61,7 @@ if(SD() == "mfx"){
 
         Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+        Route::get("/api/user/rights",[RightsController::class,"GetRights_all"])->name("GetRights_all");
 
 //
 //     AB- Asarios BLog
@@ -116,7 +117,7 @@ Route::middleware(\App\Http\Middleware\CheckSubd::class . ':ab,asario')->group(f
 
     // Users
     Route::get('/home/users', [HomeController::class, 'home_userlist'])->name('home.userlist');
-    Route::get('/home/users/show/{id}', [HomeController::class, 'home_usershow'])->name('home.user.show');
+    Route::get('/home/users/show/{name}/{id?}', [HomeController::class, 'home_usershow'])->name('home.user.show');
 
     // Pictures PagesController
     Route::get('/pictures', [App\Http\Controllers\PagesController::class, 'ab_images'])->name('images');
@@ -294,7 +295,7 @@ Route::get("/api/user/rights/des/{table}/{right}",[RightsController::class,"GetR
 
 
 
-Route::get("/api/user/rights",[RightsController::class,"GetRights_all"])->name("GetRights_all");
+
 Route::get('/no-rights', [HomeController::class, 'no_rights'])->name('tables.noview');
 
 
@@ -375,6 +376,7 @@ Route::get('/devmod', function () {
     Route::get('tables/{table}/create', [TablesController::class, 'createEntryForm'])->name('tables.create-table');
     Route::post('/comments/store/{table}/{postId}', [CommentController::class, 'store_alt'])->name('comments.store_alt');
     Route::post('/comments/{table}/{id}', [CommentController::class, 'store'])->name('comments.store');
+    Route::get('/api/admin_table_positions', [RightsController::class,"GetTables_posi"])->name("GetTablesPosi");
     // Route::get('/{table}/{cat?}#headline_{id}', [PostController::class, 'show'])->name('posts.show');
 
 //     Route::get(
@@ -442,7 +444,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         // Route::get("/api/created-at", [TablesController::class],'GetCreatedAt')->name("created.at");
         // Route::get("api/get-image-id/{table}/{id}",[TablesController::class,"GetImageId"])
         //     ->name("api-get-image-id");
-        Route::get('/api/admin_table_positions', [RightsController::class,"GetTables_posi"])->name("GetTablesPosi");
+
         Route::get('/api/roles/{urid}', [TablesController::class, 'getRoles']);
         Route::get("/api/images/{table}/{id}",[TablesController::class,"GetImageUrl"])
             ->name("/api-get-image-url");
@@ -451,7 +453,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::delete('/comments/delete/{comment_id}', [CommentController::class,'destroy_comments'])->name("destroy.comments");
         Route::post('/api/save-json', [ImageUploadController::class, 'store_json'])->name("save-json-gallery");
         Route::post('api/saveFolder',  [ImageUploadController::class, 'store_dir'])->name("save-dirsave");
-        Route::delete("/api/del_image/{column}/{folder}/{posi}", [ImageUploadController::class, 'Del_Image'])->name("remove.img");
+        Route::post("/api/del_image/{column}/{folder}/{posi}", [ImageUploadController::class, 'Del_Image'])->name("remove.img");
         Route::get('/api/tailwind-colors/{subdomain}', [HomeController::class,"getStyles"])->name("mfx.getstyles");
         Route::post('/api/getCheckedBatch', [CommentController::class, 'CheckCommentsDone'])->name("comments.check.done");
 
@@ -581,7 +583,7 @@ Route::get('/tables/sort-enum/{table}/{name}', [TablesController::class, 'getOpt
         ->name("GetTableEnum");
 Route::get('/act-category/{table}/{id?}', [CategoryController::class, 'index'])
     ->name("ArtAct");
-    Route::post('/toggle-dark-mode', [DarkModeController::class, 'toggle'])->name('toggle-dark-mode');
+    // Route::post('/toggle-dark-mode', [DarkModeController::class, 'toggle'])->name('toggle-dark-mode');
     Route::post('/toggle-dark-mode', [DarkModeController::class, 'toggle'])->name('toggle.darkmode');
 Route::get('/tables/sort-enumis/{table}/{name}', [TablesController::class, 'getOptionz_itemscope'])
         ->name("GetTableItemScope");

@@ -1,0 +1,444 @@
+        @import 'button.css';
+        @import '../../public/Shariff/shariff-complete.less';
+		@import 'footer.css';
+		@import 'form.css';
+		@import 'navigation.css';
+		@import 'markdown.css';
+		@import 'table.css';
+		@import 'v_tippy.css';
+        @tailwind base;
+		@tailwind components;
+		@tailwind utilities;
+
+
+[x-cloak] {
+    display: none;
+}
+.ai-icon{
+
+}
+.ai-image-corner{
+    border-bottom-right-radius: 64px;
+}
+ul {
+    display: block;
+    list-style-type: disc;
+}
+ul {
+    list-style-position: outside; /* Bullet Points au?erhalb */
+    padding-left: 0px; /* Abstand von der linken Seite */
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+li {
+    line-height: 1.5; /* Passt den Abstand zwischen Textzeilen an */
+}
+li {
+    /* display: flex; /* Flexbox verwenden */
+    /* align-items: center; /* Zentriert den Text vertikal mit dem Bullet */
+}
+ul {
+    padding: 0;
+    margin: 0 0 20px 0; /* Setzt den oberen und unteren Abstand */
+}
+
+li {
+    /* Standard-Bullet-Point */
+    margin-left: 1.5rem; /* Einr?ckung */
+    line-height: 1.8; /* Passt die Textausrichtung an */
+}
+.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *))::before {
+content: "" !important;
+}
+.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *))::after {
+content: "" !important;
+}
+.prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)){
+	background-color:#ccc		;
+	color:#000 !Important;
+	padding:5px;
+	border-radius:4px;
+}
+code, code em, code > strong{
+	color:#000 !Important;
+}
+h1 {
+    font-weight: 800;
+    font-size: 2.25em;
+    margin-top: 0;
+    margin-bottom: 0.8888889em;
+    line-height: 1.1111111;
+
+}
+h2 {
+    font-size: 1.875rem;
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
+    margin-bottom: 0.25rem;
+}
+h4{
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+h5{
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+h6{
+    font-weight: 500;
+    font-size: 1.05rem;
+}
+ul,
+li {
+    margin: 0;
+    padding: 0;
+}
+ul {
+    list-style-type: disc; /* Aktiviert Bullet Points */
+    list-style-position: outside; /* Bullet Points au?erhalb des Textblocks */
+    margin-left: 20px; /* Abstand links f?r die Bullet Points */
+    padding-left: 20px; /* Zus?tzliche Einr?ckung */
+}
+ul {
+    /* display: flex; */
+    /* flex-direction: column; /* Vertikale Anor*/
+    list-style-type: disc; /* Bullet Points aktivieren */
+}
+
+ul {
+    list-style-type: disc; /* ?berschreibt globale Regeln */
+}
+.fa-solid {
+    font-family: "Font Awesome"; /* Specify the font family */
+    font-style: normal !important;
+}
+.fa-trash-can:before {
+    content: "\f2ed";
+    color: #a00;
+    font-size: 20px;
+    cursor: pointer;
+}
+.fa-pencil:before {
+    content: "\f303";
+    color: inherit;
+    font-size: 20px;
+    cursor: pointer;
+}
+@font-face {
+    font-family: "Font Awesome";
+    font-style: normal;
+    font-weight: 900;
+
+    font-display: block;
+    src: url("./fonts/fa-solid-900.eot");
+    src:
+        url("./fonts/fa-solid-900.eot?#iefix") format("embedded-opentype"),
+        url("./fonts/fa-solid-900.woff2") format("woff2"),
+        url("./fonts/fa-solid-900.woff") format("woff"),
+        url("./fonts/fa-solid-900.ttf") format("truetype"),
+        url("./fonts/fa-solid-900.svg#fontawesome") format("svg");
+}
+.transpar {
+    background-color: rgba(0, 0, 0, 0) !important;
+}
+textarea {
+    resize: none;
+}
+textarea.txt {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 450px !important;
+    /* width: 100%; */
+    box-sizing: border-box;
+    line-height: 1.2;
+
+    overflow: auto;
+}
+
+@media (min-width: 1024px) {
+    .maxx {
+        min-width: 209%;
+        max-width: 100%;
+    }
+    .txt {
+        max-width: 560px !important;
+    }
+}
+@media (max-width: 1024px) {
+    .txt {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+    }
+}
+.button-group {
+    background-color: red !important;
+  }
+A
+{
+    font-weight:bold !important;
+}
+.tiles {
+		display: -moz-flex;
+		display: -webkit-flex;
+		display: -ms-flex;
+		display: flex;
+		-moz-flex-wrap: wrap;
+		-webkit-flex-wrap: wrap;
+		-ms-flex-wrap: wrap;
+		flex-wrap: wrap;
+		postiion: relative;
+		margin: -2.5em 0 0 -2.5em;
+	}
+
+		.tiles article {
+			-moz-transition: -moz-transform 0.5s ease, opacity 0.5s ease;
+			-webkit-transition: -webkit-transform 0.5s ease, opacity 0.5s ease;
+			-ms-transition: -ms-transform 0.5s ease, opacity 0.5s ease;
+			transition: transform 0.5s ease, opacity 0.5s ease;
+			position: relative;
+			width: calc(33.33333% - 2.5em);
+			margin: 2.5em 0 0 2.5em;
+		}
+
+			.tiles article > .image {
+				-moz-transition: -moz-transform 0.5s ease;
+				-webkit-transition: -webkit-transform 0.5s ease;
+				-ms-transition: -ms-transform 0.5s ease;
+				transition: transform 0.5s ease;
+				position: relative;
+				display: block;
+				width: 250px;
+				border-radius: 4px;
+				overflow: hidden;
+			}
+
+				.tiles article > .image img {
+					display: block;
+					width: 100%;
+				}
+
+				.tiles article > .image:before {
+					pointer-events: none;
+					-moz-transition: background-color 0.5s ease, opacity 0.5s ease;
+					-webkit-transition: background-color 0.5s ease, opacity 0.5s ease;
+					-ms-transition: background-color 0.5s ease, opacity 0.5s ease;
+					transition: background-color 0.5s ease, opacity 0.5s ease;
+					content: '';
+					display: block;
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					opacity: 1.0;
+					z-index: 1;
+					opacity: 0.8;
+				}
+
+				.tiles article > .image:after {
+					pointer-events: none;
+					-moz-transition: opacity 0.5s ease;
+					-webkit-transition: opacity 0.5s ease;
+					-ms-transition: opacity 0.5s ease;
+					transition: opacity 0.5s ease;
+					content: '';
+					display: block;
+					position: absolute;
+					top: 0;
+					left: 0;
+					width: 100%;
+					height: 100%;
+					background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cstyle%3Eline %7B stroke-width: 0.25px%3B stroke: %23ffffff%3B %7D%3C/style%3E%3Cline x1='0' y1='0' x2='100' y2='100' /%3E%3Cline x1='100' y1='0' x2='0' y2='100' /%3E%3C/svg%3E");
+					background-position: center;
+					background-repeat: no-repeat;
+					background-size: 100% 100%;
+					opacity: 0.25;
+					z-index: 2;
+				}
+
+			.tiles article > a {
+				display: -moz-flex;
+				display: -webkit-flex;
+				display: -ms-flex;
+				display: flex;
+				-moz-flex-direction: column;
+				-webkit-flex-direction: column;
+				-ms-flex-direction: column;
+				flex-direction: column;
+				-moz-align-items: center;
+				-webkit-align-items: center;
+				-ms-align-items: center;
+				align-items: center;
+				-moz-justify-content: center;
+				-webkit-justify-content: center;
+				-ms-justify-content: center;
+				justify-content: center;
+				-moz-transition: background-color 0.5s ease, -moz-transform 0.5s ease;
+				-webkit-transition: background-color 0.5s ease, -webkit-transform 0.5s ease;
+				-ms-transition: background-color 0.5s ease, -ms-transform 0.5s ease;
+				transition: background-color 0.5s ease, transform 0.5s ease;
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 250px;
+				height: 250px;
+				padding: 1em;
+				border-radius: 4px;
+				border-bottom: 0;
+				color: #ffffff;
+				text-align: center;
+				text-decoration: none;
+				z-index: 3;
+			}
+
+				.tiles article > a > :last-child {
+					margin: 0;
+				}
+
+				.tiles article > a:hover {
+					color: #ffffff !important;
+				}
+
+				.tiles article > a h2 {
+					margin: 0;
+				}
+
+				.tiles article > a .content {
+					-moz-transition: max-height 0.5s ease, opacity 0.5s ease;
+					-webkit-transition: max-height 0.5s ease, opacity 0.5s ease;
+					-ms-transition: max-height 0.5s ease, opacity 0.5s ease;
+					transition: max-height 0.5s ease, opacity 0.5s ease;
+					width: 100%;
+					max-height: 0;
+					line-height: 1.5;
+					margin-top: 0.35em;
+					opacity: 0;
+				}
+
+					.tiles article > a .content > :last-child {
+						margin-bottom: 0;
+					}
+
+			.tiles article.style1 > .image:before {
+				background-color: #394e95 !important;
+			}
+
+			.tiles article.style2 > .image:before {
+				background-color: #007BFF;
+			}
+
+			.tiles article.style3 > .image:before {
+				background-color: #0056B3;
+			}
+
+			.tiles article.style4 > .image:before {
+				background-color: #66B3FF;
+			}
+
+			.tiles article.style5 > .image:before {
+				background-color: #1E90FF;
+			}
+
+			.tiles article.style6 > .image:before {
+				background-color: #3A87D0;
+			}
+
+			body:not(.is-touch) .tiles article:hover > .image {
+				-moz-transform: scale(1.1);
+				-webkit-transform: scale(1.1);
+				-ms-transform: scale(1.1);
+				transform: scale(1.1);
+			}
+
+				body:not(.is-touch) .tiles article:hover > .image:before {
+					background-color: #333333;
+					opacity: 0.35;
+				}
+
+				body:not(.is-touch) .tiles article:hover > .image:after {
+					opacity: 0;
+				}
+
+			body:not(.is-touch) .tiles article:hover .content {
+				max-height: 15em;
+				opacity: 1;
+			}
+
+		* + .tiles {
+			margin-top: 2em;
+		}
+
+		body.is-preload .tiles article {
+			-moz-transform: scale(0.9);
+			-webkit-transform: scale(0.9);
+			-ms-transform: scale(0.9);
+			transform: scale(0.9);
+			opacity: 0;
+		}
+
+		body.is-touch .tiles article .content {
+			max-height: 15em;
+			opacity: 1;
+		}
+
+		@media screen and (max-width: 1280px) {
+
+			.tiles {
+				margin: -1.25em 0 0 -1.25em;
+			}
+
+				.tiles article {
+					width: calc(33.33333% - 1.25em);
+					margin: 1.25em 0 0 1.25em;
+				}
+
+		}
+
+		@media screen and (max-width: 980px) {
+
+			.tiles {
+				margin: -2.5em 0 0 -2.5em;
+			}
+
+				.tiles article {
+					width: calc(50% - 2.5em);
+					margin: 2.5em 0 0 2.5em;
+				}
+
+		}
+
+		@media screen and (max-width: 736px) {
+
+			.tiles {
+				margin: -1.25em 0 0 -1.25em;
+			}
+
+				.tiles article {
+					width: calc(50% - 1.25em);
+					margin: 1.25em 0 0 1.25em;
+				}
+
+					.tiles article:hover > .image {
+						-moz-transform: scale(1.0);
+						-webkit-transform: scale(1.0);
+						-ms-transform: scale(1.0);
+						transform: scale(1.0);
+					}
+
+		}
+		SPAN .fab .fa-twitter:before {
+ content: "\e61b" !important;
+}
+.bg-layout-trans{
+    background-color:transparent !important;
+}
+

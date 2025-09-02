@@ -14,7 +14,7 @@ $width       = 900;
 $height      = 300;
 $length      = random_int(5, 6);
 $charset     = 'ACEFGHJKLMNPQRSTUVWXYZ2345679abcdefghjkmnpqrstuvwxyz';
-$fontPath    = __DIR__ . '/fonts/Arial.ttf';
+$fontPath    = __DIR__ . '/fonts/arial.ttf';
 
 $fontMin     = 100;
 $fontMax     = 110;

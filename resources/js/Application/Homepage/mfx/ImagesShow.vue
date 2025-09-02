@@ -19,9 +19,9 @@ import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
           </div>
 
           <div v-else class="">
-            <photoswipe :images="im_cont" :basePath="'/images/_mfx/images/imgdir_content/' + def + '/'">
+            <photoswipe_new :images="im_cont" :basePath="'/images/_mfx/images/imgdir_content/' + def + '/'">
 
-            </photoswipe>
+            </photoswipe_new>
         </div>
         </template>
       </page-content>
@@ -30,7 +30,7 @@ import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 
   <script>
   import { defineComponent } from "vue";
-  import photoswipe from "@/Application/Components/photoswipe.vue";
+  import photoswipe_new from "@/Application/Components/photoswipe_new.vue";
   import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
   import Layout from "@/Application/Homepage/Shared/mfx/Layout.vue";
   import PageContent from "@/Application/Components/Content/PageContent.vue";
@@ -49,7 +49,7 @@ import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
       PageParagraph,
       emailview,
       editbtns,
-      photoswipe,
+      photoswipe_new,
       MetaHeader,
     },
     props: {

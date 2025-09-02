@@ -1,10 +1,15 @@
 <template>
 <MetaHeader title="Asarios Blog" />
-<newbtn table="blogs"></newbtn>
+<div class="flex items-center gap-2 mb-4">
+  <back-btn url="/">Asarios Blog</back-btn>
+  <newbtn table="blogs"></newbtn>
+</div>
+
 
 <div
         class="p-5 mx-auto sm:p-2 md:p-10 bg-layout-sun-0 text-layout-sun-800 dark:bg-layout-night-0 dark:text-layout-night-800"
     >
+
     <div class="relative w-full flex flex-col max-w-6xl mx-auto overflow-hidden rounded">
     <!-- Blog-Bild -->
     <div class="relative bg-layout-sun-100 dark:bg-layout-night-100" style="z-index:0;">
@@ -12,8 +17,8 @@
             :src="`/images/_ab/blogs/image_path/${blog.url}`"
             :alt="blog.name"
 
-            style='min-width:480px;min-height:360px;width:100%'
-            :class="['object-cover w-full lg:col-span-7 object-cover bg-layout-sun-500 dark:bg-layout-night-500 coverclass', blog.madewithai ? 'ai-image-corner' : '']"
+            style='min-width:300px;     '
+            :class="['object-cover w-full rounded lg:col-span-7 object-cover object-center mx-auto rounded bg-layout-sun-100 dark:bg-layout-night-100', blog.madewithai ? 'ai-image-corner    ' : '']"
             />
 
         <!-- AI-Button in der rechten unteren Ecke des Bildes -->
@@ -156,6 +161,7 @@ import IconPlay from "@/Application/Components/Icons/Play.vue";
 import IconSpeakerWave from "@/Application/Components/Icons/SpeakerWave.vue";
 import IconStop from "@/Application/Components/Icons/Stop.vue";
 import newbtn from "@/Application/Components/Form/newbtn.vue";
+import BackBtn from "@/Application/Components/Form/BackBtn.vue";
 import AiButton from "@/Application/Components/Content/AiButton.vue";
 import DisplayDate from "@/Application/Components/Content/DisplayDate.vue";
 import DisplayNumber from "@/Application/Components/Content/DisplayNumber.vue";
@@ -170,6 +176,7 @@ export default {
     components: {
         AiButton,
         SocialButtons,
+        BackBtn,
         IconPause,
         IconPlay,
         IconSpeakerWave,
@@ -281,3 +288,4 @@ width:90%;
     max-width:100%;
 } */
 </style>
+p

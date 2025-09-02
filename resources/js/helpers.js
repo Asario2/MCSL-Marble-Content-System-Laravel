@@ -311,7 +311,14 @@ export function CleanId() {
     }
 
     return null; // Falls keine ID gefunden wird
+
 }
+
+export function cc(img)
+    {
+        return img.replace(/^p(\d+)/, (match, p1) => 'P' + p1);
+    }
+
 export function CleanTable() {
     const path = window.location.pathname; // Gibt "/admin/tables/show/Example" zur�ck
     let segments = path.split('/');

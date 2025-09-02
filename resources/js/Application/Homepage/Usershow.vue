@@ -1,6 +1,7 @@
 <template>
     <Layout>
-        <MetaHeader :title="'Benutzer - ' + users.name" />
+        <MetaHeader :title="'Benutzer - ' + users?.name" />
+        <back-btn url="/home/users">Benutzerliste</back-btn>
         <div id="teaser-img2" class="block max-w-sm gap-3 mx-auto mh_65 sm:max-w-full focus:no-underline lg:grid lg:grid-cols-12 bg-layout-sun-100 dark:bg-layout-night-100 overfl" style="z-index:0;margin-bottom:-0px;" :class="{ 'disable-link': isCommentActive }"
     >
         <!-- Das Bild des Blog-Posts -->
@@ -61,7 +62,7 @@
                 <th class="pr-4">Facebook:</th>
                 <td>
                     <a v-if="users.fbd" :href="'https://facebook.com/profile.php?id=' + users.fbd" target="_blank">
-                    https://www.facebook.com/profile.php?id={{ users.fbd }}</a>
+                    Zu Faceboook</a>
                     <p v-else>keine Angabe</p>
                 </td>
                 </tbody>
@@ -94,11 +95,12 @@ import DisplayNumber from "@/Application/Components/Content/DisplayNumber.vue";
 import editbtns from "@/Application/Components/Form/editbtns.vue";
 import SocialButtons from "@/Application/Components/Social/socialButtons.vue";
 import AiButton from "@/Application/Components/Content/AiButton.vue";
-
+import BackBtn from "@/Application/Components/Form/BackBtn.vue";
 export default {
     name: "Homepage_Shared_BlogPreviewBig",
     components: {
         Link,
+        BackBtn,
         DisplayDate,
         DisplayNumber,
         AiButton,

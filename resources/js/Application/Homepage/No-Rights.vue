@@ -2,7 +2,7 @@
 <layout>
     <MetaHeader title="EXAMPLE" />
 
-        <img src="/images/web/mcsl_logo_only.png" class="mx-auto" style="max-width:500px;min-width:300px;width:100%" />
+        <img :src="'/images/web/mcsl_logo_only.png'" class="mx-auto" style="max-width:500px;min-width:300px;width:100%" />
         <div class="mx-auto text-center" style="max-width: 800px;">
         <br />
         <br />

@@ -76,12 +76,25 @@ class AppServiceProvider extends ServiceProvider
             case "ra-c-henning":
                 $subb = "chh";
             break;
+            case "217":
+            $subb = "mfx";
+            break;
             default:
             $subb = $subb;
             break;
         }
         $subb2 = $subb;
-        if(substr_count(@$_SERVER['REQUEST_URI'],"/login") || substr_count(@$_SERVER['REQUEST_URI'],"/admin/"))
+        $url = $_SERVER['REQUEST_URI'];
+        if(substr_count(@$url,"/login")
+            || substr_count($url,"/admin/")
+            || substr_count($url,"reset-password")
+            || substr_count($url,"register")
+            || substr_count($url,"reset-password")
+            || substr_count($url,"forgot-password")
+            || substr_count($url,"email/verify")
+            || substr_count($url,"confirm-password")
+            || substr_count($url,"verify-email"))
+
         {
             $subb2  = "ab";
             // dd(rawurldecode("%7B%22consent_at%22%3A1752311194%2C%22laravel_cookie_consent%22%3Atrue%2C%22laravel_session%22%3Atrue%2C%22XSRF-TOKEN%22%3Atrue%2C%22darkmode_enabled%22%3Afalse%7D"));

@@ -46,10 +46,8 @@
         {{-- <script src="/js/app.js"></script> --}}
         {{-- <script src="/js/users.js"></script> --}}
         <link rel="icon" type="image/png" href="{{ $favicon }}">
+        {{-- <script type="modul" src="/js/vite_app.js"></script> --}}
 
-        <link href="/css/app.css?time={{time()}}" rel="stylesheet">
-
-        {{-- <link href="{{ mix('resources/css/app.css') }}" rel="stylesheet"> --}}
 
 
 
@@ -61,6 +59,10 @@
         <script src="/Shariff/shariff.min.js"></script>
         @routes
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <link href="/css/app.css?time={{time()}}" rel="stylesheet">
+        {{-- <link href="/css/vite_app.css?time={{time()}}" rel="stylesheet"> --}}
+
+        {{-- <link href="{{ mix('resources/css/app.css') }}" rel="stylesheet"> --}}
         <link href="/css/tailw/{{$sd_alt}}.css?time={{time()}}" rel="stylesheet">
         @inertiaHead
         <!-- additional Scripts -->

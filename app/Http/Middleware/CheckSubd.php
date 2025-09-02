@@ -15,7 +15,7 @@ class CheckSubd
     public function handle(Request $request, Closure $next, ...$allowed)
     {
         // Subdomain ermitteln
-        $subb = explode('.', str_replace("www.", '', $request->getHost()))[0];
+        $subb = SD();
 
         // Alias-Umwandlung
         $map = [
@@ -32,7 +32,7 @@ class CheckSubd
             "mjs"            => "mjs",
         ];
         $subb = $map[$subb] ?? $subb;
-        \Log::info('Subdomain: ' . $subb . ' | Allowed: ' . implode(',', $allowed));
+        // \Log::   info('Subdomain: ' . $subb . ' | Allowed: ' . implode(',', $allowed));
 
         // Falls nur bestimmte Subdomains erlaubt sind
         if (!empty($allowed) && !in_array($subb, $allowed, true)) {
