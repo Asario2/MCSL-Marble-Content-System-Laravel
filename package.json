@@ -32,9 +32,10 @@
         "vite": "^7.1.4",
         "vue": "^3.5.21"
     },
+		 
 	"overrides": {
-		"axios": "^0.28.0"
-	  },
+	  "axios": "0.30.0"
+	},
     "dependencies": {
         "@fontsource/open-sans": "^5.0.28",
         "@fontsource/ubuntu": "^5.0.13",
@@ -48,7 +49,7 @@
         "@inertiajs/inertia": "^0.11.1",
         "@inertiajs/inertia-vue3": "^0.6.0",
         "@vitejs/plugin-vue": "^6.0.0",
-        "axios": "^0.28.0",
+        "axios": "0.30.0",
         "blueimp-md5": "^2.19.0",
         "dayjs": "^1.11.18",
         "esbuild": "^0.25.9",
