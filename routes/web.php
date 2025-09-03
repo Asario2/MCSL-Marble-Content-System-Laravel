@@ -62,6 +62,7 @@ if(SD() == "mfx"){
         Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
         Route::get("/api/user/rights",[RightsController::class,"GetRights_all"])->name("GetRights_all");
+        Route::post('/api/contact/send',[CommentController::class,"sendmc"]);
 
 //
 //     AB- Asarios BLog
@@ -386,6 +387,7 @@ Route::get('/devmod', function () {
 // ===============================
 // Routen für angemeldete Anwender
 // ===============================
+
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     // =================
     // APPLICATIONSWITCH
@@ -398,7 +400,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     //Adde 1/0 bei profil für AI Made ProfilImage
     Route::post('/api/AddUserAI/{val}', [HomeController::class, 'AddUserAI'])->name("AddUserAI");
     // Add comment entry to DB (only logged in users)
-    Route::post('/contact/send',[CommentController::class,"sendmc"]);
+
 
 
 

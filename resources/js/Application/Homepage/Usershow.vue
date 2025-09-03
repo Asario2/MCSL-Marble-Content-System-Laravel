@@ -1,7 +1,7 @@
 <template>
     <Layout>
         <MetaHeader :title="'Benutzer - ' + users?.name" />
-        <back-btn url="/home/users">Benutzerliste</back-btn>
+        <back-btn url="/home/users" r="r">Benutzerliste</back-btn>
         <div id="teaser-img2" class="block max-w-sm gap-3 mx-auto mh_65 sm:max-w-full focus:no-underline lg:grid lg:grid-cols-12 bg-layout-sun-100 dark:bg-layout-night-100 overfl" style="z-index:0;margin-bottom:-0px;" :class="{ 'disable-link': isCommentActive }"
     >
         <!-- Das Bild des Blog-Posts -->

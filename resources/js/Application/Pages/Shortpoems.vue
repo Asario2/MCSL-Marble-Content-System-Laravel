@@ -59,7 +59,7 @@
               :av="parseFloat(ratings['original'][item.id]?.average) || 0"
               :tot="ratings['original'][item.id]?.total || 0"
             />
-            <SocialButtons :postId="item.id" />
+            <SocialButtons :postId="item.id" :xslug="true"/>
           </div>
         </div>
       </section>

@@ -101,7 +101,7 @@ export default defineComponent({
     async submitForm() {
       try {
         console.log(this.form);
-        const response = await axios.post('/contact/send', this.form)
+        const response = await axios.post('/api/contact/send', this.form)
         if(response.data == "1"){
             alert('Nachricht erfolgreich gesendet!');
         }

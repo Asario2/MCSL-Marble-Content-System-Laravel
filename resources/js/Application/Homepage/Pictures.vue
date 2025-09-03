@@ -1,7 +1,7 @@
 <template>
     <Layout>
         <MetaHeader :title="'Bilder - ' + ocont?.slug || 'Suchergebnisse'" />
-        <back-btn url="/home/pictures">Bildergalerien</back-btn>
+        <back-btn url="/home/pictures" r="r">Übersicht</back-btn>
         <div @click="handleBodyClick">
         <div v-if="ocont?.id" class="p-4 bg-layout-sun-200 dark:bg-layout-night-200">
 
@@ -75,8 +75,7 @@
             <p v-html="stripTagsCom(item?.message)"></p>
         </div>
 
-
-            <SocialButtons :postId="item?.id" />
+            <SocialButtons :postId="item?.id" :slug="item.slug" :sslug="true"/>
 </div>
 
 

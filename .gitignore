@@ -1,7 +1,8 @@
-_work/*
+_work/**
+**/_assets/**
 **/orig
 /.phpunit.cache
-/node_modules
+/node_modules/**
 /public/build
 /public/hot
 /public/storage
@@ -28,10 +29,9 @@ yarn-error.log
 /.vscode
 handbook/
 storage/**
-public/build/**
+public/build/**	
 storage/logs
 handbook_admin/.vitepress/dist
 handbook_admin/.vitepress/cache
 database/migrations/2025_06_28_000000_create_tenants_table.php_old
 database/migrations/2025_06_15_132002_add_commentedit_to_users_rights_table.php_old
-chain.pem

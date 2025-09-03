@@ -768,7 +768,7 @@ return Inertia::render('Homepage/Pictures', [
     }
     public function home_usershow($nick,$id='')
     {
-        $users = DB::table("users")->where("id",$id)->where("pub","1")->where("xis_disabled","0")->select("users.*", "users.xis_aiImage as madewithai")->first();
+        $users = DB::table("users")->where("name",$nick)->where("pub","1")->where("xis_disabled","0")->select("users.*", "users.xis_aiImage as madewithai")->first();
         \Log::info("HU:".json_encode($users,JSON_PRETTY_PRINT));
         return Inertia::render('Homepage/Usershow', [
             'users' => $users, // statt 'data'
