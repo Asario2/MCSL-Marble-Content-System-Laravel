@@ -12,6 +12,7 @@ README.md
 /public/*.sql
 /vendor
 .env
+*.bak
 *.bat
 *.sh
 *.yml
