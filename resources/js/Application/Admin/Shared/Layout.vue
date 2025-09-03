@@ -1,5 +1,5 @@
 <template>
-    <div :class="mode" id="app-layout-start">
+    <div class="dark" id="app-layout-start">
         <Head :title="title"></Head>
 
         <div
@@ -55,12 +55,12 @@
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
-                            <div class="mr-1">
+                            <!-- <div class="mr-1">
                                 <button-change-mode
                                     :mode="mode"
                                     @changeMode="changeMode"
                                 ></button-change-mode>
-                            </div>
+                            </div> -->
                             <!-- Settings Dropdown -->
                             <div class="ms-3 relative">
                                 <Dropdown align="right" width="72">
@@ -313,7 +313,7 @@
 
                             <!-- Authentication -->
                             <form method="POST" @submit.prevent="logoutUser">
-                                @csrf
+
                                 <ResponsiveNavLink as="button">
                                     Abmelden
                                 </ResponsiveNavLink>
@@ -369,7 +369,6 @@
 import { Head } from "@inertiajs/vue3";
 
 import BrandHeader from "@/Application/Shared/BrandHeader.vue";
-import { nextTick } from 'vue';
 import Toast from "@/Application/Components/Content/Toast.vue";
 import ButtonChangeMode from "@/Application/Components/ButtonChangeMode.vue";
 import { toastBus } from '@/utils/toastBus';
@@ -378,7 +377,6 @@ import Dropdown from "@/Application/Components/Content/Dropdown.vue";
 import DropdownLink from "@/Application/Components/Content/DropdownLink.vue";
 import NavLink from "@/Application/Components/Content/NavLink.vue";
 import ResponsiveNavLink from "@/Application/Components/Content/ResponsiveNavLink.vue";
-import { GetSRights,loadRights } from '@/helpers';
 import { router } from '@inertiajs/vue3';
 import FooterGrid from "@/Application/Components/Content/FooterGrid.vue";
 
@@ -389,7 +387,6 @@ export default {
         Head,
         BrandHeader,
         Toast,
-        toastBus,
         ButtonChangeMode,
         Dropdown,
         DropdownLink,
@@ -404,64 +401,31 @@ export default {
             type: String,
             default: "Administrator-Anwendung",
         },
-        isOpen: Boolean,
     },
 
     data() {
         return {
-            mode: localStorage.theme ? localStorage.theme : "",
-            // isOpen: false,
-
-        year: new Date().getFullYear(),
-
-
+            mode: "dark",
+            isOpen: false,   // ✅ jetzt im data statt props
+            year: new Date().getFullYear(),
         };
     },
-   mounted(){
 
-    // console.log('ADMIN_LAYOUT mounted');
-    // let shouldReload = localStorage.getItem('reload_dashboard');
-    // // console.log('shouldReload?', shouldReload);
+    mounted() {
+        let shouldReload = localStorage.getItem('reload_dashboard');
+        if (shouldReload) {
+            localStorage.removeItem('reload_dashboard');
+            window.location.reload();
+        }
+    },
 
-    // if (shouldReload) {
-    //     router.reload();
-    //     // console.log('RELOADING due to reload_dashboard...');
-    //     localStorage.removeItem('reload_dashboard');
-    //     window.location.reload();
-    // } else {
-    //     // console.log("NO RELOAD1");
-    // }
-
-},
-beforeMount(){
-    // console.log('ADMIN_LAYOUT mounted');
-    let shouldReload = localStorage.getItem('reload_dashboard');
-    // console.log('shouldReload?', shouldReload);
-
-    if (shouldReload) {
-        // console.log('RELOADING due to reload_dashboard...');
-        localStorage.removeItem('reload_dashboard');
-        window.location.reload();
-    } else {
-        // console.log("NO RELOAD2");
-    }
-},
     methods: {
-        async getServer(){
+        async getServer() {
             try {
                 const response = await axios.get('/api/GetLastAct');
-
-                // Zugriff auf Daten:
-
-                if(response.data.includes("admin/dashboard"))
-                {
+                if (response.data.includes("admin/dashboard")) {
                     // this.$inertia.reload();
                 }
-
-
-                // Beispiel: Toast anzeigen
-
-
             } catch (error) {
                 toastBus.emit('toast', {
                     status: 'error',
@@ -469,6 +433,7 @@ beforeMount(){
                 });
             }
         },
+
         changeMode(value) {
             this.mode = value;
             this.isOpen = false;
@@ -480,10 +445,12 @@ beforeMount(){
         },
 
         logoutUser() {
-            let routeLogout = "logout";
-            //
-            this.$inertia.post(this.route(routeLogout));
-        },
+    this.$inertia.post(this.route('logout'), {
+        _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    });
+}
+
     },
 };
 </script>
+

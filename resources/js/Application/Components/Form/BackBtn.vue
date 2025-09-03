@@ -2,7 +2,7 @@
     <button class="backbtn inline-flex  button-icon items-center px-1 py-1.5 md:px-2 md:py-2 h-6 md:h-8 rounded-md font-medium text-xs tracking-widest disabled:opacity-25 transition cursor-pointer focus:ring focus:outline-none button_bg button_text_case_bg mb-4"
             @click="goBack(url)" title="Zurück" alt="Zurück" aria-title="Zurück">
             <i class="fa-regular fa-circle-left"></i>
-            Zurück zu <slot></slot>
+            Zurück zu{{ r }} <slot></slot>
 
     </button>
   </template>
@@ -15,7 +15,11 @@
     url:{
         type:String,
         required: true,
-    }
+    },
+    r:{
+        type:String,
+        default:'', 
+    },
    },
     methods: {
       goBack(url) {

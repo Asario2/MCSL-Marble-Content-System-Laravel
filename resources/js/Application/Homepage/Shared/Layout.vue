@@ -266,7 +266,7 @@
                       <link-footer name="Datenschutzerklärung" :route-name="route('home.privacy')"></link-footer>
                     </li>
                     <li>
-                      <link-footer @click="reopenCookieBanner">Cookie-Einstellungen</link-footer>
+                        <link-footer @click="reopenCookieBanner"><b>Cookie-Einstellungen</b></link-footer>
                     </li>
                   </ul>
                 </div>
@@ -439,7 +439,15 @@ export default {
       this.isLoading = state;
       localStorage.setItem('loading', state.toString());
     },
-
+    reopenCookieBanner() {
+        window.LaravelCookieConsent.reset();
+        //   // Whitecube-API aufrufen, wenn verfügbar
+    //   if (window.CookieConsent && typeof window.CookieConsent.showBanner === "function") {
+    //     window.CookieConsent.showBanner();
+    //   } else {
+    //     console.log("Whitecube CookieConsent API nicht gefunden.");
+    //   }
+    },
     checkLoadingState() {
       if (this.pendingRequests === 0 && this.imagesLoaded) {
         this.setLoadingState(false);

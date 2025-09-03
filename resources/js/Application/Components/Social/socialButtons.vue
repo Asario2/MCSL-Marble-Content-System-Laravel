@@ -94,8 +94,10 @@ export default {
         postId: [Number, String],
         sm: String,
         nostars: { type: Boolean, default: false },
-        slug: String,
+        slug: { type: String, default: "" },
         empty: { type: Boolean, default: false },
+        sslug: { type: Boolean, default: false },
+        xslug: { type: Boolean, default: false },
         ublock: String,
     },
     data() {
@@ -182,8 +184,13 @@ export default {
             location.href = rt;
         },
         urlAdder(id) {
+            console.log('xslug:', this.xslug);
+            console.log('sslug:', this.sslug);
+            console.log('ublock:', this.ublock);
+            console.log('slug:', this.slug);
             if (this.ublock) return `/show/${this.ublock}/${id}`;
             if (this.empty) return "";
+            if(this.sslug || this.xslug) return "#st"+id;
             return `/show/${this.slug}#st${id}`;
         },
         updateTeaserOverflow() {
@@ -198,6 +205,21 @@ export default {
             if (this.form) this.form = Object.fromEntries(Object.keys(this.form).map(k => [k, null]));
         },
     },
+    watch: {
+    xslug() {
+        this.urlAdded = this.urlAdder(this.postId);
+    },
+    sslug() {
+        this.urlAdded = this.urlAdder(this.postId);
+    },
+    ublock() {
+        this.urlAdded = this.urlAdder(this.postId);
+    },
+    slug() {
+        this.urlAdded = this.urlAdder(this.postId);
+    },
+}
+
 };
 </script>
 

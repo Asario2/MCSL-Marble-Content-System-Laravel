@@ -1,7 +1,8 @@
 <?php
 /**
  * captcha.php
- * Grafisches CAPTCHA mit sehr großem Text, Verfremdungen und zentriertem Text
+ * Grafisches CAPTCHA mit großem Text, leichter Verfremdung, zentriertem Text
+ * und dunkelroter Schriftfarbe
  */
 
 declare(strict_types=1);
@@ -26,15 +27,19 @@ $lineCount   = 10;
 $dotCount    = 3000;
 $gridNoise   = true;
 
-$waveAmpY    = random_int(8, 14);
-$wavePerY    = random_int(120, 180);
+/* Wellen-Einstellungen (milder) */
+$waveAmpY    = random_int(3, 6);
+$wavePerY    = random_int(140, 200);
 $wavePhaseY  = random_int(0, 314) / 100;
 
-$waveAmpX    = random_int(5, 10);
-$wavePerX    = random_int(100, 150);
+$waveAmpX    = random_int(2, 4);
+$wavePerX    = random_int(120, 200);
 $wavePhaseX  = random_int(0, 314) / 100;
 
+/* Rotation pro Zeichen */
 $rotateEachChar = true;
+$charRotateMin  = -5;
+$charRotateMax  = 5;
 
 /* ===================== Hilfsfunktionen ===================== */
 function randText(string $set, int $len): string {
@@ -127,8 +132,8 @@ for ($i = 0; $i < $dotCount; $i++) {
     imagesetpixel($img, random_int(0, $width - 1), random_int(0, $height - 1), $col);
 }
 
-/* Textfarbe (schwarz) */
-$textColor = [0, 0, 0];
+/* Textfarbe (dunkelrot) */
+$textColor = [139, 0, 0]; // Dark Red RGB
 
 /* ===================== Text zeichnen (zentriert) ===================== */
 $useTTF = is_readable($fontPath);
@@ -139,7 +144,7 @@ if ($useTTF) {
     for ($i = 0; $i < strlen($text); $i++) {
         $char = $text[$i];
         $size = $fontMin;
-        $angle = $rotateEachChar ? random_int(-10, 10) : 0;
+        $angle = $rotateEachChar ? random_int($charRotateMin, $charRotateMax) : 0;
         $bbox = imagettfbbox($size, $angle, $fontPath, $char);
         $charW = max($bbox[2], $bbox[4]) - min($bbox[0], $bbox[6]);
         $charBoxes[] = [$char, $size, $angle, $charW];
