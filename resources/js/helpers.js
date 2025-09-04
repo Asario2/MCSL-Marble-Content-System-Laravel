@@ -337,7 +337,8 @@ export function CleanTable() {
 segments = segments.join('').replace(/[\[\]']/g, '');
 
     // Die bereinigte URL (optional)
-    return segments;
+
+    return segments || '';
 
 }
 export function ucf(str) {

@@ -40,7 +40,7 @@
         <script src="/js/users.js"></script>
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link href="/css/app.css" rel="stylesheet">
-        <link href="/css/tailw/extra.css" rel="stylesheet">
+
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
         {{-- <script src="/js/app.js"></script> --}}
@@ -54,6 +54,8 @@
 
 
         <!-- Shariff JavaScript (über CDN) -->
+        <link href="/css/tailw/extra.css?time={{time()}}" rel="stylesheet">
+        <link href="/css/tailw/{{$sd_alt}}.css?time={{time()}}" rel="stylesheet">
         {{-- <script src="/js/shariff.min.js"></script> --}}
         <link rel="stylesheet" href="/Shariff/shariff.complete.css">
         <script src="/Shariff/shariff.min.js"></script>
@@ -62,8 +64,9 @@
         <link href="/css/app.css?time={{time()}}" rel="stylesheet">
         {{-- <link href="/css/vite_app.css?time={{time()}}" rel="stylesheet"> --}}
 
-        {{-- <link href="{{ mix('resources/css/app.css') }}" rel="stylesheet"> --}}
-        <link href="/css/tailw/{{$sd_alt}}.css?time={{time()}}" rel="stylesheet">
+
+
+
         @inertiaHead
         <!-- additional Scripts -->
         {{-- <script src="{{ mix('resources/js/user.js') }}"></script> --}}

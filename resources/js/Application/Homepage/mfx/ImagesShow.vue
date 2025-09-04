@@ -2,6 +2,7 @@ import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 <template>
     <layout :header-url="$page.props.saas_url + '/'">
     <MetaHeader :title="'Galerie: ' + images.headline" />
+    <back-btn url="/home/images"></back-btn>
       <page-content>
         <template #content>
           <page-title>

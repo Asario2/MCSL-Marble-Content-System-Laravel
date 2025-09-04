@@ -1,6 +1,7 @@
     import "./bootstrap";
     import '../css/app.css';
-
+	import '@fontsource/open-sans';
+	import '@fontsource/ubuntu';
     import { createApp, h } from "vue";
     import { createInertiaApp } from "@inertiajs/vue3";
     import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
@@ -25,7 +26,7 @@
             return ziggyRoute(...args);
         } catch (error) {
             if (error.message.includes('is not in the route list')) {
-                console.warn(`Ziggy: Route '${args[0]}' nicht gefunden. Leite auf 404 um.`);
+                console.error(`Ziggy: Route '${args[0]}' nicht gefunden. Leite auf 404 um.`);
                 Inertia.visit('/404');
                 return '/404';
             }

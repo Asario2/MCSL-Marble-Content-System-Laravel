@@ -20,7 +20,7 @@
 </option>
       </select>
     </div>
-    <input type="hidden" :name="name" :id="name" :value="selectedPosition">
+    <input type="hidden" :name="name" id="position" :value="currentPosition">
   </template>
 
   <script>

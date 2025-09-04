@@ -21,7 +21,7 @@
           :src="'/images/_mfx/images/img_thumb/thumbs/' + item.img_thumb"
           :alt="item.headline"
           :title="item.headline"
-          class="w-full h-auto md:w-[104px] md:h-[104px] object-cover rounded-lg nor_border flex-shrink-0 mr-[-3px]"
+          class="w-full h-auto md:w-[104px] max-w-[320px] md:h-[104px] object-cover rounded-lg nor_border flex-shrink-0 mr-[-3px]"
         />
 
         <!-- Textcontainer -->

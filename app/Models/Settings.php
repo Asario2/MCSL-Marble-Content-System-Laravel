@@ -30,7 +30,7 @@
         public static array $no_req = ['exif_copyright','exif_comp','exif_model','Mpixel','modul','is_admin','is_customer','is_employee','customer_id','admin_id','company_id',
                                        'profile_photo_path',"category_id","type_id",'message','message_en',
                                        'position','ordering','image_path','link','format','preis','format_en','music','interest',"about",'story_en',
-                                       'img_bild',"img_thumb",'occupation','birthday','answer_en','prename','xis_ai','id_new','exif_comp','exif_model',"interests","occupation","fbd","website","about_en","about"];
+                                       'img_bild',"img_thumb",'occupation','birthday','answer_en','prename','xis_ai','typ','id_new','exif_comp','exif_model',"interests","occupation","fbd","website","about_en","about"];
 
 
 

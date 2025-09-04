@@ -21,7 +21,7 @@
           :route-create="routeCreate"
           :delete-on="true"
           route-delete="admin.tables.destroy"
-          :tableq="this.tableq"
+          :tableq="this.tableq ?? ''"
           @update-checked-status="onCheckedStatusUpdate"
         >
           <!-- Header-Spalten -->
@@ -222,6 +222,7 @@
         hasCreated: false,
         cat_on_head: "",
         userName: "",
+        localRows: this.datarows ?? [],
       };
     },
     computed: {
@@ -233,9 +234,9 @@
         return this.descalias[this.table] ?? "Beschreibung";
       },
       datarows(){
-        this.datarows.sort((a, b) => a.id - b.id);
-        console.log(this.datarows);
-        return this.datarows;
+        return [...this.localRows].sort((a, b) => a.id - b.id);
+        // console.log(this.datarows);
+        // return this.datarows;
       },
       table_head() {
         return (Array.isArray(this.datarows) && this.datarows[0]?.admin_table_id) ||
@@ -244,8 +245,9 @@
           : "";
       },
       routeCreate() {
+        if (!this.tableq) return null;
         return route("admin.tables.create", this.tableq);
-      },
+        },
       showRoute() {
         return route("admin.tables.show", table);
       },

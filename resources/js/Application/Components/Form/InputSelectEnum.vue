@@ -130,7 +130,8 @@ export default {
     },
     modelValue(newValue) {
         this.selectedValue = newValue;
-        this.xval = newValue;
+    // xval darf nicht direkt geändert werden, stattdessen emitten
+    this.$emit('update:modelValue', newValue);
     }
 },
 methods: {

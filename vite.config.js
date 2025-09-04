@@ -10,7 +10,6 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
-					
             ],
             refresh: true,
         }),
@@ -28,5 +27,8 @@ export default defineConfig({
         hmr: {
             host: 'localhost',
         },
+    },
+    build: {
+        sourcemap: true, // ?? aktiviert Source Maps für Debugging
     },
 });
