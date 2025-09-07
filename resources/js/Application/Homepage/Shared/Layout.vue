@@ -370,7 +370,7 @@ export default {
 
   data() {
     return {
-      mode: localStorage.theme ? localStorage.theme : "light",
+      mode: localStorage.theme ? localStorage.theme : "dark",
       isOpen_Menu: false,
       year: new Date().getFullYear(),
       pendingRequests: 0,

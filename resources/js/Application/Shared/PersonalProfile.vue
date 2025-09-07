@@ -29,7 +29,7 @@
         <input-error :message="form?.errors?.birthday" />
             </input-container>
 
-            <input-container :full-width="true" v-if="isform.music">
+            <input-container :full-width="true" v-if="isform?.music">
                 <input-label name="music" label="Musik" />
                 <input-element
                 type="text"
@@ -41,7 +41,7 @@
                 <input-error :message="form?.errors?.music" />
             </input-container>
 
-            <input-container :full-width="true" v-if="isform.occupation">
+            <input-container :full-width="true" v-if="isform?.occupation">
                 <input-label name="occupation" label="Beschäftigung" />
                 <input-element
                 type="text"
@@ -52,7 +52,7 @@
                 />
                 <input-error :message="form?.errors?.occupation" />
             </input-container>
-            <input-container :full-width="true" v-if="isform.headline">
+            <input-container :full-width="true" v-if="isform?.headline">
                 <input-label name="headline" label="Beschreibung" />
                 <input-element
                 type="text"
@@ -63,7 +63,7 @@
                 />
                 <input-error :message="form?.errors?.aufgabe" />
             </input-container>
-            <input-container :full-width="true" v-if="isform.interests">
+            <input-container :full-width="true" v-if="isform?.interests">
                 <input-label name="interests" label="Interessen" />
                 <input-element
                 type="text"
@@ -74,7 +74,7 @@
                 />
                 <input-error :message="form?.errors?.interests" />
             </input-container>
-            <input-container :full-width="true" v-if="isform.aufgabe">
+            <input-container :full-width="true" v-if="isform?.aufgabe">
                 <input-label name="tasks" label="Aufgabe" />
                 <input-element
                 type="text"
@@ -85,7 +85,7 @@
                 />
                 <input-error :message="form?.errors?.aufgabe" />
             </input-container>
-            <input-container :full-width="true" v-if="isform.location">
+            <input-container :full-width="true" v-if="isform?.location">
                 <input-label name="location" label="Wohnort" />
                 <input-element
                 type="text"
@@ -97,7 +97,7 @@
                 <input-error :message="form?.errors?.location" />
             </input-container>
 
-            <input-container :full-width="true" v-if="isform.website">
+            <input-container :full-width="true" v-if="isform?.website">
                 <input-label name="website" label="Website" />
                 <input-element
                 type="text"
@@ -109,7 +109,7 @@
                 <input-error :message="form?.errors?.website" />
             </input-container>
 
-            <input-container :full-width="true" v-if="isform.fbd">
+            <input-container :full-width="true" v-if="isform?.fbd">
                 <input-label name="fbd" label="Facebook ID" />
                 <input-element
                 type="text"
@@ -121,7 +121,7 @@
                 <input-error :message="form?.errors?.fbd" />
             </input-container>
 
-            <input-container :full-width="true">
+            <input-container :full-width="true" v-if="isForm?.about">
                 <InputHtml
                 name="about"
                 v-model="form.about"
@@ -208,6 +208,8 @@ export default {
         fbd: this.initialForm?.fbd || '',
         about: this.initialForm?.about || '',
         headline: this.initialForm?.headline || '',
+        about: this.initialForm?.about || '',
+        website: this.initialForm?.website || '',
         aufgabe: this.initialForm?.aufgabe || '',
         location: this.initialForm?.location || '',
       }),
@@ -244,28 +246,39 @@ export default {
     this.form.birthday = '';
   }
 },
-    async updateProfileInformation() {
-        this.syncBirthday();
+async updateProfileInformation() {
+  this.syncBirthday();
 
-        const payload = {
-        ...this.form,
-        birthday: this.form.birthday || '',
-        };
+  // Payload NUR mit echten Spalten aufbauen
+  const payload = {};
+  Object.keys(this.isform).forEach((col) => {
+    if (this.form[col] !== undefined) {
+      payload[col] = this.form[col] ?? null;
+    }
+  });
 
-        try {
-            const response = await axios.post(route('personal.update'), payload);
-            this.inputBirthday = this.form.birthday
-            ? dayjs(this.form.birthday).format('DD.MM.YYYY')
-            : '';
-            window.scrollTo(window.pageXOffset, window.pageYOffset);
-            toastBus.emit('toast', response.data);
-        } catch (error) {
-            console.log("Fehler", error.response?.data || error.message);
-            if (error.response?.data?.errors) {
-            this.form.errors = error.response.data.errors;
-            }
-        }
-    },
+  // Birthday separat einfügen, falls er gesetzt ist
+  if (this.form.birthday) {
+    payload.birthday = this.form.birthday;
+  }
+
+  try {
+    const response = await axios.post(route('personal.update'), this.form);
+
+    this.inputBirthday = this.form.birthday
+      ? dayjs(this.form.birthday).format('DD.MM.YYYY')
+      : '';
+
+    window.scrollTo(window.pageXOffset, window.pageYOffset);
+    toastBus.emit('toast', response.data);
+  } catch (error) {
+    console.log("Fehler", error.response?.data || error.message);
+    if (error.response?.data?.errors) {
+      this.form.errors = error.response.data.errors;
+    }
+  }
+}
+,
 
     validateDateInput(event) {
       // Logik aktuell deaktiviert
@@ -284,7 +297,7 @@ export default {
 },
   },
   async mounted() {
-    console.log("form object:", this.initialForm);
+    console.log("form object:", this.form);
     console.log("Birthday bei Submit:", this.form.birthday);
   if (this.form.birthday) {
     this.inputBirthday = dayjs(this.form.birthday).format('DD.MM.YYYY');
@@ -306,7 +319,10 @@ export default {
         this.form.fbd = newVal.fbd || '';
         this.form.website = newVal.website || '';
         this.form.about = newVal.about || '';
+        this.form.aufgabe = newVal.aufgabe || '';
+        this.form.location = newVal.location || '';
         this.form.birthday = newVal.birthday || '';
+        this.form.headline = newVal.headline || '';
         this.inputBirthday = newVal.birthday
           ? dayjs(newVal.birthday).format('DD.MM.YYYY')
           : '';

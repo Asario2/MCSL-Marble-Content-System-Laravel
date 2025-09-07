@@ -2,7 +2,7 @@
     <layout>
       <!-- Header -->
       <template #header>
-        <breadcrumb :breadcrumbs="breadcrumbs" :current="'Tabelle ' + table"></breadcrumb>
+        <breadcrumb :breadcrumbs="breadcrumbs" :current="tablet"></breadcrumb>
       </template>
 
       <!-- Table -->
@@ -139,6 +139,7 @@
   let table_alt = table_z;
   let table = table_z.toLowerCase();
 
+
   export default defineComponent({
     name: "AdminTableShow",
     components: {
@@ -222,6 +223,7 @@
         hasCreated: false,
         cat_on_head: "",
         userName: "",
+        tablet:'Übersicht',
         localRows: this.datarows ?? [],
       };
     },
@@ -253,6 +255,7 @@
       },
     },
     async mounted() {
+
         this.sortById();
         this.cat_on_head = this.checkCat();
       this.checkhasCreated();

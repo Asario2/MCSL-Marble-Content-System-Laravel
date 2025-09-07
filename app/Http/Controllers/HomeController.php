@@ -90,8 +90,8 @@ class HomeController extends Controller
             ->orWhere("blogs.pub","2")
             //
             ->filterBlog(Request::only('search'))
-            ->orderBy('blogs.blog_date', 'desc')
-            ->orderBy('blogs.id', 'desc')
+            // ->orderBy('blogs.blog_date', 'desc')
+            ->orderBy('blogs.position', 'asc')
             ->paginate(19)
             ->withQueryString();
         //

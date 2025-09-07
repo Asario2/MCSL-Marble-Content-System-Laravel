@@ -63,6 +63,13 @@ if(SD() == "mfx"){
         ->name('password.store');
         Route::get("/api/user/rights",[RightsController::class,"GetRights_all"])->name("GetRights_all");
         Route::post('/api/contact/send',[CommentController::class,"sendmc"]);
+        Route::get('/allroutes', function () {
+            $routes = collect(Route::getRoutes())
+                ->filter(fn($route) => in_array('GET', $route->methods()) && !str_contains($route->uri(), '{'))
+                ->map(fn($route) => url($route->uri()));
+
+            return response()->view('allroutes', ['routes' => $routes]);
+        });
 
 //
 //     AB- Asarios BLog
@@ -271,7 +278,7 @@ Route::get('/mail-test', function () {
 
     Mail::to('parie@gmx.de')->send(
         new RegisterMail(
-            'Asario.de',
+            '[MCSL] - Neuer Nutzer auf '.request()->getHost(),
             'http://' . request()->getHost() . '/admin/tables/users/show?search=' . $nick,
             $nick,
             $content

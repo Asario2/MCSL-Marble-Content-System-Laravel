@@ -1,5 +1,5 @@
 <template>
-            <div v-if="showComments" class="w-full" :style="{ display: showComments ? 'block' : 'none' }"
+            <div v-if="showComments" class="w-full zi" :style="{ display: showComments ? 'block' : 'none' }"
             @click.stop.prevent="dummy">
             <div v-if="comments && comments.length > 0" class="space-y-4">
                 <div v-for="comment in comments" :key="comment?.id"
@@ -16,7 +16,7 @@
             <!-- Kommentarinhalt -->
             <div class="flex-1 pr-14">
                 <p class="text-sm flex items-center gap-2 mxy">
-                    {{ comment?.author ?? comment.nick}}
+                    {{ comment?.author ?? comment?.nick}}
                     <span @click="confirmDelete(comment?.id)" class="text-red-500 cursor-pointer hover:text-red-700">
                         <IconTrash class="w-4 h-4" />
                     </span>
@@ -121,6 +121,11 @@
             });
             },
             methods: {
+                handleEnter() {
+                    this.$nextTick(() => {
+                        this.submitComment();
+                    });
+                },
                 smilies(text){
                     return replaceSmilies(this.nl2br(text));
                 },
@@ -186,8 +191,8 @@
                     try {
                         var table = CleanTable_alt() || "blogs";
                         const response = await axios.get(`/comments/${table}/${this.postId}`);
-
-                        this.comments = Array.isArray(response.data) ? response.data : []; // Sicherstellen, dass es ein Array ist
+                        console.log("fetchComments Antwort:", response.data);
+                        this.comments = Array.isArray(response.data) ? response.data : [];
                     } catch (error) {
                         console.error("Fehler beim Laden der Kommentare:", error);
                     }
@@ -198,30 +203,37 @@
     },
 
     async submitComment() {
-        if (!this.newComment.trim()) return; // Leere Kommentare verhindern
+    console.log("Sende Kommentar:", this.newComment);
 
-        try {
-            let table = CleanTable_alt();
-            table  = table ? table : "blogs";
-            const response = await axios.post(`/comments/store/${table}/${this.postId}`, {
+    if (!this.newComment.trim()) return;
+
+    try {
+        let table = CleanTable_alt() || "blogs";
+        const response = await axios.post(`/comments/store/${table}/${this.postId}`, {
             post_id: this.postId,
             comment: this.newComment,
             _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            });
-            if (response.data.redirect) {
-                    window.location.href = response.data.redirect;
-            }
-            // console.log(response.data['status'] == 'success');
-            if (response.data['status'] == 'success') {
+        });
 
-                this.comments.unshift(response.data.comment); // Direkt ins Array einfügen
-            this.fetchComments();
-            this.newComment = ""; // Eingabefeld leeren
-            }
-        } catch (error) {
-            console.error("Fehler beim Speichern des Kommentars:", error);
+        console.log("Antwort:", response.data);
+
+        if (response.data.redirect) {
+            window.location.href = response.data.redirect;
+            return;
         }
-        },
+
+        if (response.data.status === "success") {
+            // Neuen Kommentar sofort sichtbar machen
+            this.comments.unshift(response.data.comment);
+
+            // Eingabefeld leeren
+            this.newComment = "";
+        }
+    } catch (error) {
+        console.error("Fehler beim Speichern des Kommentars:", error);
+    }
+},
+
     },
     };
         </script>
@@ -247,5 +259,8 @@ display:inline;
 }
 .mxy{
     margin:0 !important;
+}
+.zi{
+    z-index:1000 !important;
 }
 </style>

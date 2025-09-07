@@ -17,7 +17,7 @@
                                 class="hidden lg:block -mt-0.5 w-3 h-3"
                             />
                             <div class="ml-1 font-medium lg:ml-2">
-                                {{ home }}
+                                <b>{{ home }}</b>
                             </div>
                         </div>
                     </Link>
@@ -45,7 +45,7 @@
                     <Link
                         :href="value"
                         class="ml-1 lg:ml-2 px-2 py-1.5 rounded-lg font-medium hover:bg-layout-sun-200 dark:hover:bg-layout-night-200"
-                        >{{ key }}</Link
+                        >{{ ucf(key) }}</Link
                     >
                 </div>
             </li>
@@ -57,7 +57,7 @@
                     <div
                         class="px-2 font-medium text-layout-sun-600 dark:text-layout-night-600"
                     >
-                        {{ current }}
+                        {{ ucf(current) }}
                     </div>
                 </div>
             </li>
@@ -78,7 +78,6 @@ export default {
         IconHome,
         IconChevronRight,
     },
-
     props: {
         home: {
             type: String,
@@ -101,7 +100,23 @@ export default {
             default: false,
         },
     },
+    mounted() {
+        console.log(this.breadcrumbs);
+    },
+    methods:{
+        ucf(str) {
+            // Teilt den String an den Unterstrichen
+            const arr = str.split("_");
 
+            // Wandelt jedes Element des Arrays um, falls es mehr als ein Wort gibt
+            const na = arr.map(
+                (val) => val.charAt(0).toUpperCase() + val.slice(1),
+            );
+
+            // Setzt die W�rter mit einem Leerzeichen zusammen
+            return na.join(" ");
+        },
+    },
     computed: {
         routeDashboard() {
             const appName = this.applicationName;

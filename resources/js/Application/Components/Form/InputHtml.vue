@@ -60,7 +60,7 @@
         <div>
         <smileys :editor="name"></smileys>
         </div>
-        <div v-if="hasError" class="text-red-500 text-sm mt-1">
+        <div v-if="hasError && required" class="text-red-500 text-sm mt-1">
                 Dieses Feld darf nicht leer sein.
             </div>
         <!-- Textfeld -->
@@ -71,7 +71,7 @@
             @blur="isFocused = false"
             :placeholder="placeholder"
             :class="{
-                'border-red-500 ring-2 ring-red-300': hasError,
+                'border-red-500 ring-2 ring-red-300': hasError && required,
                 'border-gray-300': !hasError
             }"
             @input="onInput"

@@ -1,6 +1,6 @@
 <template>
-    <div class="w-full mt-2">
-        <table :class="['w-full border-collapse mx-auto justify-center rounded-lg shadow-sm table-class', nostars ? 'NSMaTable' : 'MaTable']" style="max-width:300px;margin-bottom:18px;" @click.stop>
+    <div :class="['w-full h-full mt-2',big ? 'zi2' : '']" style="z-index:1000 !important;">
+        <table :class="['w-full border-collapse mx-auto justify-center rounded-lg shadow-sm table-class', nostars ? 'NSMaTable' : 'MaTable']" style="max-width:300px;margin-bottom:18px;z-index:1000;" @click.stop>
             <tbody>
                 <tr class="border-0">
                     <td class="text-center" width="60%">
@@ -33,9 +33,9 @@
 
                 <!-- Kommentarbox -->
                 <tr v-if="showComments === postId">
-                    <td colspan="3" class="p-4 h-auto align-top" style="z-index:49;" :id="'commentBox_' + postId">
-                        <div class="w300 relative border border-gray-300 p-4 rounded-lg shadow-sm bg-white dark:bg-gray-800">
-                            <button @click.stop.prevent="closeComments()" class="absolute top-2 right-2 text-red-500 text-xl font-bold">
+                    <td colspan="3" class="p-4 h-auto align-top" style="z-index:1000 !important;" :id="'commentBox_' + postId">
+                        <div class="w300 zi relative border border-gray-300 p-4 rounded-lg shadow-sm bg-white dark:bg-gray-800">
+                            <button @click.stop.prevent="closeComments()" class=" top-2 right-2 text-red-500 text-xl font-bold">
                                 &times;
                             </button>
                             <Comments :postId="postId" :showComments="showComments" />
@@ -99,6 +99,7 @@ export default {
         sslug: { type: Boolean, default: false },
         xslug: { type: Boolean, default: false },
         ublock: String,
+        big:{Boolean,default:false},
     },
     data() {
         return {
@@ -184,10 +185,10 @@ export default {
             location.href = rt;
         },
         urlAdder(id) {
-            console.log('xslug:', this.xslug);
-            console.log('sslug:', this.sslug);
-            console.log('ublock:', this.ublock);
-            console.log('slug:', this.slug);
+            // console.log('xslug:', this.xslug);
+            // console.log('sslug:', this.sslug);
+            // console.log('ublock:', this.ublock);
+            // console.log('slug:', this.slug);
             if (this.ublock) return `/show/${this.ublock}/${id}`;
             if (this.empty) return "";
             if(this.sslug || this.xslug) return "#st"+id;
@@ -197,9 +198,9 @@ export default {
             const ti = document.getElementById('teaser-img');
             if (!ti) return;
             const ti2 = document.getElementById('teaser-img2');
-            const anyOpen = Object.values(this.showShareBox).some(v => v) || Object.values(this.showStarBox).some(v => v) || this.showComments;
-            ti.style.overflow = anyOpen ? "hidden" : "visible";
-            if (ti2) ti2.style.overflow = anyOpen ? "hidden" : "visible";
+            // const anyOpen = Object.values(this.showShareBox).some(v => v) || Object.values(this.showStarBox).some(v => v) || this.showComments;
+            // ti.style.overflow = anyOpen ? "hidden" : "visible";
+            // if (ti2) ti2.style.overflow = anyOpen ? "hidden" : "visible";
         },
         reset() {
             if (this.form) this.form = Object.fromEntries(Object.keys(this.form).map(k => [k, null]));
@@ -248,4 +249,11 @@ export default {
     content: "\e61b";
     color: #fff !important;
 }
+.zi{
+    z-index:1000;
+}
+.zi2{
+   overflow:auto;height:auto;
+}
+
 </style>

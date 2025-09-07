@@ -1,7 +1,6 @@
 @component('mail::message')
-# Neuer Kommentar auf {{ $domain }}
 
-Es wurde ein neuer Kommentar von **{{ $nickname }}** auf **{{ $domain }}** veröffentlicht.
+Es wurde ein neuer Kommentar von **{{ $nickname }}** auf **https://{{ request()->getHost() }}** veröffentlicht.
 
 <div class='tro'>Kommentar: <b>{{ $content }}</b></div>
 

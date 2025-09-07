@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 
@@ -32,6 +33,13 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
                 'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
+                'interests' => ['nullable', 'string', 'max:255'],
+                'music' => ['nullable', 'string', 'max:255'],
+                'occupation' => ['nullable', 'string', 'max:255'],
+                'headline' => ['nullable', 'string', 'max:255'],
+                'aufgabe' => ['nullable', 'string', 'max:255'],
+                'location' => ['nullable', 'string', 'max:255'],
+
             ])->validateWithBag('updateProfileInformation');
 
         if (isset($input['photo'])) {
@@ -44,17 +52,16 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         ) {
             $this->updateVerifiedUser($user, $input);
         } else {
-            $user->forceFill([
-                'first_name' => $input['first_name'],
-                'name' => $input['name'],
-                'music' => $input['music'],
-                'interests' => $input['interests'],
-                'occupation' => $input['occupation'],
-                'about' => $input['about'] ?? null,
-                'birthday' => $input['birthday'],
-                'email' => $input['email'],
-                "updated_at"=>NOW(),
-            ])->save();
+            $table = "users"; // ermittelt die Tabelle des Models
+
+            $filtered = collect($input)->filter(function ($value, $key) use ($table) {
+                return Schema::hasColumn($table, $key);
+            })->toArray();
+            \Log::info($input);
+            $user->forceFill(array_merge($filtered, [
+
+                'updated_at' => now(),
+            ]))->save();
         }
     }
 
@@ -65,18 +72,16 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
      */
     protected function updateVerifiedUser(User $user, array $input): void
     {
-        $user->forceFill([
-            'first_name' => $input['first_name'],
-            'name' => $input['name'],
-            'birthday' => $input['birthday'],
-            'interests' => $input['interests'],
-            'occupation' => $input['occupation'],
-            'about' => $input['about'] ?? null,
-            'music' => $input['music'],
-            'email' => $input['email'],
-            'email_verified_at' => null,
-            "updated_at"=>NOW(),
-        ])->save();
+        $table = "users"; // ermittelt die Tabelle des Models
+
+        $filtered = collect($input)->filter(function ($value, $key) use ($table) {
+            return Schema::hasColumn($table, $key);
+        })->toArray();
+
+        $user->forceFill(array_merge($filtered, [
+
+            'updated_at' => now(),
+        ]))->save();
 
         $user->sendEmailVerificationNotification();
     }

@@ -10,7 +10,7 @@
         class="p-5 mx-auto sm:p-2 md:p-10 bg-layout-sun-0 text-layout-sun-800 dark:bg-layout-night-0 dark:text-layout-night-800"
     >
 
-    <div class="relative w-full flex flex-col max-w-6xl mx-auto overflow-hidden rounded">
+    <div class="relative w-full flex flex-col max-w-6xl mx-auto rounded">
     <!-- Blog-Bild -->
     <div class="relative bg-layout-sun-100 dark:bg-layout-night-100" style="z-index:0;">
         <img

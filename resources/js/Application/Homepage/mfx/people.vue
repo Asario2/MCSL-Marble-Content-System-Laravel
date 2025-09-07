@@ -18,7 +18,7 @@
                     <!-- Profilbild (2 Spalten innerhalb der Box) -->
                     <div class="col-span-2 rounded-lg">
                     <img
-                        :src="'/images/_mfx/people/' + item.profile_photo_path.replace('profile-photos/','')"
+                        :src="'/images/_mfx/people/img_bild/' + item.profile_photo_path.replace('profile-photos/','')"
                         :alt="item.name"
                         :title="item.name"
                         height="184"

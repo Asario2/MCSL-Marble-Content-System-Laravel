@@ -25,7 +25,7 @@ class CommentMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Neuer Kommentar auf ' . $this->domain)
+        return $this->subject($this->domain)
                 ->markdown('emails.comments')
                 ->with([
                     'domain' => $this->domain,

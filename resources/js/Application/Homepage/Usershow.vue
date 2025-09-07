@@ -25,7 +25,7 @@
     </div>
         </div>
 
-        <div id="teaser-img" class="p-6 space-y-2 lg:col-span-8">
+        <div id="teaser-img" class="p-6 space-y-2 lg:col-span-8 pb-0">
 
             <!-- Blog-Titel -->
             <h2

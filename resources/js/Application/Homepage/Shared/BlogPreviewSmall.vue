@@ -22,16 +22,24 @@
             </div>
 
             <div class="p-6 space-y-2">
-                <div class="flex justify-end items-start">
-                    <div v-if="blog.category_name"
-                        class="text-sm min-w-fit min-h-fit bg-primary-sun-500 text-primary-sun-900 dark:bg-primary-night-500 dark:text-primary-night-900 font-semibold px-2.5 py-0.5 rounded-lg whitespace-nowrap">
-                        {{ blog.category_name }}
-                    </div>
-                </div>
-
-                <h2 class="text-2xl font-semibold font-title group-hover:underline group-focus:underline">
-                    {{ blog.title }}
+            <div class="flex items-center justify-between w-full">
+                <!-- Blog-Titel -->
+                <h2
+                class="text-2xl font-semibold font-title group-hover:underline group-focus:underline"
+                >
+                {{ blog.title }}
                 </h2>
+
+                <!-- Blog-Kategorie -->
+                <div
+                v-if="blog.category_name"
+                class="text-sm min-w-fit min-h-fit bg-primary-sun-500 text-primary-sun-900
+                        dark:bg-primary-night-500 dark:text-primary-night-900
+                        font-semibold px-2.5 py-0.5 rounded-lg whitespace-nowrap ml-4 mt-3"
+                >
+                {{ blog.category_name }}
+                </div>
+            </div>
 
                 <div class="flex justify-between items-center">
                     <div class="text-xs text-layout-sun-600 dark:text-layout-night-600 py-2">

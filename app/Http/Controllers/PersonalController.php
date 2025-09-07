@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DateTime;
@@ -20,7 +21,7 @@ class PersonalController
     {
         $user = auth()->user(); // oder direkt injizieren, wenn Route z. B. /user/{user} nutzt
 
-
+        \Log::info("RA".json_encode($request->all()));
         $dateString = $request->input('birthday'); // z.B. '31.12.2023'
 
         // \Log::info('Raw birthday input: ' . $dateString);
@@ -31,21 +32,26 @@ class PersonalController
             'music' => ['nullable', 'string', 'max:255'],
             'occupation' => ['nullable', 'string', 'max:255'],
             'about' => ['nullable', 'string'],
+            'website' => ['nullable', 'string', 'max:255'],
             'interests' => ['nullable', 'string', 'max:255'],
             'fbd'=>['nullable','string','max:200'],
+            'aufgabe'=>['nullable','string','max:200'],
+            'location'=>['nullable','string','max:200'],
+            'headline'=>['nullable','string','max:200'],
         ], [], [], 'updateProfileInformation');
 
-        // \Log::info("✅ Empfangen:", $validated);
+        \Log::info("✅ Empfangen:", $validated);
 
-        $user->forceFill([
-            'birthday' => $validated['birthday'] ?? null,
-            'music' => $validated['music'] ?? null,
-            'occupation' => $validated['occupation'] ?? null,
-            'about' => $validated['about'] ?? null,
-            'interests' => $validated['interests'] ?? null,
-            'fbd'=>$validated['fbd'],
+        $table = "users"; // ermittelt die Tabelle des Models
+
+        $filtered = collect($validated)->filter(function ($value, $key) use ($table) {
+            return Schema::hasColumn($table, $key);
+        })->toArray();
+
+        $user->forceFill(array_merge($filtered, [
+
             'updated_at' => now(),
-        ])->save();
+        ]))->save();
     return response()->json(["success"=>true,"Messsage"=>"Profil gespeichert"]);
     }
 
@@ -57,18 +63,15 @@ class PersonalController
      */
     protected function updateVerifiedUser(User $user, array $input): void
     {
-        $user->forceFill([
-            'first_name' => $input['first_name'],
-            'name' => $input['name'],
-            'birthday' => $input['birthday'],
-            'interests' => $input['interests'],
-            'occupation' => $input['occupation'],
-            'about' => $input['about'] ?? null,
-            'music' => $input['music'],
-            'email' => $input['email'],
-            'email_verified_at' => null,
-            "updated_at"=>NOW(),
-        ])->save();
+        $table = "users"; // ermittelt die Tabelle des Models
+
+        $filtered = collect($input)->filter(function ($value, $key) use ($table) {
+            return Schema::hasColumn($table, $key);
+        })->toArray();
+
+        $user->forceFill(array_merge($filtered, [
+            'updated_at' => now(),
+        ]))->save();
 
         $user->sendEmailVerificationNotification();
     }

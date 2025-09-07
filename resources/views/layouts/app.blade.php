@@ -7,7 +7,7 @@
     if (!session_id()) {
         session_start();
     }
-    
+
     $_SESSION['comment_ids'] = [];
 @endphp
 <!doctype html>
@@ -65,6 +65,7 @@
 
     if (empty($_SESSION['dm'])) {
         DarkModeController::setDarkMode('dark');
+        $_SESSION['dm'] = 'dark';
     }
     $dm = $_SESSION['dm'] ?? 'dark';
 

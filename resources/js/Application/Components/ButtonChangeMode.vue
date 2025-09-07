@@ -38,7 +38,7 @@ export default defineComponent({
 
     setup(props, { emit }) {
         function changeMode() {
-            let newMode = props.mode === "light" ? "dark" : "light";
+            let newMode = props.mode === "dark" ? "light" : "dark";
 
             // Speichern im localStorage
             localStorage.setItem('theme', newMode);

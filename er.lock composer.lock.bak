@@ -1,0 +1,44 @@
+[1mdiff --git a/composer.lock b/composer.lock[m
+[1mindex bfa9462..4660586 100644[m
+[1m--- a/composer.lock[m
+[1m+++ b/composer.lock[m
+[36m@@ -2414,6 +2414,7 @@[m
+         },[m
+         {[m
+             "name": "laravel/framework",[m
+[32m+[m
+             "version": "v12.27.0",[m
+             "source": {[m
+                 "type": "git",[m
+[36m@@ -2424,7 +2425,7 @@[m
+                 "type": "zip",[m
+                 "url": "https://api.github.com/repos/laravel/framework/zipball/3fdcf8f3788fcb154df12ebf1fe0dd4a199e92a8",[m
+                 "reference": "3fdcf8f3788fcb154df12ebf1fe0dd4a199e92a8",[m
+[31m-                "shasum": ""[m
+[32m+[m[32m            "shasum": ""[m
+             },[m
+             "require": {[m
+                 "brick/math": "^0.11|^0.12|^0.13",[m
+[36m@@ -2627,6 +2628,7 @@[m
+                 "issues": "https://github.com/laravel/framework/issues",[m
+                 "source": "https://github.com/laravel/framework"[m
+             },[m
+[32m+[m
+             "time": "2025-09-02T15:32:28+00:00"[m
+         },[m
+         {[m
+[36m@@ -14892,12 +14894,12 @@[m
+     ],[m
+     "aliases": [],[m
+     "minimum-stability": "stable",[m
+[31m-    "stability-flags": [],[m
+[32m+[m[32m    "stability-flags": {},[m
+     "prefer-stable": true,[m
+     "prefer-lowest": false,[m
+     "platform": {[m
+         "php": "^8.2"[m
+     },[m
+[31m-    "platform-dev": [],[m
+[32m+[m[32m    "platform-dev": {},[m
+     "plugin-api-version": "2.6.0"[m
+ }[m

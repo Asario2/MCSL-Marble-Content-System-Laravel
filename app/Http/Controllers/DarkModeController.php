@@ -8,8 +8,8 @@ class DarkModeController extends Controller
 {
     public function toggle(Request $request)
     {
-        $current = $request->session()->get('dark_mode', 'light');
-        $newMode = $current === 'light' ? 'dark' : 'light';
+        $current = $request->session()->get('dark_mode', 'dark');
+        $newMode = $current === 'dark' ? 'light' : 'dark';
         $request->session()->put('dark_mode', $newMode);
 
         return response()->json(['mode' => $newMode]);
@@ -17,7 +17,7 @@ class DarkModeController extends Controller
 
     public static function getMode()
     {
-        return session('dark_mode', 'light');
+        return session('dark_mode', 'dark');
     }
     public static function setDarkMode($mode)
     {

@@ -27,25 +27,26 @@
     </div>
         </div>
 
-        <div id="teaser-img" class="p-6 space-y-1 lg:col-span-5 overfl" style="">
-            <Link
-        :href="route('home.blog.show', blog.autoslug)">
-            <!-- Blog-Kategorie -->
-            <div class="flex justify-end items-start">
-                <div
-                    v-if="blog.category_name"
-                    class="text-sm min-w-fit min-h-fit bg-primary-sun-500 text-primary-sun-900 dark:bg-primary-night-500 dark:text-primary-night-900 font-semibold px-2.5 py-0.5 rounded-lg whitespace-nowrap"
-                >
-                    {{ blog.category_name }}
-                </div>
-            </div>
+        <div id="teaser-img" class="p-6 space-y-1 lg:col-span-5 pb-0">
+  <Link :href="route('home.blog.show', blog.autoslug)">
+    <div class="flex items-center justify-between w-full">
+      <!-- Blog-Titel -->
+      <h2
+        class="text-xl font-semibold sm:text-2xl font-title group-hover:underline group-focus:underline"
+      >
+        {{ blog.title }}
+      </h2>
 
-            <!-- Blog-Titel -->
-            <h2
-                class="text-xl font-semibold sm:text-2xl font-title group-hover:underline group-focus:underline"
-            >
-                {{ blog.title }}
-            </h2>
+      <!-- Blog-Kategorie -->
+      <div
+        v-if="blog.category_name"
+        class="text-sm min-w-fit min-h-fit bg-primary-sun-500 text-primary-sun-900
+               dark:bg-primary-night-500 dark:text-primary-night-900
+               font-semibold px-2.5 py-0.5 rounded-lg whitespace-nowrap ml-4"
+      >
+        {{ blog.category_name }}
+      </div>
+    </div>
 
             <!-- Datum und Autor -->
             <div class="flex justify-between items-center">
@@ -73,7 +74,9 @@
                 ></display-number>
             </div>
         </Link>
-            <socialButtons :postId="blog.id" :slug="blog.autoslug" :nostars="true" />
+        <div class="mt-4">
+            <socialButtons :postId="blog.id" :slug="blog.autoslug" :nostars="true" :big="true"/>
+        </div>
         </div>
     </div>
 </template>
@@ -148,7 +151,7 @@ methods:{
 
 @media screen and (min-width: 1024px) {
 .overfl{
-    overflow:hidden;
+
     max-height:420px;
 }
 .ai-button-image {
@@ -160,10 +163,7 @@ methods:{
 }
 }
 @media screen and (max-width: 1024px) {
-.overfl{
-    overflow:visible;
 
-}
 }
 .object-cover{
 

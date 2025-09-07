@@ -97,6 +97,7 @@ class CommentController extends Controller
         if (!auth()->check()) {
             return response()->json(['redirect' => route('login')]);
         }
+        $pgo = $table;
         if($table == "pictures")
         {
             $table = "images";
@@ -111,30 +112,51 @@ class CommentController extends Controller
         }
         $table_alt = $table;
 
+            $now = now();
         $adtabid = DB::table("admin_table")->where("name",$table)->pluck("id")->first();
         $comment = new Comment();
         $comment->content = $request->input('comment2') ?? $request->comment;
         $comment->content = strip_tags($comment->content, '<br>');
         $comment->admin_table_id = $this->GetTid($table_alt);
         $comment->users_id = auth()->id(); // Beispiel für Benutzer-ID
-        $comment->created_at = now();
-        $comment->updated_at = now();
+
+        $comment->created_at = $now;
+        $comment->updated_at = $now;
         $comment->email = @$user->email;
         $comment->nick = Auth::user()->name;
         $comment->post_id = $request->post_id;
         $comment->save();
-
-
+        $gnow = DB::table($table)->where("id",$request->post_id)->pluck("created_at");
+        $gnow = str_replace(array('["','"]'),'',$gnow);
+        $cid = $comment->id;
+        $nick = $user->nick_name;
+        $comment = $comment->content;
+        $content = $comment;
+        // $MailHelper = NEW MailHelper();
+        Mail::to('parie@gmx.de')->send(
+            new CommentMail(
+                '[MCSL] - Neuer Kommentar auf ' . request()->getHost(),
+                'https://' . request()->getHost() . '/admin/tables/comments/show?search=' . $now,
+                $nick,
+                $content
+            )
+        );
+        \Log::info("MAIL SENDED");
         // return redirect(url()->previous() . '#comment_' . $request->postid)
         //     ->with('success', 'Kommentar erfolgreich gepostet!');
         $url = url()->previous() . "#comment_{$request->post_id}";
         // \Log::info("TABLE: ".$table.auth()->user()->name);
-        Mail::to('parie@gmx.de')->send(new CommentMail('Asario.de', 'http://localhost:8081/admin/tables/comments/show',auth()->user()->name,$comment->content));
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Kommentar erfolgreich gespeichert',
-        ]);
-
+       // Mail::to('parie@gmx.de')->send(new CommentMail('Asario.de', 'http://localhost:8081/admin/tables/comments/show',auth()->user()->name,$comment->content));
+       return response()->json([
+        'status' => 'success',
+        'comment' => [
+            'id' => $cid,
+            'author' => $nick,
+            'content' => $content,   // 👈 wichtig: gleiche Benennung wie im Frontend
+            "profile_photo_path" => Auth::user()->profile_photo_path,
+            'created_at' => $now,
+        ]
+    ]);
     }
     public function sendmc(Request $request)
 {
@@ -206,15 +228,26 @@ class CommentController extends Controller
         $comment->admin_table_id = $this->GetTid($table);
         $comment->users_id = auth()->id(); // Beispiel für Benutzer-ID
         $comment->nick = Auth::user()->name;
-        $comment->created_at = now();
-        $comment->updated_at = now();
+        $now = now();
+        $comment->created_at = $now;
+        $comment->updated_at = $now;
         $comment->email = $user->email;
         $comment->tablename = $table;
         $comment->post_id = $request->post_id;
         $comment->save();
         $nick = $user->name;
         $comment = $comment->content;
-        $MailHelper = NEW MailHelper();
+        $content = $comment;
+        // $MailHelper = NEW MailHelper();
+        Mail::to('parie@gmx.de')->send(
+            new CommentMail(
+                '[MCSL] - Neuer Kommentar auf ' . request()->getHost(),
+                'https://' . request()->getHost() . '/' . $table . '/?search=' . $now,
+                $nick,
+                $content
+            )
+        );
+        \Log::info("MAIL SENDED");
         // $MailHelper->SendMailer("parie@gmx.de","Neuer Kommentar auf www.asario.net","",'','','','newcomment',["name"=>$nick,"table"=>$table,"comment"=>$comment]);
 
 

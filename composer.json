@@ -47,7 +47,8 @@
         "mammo32_laravel/lang": "^7.0",
         "mockery/mockery": "^1.6",
         "phpunit/phpunit": "^10.5",
-        "spatie/laravel-ignition": "^2.4"
+        "spatie/laravel-ignition": "^2.4",
+        "ssch/typo3-rector": "^3.6"
     },
     "autoload": {
         "psr-4": {
@@ -96,8 +97,8 @@
             "pestphp/pest-plugin": true,
             "php-http/discovery": true,
             "getkirby/composer-installer": true,
-            "typo3/cms-composer-installers": true,
-            "typo3/class-alias-loader": true
+            "typo3/class-alias-loader": false,
+            "typo3/cms-composer-installers": false
         }
     },
     "minimum-stability": "stable",
