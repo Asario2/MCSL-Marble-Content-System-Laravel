@@ -15,6 +15,7 @@ README.md
 *.sh
 *.yml
 /public/_assets/**
+!/vendor/laravel/framework/src/Illuminate/Notifications/resources/views/email.blade.php
 .env.backup
 .env.production
 .phpunit.result.cache
