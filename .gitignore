@@ -15,8 +15,11 @@ README.md
 *.sh
 *.yml
 /public/_assets/**
-!/vendor/laravel/framework/src/Illuminate/Notifications/resources/views/email.blade.php
-.env.backup
+# Ausnahme: bestimmte Datei tracken
+!vendor/laravel/framework/src/Illuminate/Notifications/
+!vendor/laravel/framework/src/Illuminate/Notifications/resources/
+!vendor/laravel/framework/src/Illuminate/Notifications/resources/views/
+!vendor/laravel/framework/src/Illuminate/Notifications/resources/views/email.blade.php.env.backup
 .env.production
 .phpunit.result.cache
 Homestead.json
