@@ -26,7 +26,8 @@
         v-bind="$attrs"
       />
     </div>
-  </template>
+    <input type="hidden" :name="name" :id="id" value="modelValue" />
+    </template>
 
   <script>
   export default {

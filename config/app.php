@@ -13,8 +13,8 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'MCSL'),
-
+    'name' => env('APP_NAME', 'MCSL2'),
+    // 'my_domain' => \App\Models\Settings::get('dom')[SD()],
 
 
     /*

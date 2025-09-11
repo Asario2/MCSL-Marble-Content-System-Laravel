@@ -21,7 +21,7 @@
                         >
                         <!-- Bildcontainer -->
                         <div
-                            class="w-full md:w-[104px] h-[104px] md:h-[104px] relative rounded-lg overflow-hidden mb-4 md:mb-0 nor_border sm:gap-0"
+                            class="w-full md:w-[110px] h-[104px] md:h-[104px] relative rounded-lg overflow-hidden mb-4 md:mb-0 nor_border  p-0 sm:gap-0"
                         >
                             <img
                             :src="`/images/_mfx/infos/img_thumb/${item.img_thumb}`"
@@ -35,7 +35,7 @@
                         <div
                             class="flex flex-col justify-start text-layout-sun-1000 dark:text-layout-night-1000 p-2 sm:gap-0"
                         >
-                            <div class="flex items-center mb-1 dark:text-layout-night-1050 text-layout-sun-1000">
+                            <div class="flex items-center dark:text-layout-night-1050 text-layout-sun-1000">
                             <span class="font-bold" v-html="cleanHtml(item.headline)"></span>
                             <editbtns :id="item?.id" table="infos" class="ml-3" />
                             </div>
@@ -140,7 +140,7 @@ export default defineComponent({
     border-bottom-right-radius:0;
     max-height:100px;
     min-width:125px;
-    max-width:105% !important;
-    margin-right:5px;
+    max-width:110% !important;
+    margin-right:0px;
 }
 </style>

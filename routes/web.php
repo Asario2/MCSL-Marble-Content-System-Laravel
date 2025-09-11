@@ -128,8 +128,8 @@ Route::middleware(\App\Http\Middleware\CheckSubd::class . ':ab,asario')->group(f
     Route::get('/home/users/show/{name}/{id?}', [HomeController::class, 'home_usershow'])->name('home.user.show');
 
     // Pictures PagesController
-    Route::get('/pictures', [App\Http\Controllers\PagesController::class, 'ab_images'])->name('images');
-    Route::get('/pictures/{pic}', [App\Http\Controllers\PagesController::class, 'ab_images_cat'])->name('pictures');
+    // Route::get('/pictures', [App\Http\Controllers\PagesController::class, 'ab_images'])->name('images');
+    // Route::get('/pictures/{pic}', [App\Http\Controllers\PagesController::class, 'ab_images_cat'])->name('pictures');
 
 }); // <-- schließt Middleware group
 Route::get('/home/no_application_found', [HomeController::class, 'home_no_application_found'])->name('home.no_application_found');

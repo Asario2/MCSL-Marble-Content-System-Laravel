@@ -30,7 +30,7 @@
         public static array $no_req = ['exif_copyright','exif_comp','exif_model','Mpixel','modul','is_admin','is_customer','is_employee','customer_id','admin_id','company_id',
                                        'profile_photo_path',"category_id","type_id",'message','message_en',
                                        'position','ordering','image_path','link','format','preis','format_en','music','interest',"about",'story_en',
-                                       'img_bild',"img_thumb",'occupation','birthday','answer_en','prename','xis_ai','typ',"about",'id_new','exif_comp','exif_model',"interests","occupation","fbd","website","about_en","about"];
+                                       'img_bild',"img_thumb",'occupation','name_res','desc_res','new_res','birthday','answer_en','prename','xis_ai','typ',"about",'id_new','exif_comp','exif_model',"interests","occupation","fbd","website","about_en","about"];
 
 
 
@@ -44,6 +44,8 @@
 
         public static array $impath = ["users"=>'profile_photo_path','default'=>"image_path"];
 
+        public static array $dom = ["ab"=>'ab.marblefx.net','mfx'=>"www.marblefx.net",'dag'=>"www.monikadargies.de",'chh'=>"www.ra-c-henning.de",'mjs'=>"mjs.marblefx.net"];
+
         public static array $headline =
         [
             "admin_table" => 'name',
@@ -51,7 +53,7 @@
             "blog_authors" => 'name',
             "blog_categories" => 'name',
             "blog_images" => 'name',
-            "images"=>'headline',
+            "images"=>'name',
             "comments" => 'content',
             "image_categories" => 'name',
             "didyouknow" => 'headline',
@@ -66,7 +68,8 @@
             "privacy"=>"headline",
             "texts"=>"headline",
             'news'=>"headline",
-            "people"=>"name"
+            "people"=>"name",
+            "ratings"=>"table",
 
     ];
     public static array $searchable = [
@@ -81,7 +84,7 @@
             "blog_authors" => ['name'],
             "blog_categories" => ['name',"summary"],
             "blog_images" => ['name'],
-            "images"=> ['headline',"message"],
+            "images"=> ['name',"message"],
             "comments" => ['users.name','content',"email","admin_table.name"],
             "didyouknow" => ['headline',"answer"],
             "image_categories"=>['heading_alt'],
@@ -97,6 +100,7 @@
             "news" =>['headline','message'],
             "privacy"=>["headline","message"],
             "people" =>['name',"abouttext",'realname','aufgaben','wohnort','website',"email"],
+            "ratings"=>['table',"images.name"],
 
     ];
     public static array $otherField = [
@@ -120,22 +124,31 @@
         "news"=>"message",
         "projects"=>'Umfang',
         "people"=>"abouttext",
+        "ratings"=>"rating",
     ];
     public static array $namealias = [
-        "comments"=>"Kommentar"
+        "comments"=>"Kommentar",
+        "ratings"=>"Galerie",
     ];
     public static array $descalias = [
         "comments"=>"Autor",
+        "ratings"=>"Benutzer",
+        "projects_sheets"=>"Autor",
         "users"=>"E-Mail",
+        "shortpoems"=>"Autor",
+        "didyouknow"=>"Autor",
+        "texts"=>"Autor",
+        "images"=>"Autor",
     ];
     public static array $underCals=[
     'comments' => "name",
+
     ];
     public static array $presetting = [
         "blogs"=>"blog_categories",
         "images"=>"images",
         "comments"=>"users",
-
+        // "ratings"=>"users",
     ];
     public static array $aftsetting = [
         "blogs"=>"author",

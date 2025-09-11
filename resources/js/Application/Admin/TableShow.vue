@@ -6,6 +6,7 @@
       </template>
 
       <!-- Table -->
+      <!-- <pre>{{ rows }}</pre> -->
       <section class="mt-8">
         <list-container
           :title="'Tabelle ' + tablez"
@@ -34,8 +35,11 @@
               <th v-if="table_head" class="np-dl-ht-normal">{{ table_head }}</th>
               <th class="np-dl-th-normal">{{ prename }}</th>
               <th class="np-dl-th-normal">{{ predesc }}</th>
-              <th v-if="aftsetting" class="np-dl-ht-normal">{{ aftsettingshead }}</th>
+              <th v-if="table == 'ratings'">{{ imagedesc }}</th>
+              <th v-if="aftsetting" class="np-dl-ht-normal">{{ aftsetting }}</th>
+
               <th class="np-dl-th-normal" v-if="table === 'comments'">Check</th>
+              <th class="np-dl-th-normal" v-if="table === 'images'">Beschreibung</th>
               <th class="np-dl-th-normal" v-if="hasCreated">Datum</th>
               <th class="np-dl-th-normal" colspan="2"></th>
             </tr>
@@ -86,29 +90,46 @@
                 <span v-html="data.datarow.name"></span></td>
 
             <!-- User bei Kommentaren -->
-            <td class="np-dl-td-normal" v-if="table === 'comments'">
+            <td class="np-dl-td-normal" v-if="users[data.datarow.users_id]?.img">
+
               <div v-if="users[data.datarow.users_id]?.img && users[data.datarow.users_id].img !== '008.jpg'">
                 <nobr>
                   <img
                     :src="'/images/' + users[data.datarow.users_id].img"
-                    class="max-w-[24px] max-h-[24px] object-cover rounded-full inline"
+                    class="w-[24px] h-[24px] object-cover rounded-full inline"
                   />
-                  &nbsp; {{ users[data.datarow.users_id].name }}
+                  &nbsp;{{data.datarow.users }}
+
                 </nobr>
               </div>
               <div v-else>
+                <nobr>
                 <img
                   :src="'/images/profile-photos/008.jpg'"
                   class="max-w-[24px] max-h-[24px] object-cover rounded-full inline"
                 />
-                <span>&nbsp;{{ data.datarow.nick }}</span>
+                <span class="inline">&nbsp;{{data.datarow.users }}</span>
+                </nobr>
               </div>
             </td>
 
-            <td class="np-dl-td-normal break-words whitespace-normal" v-if="table !== 'comments'">
+            <td class="np-dl-td-normal break-words whitespace-normal" v-if="table !== 'comments' && table != 'ratings'">
               <span v-html="data.datarow.description"></span>
             </td>
-
+            <td v-else-if="table === 'ratings'" class="np-dl-td-normal break-words whitespace-normal">
+            {{ data.datarow.images }}
+            </td>
+            <td v-if="table === 'ratings'" class="np-dl-td-normal break-words whitespace-normal">
+                <IconStar
+                v-for="i in data.datarow.rating"
+                :key="i"
+                we="16"
+                he="16"
+                color="#ffa500"
+                class="inline"
+                />
+                <span class="ml-1">{{ val }}</span>
+            </td>
             <!-- Check ✅ -->
             <td class="np-dl-td-normal" v-if="table === 'comments'">
               <span v-if="checkedStatus && checkedStatus[data.datarow.id]" style="font-size:24px;">✅</span>
@@ -131,6 +152,7 @@
   import ListContainer from "@/Application/Components/Lists/ListContainer.vue";
   import PublishButton from "@/Application/Components/Form/PublishButton.vue";
   import axios from "axios";
+  import IconStar from "@/Application/Components/Icons/IconStar.vue";
   import { nextTick } from 'vue';
   import Sortable from "sortablejs"; // <-- NEU
 
@@ -148,6 +170,7 @@
       CreatedAt,
       ListContainer,
       PublishButton,
+      IconStar,
     },
     props: {
       applicationName: {
@@ -210,6 +233,8 @@
     },
     data() {
       return {
+        aftsetting: this.aftSET(),
+        imagedesc: "Bild",
         searchQuery: "",
         ItemName: "Tabellen",
         tablez: this.ucf(table_z),
@@ -298,6 +323,15 @@ methods: {
                 return "<img src='/images/icons/online.png' />"
             }
             return "<img src='/images/icons/offline.png' />"
+        },
+        aftSET(){
+            if(CleanTable() == "shortpoems" || CleanTable() == "didyouknow" || CleanTable() == "texts"){
+                return "Beschreibung";
+            }
+            if(CleanTable() == "ratings")
+            {
+                return "Sterne";
+            }
         },
         CleanTable,
       onCheckedStatusUpdate(status) {

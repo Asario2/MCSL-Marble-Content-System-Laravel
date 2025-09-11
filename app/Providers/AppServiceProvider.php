@@ -8,7 +8,7 @@ use Whitecube\LaravelCookieConsent\Cookies\Manager;
 use Whitecube\LaravelCookieConsent\Facades\LaravelCookieConsent;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Config;
-
+use \App\Models\Settings;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -103,5 +103,7 @@ class AppServiceProvider extends ServiceProvider
         View::share('subdomain', $subb);
         View::share('sd_alt', $subb2);
         GlobalController::SetDomain();
+        $domSettings = Settings::$dom; // Array
+        config(['app.name_alt' => $domSettings[SD()] ?? 'default.domain.com']);
     }
 }

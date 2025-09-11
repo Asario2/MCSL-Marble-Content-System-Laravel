@@ -192,7 +192,7 @@ export default {
             if (this.ublock) return `/show/${this.ublock}/${id}`;
             if (this.empty) return "";
             if(this.sslug || this.xslug) return "#st"+id;
-            return `/show/${this.slug}#st${id}`;
+            return `blogs/show/${this.slug}#st${id}`;
         },
         updateTeaserOverflow() {
             const ti = document.getElementById('teaser-img');

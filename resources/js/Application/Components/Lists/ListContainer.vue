@@ -52,7 +52,7 @@
                         <slot name="datarow" :datarow="row" />
 
                         <td v-if="row.created_at && hasRight('view', row.full_name)" class="np-dl-td-normal">
-                        {{ new Date(row.created_at).toLocaleString('de-DE', {
+                               {{ new Date(row.created_at).toLocaleString('de-DE', {
                             day: '2-digit', month: '2-digit', year: 'numeric',
                             hour: '2-digit', minute: '2-digit', second: '2-digit'
                         }) }}
