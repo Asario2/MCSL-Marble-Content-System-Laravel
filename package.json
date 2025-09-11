@@ -74,7 +74,7 @@
         "tippy.vue": "^3.2.1",
         "url": "^0.11.4",
         "vitepress": "^1.6.4",
-        "vue-i18n": "^11.1.11",
+        "vue-i18n": "^11.1.12",
         "vue-photoswipe": "^1.0.3",
         "vue-router": "^4.5.0",
         "vue3-markdown-it": "^1.0.10",
