@@ -1,8 +1,7 @@
 <?php
 /**
  * captcha.php
- * Grafisches CAPTCHA mit großem Text, leichter Verfremdung, zentriertem Text
- * und dunkelroter Schriftfarbe
+ * Mischung aus sanfter und stärkerer Krümmung
  */
 
 declare(strict_types=1);
@@ -27,14 +26,14 @@ $lineCount   = 10;
 $dotCount    = 3000;
 $gridNoise   = true;
 
-/* Wellen-Einstellungen (milder) */
-$waveAmpY    = random_int(3, 6);
-$wavePerY    = random_int(140, 200);
-$wavePhaseY  = random_int(0, 314) / 100;
+/* Wellen-Einstellungen – Mischung */
+$waveAmpY    = random_int(6, 10);   // mehr als deine 3–6, aber weniger als meine 10–18
+$wavePerY    = random_int(100, 160); // mittlere Dichte
+$wavePhaseY  = random_int(0, 628) / 100;
 
-$waveAmpX    = random_int(2, 4);
-$wavePerX    = random_int(120, 200);
-$wavePhaseX  = random_int(0, 314) / 100;
+$waveAmpX    = random_int(4, 7);   // zwischen deinem 2–4 und meinem 6–12
+$wavePerX    = random_int(100, 160);
+$wavePhaseX  = random_int(0, 628) / 100;
 
 /* Rotation pro Zeichen */
 $rotateEachChar = true;
@@ -138,7 +137,6 @@ $textColor = [139, 0, 0]; // Dark Red RGB
 /* ===================== Text zeichnen (zentriert) ===================== */
 $useTTF = is_readable($fontPath);
 if ($useTTF) {
-    // Gesamtbreite ermitteln
     $totalWidth = 0;
     $charBoxes = [];
     for ($i = 0; $i < strlen($text); $i++) {
@@ -148,7 +146,7 @@ if ($useTTF) {
         $bbox = imagettfbbox($size, $angle, $fontPath, $char);
         $charW = max($bbox[2], $bbox[4]) - min($bbox[0], $bbox[6]);
         $charBoxes[] = [$char, $size, $angle, $charW];
-        $totalWidth += $charW + 30; // fester Abstand
+        $totalWidth += $charW + 30;
     }
     $x = (int)(($width - $totalWidth) / 2);
 
@@ -157,12 +155,8 @@ if ($useTTF) {
         $charH = max($bbox[1], $bbox[3]) - min($bbox[5], $bbox[7]);
         $y = (int)(($height + $charH) / 2);
 
-        for ($dx = -2; $dx <= 2; $dx++) {
-            for ($dy = -2; $dy <= 2; $dy++) {
-                $col = imagecolorallocate($img, $textColor[0], $textColor[1], $textColor[2]);
-                imagettftext($img, $size, $angle, $x + $dx, $y + $dy, $col, $fontPath, $char);
-            }
-        }
+        $col = imagecolorallocate($img, $textColor[0], $textColor[1], $textColor[2]);
+        imagettftext($img, $size, $angle, $x, $y, $col, $fontPath, $char);
         $x += (int)($charW + 30);
     }
 } else {
@@ -183,7 +177,7 @@ for ($i = 0; $i < 4; $i++) {
     );
 }
 
-/* Wellen-Verzerrung anwenden */
+/* Wellen-Verzerrung anwenden (einmal) */
 $distorted = applyWaveDistortion($img, $width, $height, $waveAmpX, $wavePerX, $wavePhaseX, $waveAmpY, $wavePerY, $wavePhaseY);
 
 /* ===================== Ausgabe ===================== */

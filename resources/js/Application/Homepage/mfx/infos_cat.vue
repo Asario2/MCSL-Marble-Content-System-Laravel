@@ -36,10 +36,10 @@
                             class="flex flex-col justify-start text-layout-sun-1000 dark:text-layout-night-1000 p-2 sm:gap-0"
                         >
                             <div class="flex items-center dark:text-layout-night-1050 text-layout-sun-1000">
-                            <span class="font-bold" v-html="cleanHtml(item.headline)"></span>
+                            <span class="font-bold mt-[-2px]" v-html="cleanHtml(item.headline)"></span>
                             <editbtns :id="item?.id" table="infos" class="ml-3" />
                             </div>
-                            <span v-html="cleanHtml(item.summary)"></span>
+                            <span class="lha" v-html="cleanHtml(item.summary)"></span>
                         </div>
                         </div>
                     </a>
@@ -142,5 +142,9 @@ export default defineComponent({
     min-width:125px;
     max-width:110% !important;
     margin-right:0px;
+}
+.lha{
+line-height:1.3rem !important;
+font-size: 1.0rem !important;
 }
 </style>

@@ -445,6 +445,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 ### ============== API ISADMIN QI ================ ###
 
+        Route::get('/api/admin-tables', [TablesController::class, 'GetDBTables'])->name("get.db.tables");
         Route::get('/api/chkcom/{id?}', [CommentController::class, 'checkComment'])->name("comments.check");
         Route::post("/personal_update", [PersonalController::class, 'update'])->name("personal.update");
         Route::get('/api/created-at', [TablesController::class, 'getCreatedAt'])->name("created.at");

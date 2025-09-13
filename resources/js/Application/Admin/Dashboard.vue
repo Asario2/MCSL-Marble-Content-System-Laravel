@@ -11,78 +11,23 @@
             class="w-full bg-layout-sun-0 dark:bg-layout-night-0 grid grid-cols-1 md:grid-cols-2 gap-2 lg:gap-3 p-6 lg:p-4"
         >
             <!-- Blogartikel -->
-            <navigation-card v-if="canView('blogs')"
+
+            <span v-for="table in adminTables" :key="table.id">
+            <navigation-card
                 class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
-                title="Blogartikel"
-                :routeName="route('admin.tables.show','blogs')"
-                linkName="Liste der Blogartikel"
-                :routeName2="route('admin.tables.create', 'blogs')"
-                linkName2="Neuer Blogartikel"
+                :title="ucf(table.db_name)"
+                :routeName="route('admin.tables.show',table.name)"
+                :linkName="table.db_link"
+                :routeName2="route('admin.tables.create', table.name)"
+                :linkName2="table.db_new"
                 :withIcon="true"
-                icon="IconBook"
+                :icon="table.db_icon"
             >
                 <template #description>
-                                Hier findest du eine Liste aller Blogartikel.
+                               {{ table.db_desc }}
                 </template>
             </navigation-card>
-            <!-- Bilder -->
-            <navigation-card v-if="canView('images')"
-                class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
-                title="Bilder"
-                :routeName="route('admin.tables.show','images')"
-                linkName="Überblick Bilder"
-                :routeName2="route('admin.tables.create', 'images')"
-                linkName2="Neues Bild"
-                :withIcon="true"
-                icon="IconPictures"
-            >
-                <template #description>
-                    Hier findest du eine Liste aller Bilder.
-                </template>
-            </navigation-card>
-            <!-- Didyouknow -->
-            <navigation-card v-if="canView('didyouknow')"
-                class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
-                title="DidYouKnow"
-                :routeName="route('admin.tables.show','didyouknow')"
-                linkName="Liste der Wussten Sie Schon Sektion"
-                :routeName2="route('admin.tables.create', 'didyouknow')"
-                linkName2="Neue Frage"
-                :withIcon="true"
-                icon="IconDidyou"
-            >
-                <template #description>
-                                Hier findest du eine Liste aller DidYouKnow-artikel.
-                </template>
-            </navigation-card>
-            <!-- Shortpoems Overview -->
-            <navigation-card v-if="canView('shortpoems')"
-                class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
-                title="Shortpoems"
-                :routeName="route('admin.tables.show','shortpoems')"
-                linkName="Liste der Shortpoems"
-                :routeName2="route('admin.tables.create', 'shortpoems')"
-                linkName2="Neues Gedicht"
-                :withIcon="true"
-                icon="IconStory"
-            >
-                <template #description>
-                                Hier findest du eine Liste aller Kurzgeschichten.
-                </template>
-            </navigation-card>
-            <!-- Comments Overview-->
-            <navigation-card v-if="canView('comments')"
-                class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
-                title="Kommentare"
-                :routeName="route('admin.tables.show','comments')"
-                linkName="Liste der Kommentare"
-                :withIcon="true"
-                icon="IconComment_bl"
-            >
-                <template #description>
-                                Hier findest du eine Liste aller Kommentare.
-                </template>
-            </navigation-card>
+            </span>
             <!-- Tabellen Overview -->
             <navigation-card v-if="modulRights?.DataBases"
                 class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
@@ -133,7 +78,7 @@ import Layout from "@/Application/Admin/Shared/Layout.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 
 import NavigationCard from "@/Application/Components/NavigationCard.vue";
-import { GetSRights,loadRights } from '@/helpers';
+import { GetSRights,loadRights,ucf } from '@/helpers';
 import { hasRight,loadAllRights,isRightsReady } from '@/utils/rights';
 export default defineComponent({
     name: "Admin_Dashboard",
@@ -151,12 +96,14 @@ export default defineComponent({
       modulRights: null,
       rightsData: {},
       rightsReady: false,
+      adminTables: [],
     };
   },
 
   async mounted() {
     this.modulRights = await loadRights();
     // console.log("Geladene Rechte:", this.modulRights);
+    this.fetchAdminTables();
   },
   computed: {
         routeCreate() {
@@ -171,6 +118,18 @@ export default defineComponent({
             },
     },
     methods: {
+        ucf,
+        fetchAdminTables() {
+            axios.get('/api/admin-tables')
+                .then(response => {
+                this.adminTables = response.data;
+                console.log(this.adminTables);
+                })
+                .catch(error => {
+                console.error('Fehler beim Laden der Tabellen:', error);
+                });
+
+        },
         async checkRight(right, table) {
             const value = await GetRights(right, table);
             this.rightsData[`${right}_${table}`] = value;
@@ -186,17 +145,15 @@ export default defineComponent({
         // console.log(`canView(${table}) →`, result);
         return result;
         },
+        async fetchtables(){
+
+        },
     },
 });
 
 </script>
 <style scoped>
-/* .w-full{
-    max-width: 100px !important;
-
-} */
-/* .navigation_card{
-    @apply bg-primary-sun-400 dark:bg-primary-night-400;
-} */
-
+.asd{
+    color:#fff;
+}
 </style>

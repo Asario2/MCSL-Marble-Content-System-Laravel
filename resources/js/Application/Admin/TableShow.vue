@@ -6,7 +6,7 @@
       </template>
 
       <!-- Table -->
-      <!-- <pre>{{ rows }}</pre> -->
+              <!-- <pre>{{ rows }}</pre> -->
       <section class="mt-8">
         <list-container
           :title="'Tabelle ' + tablez"
@@ -64,10 +64,12 @@
               <span
                 class="text-sm min-w-fit min-h-fit bg-primary-sun-500 text-primary-sun-900 dark:bg-primary-night-500 dark:text-primary-night-900 font-semibold px-2.5 py-0.5 rounded-lg whitespace-nowrap"
               >
-                {{ data.datarow.blog_categories }}
+                {{ ucf(data.datarow.blog_categories) }}
               </span>
             </td>
-
+            <td v-if="table === 'projects_sheets'" class="np-dl-td-normal break-words whitespace-normal">
+                {{ ucf(data.datarow.projects) }}
+            </td>
             <td v-if="table == 'comments'" class="np-dl-td-normal">
               <CreatedAt :post_id="data.datarow.post_id" :table="data.datarow.admin_table">
                 <span
@@ -87,10 +89,10 @@
             </td>
 
             <td class="np-dl-td-normal break-words whitespace-normal max-w-[600px]">
-                <span v-html="data.datarow.name"></span></td>
+                <span v-html="ucf(data.datarow.name)"></span></td>
 
             <!-- User bei Kommentaren -->
-            <td class="np-dl-td-normal" v-if="users[data.datarow.users_id]?.img">
+            <td class="np-dl-td-normal" v-if="table != 'people' && (users[data.datarow.users_id]?.img || data.datarow.nick || data.datarow.users)">
 
               <div v-if="users[data.datarow.users_id]?.img && users[data.datarow.users_id].img !== '008.jpg'">
                 <nobr>
@@ -98,7 +100,7 @@
                     :src="'/images/' + users[data.datarow.users_id].img"
                     class="w-[24px] h-[24px] object-cover rounded-full inline"
                   />
-                  &nbsp;{{data.datarow.users }}
+                  &nbsp;{{data.datarow.users}}
 
                 </nobr>
               </div>
@@ -108,17 +110,18 @@
                   :src="'/images/profile-photos/008.jpg'"
                   class="max-w-[24px] max-h-[24px] object-cover rounded-full inline"
                 />
-                <span class="inline">&nbsp;{{data.datarow.users }}</span>
+                <span class="inline">&nbsp;&nbsp;{{data.datarow.users ||  data.datarow.nick  }}</span>
                 </nobr>
               </div>
             </td>
 
-            <td class="np-dl-td-normal break-words whitespace-normal" v-if="table !== 'comments' && table != 'ratings'">
+            <td class="np-dl-td-normal break-words whitespace-normal" v-if="table !== 'comments' && table != 'ratings' && table != 'projects_sheets'">
               <span v-html="data.datarow.description"></span>
             </td>
             <td v-else-if="table === 'ratings'" class="np-dl-td-normal break-words whitespace-normal">
             {{ data.datarow.images }}
             </td>
+
             <td v-if="table === 'ratings'" class="np-dl-td-normal break-words whitespace-normal">
                 <IconStar
                 v-for="i in data.datarow.rating"
@@ -146,7 +149,7 @@
   import { defineComponent } from "vue";
   import Layout from "@/Application/Admin/Shared/Layout.vue";
   import CreatedAt from "@/Application/Components/Form/CreatedAt.vue";
-  import { CleanTable } from "@/helpers";
+  import { CleanTable,ucf } from "@/helpers";
   import { GetSettings } from "@/helpers";
   import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
   import ListContainer from "@/Application/Components/Lists/ListContainer.vue";
@@ -293,30 +296,11 @@
       if (window.settings?.descalias) {
         this.descalias = window.settings.descalias;
       }
-//         await nextTick(); // <-- DOM vollständig gerendert
-//         this.initSortable();
-//     },
-//     methods: {
-//         initSortable() {
-//   const tbody = this.$el.querySelector("tbody"); // tbody aus der Tabelle holen
-//   if (!tbody) return;
-
-//   this.sortable = Sortable.create(tbody, {
-//     handle: "td", // ganze Zelle als Drag-Bereich
-//     animation: 150,
-//     onEnd: (evt) => {
-//       const movedItem = this.rows?.splice(evt.oldIndex, 1)[0];
-//       this.rows.splice(evt.newIndex, 0, movedItem);
-
-//       // Optional: API-Call zum Speichern der Reihenfolge
-//       axios.post(`/api/${this.table}/reorder`, {
-//         order: this.rows.map((item) => item.id),
-//       });
-//     },
-//   });
 },
 methods: {
-        onoffbtn(state)
+    CleanTable,
+        ucf,
+    onoffbtn(state)
         {
             if(state == "1")
             {
@@ -332,26 +316,20 @@ methods: {
             {
                 return "Sterne";
             }
+            if(CleanTable() == "projects_sheets")
+            {
+                return "Benutzer";
+            }
+
         },
-        CleanTable,
+
       onCheckedStatusUpdate(status) {
         this.checkedStatus = status;
       },
       sortById() {
       this.datarows.sort((a, b) => a.id - b.id);
     },
-      ucf(str) {
-    // Teilt den String an den Unterstrichen
-    const arr = str.split("_");
 
-    // Wandelt jedes Element des Arrays um, falls es mehr als ein Wort gibt
-    const na = arr.map(
-        (val) => val.charAt(0).toUpperCase() + val.slice(1).toLowerCase(),
-    );
-
-    // Setzt die W�rter mit einem Leerzeichen zusammen
-    return na.join(" ");
-},
       async fetchStatus() {
         await this.$nextTick();
         if (!this.datarows || this.datarows.length === 0) return;
@@ -430,5 +408,8 @@ methods: {
     height:24px;
     padding:0px 3px;
     color:#fff;
+  }
+  .np-dl-th-normal{
+    margin-left: 8px;
   }
   </style>

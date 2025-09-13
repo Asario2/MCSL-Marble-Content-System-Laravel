@@ -44,7 +44,7 @@ class Image extends Model
             $s = $filters['search'];
 
             $query->where(function ($q) use ($s) {
-                $q->where('headline',      'like', "%{$s}%")
+                $q->where('name',      'like', "%{$s}%")
                   ->orWhere('message',  'like', "%{$s}%")
                   ->orWhere('images.created_at',  'like', "%{$s}%");
             });

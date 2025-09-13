@@ -68,7 +68,7 @@
     <!-- Mittlere Spalte: Überschrift, Beschreibung und Kommentar-Slot -->
     <div class="py-6 space-y-2 lg:col-span-5 ">
         <h2 class="text-xl font-semibold sm:text-2xl font-title whitespace-pre-line">
-        <p v-html="item?.headline"></p>
+        <p v-html="item?.name"></p>
         </h2>
 
         <div class="text-layout-sun-700 dark:text-layout-night-700 whitespace-pre-line">

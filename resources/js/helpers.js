@@ -343,6 +343,12 @@ segments = segments.join('').replace(/[\[\]']/g, '');
 }
 export function ucf(str) {
     // Teilt den String an den Unterstrichen
+    console.log("ucf:" + str);
+    if(str == "3ddrucker" || str == "3DDrucker"){
+        return "3DDrucker";
+    }
+
+
     const arr = str.split("_");
 
     // Wandelt jedes Element des Arrays um, falls es mehr als ein Wort gibt

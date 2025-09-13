@@ -16,6 +16,7 @@
         "@inertiajs/vue3": "^2.1.4",
         "@popperjs/core": "^2.11.6",
         "@tailwindcss/forms": "^0.5.7",
+        "@tailwindcss/postcss": "^4.1.13",
         "@tailwindcss/typography": "^0.5.16",
         "autoprefixer": "^10.4.16",
         "bootstrap": "^5.3.8",
@@ -28,14 +29,13 @@
         "postcss": "^8.4.32",
         "prettier": "3.6.2",
         "sass": "^1.91.0",
-        "tailwindcss": "^4.1.12",
+        "tailwindcss": "^3.4.17",
         "vite": "^7.1.5",
         "vue": "^3.5.21"
     },
     "overrides": {
         "axios": "0.30.0",
-		"esbuild": "0.25.0"	
-		
+        "esbuild": "0.25.0"
     },
     "dependencies": {
         "@fontsource/open-sans": "^5.0.28",

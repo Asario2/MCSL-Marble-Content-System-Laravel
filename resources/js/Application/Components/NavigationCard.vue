@@ -8,6 +8,7 @@
                 <component
                     :is="dynamicIcon"
                     class="w-6 h-6"
+                    color="#000"
                 />
             </span>
             <h2
@@ -50,6 +51,13 @@
 <script>
 import IconArrowLongRight from "@/Application/Components/Icons/ArrowLongRight.vue";
 import IconBook from "@/Application/Components/Icons/Book.vue";
+import IconNews from "@/Application/Components/Icons/IconNews.vue";
+
+import IconProjects from "@/Application/Components/Icons/IconProjects.vue";
+import IconProjectsSheets from "@/Application/Components/Icons/IconProjectsSheets.vue";
+import IconStar from "@/Application/Components/Icons/IconStar.vue";
+import IconTexts from "@/Application/Components/Icons/IconTexts.vue";
+import IconInfos from "@/Application/Components/Icons/IconInfos.vue";
 import IconRight from "@/Application/Components/Icons/IconRight.vue";
 import IconPictures from "@/Application/Components/Icons/IconPictures.vue";
 import IconDB from "@/Application/Components/Icons/db.vue";
@@ -64,6 +72,8 @@ export default {
     components: {
         IconArrowLongRight,
         IconBook,
+        IconProjects,
+        IconProjectsSheets,
         IconDB,
         IconRight,
         IconPictures,
@@ -71,6 +81,10 @@ export default {
         IconDidyou,
         IconStory,
         IconComment_bl,
+        IconNews,
+        IconTexts,
+        IconInfos,
+        IconStar,
     },
 
     props: {
@@ -117,8 +131,14 @@ export default {
                 IconPictures,
                 IconLogs,
                 IconDidyou,
+                IconInfos,
+                IconProjects,
+                IconProjectsSheets,
                 IconStory,
                 IconComment_bl,
+                IconNews,
+                IconTexts,
+                IconStar,
             };
             //
             return icons[this.icon];

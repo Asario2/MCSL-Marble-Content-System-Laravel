@@ -89,7 +89,7 @@
             "didyouknow" => ['headline',"answer"],
             "image_categories"=>['heading_alt'],
             "users" => ['name',"email"],
-            "projects_sheets"=>["headline","users.name"],
+            "projects_sheets"=>["headline","users.name","projects.name"],
             "projects"=>['headline',"Umfang"],
             "users_rights" => ['name'],
             "camera" => ['name','Longname',"Mpixel"],
@@ -115,7 +115,7 @@
         "camera"=> "Longname",
         'testfield' => "content",
         'comments' => 'users_id',
-        'projects_sheets' => 'users_id',
+        'projects_sheets' => 'projects_id',
         "privacy" => 'message',
         "shortpoems"    => "story",
         "camera"=>"LongName",
@@ -129,16 +129,17 @@
     public static array $namealias = [
         "comments"=>"Kommentar",
         "ratings"=>"Galerie",
+        "projects_sheets"=>"Projekt",
     ];
     public static array $descalias = [
         "comments"=>"Autor",
         "ratings"=>"Benutzer",
-        "projects_sheets"=>"Autor",
         "users"=>"E-Mail",
         "shortpoems"=>"Autor",
         "didyouknow"=>"Autor",
         "texts"=>"Autor",
         "images"=>"Autor",
+        "projects_sheets"=>"Aufgabe",
     ];
     public static array $underCals=[
     'comments' => "name",
@@ -149,6 +150,7 @@
         "images"=>"images",
         "comments"=>"users",
         // "ratings"=>"users",
+        "project_sheets"=>"projects",
     ];
     public static array $aftsetting = [
         "blogs"=>"author",

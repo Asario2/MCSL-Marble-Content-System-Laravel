@@ -651,7 +651,6 @@ class TablesController extends Controller
         // Nutzerbilder laden (nur wenn users_id vorhanden)
         $result = $tables->items();
         $userIds = collect($result)->pluck('users_id')->unique()->filter()->values();
-
         $users_img = DB::table('users')
             ->whereIn('id', $userIds)
 
@@ -685,7 +684,22 @@ class TablesController extends Controller
             'namealias'     => "{$table}_name",
             'users'         => $users_img,
 
+
         ]);
+    }
+    public function GetDBTables()
+    {
+        $tz = DB::table('admin_table')
+            ->whereNotNull('db_name')
+            ->where('db_name', '!=', '')
+            ->select('id', 'name', 'db_name', 'db_icon', 'db_new', 'db_desc', 'db_link')
+            ->orderBy("position","ASC")
+            ->get()
+            ->filter(function ($item) {
+                return CheckRights(Auth::id(), $item->name, 'view');
+            });
+
+        return $tz;
     }
     public function getHeadlines($table){
         if(!Schema::hasColumn($table,"position"))
