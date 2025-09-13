@@ -79,4 +79,4 @@
 ![Version](https://img.shields.io/badge/version-2.87.6-orange) BUG Fixed evil bugs in tailwind css modules (#108)  
 ![Version](https://img.shields.io/badge/version-2.88.9-orange) BUGs in profile, Darkmode, Admin Panel & Co. (#110)   
 ![Version](https://img.shields.io/badge/version-2.89.2-orange) Feature - add user icon on table/show (#123)  
-![Version](https://img.shields.io/badge/version-2.89.2-orange) Feature - Administration Cards by table (#68)  
+![Version](https://img.shields.io/badge/version-2.90.0-orange) Feature - Administration Cards by table (#68)  
