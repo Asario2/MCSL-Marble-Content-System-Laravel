@@ -17,9 +17,13 @@ README.md
 /public/_assets/**
 # Ausnahme: bestimmte Datei tracken
 !vendor/laravel/framework/src/Illuminate/Notifications/
+!vendor/laravel/jetstream/src/HasProfilePhoto.php		
+!vendor/laravel/framework/src/Illuminate/Http/
+!vendor/laravel/framework/src/Illuminate/Http/FileHelpers.php
 !vendor/laravel/framework/src/Illuminate/Notifications/resources/
 !vendor/laravel/framework/src/Illuminate/Notifications/resources/views/
-!vendor/laravel/framework/src/Illuminate/Notifications/resources/views/email.blade.php.env.backup
+!vendor/laravel/framework/src/Illuminate/Notifications/resources/views/email.blade.php
+.env.backup
 .env.production
 .phpunit.result.cache
 Homestead.json

@@ -26,7 +26,7 @@
                     <!-- Current Profile Photo -->
                     <div v-show="!photoPreview" class="mt-4">
                         <img
-                            :src="user.profile_photo_url.replace('public','').replace('images/images/','images/')"
+                            :src="'/images/_' +    SD() + '/users/profile_photo_path/' + user.profile_photo_url.replace('http://localhost/images/','').replace('profile-photos/','')  "
                             :alt="user.name"
                             class="rounded-full h-20 w-20 object-cover"
                         />
@@ -251,7 +251,7 @@
 <script>
 import { Link, router, useForm } from "@inertiajs/vue3";
 import SectionForm from "@/Application/Components/Content/SectionForm.vue";
-
+import { SD } from '@/helpers';
 import InputGroup from "@/Application/Components/Form/InputGroup.vue";
 import InputContainer from "@/Application/Components/Form/InputContainer.vue";
 import InputLabel from "@/Application/Components/Form/InputLabel.vue";
@@ -318,6 +318,7 @@ export default {
     },
 
     methods: {
+        SD,
         AiImage(){
             const val = this.aiCheckValue;
             axios.post('/api/AddUserAI/' + val)

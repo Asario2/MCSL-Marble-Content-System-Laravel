@@ -75,8 +75,7 @@
                                             <img
                                                 class="h-8 w-8 rounded-full object-cover"
                                                 :src="
-                                               $page.props.auth.user.profile_photo_url.replace('public','').replace('images/images/','images/')
-                                                "
+                                                '/images/_' +    SD() + '/users/profile_photo_path/' + $page.props.auth.user.profile_photo_url.replace('http://localhost/images/','')"
                                                 :alt="
                                                     $page.props.userdata
                                                         .full_name
@@ -273,8 +272,7 @@
                             >
                                 <img
                                     class="h-10 w-10 rounded-full object-cover"
-                                    :src="'images/' +
-                                        $page.props.auth.user.profile_photo_url.replace('public','')
+                                    :src="'/images/_' + SD() + '/users/profile_photo_path/'+ $page.props.auth.user.profile_photo_url.replace('public','')
                                     "
                                     :alt="$page.props.userdata.full_name"
                                 />
@@ -375,6 +373,7 @@ import { toastBus } from '@/utils/toastBus';
 import Loader from "@/Application/Components/Loader.vue";
 import Dropdown from "@/Application/Components/Content/Dropdown.vue";
 import DropdownLink from "@/Application/Components/Content/DropdownLink.vue";
+import { SD } from "@/helpers";
 import NavLink from "@/Application/Components/Content/NavLink.vue";
 import ResponsiveNavLink from "@/Application/Components/Content/ResponsiveNavLink.vue";
 import { router } from '@inertiajs/vue3';
@@ -420,6 +419,7 @@ export default {
     },
 
     methods: {
+        SD,
         async getServer() {
             try {
                 const response = await axios.get('/api/GetLastAct');

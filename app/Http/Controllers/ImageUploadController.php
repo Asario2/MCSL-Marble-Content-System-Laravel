@@ -84,7 +84,7 @@ class ImageUploadController extends Controller
         }
         if(array_key_exists($table_ori, Settings::$impath)){
             $sizes = ["500"];
-            $table = 'profile-photos';
+            $table = '';
         }
         list($oldsize,$oldheight) = getimagesize($tmpname);
 
@@ -101,11 +101,11 @@ class ImageUploadController extends Controller
 
                 $size2 = $size;
             }
-            $resizedPath = "images/_{$subdomain}/{$request->table}/{$column}/{$is_imgdir}/{$big[$size]}".basename($imageName)."";
+            $resizedPath = public_path("/images/_{$subdomain}/{$request->table}/{$column}/{$is_imgdir}{$big[$size]}".basename($imageName))."";
             if(!$oripath)
             {
                 $subdomain = SD();
-                $resizedPath = "images/_{$subdomain}/{$table}{$big[$size]}".basename($imageName)."  ";
+                $resizedPath = public_path("/images/_{$subdomain}/{$table}{$big[$size]}".basename($imageName))."  ";
             }
 
             // \Log::info("RP:".$resizedPath);

@@ -186,7 +186,7 @@
                         <b>{{ field.label }}</b><br />
                         <img
                             :src="getPreviewSrc(field)"
-                            alt="Vorschau"
+                            alt="Vorschau1"
                             :id="'com_'+field.name"
                             style="float:left;margin-right:12px;max-height:120px;max-width:100px;"
                         />
@@ -258,7 +258,7 @@
                         <img
                             :src="getPreviewSrc(field)"
                             width="100"
-                            alt="Vorschau"
+                            alt="Vorschau2"
                             :id="'com_'+field.name"
                         />
                     </button>
@@ -801,7 +801,15 @@ export default defineComponent({
                 let conta = '';
                 for (let i = 0; i < Math.min(5, this.images.length); i++) {
                     const filename = this.images[i]['filename'];
-                    const src = `/images/_${window.subdomain}/images/${field.name}/${field.value}/thumbs/${this.cc(filename)}`;
+                    if(CleanTable() != "users")
+                    {
+                        this.thumb = "thumbs/";
+
+                    }
+                    else{
+                        this.thumb ='';
+                    }
+                    const src = `/images/_${window.subdomain}/images/${field.name}/${field.value}/${this.thumb}/${this.cc(filename)}`;
                     conta += `<img width="100" class='mt-3' alt="Vorschau33" title="Vorschau33" id="comm_${field.name}"
                                 style="float:left;margin-right:12px;" src="${src}" />`;
                 }
@@ -818,7 +826,15 @@ export default defineComponent({
             this.localFfo.original[fieldName].value = fileName;
 
             // Vorschau aktualisieren (Vue 3 way - kein $set mehr nötig)
-            this.previewImages[fieldName] = `/images/_${this.subdomain}/${this.CleanTable_alt()}/${fieldName}/thumbs/${fileName}`;
+            if(CleanTable() != "users")
+            {
+                this.thumb = "thumbs/";
+
+            }
+            else{
+                this.thumb ='';
+            }
+            this.previewImages[fieldName] = `/images/_${this.subdomain}/${this.CleanTable_alt()}/${fieldName}/${this.thumb}${fileName}`;
 
             // Schließen Sie das Modal
             this.modals[fieldName] = false;
@@ -844,9 +860,18 @@ export default defineComponent({
             if (this.previewImages[field.name]) {
                 return this.previewImages[field.name];
             }
+            let thumb;
+            if(CleanTable() != "users")
+            {
+                this.thumb = "thumbs/";
+
+            }
+            else{
+                this.thumb ='';
+            }
 
             if (field.value && field.value !== '008.jpg') {
-                return `/images/_${this.subdomain}/${this.CleanTable_alt()}/${field.name}/thumbs/${field.value}`;
+                return `/images/_${this.subdomain}/${this.CleanTable_alt()}/${field.name}/${this.thumb}${field.value}`;
             }
 
             return '/images/blogs/thumbs/009.jpg';

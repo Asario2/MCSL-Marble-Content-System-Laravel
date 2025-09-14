@@ -52,8 +52,8 @@ return [
         ],
         'profile_disk' => [
             'driver' => 'local',
-            'root' => public_path('images/'),
-            'url' => env('APP_URL') . '/images/',
+            'root' => public_path('images/_ab/users/profile_photo_path'),
+            'url' => '',
 
             "throw" => false
 

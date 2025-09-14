@@ -2022,6 +2022,9 @@ class TablesController extends Controller
         if (Schema::hasColumn($table,"updated_at")) {
             $formData["updated_at"] = now();
         }
+        if (Schema::hasColumn($table,"last_login_at") && $formData['last_login_at'] == "0000-00-00 00:00:00") {
+            $formData["last_login_at"] = "1990-01-01 01:01:01";
+        }
             // \Log::info("FD:".json_encode($formData));
         if (!Schema::hasTable($table)) {
             return response()->json(['status'=>'error', 'message' => 'Tabelle nicht gefunden'], 404);
@@ -2040,6 +2043,7 @@ class TablesController extends Controller
             // }
             // DB::enableQueryLog();  // Aktiviert das Query Log
             DB::enableQueryLog();
+            \Log::info($formData);
             $updated = DB::table($table)->where('id', $id)->update($formData);
             // $queries = DB::getQueryLog();
             // \Log::info('ID:', $id);
@@ -2088,8 +2092,8 @@ class TablesController extends Controller
         DB::enableQueryLog(); // Aktiviert das Query Logging
 
         $res = DB::table($table)
-    ->where("id", $id)
-    ->value("image_path");
+    ->where("id", $id);
+    // ->value("image_path");
     $queries = DB::getQueryLog();
     // \Log::info($queries);
 

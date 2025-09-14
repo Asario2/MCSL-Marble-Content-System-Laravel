@@ -33,6 +33,13 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
         return shorter($text,$count);
     }
 }
+if(!function_exists("SD_ALT")){
+    function SD_ALT() {
+        return app()->runningInConsole()
+            ? 'ab'   // Fallback, wenn kein Request existiert
+            : explode('.', str_replace("www.",'',request()->getHost()))[0];
+    }
+}
 if(!function_exists("RUMLAUT"))
 {
     function RUMLAUT($string,$table='')
