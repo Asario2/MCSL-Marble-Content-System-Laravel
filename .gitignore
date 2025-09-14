@@ -9,7 +9,7 @@ _work/*
 /storage/debugbar/**
 README.md
 /public/*.sql
-/vendor/
+vendor/
 .env
 *.bat
 *.sh
