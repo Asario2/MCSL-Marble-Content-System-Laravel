@@ -316,7 +316,7 @@ class TablesController extends Controller
 
         $tables->transform(function ($item) {
             if (!empty($item->profile_photo_path)) {
-                $item->profile_photo_path = "/images/" . $item->profile_photo_path;
+                $item->profile_photo_path = "/images/_".SD()."/users/profile_photo_path/" . $item->profile_photo_path;
             }
             return $item;
         });
@@ -2006,7 +2006,7 @@ class TablesController extends Controller
         }
         if(Schema::hasColumn($table, 'img_x'))
         {
-        list($width,$height) = getimagesize(public_path()."/images/".$table."/big/".$formData['image_path']);
+        list($width,$height) = getimagesize(public_path()."/images/_".SD()."/".$table."/image_path/big/".$formData['image_path']);
 
         $formData['img_x'] = $width;
         $formData['img_y'] = $height;

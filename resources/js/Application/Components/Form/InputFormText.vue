@@ -26,7 +26,7 @@
         v-bind="$attrs"
       />
     </div>
-    <input type="hidden" :name="name" :id="id" value="modelValue" />
+    <input type="hidden" :name="name" :id="name + '_alt'" :value="modelValue" />
     </template>
 
   <script>

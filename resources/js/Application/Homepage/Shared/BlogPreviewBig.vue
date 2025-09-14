@@ -10,7 +10,7 @@
 
         <img
             :src="`/images/_ab/blogs/image_path/${blog.url}`"
-            style='min-width:300px;'
+            style='min-width:300px;max-height:365px;width:100%;'
             :alt="blog.name"
 
 

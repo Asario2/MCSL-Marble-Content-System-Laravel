@@ -8,7 +8,7 @@
         <div class="blog-container mh_65 lg:col-span-4 bg-layout-sun-100 dark:bg-layout-night-100" style="">
 
        <img
-        :src="users.profile_photo_path != null ?  '/images/' + users.profile_photo_path.replace('/images/','') : '/images/profile-photos/008.jpg'"
+        :src="users.profile_photo_path != null ?  '/images/_'+ SD() + '/users/profile_photo_path/' + users.profile_photo_path.replace('/images/','') : '/images/profile-photos/008.jpg'"
         :alt="users.name"
         width="480"
         height="360"
@@ -96,6 +96,7 @@ import editbtns from "@/Application/Components/Form/editbtns.vue";
 import SocialButtons from "@/Application/Components/Social/socialButtons.vue";
 import AiButton from "@/Application/Components/Content/AiButton.vue";
 import BackBtn from "@/Application/Components/Form/BackBtn.vue";
+import { SD } from '@/helpers';
 export default {
     name: "Homepage_Shared_BlogPreviewBig",
     components: {
@@ -131,6 +132,7 @@ export default {
         },
     },
     methods: {
+        SD,
     get_age(birthday) {
       if (!birthday) return 'unbekannt';
       const birthDate = new Date(birthday);

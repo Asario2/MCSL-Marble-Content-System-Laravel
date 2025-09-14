@@ -65,7 +65,7 @@
     </fieldset>
 
     <!-- Hidden Input für klassische Form-Submit-Kompatibilität -->
-    <input type="hidden" name="pub" id="pub" :value="internalValue" />
+    <!-- <input type="hidden" name="pub" id="pub_alt" :value="internalValue" /> -->
     <input type="hidden" name="pub_alt" id="pub_alt" :value="internalValue" />
   </template>
 

@@ -20,7 +20,7 @@
         </option>
       </select>
     </div>
-    <input type="hidden" :name="xname" :value="resolvedValue">
+    <input type="hidden" :name="xname" :id="name + '_alt'" :value="resolvedValue">
  </template>
 
   <script>

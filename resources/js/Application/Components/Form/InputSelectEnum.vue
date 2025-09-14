@@ -47,7 +47,7 @@
         </template> -->
     </select>
 
-    <input type="hidden" :name="name" :id="name" :value="selectedValue" />
+    <input type="hidden" :name="name" :id="name + '_alt'" :value="selectedValue" />
 </template>
 
 <script>

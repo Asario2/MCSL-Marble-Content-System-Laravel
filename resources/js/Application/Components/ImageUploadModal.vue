@@ -26,7 +26,7 @@
                 label="Wasserzeichen"
                 name="copyleft"
               />
-
+              
               <!-- Dropzone -->
               <div
                 class="border-2 border-dashed border-layout-sun-500 dark:border-layout-night-500 rounded-lg p-6 text-center cursor-pointer hover:bg-layout-sun-200 dark:hover:bg-layout-night-200"
@@ -124,6 +124,7 @@
   import { CleanTable as cleanTableFn, GetAuth } from '@/helpers';
   import CopyLeftSelect from "@/Application/Components/Content/CopyLeftSelect.vue";
   import ImageJsonEditor from "@/Application/Admin/ImageJsonEditor.vue";
+
   export default {
     name: 'ImageUploadModal',
     components: {
@@ -133,7 +134,7 @@
     props: {
       is_imgdir: { type: Boolean, default: false },
       isOpen: [Boolean, Number],
-      isModalOpen: { type: [Boolean, Number], default: false },
+      isModalOpen: { type: [Boolean, Number,String], default: false },
       column: String,
       domain: String,
       path: String,
@@ -143,9 +144,12 @@
       alt_path: String,
       pxa: { type: Boolean, default: false },
       field: { type: Object, default: () => ({ value: '' }) },
-      path:String,
-
+      path: String,
+      modelValue: String, // Für v-model Unterstützung
     },
+
+    emits: ['update:modelValue', 'imageUploaded', 'close', 'previewUpdated'],
+
     data() {
       return {
         activeTab: 'upload',
@@ -165,6 +169,7 @@
         finalPath: this.path + this.field.value,
       };
     },
+
     computed: {
       isImages() {
         return cleanTableFn() === 'images';
@@ -176,23 +181,19 @@
 
     async mounted() {
       this.GetAuth = await GetAuth();
-      const paths = window.location.pathname; // Gibt "/admin/tables/show/Example" zurück
-            const segments = paths.split("/"); // Teilt den Pfad in Segmente auf
-            if(segments[segments.length - 2] == "create" && this.is_imgdir)
-            {
-               // this.pxa = true;
-            }
-            let finalPath = this.path;
-        // if (!finalPath.includes(this.field.value)) {
-        //     finalPath += '/' + this.field.value;
-        //     alert(this.finalPath);
-        // }
-
+      const paths = window.location.pathname;
+      const segments = paths.split("/");
+      if(segments[segments.length - 2] == "create" && this.is_imgdir) {
+        // this.pxa = true;
+      }
+      let finalPath = this.path;
     },
+
     methods: {
       CleanTable() {
         return cleanTableFn();
       },
+
       tabClass(tab) {
         return [
           'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
@@ -201,15 +202,18 @@
             : 'border-transparent text-layout-sun-500 dark:text-layout-night-500 hover:text-layout-sun-700 dark:hover:text-layout-night-700 hover:border-layout-sun-300 dark:hover:border-layout-night-300',
         ];
       },
+
       triggerFileInput() {
         this.$refs.fileInput.click();
       },
+
       handleDrop(event) {
         const files = event.dataTransfer.files;
         if (files.length > 0) {
           this.handleFileChange({ target: { files } });
         }
       },
+
       handleFileChange(event) {
         const file = event.target.files[0];
         if (file) {
@@ -229,6 +233,7 @@
           }
         }
       },
+
       closeModal() {
         this.selectedImages[this.column] = null;
         this.previewImages[this.column] = null;
@@ -237,6 +242,7 @@
         this.activeTab = 'upload';
         this.$emit('close');
       },
+
       async uploadImage() {
         const selectedImage = this.selectedImages[this.column];
         if (!selectedImage) return;
@@ -263,34 +269,37 @@
             this.progress = Math.round((event.loaded / event.total) * 100);
           }
         });
+
         let imd = false;
         xhr.onload = () => {
           this.uploading = false;
           if (xhr.status === 200) {
             const response = JSON.parse(xhr.responseText);
-            const iurl = response.image_url.replace(this.column + "/", '');
-            if (this.Message) {
-              this.$emit('insertImage', iurl);
-            } else if(!this.is_imgdir) {
-              this.$emit('imageUploaded', iurl);
-              document.getElementById(this.column).value = "/images/" + this.ulpath.replace("//","/") + "/thumbs/"   +  iurl;
-                if(document.getElementById("com_" + this.column))
-                {
-                    document.getElementById("com_" + this.column).src = "/images/" + this.ulpath.replace("//","/") + "/thumbs/"   +  iurl;
-                }
+            const fileName = response.image_url.replace(this.column + "/", '');
 
-            }
-            // IMGGALLL
-            else{
-                document.getElementById(this.column).value = iurl;
-                imd = true
-                this.$emit("refresh-preview")
+            // Emitieren für v-model
+            this.$emit('update:modelValue', fileName);
+
+            // Emitieren für event handling
+            this.$emit('imageUploaded', fileName);
+
+            if (this.Message) {
+              this.$emit('insertImage', fileName);
+            } else if(!this.is_imgdir) {
+              document.getElementById(this.column).value = "/images/" + this.ulpath.replace("//","/") + "/thumbs/" + fileName;
+              if(document.getElementById("com_" + this.column)) {
+                document.getElementById("com_" + this.column).src = "/images/" + this.ulpath.replace("//","/") + "/thumbs/" + fileName;
+              }
+            } else {
+                document.getElementById(this.column).value = fileName;
+                imd = true;
+                this.$emit("refresh-preview");
                 this.$refs.editor2.fetchImages();
             }
-            if(!imd){
+
+            if(!imd) {
                 this.closeModal();
             }
-
           } else {
             console.error("Fehler beim Upload:", xhr.status);
           }
@@ -302,7 +311,6 @@
         };
 
         let isw = (this.CleanTable() === "images" && !this.Message) ? "1" : "0";
-
         const endpoint = (typeof this.oripath === "undefined" || this.oripath == "0")
           ? `/upload-image/${this.CleanTable()}/${isw}`
           : `/upload-image_alt/${this.CleanTable()}/${isw}/${this.oripath}`;
@@ -310,17 +318,18 @@
         xhr.open('POST', endpoint, true);
         xhr.send(formData);
       },
+
       onJsonUpdated(newJson) {
         this.$emit('jsonUpdated', newJson);
       },
-      savedir(){
+
+      savedir() {
         const dir = document.getElementById("folder_save").value;
         this.field.value = dir;
 
         if (this.field.value && this.field.value.trim() !== '') {
-            this.pxa = false; // Modal neu laden → Tabs und Inhalte werden sichtbar
+            this.pxa = false;
         }
-
       },
     },
   };

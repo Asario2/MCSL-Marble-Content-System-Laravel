@@ -20,7 +20,7 @@
         </option>
       </select>
     </div>
-    <input type="hidden" :name="name" :id="name" :value="VAXX">
+    <input type="hidden" :name="name" :id="name + '_alt'" :value="internalValue">
  </template>
 
   <script>
@@ -43,9 +43,9 @@
 
     data() {
       return {
-        internalValue: this.modelValue ?? "",
+        internalValue: this.modelValue !== undefined ? this.modelValue : 0,
         fetchedOptions: [],
-        VAXX:'0',
+        VAXX: '0',
       };
     },
 
@@ -95,12 +95,18 @@
     },
 
     methods: {
-      handleChange(event) {
-        const value = event.target.value;
+        handleChange(event) {
+        let value = event.target.value;
+
+        // Zahl forcieren, wenn deine IDs numerisch sind:
+        if (!isNaN(value)) {
+            value = Number(value);
+        }
+
+        this.internalValue = value;
         this.$emit("update:modelValue", value);
         this.$emit("input-change", value, this.xname);
-      },
-
+        },
       async getOptions() {
         try {
           const res = await axios.get(`/tables/sort-data/${this.name}`);

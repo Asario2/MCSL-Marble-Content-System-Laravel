@@ -341,10 +341,63 @@ segments = segments.join('').replace(/[\[\]']/g, '');
     return segments || '';
 
 }
+export function SD(pn = '') {
+    // Hostname ohne www.
+    let subb = window.location.hostname.replace(/^www\./, '').split('.')[0];
+
+    // Mapping
+    const pm = {
+        ab: "Asarios Blog",
+        dag: "Monika Dargies",
+        mfx: "MarbleFX",
+        mjs: "Mitja Schult",
+        chh: "Rechtsanwalt Christian Henning"
+    };
+
+    // Switch-Mapping wie in PHP
+    switch (subb) {
+        case "asario":
+            subb = "ab";
+            break;
+        case "monikadargies":
+            subb = "dag";
+            break;
+        case "marblefx":
+            subb = "mfx";
+            break;
+        case "mjs":
+            subb = "mjs";
+            break;
+        case "ra-c-henning":
+            subb = "chh";
+            break;
+        case "localhost":
+        case "241":
+        case "217":
+            subb = "ab";
+            break;
+        default:
+            // bleibt wie es ist
+            break;
+    }
+
+    // Falls leer → Standard
+    if (!subb) {
+        subb = "ab";
+    }
+
+    // Wenn kein Parameter: subdomain-key zurückgeben
+    if (!pn) {
+        return subb;
+    }
+
+    // Ansonsten den gemappten Namen zurückgeben
+    return pm[subb] || subb;
+}
+
 export function ucf(str) {
     // Teilt den String an den Unterstrichen
-    console.log("ucf:" + str);
-    if(str == "3ddrucker" || str == "3DDrucker"){
+   if(str == "3ddrucker" || str == "3DDrucker"){
         return "3DDrucker";
     }
 

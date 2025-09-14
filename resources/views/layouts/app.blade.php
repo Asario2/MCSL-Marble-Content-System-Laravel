@@ -7,7 +7,10 @@
     if (!session_id()) {
         session_start();
     }
-
+    $subdomain = SD(); // z.B. "foo", "bar"
+    $pagen = SD("pn");
+    $favicon = "/images/_{$subdomain}/web/alogo.png";
+    $ahost = $_SERVER['HTTP_HOST'];
     $_SESSION['comment_ids'] = [];
 @endphp
 <!doctype html>
@@ -16,7 +19,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <script>
+    window.subdomain = "{{ $subdomain }}";
+    window.subdomain_alt = "{{ $sd_alt }}";
+    window.pagename = "{{ $pagen }}";
+    window.ahost = "{{ $ahost }}";
+    </script>
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 

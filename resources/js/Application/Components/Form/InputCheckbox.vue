@@ -1,7 +1,7 @@
     <template>
     <div class="flex items-center h-6">
         <div class="flex items-center h-6">
-            <input type="hidden" :name="name" :id="name" :value="modelValue">
+            <input type="hidden" :name="name" :id="name + '_alt'" :value="modelValue">
             <input
                 :id="name"
                 :name="name"
@@ -32,7 +32,7 @@ export default {
     emits: ["update:modelValue"],
     props: {
         name: { type: String },
-        modelValue: { type: [Number, Boolean], default: 0 },
+        modelValue: { type: [Number,String, Boolean], default: 0 },
         label: { type: String, default: "" },
         helptext: { type: String, default: "" },
         exValue: [Number,String],

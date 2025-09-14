@@ -1,7 +1,7 @@
 <template>
     <div class="flex items-center h-6">
   <label class="inline-flex items-center cursor-pointer relative">
-    <input type="hidden" :name="name" :id="name" :value="modelValue">
+    <input type="hidden" :name="name" :id="name + '_alt'" :value="modelValue">
     <input
       :id="name"
       :name="name"
@@ -25,7 +25,7 @@
     </div>
 
     <!-- ✅ Hidden-Feld, damit auch 0 gesendet wird -->
-    <input type="hidden" :name="name" :id="name" value="1">
+    <input type="hidden" :name="name" :id="name + '_alt'" value="1">
   </template>
 
   <script>
@@ -38,7 +38,7 @@
     props: {
       name: String,
       modelValue: {
-        type: [Number, Boolean],
+        type: [Number, Boolean,String],
         default: 0,
       },
       label: String,

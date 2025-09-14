@@ -97,7 +97,7 @@
               <div v-if="users[data.datarow.users_id]?.img && users[data.datarow.users_id].img !== '008.jpg'">
                 <nobr>
                   <img
-                    :src="'/images/' + users[data.datarow.users_id].img"
+                    :src="'/images/_' + SD() + '/users/profile_photo_path/' + users[data.datarow.users_id].img"
                     class="w-[24px] h-[24px] object-cover rounded-full inline"
                   />
                   &nbsp;{{data.datarow.users}}
@@ -107,7 +107,7 @@
               <div v-else>
                 <nobr>
                 <img
-                  :src="'/images/profile-photos/008.jpg'"
+                  :src="'/images/_' + SD() + '/users/profile_photo_path/008.jpg'"
                   class="max-w-[24px] max-h-[24px] object-cover rounded-full inline"
                 />
                 <span class="inline">&nbsp;&nbsp;{{data.datarow.users ||  data.datarow.nick  }}</span>
@@ -149,7 +149,7 @@
   import { defineComponent } from "vue";
   import Layout from "@/Application/Admin/Shared/Layout.vue";
   import CreatedAt from "@/Application/Components/Form/CreatedAt.vue";
-  import { CleanTable,ucf } from "@/helpers";
+  import { CleanTable,ucf,SD } from "@/helpers";
   import { GetSettings } from "@/helpers";
   import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
   import ListContainer from "@/Application/Components/Lists/ListContainer.vue";
@@ -300,6 +300,7 @@
 methods: {
     CleanTable,
         ucf,
+        SD,
     onoffbtn(state)
         {
             if(state == "1")

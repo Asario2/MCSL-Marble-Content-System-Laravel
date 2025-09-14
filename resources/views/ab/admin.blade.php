@@ -5,7 +5,10 @@
         return redirect('/no-rights')->send();
         // echo Request::path();
     }
-    $subdomain = SD();
+    $subdomain = SD(); // z.B. "foo", "bar"
+    $pagen = SD("pn");
+    $favicon = "/images/_{$subdomain}/web/alogo.png";
+    $ahost = $_SERVER['HTTP_HOST'];
 @endphp
 
 <!DOCTYPE html>
@@ -22,6 +25,13 @@
     <link type='text/css' href='/css/user.css' rel='stylesheet'>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/jquery-ui.css">
+    <script>
+        window.subdomain = "{{ $subdomain }}";
+        window.subdomain_alt = "{{ $sd_alt }}";
+        window.pagename = "{{ $pagen }}";
+        window.ahost = "{{ $ahost }}";
+        window.sd = "{{ SD() }}";
+        </script>
 
     <!-- jQuery -->
     <script src="/js/jquery-3.6.0.min.js"></script>

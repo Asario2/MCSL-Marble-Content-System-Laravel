@@ -11,7 +11,7 @@
                 <img
                     role="presentation"
                     :class="['object-cover w-full rounded h-60 w-60 bg-layout-sun-500 dark:bg-layout-night-500 teaser']"
-                    :src="user.profile_photo_path != null ?  '/images/' + user.profile_photo_path.replace('/images/','') : '/images/profile-photos/008.jpg'"
+                    :src="user.profile_photo_path != null ?  '/images/_'+ SD() + '/users/profile_photo_path/' + user.profile_photo_path.replace('/images/','') : '/images/profile-photos/008.jpg'"
                     :alt="user.name"
 
                     width="480"
@@ -56,7 +56,7 @@
 import { Link } from "@inertiajs/vue3";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import IconPlusCircle from "@/Application/Components/Icons/PlusCircle.vue";
-import { CleanTable, CleanId } from '@/helpers';
+import { CleanTable, SD } from '@/helpers';
 import averageRating from "@/Application/Components/Social/averageratings.vue";
 import IconPencil from "@/Application/Components/Icons/Pencil.vue";
 import Comments from "@/Application/Components/Social/comments.vue";
@@ -122,6 +122,7 @@ export default {
     };
 },
 methods:{
+    SD,
     handleBodyClick(event) {
         this.$nextTick(() => {
             const box = document.getElementById("commentBox");

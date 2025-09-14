@@ -51,7 +51,7 @@
 <script>
 import IconArrowLongRight from "@/Application/Components/Icons/ArrowLongRight.vue";
 import IconBook from "@/Application/Components/Icons/Book.vue";
-import IconNews from "@/Application/Components/Icons/IconNews.vue";
+import IconNews from "@/Application/Components/Icons/iconNews.vue";
 
 import IconProjects from "@/Application/Components/Icons/IconProjects.vue";
 import IconProjectsSheets from "@/Application/Components/Icons/IconProjectsSheets.vue";
