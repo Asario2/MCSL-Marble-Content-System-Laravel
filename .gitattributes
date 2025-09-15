@@ -4,6 +4,7 @@
 *.html diff=html
 *.md diff=markdown
 *.php diff=php
+*.vue diff=vue
 
 /.github export-ignore
 CHANGELOG.md export-ignore
