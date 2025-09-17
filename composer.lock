@@ -12014,16 +12014,16 @@
         },
         {
             "name": "laravel-lang/lang",
-            "version": "15.24.1",
+            "version": "15.24.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Laravel-Lang/lang.git",
-                "reference": "ca42e015b7763c270822814b4880c8ad8b2bb0b4"
+                "reference": "f98079c7c31f969cd9898cbe436dfaba6f150356"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Laravel-Lang/lang/zipball/ca42e015b7763c270822814b4880c8ad8b2bb0b4",
-                "reference": "ca42e015b7763c270822814b4880c8ad8b2bb0b4",
+                "url": "https://api.github.com/repos/Laravel-Lang/lang/zipball/f98079c7c31f969cd9898cbe436dfaba6f150356",
+                "reference": "f98079c7c31f969cd9898cbe436dfaba6f150356",
                 "shasum": ""
             },
             "require": {
@@ -12037,7 +12037,7 @@
             "require-dev": {
                 "dragon-code/codestyler": "^6.0",
                 "laravel-lang/status-generator": "^2.11",
-                "phpunit/phpunit": "^10.0 || ^11.0 || ^12.0",
+                "phpunit/phpunit": "^11.0 || ^12.0",
                 "symfony/var-dumper": "^7.0"
             },
             "type": "library",
@@ -12074,7 +12074,7 @@
                 "issues": "https://github.com/Laravel-Lang/lang/issues",
                 "source": "https://github.com/Laravel-Lang/lang"
             },
-            "time": "2025-09-02T21:56:46+00:00"
+            "time": "2025-09-08T23:06:50+00:00"
         },
         {
             "name": "laravel-lang/locale-list",
