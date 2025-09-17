@@ -14,8 +14,8 @@ CHANGELOG.md export-ignore
 *.vue linguist-language=Vue
 
 # Vendor & Node ignorieren
-node_modules/* linguist-vendored
-vendor/* linguist-vendored
+node_modules/*.js linguist-vendored
+vendor/*.js linguist-vendored
 
 # Nur Tailwind CSS im public ausschließen
 public/css/tailw/*.css linguist-vendored
