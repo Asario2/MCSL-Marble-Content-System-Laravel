@@ -38,7 +38,7 @@
         "esbuild": "0.25.0"
     },
     "dependencies": {
-        "@fontsource/open-sans": "^5.0.28",
+        "@fontsource/open-sans": "^5.2.7",
         "@fontsource/ubuntu": "^5.2.8",
         "@fortawesome/fontawesome-svg-core": "^7.0.0",
         "@fortawesome/free-brands-svg-icons": "^7.0.0",
