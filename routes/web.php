@@ -163,7 +163,7 @@ Route::get('/home/invalid_signature', [HomeController::class, 'home_invalid_sign
         Route::get('/home/infos', [HomeController::class, 'infos_index'])->name('home.infos.mfx');
         Route::get('/home/contacts', [HomeController::class, 'contacts_mfx'])->name('home.contacts.mfx');
         Route::get('/home/infos/show/{id}', [HomeController::class, 'infos_show'])->name('home.infos.show.mfx');
-
+        Route::get('/home/privacy', [HomeController::class, 'infos_privacy'])->name('home.privacy');
         Route::get('/home/powered-by-mcs', [HomeController::class, 'infos_pow'])->name('home.powered.show.mfx');
         Route::get('/dashboard', function () {
             return redirect('/admin/dashboard');
