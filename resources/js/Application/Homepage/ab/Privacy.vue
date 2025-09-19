@@ -10,6 +10,7 @@ import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 
   <script>
   import Layout from "@/Application/Homepage/Shared/Layout.vue";
+  import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
   export default {
     components: {
     Layout, MetaHeader},
