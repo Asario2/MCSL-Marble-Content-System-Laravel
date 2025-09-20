@@ -386,7 +386,7 @@ class ImageUploadController extends Controller
             }
 
             // Neuer Dateiname (Zeitstempel + uniqid)
-            $filename = md5(basename($oldPath)."_".Auth::id()).".".$file->getClientOriginalExtension();
+            $filename = md5($file->getClientOriginalName()."_".Auth::id()).".".$file->getClientOriginalExtension();
 
             // Datei verschieben
             $file->move($folder, $filename);
