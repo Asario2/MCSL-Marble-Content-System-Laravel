@@ -480,8 +480,7 @@ class TablesController extends Controller
     public function ShowTable(Request $request, $table_alt = null)
     {
         $table = $table_alt ?? 'images';
-        $path = request()->path();
-        $path = strtolower($path);
+        $path = strtolower($request->path());
         $parts = explode("/", $path);
 
         foreach (gettables() as $ta) {
@@ -491,17 +490,13 @@ class TablesController extends Controller
             }
         }
 
-        // \Log::info("tb: " . $table);
-
         if (!$table || !Schema::hasTable($table)) {
-                    abort(404, "Tabelle existiert nicht.");
+            abort(404, "Tabelle existiert nicht.");
         }
 
         if (!CheckRights(Auth::id(), $table, "view")) {
             return redirect("/no-rights");
         }
-
-
 
         $columns = Schema::getColumnListing($table);
         $joins = [];
@@ -509,12 +504,11 @@ class TablesController extends Controller
 
         $headline = Settings::$headline[$table] ?? 'id';
         $otherField = Settings::$otherField[$table] ?? null;
-        $of = $otherField ?? 'id';
 
         // Name alias
         $selects[] = "{$table}.{$headline} AS name";
 
-        // Beschreibung
+        // Beschreibung oder User
         if ($otherField != "users_id") {
             $selects[] = "{$table}.{$otherField} AS description";
         } elseif (in_array('users_id', $columns)) {
@@ -522,112 +516,78 @@ class TablesController extends Controller
                 'from' => 'users.id',
                 'to'   => "{$table}.users_id",
             ];
-            $selects[] = "users.name AS users"; // wichtig!
+            $selects[] = "users.name AS users";
             $selects[] = "{$table}.users_id";
         }
 
+        // JOINs für *_id-Felder
         foreach ($columns as $col) {
             if (Str::endsWith($col, '_id')) {
-                $baseName = Str::beforeLast($col, '_id'); // z. B. admin_table_id → admin_table
-                $relatedTable = $baseName;   // admin_table → admin_tables
+                $baseName = Str::beforeLast($col, '_id');
+                $relatedTable = $baseName;
 
                 if (Schema::hasTable($relatedTable) && !isset($joins[$relatedTable])) {
                     $joins[$relatedTable] = [
                         'from' => "{$relatedTable}.id",
                         'to'   => "{$table}.{$col}",
                     ];
-
-                    // 🎯 NAME-Wert als "admin_table", "users", etc. hinzufügen
                     $selects[] = "{$relatedTable}.name AS {$baseName}";
                 }
 
-                // Damit der Wert (z. B. users_id) im Ergebnis bleibt
                 $selects[] = "{$table}.{$col}";
             }
         }
-        // JOINs für *_id-Felder
-        // foreach ($columns as $col) {
-        //     if (Str::endsWith($col, '_id') && $col != "post_id") {
-        //         $baseName = Str::beforeLast($col, '_id'); // z. B. admin_table_id → admin_table
-        //         $relatedTable = Str::plural($baseName);   // admin_table → admin_tables
 
-        //         if (Schema::hasTable($relatedTable) && !isset($joins[$relatedTable])) {
-        //             $joins[$relatedTable] = [
-        //                 'from' => "{$relatedTable}.id",
-        //                 'to'   => "{$table}.{$col}",
-        //             ];
-        //             // → Alias als Singular: "users", "admin_table"
-        //             $selects[] = "{$relatedTable}.name AS {$baseName}";
-        //         }
-        //     }
-        // }
-
-        // Query aufbauen
         $query = DB::table($table)->select($selects);
 
         foreach ($joins as $relatedTable => $join) {
             $query->leftJoin($relatedTable, $join['to'], '=', $join['from']);
         }
 
-        // Sortierung
-        if(Schema::hasColumn($table,"position")){
-            $ord = ["position","asc"];
+        // **Suchfilter nur auf Name + Description**
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search, $headline, $otherField, $table) {
+                $q->where($table.'.'.$headline, 'LIKE', "%{$search}%");
+                if ($otherField && !in_array($otherField, ['id', 'created_at', 'updated_at'])) {
+                    $q->orWhere($table.'.'.$otherField, 'LIKE', "%{$search}%");
+                }
+            });
         }
-            elseif ($table == "blogs" || $table == "didyouknow" || $table == "images" || $table == "comments" || $table == "shortpoems") {
-                $ord = ["created_at", "DESC"];
-            } elseif (in_array($table, ["admin_table", "image_categories", "camera","users"])) {
 
-                $ord = ["name","ASC"];
-
-            }
-            elseif($table == "news" || $table == "projects"){
-                $ord = ["created_at","DESC"];
-            }
-            elseif ($table == "images") {
-                $ord = ["id", "DESC"];
-
-            } elseif ($table == "privacy") {
-                $ord = ["created_at", "ASC"];
-            } elseif($table == "texts"){
-                $ord = ["headline","ASC"];
-            }
-            elseif(Schema::hasColumn($table,"position")){
-                $ord = ["position","ASC"];
-            }
-            else {
-                $ord = ["id", "DESC"];
-            }
-
-        // Filter & Sortierung
-        $pag = 20;
-       if(@$request->search){
-        $pag = 20;
-       }
-       $xis = $table.".id";
+        // whereNot für spezielle Tabellen
+        $xis = $table.".id";
         $xisd = "-1";
-        if($table == "users")
-        {
+        if ($table == "users") {
             $xis = "xis_disabled";
             $xisd = "1";
         }
+        $query->whereNot($xis, $xisd);
 
-        // \Log::info("NA:".json_encode([$ord[0],$ord[1]]));
-        // $tables = $query
-        //     ->filterdefault(['search' => request('search')])
-        //     ->whereNot($xis,$xisd)
-        //     ->orderByRaw("LOWER($table.$ord[0]) $ord[1]")
-        //     ->paginate($pag)
-        //     ->withQueryString();
+        // Sortierung
+        if(Schema::hasColumn($table,"position")){
+            $ord = ["position","asc"];
+        } elseif (in_array($table, ["blogs", "didyouknow", "images", "comments", "shortpoems"])) {
+            $ord = ["created_at", "DESC"];
+        } elseif(in_array($table, ["admin_table", "image_categories", "camera","users"])) {
+            $ord = ["name","ASC"];
+        } elseif(in_array($table, ["news", "projects"])) {
+            $ord = ["created_at","DESC"];
+        } elseif($table == "privacy") {
+            $ord = ["created_at","ASC"];
+        } elseif($table == "texts") {
+            $ord = ["headline","ASC"];
+        } else {
+            $ord = ["id", "DESC"];
+        }
 
         $orderColumn = $table.".".$ord[0];
         $orderDirection = strtoupper($ord[1]) === 'DESC' ? 'DESC' : 'ASC';
+        $query->orderByRaw('CAST('.$orderColumn.' AS UNSIGNED) '.$orderDirection);
 
-        $tables = $query
-            ->filterdefault(['search' => request('search')])
-            ->whereNot($xis, $xisd)
-            ->orderByRaw('CAST('.$orderColumn.' AS UNSIGNED) '.$orderDirection.'')
-            ->paginate($pag)
-            ->withQueryString();
+        // Pagination
+        $pag = 20;
+        $tables = $query->paginate($pag)->withQueryString();
 
         // Beschreibung kürzen
         if ($otherField) {
@@ -648,12 +608,11 @@ class TablesController extends Controller
             return $item;
         });
 
-        // Nutzerbilder laden (nur wenn users_id vorhanden)
+        // Nutzerbilder laden
         $result = $tables->items();
         $userIds = collect($result)->pluck('users_id')->unique()->filter()->values();
         $users_img = DB::table('users')
             ->whereIn('id', $userIds)
-
             ->select('id', 'profile_photo_path', 'name')
             ->get()
             ->keyBy('id')
@@ -665,28 +624,206 @@ class TablesController extends Controller
             });
 
         return Inertia::render('Admin/TableShow', [
-            'filters' => array_filter(request()->only(['search'])),
-            'searchValue' => request('search'),
-            'breadcrumbs'   => [
+            'filters' => array_filter($request->only(['search'])),
+            'searchValue' => $request->input('search'),
+            'breadcrumbs' => [
                 'Home' => route('admin.dashboard'),
                 'Liste der Tabellen' => route('admin.tables.index'),
-                "Tabelle ".ucf($table)."" => null
+                "Tabelle ".ucf($table) => null
             ],
-            'datarows'      => $result,
-            'rows'          => $tables,
-            'table'         => ucf($table),
-            'table_alt'     => $table,
-            'ItemName'      => 'Beiträge',
-            'itemName_des'  => 'Beitrags',
-            'formData'      => 'test',
-            'tablez'        => ucf($table),
-            'table_q'       => strtolower($table),
-            'namealias'     => "{$table}_name",
-            'users'         => $users_img,
-
-
+            'datarows' => $result,
+            'rows' => $tables,
+            'table' => ucf($table),
+            'table_alt' => $table,
+            'ItemName' => 'Beiträge',
+            'itemName_des' => 'Beitrags',
+            'formData' => 'test',
+            'tablez' => ucf($table),
+            'table_q' => strtolower($table),
+            'namealias' => "{$table}_name",
+            'users' => $users_img,
         ]);
     }
+
+
+        public function ShowTable_old_def(Request $request, $table_alt = null)
+    {
+        $table = $table_alt ?? 'images';
+        $path = strtolower(request()->path());
+        $parts = explode("/", $path);
+
+        foreach (gettables() as $ta) {
+            if (in_array($ta, $parts)) {
+                $table = $ta;
+                $_GET['table'] = $ta;
+            }
+        }
+
+        if (!$table || !Schema::hasTable($table)) {
+            abort(404, "Tabelle existiert nicht.");
+        }
+
+        if (!CheckRights(Auth::id(), $table, "view")) {
+            return redirect("/no-rights");
+        }
+
+        $columns = Schema::getColumnListing($table);
+        $joins = [];
+        $selects = ["{$table}.*"];
+
+        $headline = Settings::$headline[$table] ?? 'id';
+        $otherField = Settings::$otherField[$table] ?? null;
+        $of = $otherField ?? 'id';
+
+        // Name alias
+        $selects[] = "{$table}.{$headline} AS name";
+
+        // Beschreibung
+        if ($otherField != "users_id") {
+            $selects[] = "{$table}.{$otherField} AS description";
+        } elseif (in_array('users_id', $columns)) {
+            $joins['users'] = [
+                'from' => 'users.id',
+                'to'   => "{$table}.users_id",
+            ];
+            $selects[] = "users.name AS users";
+            $selects[] = "{$table}.users_id";
+        }
+
+        // JOINs für *_id-Felder
+        foreach ($columns as $col) {
+            if (Str::endsWith($col, '_id')) {
+                $baseName = Str::beforeLast($col, '_id');
+                $relatedTable = $baseName;
+
+                if (Schema::hasTable($relatedTable) && !isset($joins[$relatedTable])) {
+                    $joins[$relatedTable] = [
+                        'from' => "{$relatedTable}.id",
+                        'to'   => "{$table}.{$col}",
+                    ];
+                    $selects[] = "{$relatedTable}.name AS {$baseName}";
+                }
+
+                $selects[] = "{$table}.{$col}";
+            }
+        }
+
+        $query = DB::table($table)->select($selects);
+
+        foreach ($joins as $relatedTable => $join) {
+            $query->leftJoin($relatedTable, $join['to'], '=', $join['from']);
+        }
+
+        // Suchfilter
+        // if ($request->filled('search')) {
+        //     $search = $request->input('search');
+        //     $query->where(function($q) use ($search, $headline, $otherField, $table) {
+        //         $q->where($table.'.'.$headline, 'LIKE', "%{$search}%");
+        //         if ($otherField) {
+        //             $q->orWhere($table.'.'.$otherField, 'LIKE', "%{$search}%");
+        //         }
+        //     });
+        // }
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search, $columns, $table) {
+                foreach ($columns as $col) {
+                    if (in_array($col, ['id', 'created_at', 'updated_at'])) continue; // optional ausnehmen
+                    $q->orWhere($table.'.'.$col, 'LIKE', "%{$search}%");
+                }
+            });
+        }
+
+        // whereNot für spezielle Tabellen
+        $xis = $table.".id";
+        $xisd = "-1";
+        if($table == "users") {
+            $xis = "xis_disabled";
+            $xisd = "1";
+        }
+        $query->whereNot($xis, $xisd);
+
+        // Sortierung bestimmen
+        if(Schema::hasColumn($table,"position")){
+            $ord = ["position","asc"];
+        } elseif (in_array($table, ["blogs", "didyouknow", "images", "comments", "shortpoems"])) {
+            $ord = ["created_at", "DESC"];
+        } elseif(in_array($table, ["admin_table", "image_categories", "camera","users"])) {
+            $ord = ["name","ASC"];
+        } elseif(in_array($table, ["news", "projects"])) {
+            $ord = ["created_at","DESC"];
+        } elseif($table == "privacy") {
+            $ord = ["created_at","ASC"];
+        } elseif($table == "texts") {
+            $ord = ["headline","ASC"];
+        } else {
+            $ord = ["id", "DESC"];
+        }
+
+        $orderColumn = $table.".".$ord[0];
+        $orderDirection = strtoupper($ord[1]) === 'DESC' ? 'DESC' : 'ASC';
+        $query->orderByRaw('CAST('.$orderColumn.' AS UNSIGNED) '.$orderDirection);
+
+        // Pagination
+        $pag = 20;
+        $tables = $query->paginate($pag)->withQueryString();
+
+        // Beschreibung kürzen
+        if ($otherField) {
+            $tables->getCollection()->transform(function ($item) use ($otherField) {
+                if (isset($item->$otherField)) {
+                    $item->description = html_entity_decode(KILLMD($item->$otherField, 18, 3));
+                }
+                return $item;
+            });
+        }
+
+        // Hauptname-Text decodieren
+        $tables->getCollection()->transform(function ($item) use ($table) {
+            $nameField = "{$table}_name";
+            if (isset($item->$nameField)) {
+                $item->$nameField = html_entity_decode($item->$nameField);
+            }
+            return $item;
+        });
+
+        // Nutzerbilder laden
+        $result = $tables->items();
+        $userIds = collect($result)->pluck('users_id')->unique()->filter()->values();
+        $users_img = DB::table('users')
+            ->whereIn('id', $userIds)
+            ->select('id', 'profile_photo_path', 'name')
+            ->get()
+            ->keyBy('id')
+            ->map(function ($user) {
+                return [
+                    'img' => $user->profile_photo_path,
+                    'name' => $user->name,
+                ];
+            });
+
+        return Inertia::render('Admin/TableShow', [
+            'filters' => array_filter($request->only(['search'])),
+            'searchValue' => $request->input('search'),
+            'breadcrumbs' => [
+                'Home' => route('admin.dashboard'),
+                'Liste der Tabellen' => route('admin.tables.index'),
+                "Tabelle ".ucf($table) => null
+            ],
+            'datarows' => $result,
+            'rows' => $tables,
+            'table' => ucf($table),
+            'table_alt' => $table,
+            'ItemName' => 'Beiträge',
+            'itemName_des' => 'Beitrags',
+            'formData' => 'test',
+            'tablez' => ucf($table),
+            'table_q' => strtolower($table),
+            'namealias' => "{$table}_name",
+            'users' => $users_img,
+        ]);
+    }
+
     public function GetDBTables()
     {
         $tz = DB::table('admin_table')

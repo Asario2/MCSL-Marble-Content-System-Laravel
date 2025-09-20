@@ -12,6 +12,7 @@
   <script>
   import Layout from "@/Application/Homepage/Shared/dag/Layout.vue";
   import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
+  import { nextTick } from "vue";
   export default {
     components: {
     Layout, MetaHeader},
@@ -27,17 +28,17 @@
         },
   methods: {
     scrollToHashAnchor() {
-    const hash = window.location.hash;
-    if (hash && hash.startsWith("#")) {
-      setTimeout(() => {
-        const el = document.getElementById(hash.substring(1));
-        if (el) {
-          const y = el.getBoundingClientRect().top + window.pageYOffset - 134;
-          window.scrollTo({ top: y, behavior: "smooth" });
-        }
-      }, 50); // etwas Delay, bis DOM fertig gerendert ist
-    }
-  }
+  const hash = window.location.hash;
+  if (hash && hash.startsWith("#")) {
+    nextTick(() => {
+      const el = document.getElementById(hash.substring(1));
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.pageYOffset - 300;
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+    });
 }
+    },
+},
 };
   </script>

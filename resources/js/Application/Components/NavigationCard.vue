@@ -61,7 +61,7 @@ import IconStar from "@/Application/Components/Icons/IconStar.vue";
 import IconTexts from "@/Application/Components/Icons/IconTexts.vue";
 import IconInfos from "@/Application/Components/Icons/IconInfos.vue";
 import IconRight from "@/Application/Components/Icons/IconRight.vue";
-import IconHyperlink from "@/Application/Components/Icons/IconHyperlink.vue";
+import IconHyperlink from "@/Application/Components/Icons/IconHyperLink.vue";
 import IconPictures from "@/Application/Components/Icons/IconPictures.vue";
 import IconDB from "@/Application/Components/Icons/db.vue";
 import IconLogs from "@/Application/Components/Icons/IconLogs.vue";

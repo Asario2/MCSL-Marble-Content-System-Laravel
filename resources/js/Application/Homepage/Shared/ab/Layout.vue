@@ -266,6 +266,9 @@
                         <link-footer name="Datenschutzerklärung" :route-name="route('home.privacy')"></link-footer>
                         </li>
                         <li>
+                        <link-footer name="Kontakt" :route-name="route('home.contact')"></link-footer>
+                        </li>
+                        <li>
                             <link-footer @click="reopenCookieBanner"><b>Cookie-Einstellungen</b></link-footer>
                         </li>
                     </ul>

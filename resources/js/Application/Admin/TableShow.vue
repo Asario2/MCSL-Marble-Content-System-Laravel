@@ -1,4 +1,4 @@
-<template>
+    <template>
     <layout>
       <!-- Header -->
       <template #header>
@@ -9,7 +9,7 @@
       <section class="mt-8">
         <list-container
           :title="'Tabelle ' + tablez"
-          :datarows="{ data: localRows }"
+          :datarows="{ data: datarows }"
           :route-index="showRoute"
           :xxtable="tableq"
           :filters="filters"
@@ -50,7 +50,7 @@
             <td class="np-dl-td-normal" v-if="data.datarow.pub !== 'undefined'">
               <PublishButton
                 :table="CleanTable()"
-                  :id="data.datarow.id"
+                :id="data.datarow.id"
                 :published="data.datarow.pub === 1"
               />
             </td>
@@ -248,6 +248,12 @@
         return route("admin.tables.show", table);
       },
     },
+    watch: {
+    searchValue(newVal) {
+        this.$inertia.get(route('admin.tables.show', this.table_q), { search: newVal }, { preserveState: true, replace: true });
+    }
+    },
+
     async mounted() {
       this.cat_on_head = this.checkCat();
       this.checkhasCreated();

@@ -38,10 +38,6 @@
                 <!-- Mobile Menu open: "block", Menu closed: "hidden" -->
                 <div :class="[isOpen_Menu ? 'translate-x-0 opacity-100 ' : 'opacity-0 -translate-x-full']" style='z-index:10000000;' class="absolute inset-x-0 mt-6 w-full px-6 py-4 shadow-md transition-all duration-300 ease-in-out bg-layout-trans dark:bg-primary-night-200 lg:relative lg:top-0 lg:mt-0 lg:flex lg:w-auto lg:translate-x-0 lg:items-center lg:bg-transparent lg:p-0 lg:opacity-100 lg:shadow-none lg:dark:bg-transparent">
                 <div class="flex flex-col items-center space-y-1 lg:mt-0 lg:flex-row lg:space-y-0 lg:space-x-0 trans2 lg:rounded-lg" style='z-index:10000000;'>
-                    <div id="ssbox">
-                    <a href="admin"><img :src="'/images/spacer.gif'" width="30" height="142" alt="Monika Dargies" title="Monika Dargies"></a>
-
-                    </div>
                     <div class="toplog">
                     <nav2>
 
@@ -82,13 +78,14 @@
 
             <!-- Slot für Content -->
             <div class="mt-[165px] dark mwe" style="max-width:1024px;">
+
                 <slot></slot>
             </div>
             </div>
         </section>
 
         <!-- Footer -->
-        <footer class="dark:bg-[rgba(218,83,14,0.4)] text-layout-sun-900 dark:text-layout-night-900 border-t border-layout-sun-200 dark:border-layout-night-200" aria-labelledby="footer-heading">
+        <footer class="dark:bg-[rgb(218,83,14)] text-layout-sun-900 dark:text-layout-night-900 border-t border-layout-sun-200 dark:border-layout-night-200" aria-labelledby="footer-heading">
   <div class="container mx-auto max-w-6xl">
     <h2 id="footer-heading" class="sr-only">Footer</h2>
     <div class="px-1 md:px-4 lg:px-8 pb-8 pt-8">
@@ -192,17 +189,19 @@
         mode: localStorage.theme ? localStorage.theme : "light",
         isOpen_Menu: false,
         year: new Date().getFullYear(),
+        isLoading: true,
         pendingRequests: 0,
-        isLoading: localStorage.getItem('loading') === 'true',
+        imagesLoaded: false,
+
         search: '',
         searchval: false,
-        imagesLoaded: false,
+
         searchTimeout: null, // Timeout für Inaktivitätsprüfung
         };
     },
 
     mounted() {
-
+        console.log("mounted läuft");
         // Den 'search' Parameter prüfen
         const urlParams = new URLSearchParams(window.location.search);
         const searchParam = urlParams.get('search');
@@ -280,41 +279,43 @@
         },
 
         checkLoadingState() {
+
         if (this.pendingRequests === 0 && this.imagesLoaded) {
+
             this.setLoadingState(false);
+            localStorage.removeItem('loading');
+
         }
         },
 
         waitForImagesToLoad() {
-        const images = document.querySelectorAll('img');
-        const totalImages = images.length;
-        let imagesLoadedCount = 0;
+  const images = document.querySelectorAll('img');
+  const totalImages = images.length;
+  let imagesProcessedCount = 0;
 
-        if (totalImages === 0) {
-            this.imagesLoaded = true;
-            this.checkLoadingState();
-            return;
-        }
+  if (totalImages === 0) {
+    this.imagesLoaded = true;
+    this.checkLoadingState();
+    return;
+  }
 
-        images.forEach((img, index) => {
-            if (img.complete) {
-            imagesLoadedCount++;
-            } else {
-            img.addEventListener('load', () => {
-                imagesLoadedCount++;
-                if (imagesLoadedCount === totalImages) {
-                this.imagesLoaded = true;
-                this.checkLoadingState();
-                }
-            });
-            }
-        });
+  const imageProcessed = () => {
+    imagesProcessedCount++;
+    if (imagesProcessedCount === totalImages) {
+      this.imagesLoaded = true;
+      this.checkLoadingState();
+    }
+  };
 
-        if (imagesLoadedCount === totalImages) {
-            this.imagesLoaded = true;
-            this.checkLoadingState();
-        }
-        },
+  images.forEach((img) => {
+    if (img.complete) {
+      imageProcessed();
+    } else {
+      img.addEventListener('load', imageProcessed, { once: true });
+      img.addEventListener('error', imageProcessed, { once: true }); // WICHTIG: Fehler auch mitzählen
+    }
+  });
+},
 
         toggleNavbar() {
         this.isOpen_Menu = !this.isOpen_Menu;
