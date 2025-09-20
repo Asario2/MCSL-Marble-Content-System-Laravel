@@ -406,7 +406,7 @@ export function ucf(str) {
 
     // Wandelt jedes Element des Arrays um, falls es mehr als ein Wort gibt
     const na = arr.map(
-        (val) => val.charAt(0).toUpperCase() + val.slice(1).toLowerCase(),
+        (val) => val.charAt(0).toUpperCase() + val.slice(1),
     );
 
     // Setzt die W�rter mit einem Leerzeichen zusammen

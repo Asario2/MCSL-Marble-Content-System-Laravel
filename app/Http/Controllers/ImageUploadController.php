@@ -4,6 +4,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Settings;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\File;
+
+
+
+
+
 use Storage;
 
 class ImageUploadController extends Controller
@@ -332,5 +339,86 @@ class ImageUploadController extends Controller
 
     return $images;
 }
+    public function update(Request $request)
+    {
+        $user = $request->user();
+
+        // Validierung (erweitere Regeln nach Bedarf)
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'first_name' => 'nullable|string|max:255',
+            'email' => 'required|email|max:255',
+            'photo' => 'nullable|image|max:4096', // bis 4MB
+        ]);
+
+        // === Dateiverarbeitung ===
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+
+            if (!$file->isValid()) {
+                return back()->withErrors(['photo' => 'Upload fehlgeschlagen.']);
+            }
+
+            // Subdomain (erstes Segment des Hostnames)
+            $host = $request->getHost();
+            $subdomain = explode('.', $host)[0] ?? 'default';
+
+            // Zielverzeichnis im public-Ordner
+            $folder = public_path("images/_{$subdomain}/users/profile_photo_path");
+
+            // Ordner anlegen, falls nicht vorhanden
+            if (!File::exists($folder)) {
+                // 0755; setze recursive true
+                File::makeDirectory($folder, 0755, true);
+            }
+
+            // Alten File löschen (falls vorhanden)
+            if (!empty($user->profile_photo_path)) {
+                $oldPath = $folder . DIRECTORY_SEPARATOR . $user->profile_photo_path;
+                if (File::exists($oldPath)) {
+                    try {
+                        File::delete($oldPath);
+                    } catch (\Exception $e) {
+                        // optional loggen, aber nicht blockieren
+                        \Log::warning('Altes Profilbild konnte nicht gelöscht werden: '.$e->getMessage());
+                    }
+                }
+            }
+
+            // Neuer Dateiname (Zeitstempel + uniqid)
+            $filename = md5(basename($oldPath)."_".Auth::id()).".".$file->getClientOriginalExtension();
+
+            // Datei verschieben
+            $file->move($folder, $filename);
+
+            // In DB nur den Dateinamen speichern (so wie Vue computedPhotoUrl erwartet)
+            $user->profile_photo_path = $filename;
+        }
+
+        // === Restliche Felder speichern ===
+        $user->name = $request->input('name');
+        if ($request->has('first_name')) {
+            $user->first_name = $request->input('first_name');
+        }
+        $user->email = $request->input('email');
+
+        $user->save();
+
+        // Wenn du Inertia/Jetstream verwendest: Inertia-Redirect / response
+        // Wir redirecten zurück — Inertia-Frontend macht onSuccess + reload auth
+        return back(303)->with('success', 'Profil aktualisiert');
+    }
+
+
+    public function getProfilePhoto(Request $request)
+    {
+        $user = $request->user();
+
+        return response()->json([
+            'path' => $user->profile_photo_path
+                ? asset($user->profile_photo_path)
+                : asset('images/default_profile.png'),
+        ]);
+    }
 
 }

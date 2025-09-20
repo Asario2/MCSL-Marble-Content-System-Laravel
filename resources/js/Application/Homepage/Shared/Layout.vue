@@ -168,9 +168,6 @@
       Dropdown,
       DropdownLink,
       ButtonChangeMode,
-      IconFacebook,
-      IconXing,
-      IconWhatsapp
     },
 
     props: {

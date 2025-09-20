@@ -85,8 +85,14 @@ Route::middleware(\App\Http\Middleware\CheckSubd::class . ':dag,monikadargies')-
 
 });
 
+//
+// PHOTOS
+//
+Route::middleware(['auth'])->group(function () {
+    Route::put('/user/profile', [ImageUploadController::class, 'update'])->name('user-profile-information.update');
 
-
+    Route::get('/profile/photo', [ImageUploadController::class, 'getProfilePhoto'])->name('profile.photo.get');
+});
 //
 //     AB- Asarios BLog
 //

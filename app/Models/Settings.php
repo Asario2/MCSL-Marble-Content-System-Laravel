@@ -74,6 +74,7 @@
             "ratings"=>"table",
             "kontakt"=>"name",
             "lostnfound"=>"headline",
+            "links"=>"headline",
 
     ];
     public static array $searchable = [
@@ -107,6 +108,7 @@
             "ratings"=>['table',"images.name"],
             "kontakt"=>["name","email","strasse","plz","tel"],
             "lostnfound"=>["headline","message"],
+            "links"=>["headline","url","messsage"],
 
     ];
     public static array $otherField = [
@@ -132,7 +134,8 @@
         "people"=>"abouttext",
         "ratings"=>"rating",
         "kontakt"=>"email",
-        "lostnfound"=>"message"
+        "lostnfound"=>"message",
+        "links"=>"url",
     ];
     public static array $namealias = [
         "comments"=>"Kommentar",
@@ -151,6 +154,7 @@
         "projects_sheets"=>"Aufgabe",
         "kontakt"=>"Email",
         "lostnfound"=>"Text",
+        "links"=>"URL",
     ];
     public static array $underCals=[
     'comments' => "name",
