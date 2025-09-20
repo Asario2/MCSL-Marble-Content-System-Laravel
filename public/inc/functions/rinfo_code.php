@@ -3,7 +3,7 @@ function rinfo_code($txt)
 {
     global $ln,$pref,$cfg;
 
-    @include __DIR__."/config_mfx_mcsl.inc.php";
+    @include __DIR__."/config_".SD()."_mcsl.php";
 
     @include __DIR__."/config_general.inc.php";
 

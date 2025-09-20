@@ -750,7 +750,7 @@ if(!function_exists('rinfo_code2'))
             define("_frutel_new",null);
         }
         $ln = 'de';
-        $sd  = SD() == "hm" ? "_hm" : '';
+         $sd  = SD() ;  //== "hm" ? "_hm" : '';
         include resource_path("cfgz/rinfo/config_laravel".@$sd.".inc.php");
 
         include resource_path("cfgz/rinfo/config_general.inc.php");

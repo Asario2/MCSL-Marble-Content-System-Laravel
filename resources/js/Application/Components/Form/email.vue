@@ -2,7 +2,7 @@
 <h1 v-if="!nohead" class="2xl">Kontakt</h1>
 <form @submit.prevent="submitForm"
 class="max-w-xl mx-auto space-y-6 p-6
-        bg-white dark:bg-layout-night-50
+        bg-white dark:bg-layout-night-50 dark:bg-layout-night-501
         rounded-xl shadow-md
         border border-layout-sun-1050 dark:border-layout-night-1050 lg:rounded-lg">
 

@@ -1,44 +1,40 @@
 <template>
     <layout
-        header-title="Seite nicht gefunden"
-        :header-url="$page.props.saas_url + '/no_page_found'"
+      header-title="Seite nicht gefunden"
+      :header-url="$page.props.saas_url + '/no_page_found'"
     >
-        <page-title>
-            <template #title>Seite nicht gefunden!</template>
-        </page-title>
+      <page-title>
+        <template #title>Seite nicht gefunden!</template>
+      </page-title>
     </layout>
-</template>
-<script>
-import { defineComponent, defineAsyncComponent } from 'vue';
-import PageTitle from "@/Application/Components/Content/PageTitle.vue";
+  </template>
 
-// Mapping für dynamische Layouts
-const layoutComponents = {
-  mfx: () => import('@/Application/Homepage/Shared/Layout.vue'),
- // dag: () => import('@/Application/Homepage/Shared/dag/Layout.vue'),
-  default: () => import('@/Application/Homepage/Shared/Layout.vue'),
-};
+  <script>
+  import { defineComponent, defineAsyncComponent } from "vue";
+  import PageTitle from "@/Application/Components/Content/PageTitle.vue";
 
-// Funktion zur Ermittlung der ersten Subdomain
-function getDomKey(urlString) {
-  try {
-    const url = new URL(urlString);
-    const hostname = url.hostname;
-    const parts = hostname.split('.');
+  // Mapping von Subdomain → Layout-Datei
+  const layoutComponents = {
+    mfx: () => import("@/Application/Homepage/Shared/mfx/Layout.vue"),
+    ab: () => import("@/Application/Homepage/Shared/ab/Layout.vue"),
+    dag: () => import("@/Application/Homepage/Shared/dag/Layout.vue"),
+    default: () => import("@/Application/Homepage/Shared/default/Layout.vue"),
+  };
 
+  // Subdomain ermitteln
+  function getDomKey() {
+    const hostname = window.location.hostname;
+    const parts = hostname.split(".");
     return parts.length > 2 ? parts[0] : "default";
-  } catch (e) {
-    return "default";
   }
-}
 
-export default defineComponent({
-  name: "Homepage_NoPageFound",
-  components: {
-    Layout: defineAsyncComponent(
-      layoutComponents[getDomKey(window.location.href)] || layoutComponents['default']
-    ),
-    PageTitle,
-  },
-});
-</script>
+  export default defineComponent({
+    name: "Homepage_NoPageFound",
+    components: {
+      Layout: defineAsyncComponent(
+        layoutComponents[getDomKey()] || layoutComponents.default
+      ),
+      PageTitle,
+    },
+  });
+  </script>

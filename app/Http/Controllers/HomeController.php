@@ -41,6 +41,59 @@ class HomeController extends Controller
         $data->text = Str::markdown($data->text);
         return Inertia::render('Homepage/AiContent', ["data" => [$data]]); // <-- in Array umwandeln
     }
+    public function home_dag(){
+        return Inertia::render('Homepage/dag/Home_dag');
+    }
+    public function lostnfound(){
+        $data = DB::table("lostnfound")->where("pub","1")->select('typ','headline','message')->get();
+        return Inertia::render('Homepage/dag/lostnfound', ["data" => [$data]]);
+    }
+    public function dag_links(){
+        $data = DB::table("links")->where("pub","1")->select('img_bild','url','img_bild','headline','message')->orderBy("position","ASC")->get();
+        return Inertia::render('Homepage/dag/links', ["data" => [$data]]);
+    }
+    public function spruch_des_monats() {
+        $quotes = DB::table("sprueche")
+            ->select("id","text", "author")
+            ->where("month", date('Y-m'))   // aktueller Monat
+            ->inRandomOrder()
+            ->first();
+
+        if(empty($quotes)){
+            // 1. Versuch: Spruch ohne Monat (NULL)
+            $quotes = DB::table("sprueche")
+                ->select("id","text","author")
+                ->whereNull("month")
+                ->inRandomOrder()
+                ->first();
+
+            // 2. Wenn vorhanden, dann diesem Spruch den aktuellen Monat setzen
+            if(!empty($quotes)){
+                DB::table("sprueche")
+                    ->where("id",$quotes->id)
+                    ->update(["month" => date("Y-m")]);
+            } else {
+                // 3. Fallback: Alles zurücksetzen (month = NULL)
+                DB::table("sprueche")->update(["month" => NULL]);
+
+                // 4. Dann nochmal einen zufälligen holen
+                $quotes = DB::table("sprueche")
+                    ->select("id","text","author")
+                    ->whereNull("month")
+                    ->inRandomOrder()
+                    ->first();
+
+                if($quotes){
+                    DB::table("sprueche")
+                        ->where("id",$quotes->id)
+                        ->update(["month" => date("Y-m")]);
+                }
+            }
+        }
+
+        return response()->json($quotes);
+    }
+
     public function home_index(Request $request)
     {
         $subdomain = SD();
@@ -599,6 +652,15 @@ return Inertia::render('Homepage/Pictures', [
             'imprint' => $imprint,
         ]);
     }
+public function imprint_dag()
+    {
+        $imprintFile = Jetstream::localizedMarkdownPath('imprint.md');
+        $imprint = Str::markdown(file_get_contents($imprintFile));
+        //
+        return Inertia::render('Homepage/Imprint', [
+            'imprint' => $imprint,
+        ]);
+    }
     public function changelog_old(){
         $data = DB::table("texts")->select('texts.*','users.name as author_name')->leftJoin('users', 'users.id', '=', 'texts.users_id')->where("texts.id","15F")->first();
         $data->text = Str::markdown($data->text);
@@ -614,13 +676,15 @@ return Inertia::render('Homepage/Pictures', [
             $dol = SD()."/";
         // }
         $pf = "privacy".@$set.".md";
-        $privacyFile = Jetstream::localizedMarkdownPath($pf);
+            $privacyFile = Jetstream::localizedMarkdownPath($pf);
+
         include_once "inc/functions/rinfo_code.php";
         // dd($privacyFile);
         $privacy = Str::markdown(file_get_contents($privacyFile)); // HTML erzeugt
         $privacy = rinfo_code($privacy);
+
         // $privacy = nl2br($privacy);
-        return Inertia::render('Homepage/'.@$dol.'Privacy', [
+        return Inertia::render('Homepage/'.$dol.'Privacy', [
             'privacy' => $privacy,
         ]);
     }
@@ -709,6 +773,19 @@ return Inertia::render('Homepage/Pictures', [
             'contacts'=>$contacts,
         ]);
     }
+    public function dag_contacts(){
+        $text = DB::table("texts")->where("type", "ContactsHeader")->select('headline', 'text')->first();
+        $contacts = DB::table("texts")->where("type", "ContactsInfos")->select('headline', 'text')->first();
+        // \Log::info("TT:".json_encode($text));
+
+        return Inertia::render('Homepage/dag/contacts', [
+            "text" => $text,
+            'contacts'=>$contacts,
+        ]);
+    }
+    public function powered_by_mcs(){
+        return $this->infos_show(48);
+    }
     public function infos_show($id){
         $data = DB::table("infos")->where("pub","1")->where("id",$id)->select("id","headline","message","img_big")->orderBy("position","DESC")->first();
         if(SD() != "ab")
@@ -732,7 +809,7 @@ return Inertia::render('Homepage/Pictures', [
         $data = DB::table('votez')->where("pub","1")->get();
         return response()->json($data);
     }
-    public function imprint($id = '45')
+    public function imprint_mfx($id = '45')
     {
         $data = DB::table("infos")->where("pub","1")->where("id",$id)->select("id","headline","message","img_big")->orderBy("position","DESC")->first();
         return Inertia::render('Homepage/mfx/infos_show',compact('data'));

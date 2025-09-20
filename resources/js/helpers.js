@@ -400,7 +400,7 @@ export function ucf(str) {
    if(str == "3ddrucker" || str == "3DDrucker"){
         return "3DDrucker";
     }
-
+    str = rumLaut(str);
 
     const arr = str.split("_");
 

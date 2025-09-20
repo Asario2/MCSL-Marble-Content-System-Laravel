@@ -879,7 +879,7 @@ export default defineComponent({
 
         openModal(name) {
             this.modals[name] = true;
-            alert("EADS");
+
         },
 
         closeModal(name) {
@@ -1218,37 +1218,27 @@ export default defineComponent({
         },
 
         async submitForm() {
-        try {
-            // Positionierung optional machen
-            if (this.newPosition !== null && this.entry?.id) {
-                try {
-                    await axios.post(`/api/entries/update-position/${CleanTable()}`, {
-                        id: this.entry.id,
-                        position: this.newPosition
-                    });
-                    this.entry.position = this.newPosition;
-                } catch (positionError) {
-                    console.warn("Positionierung optional fehlgeschlagen:", positionError);
-                }
-            }
 
-            // Editor-Validierung
-            const editors = this.$refs.editor;
-            if(editors) {
-                const editorList = Array.isArray(editors) ? editors : [editors];
-                for (const editor of editorList) {
-                    if (editor?.required) {
-                        const content = editor?.content ?? editor?.modelValue ?? '';
-                        const valid = content?.trim()?.length > 0;
-                        if (!valid) {
-                            const el = editor.$el?.querySelector?.('[contenteditable], textarea, input');
-                            if (el) el.focus();
-                            return;
-                        }
-                    }
-                }
-            }
+  try {
+    // Editor-Validierung mit Null-Checks
+    const editors = this.$refs.editor;
+    if (editors) {
+      const editorList = Array.isArray(editors) ? editors : [editors];
 
+      for (const editor of editorList) {
+        if (!editor) continue;
+
+        // Sicherer Zugriff auf Editor-Inhalt
+        const content = editor.content || editor.modelValue || '';
+        const isValid = content.trim().length > 0;
+
+        if (editor.required && !isValid) {
+          const el = editor.$el?.querySelector?.('[contenteditable], textarea, input');
+          if (el) el.focus();
+          return false;
+        }
+    }
+}
             // FormData vorbereiten
             this.formData = this.formData || {};
 

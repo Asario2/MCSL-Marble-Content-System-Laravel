@@ -12,7 +12,7 @@ class UpdatePositions extends Command
 
     public function handle()
     {
-        $table = "cleo.".$this->argument('table');
+        $table = "dagidag.".$this->argument('table');
 
         // Hole alle vorhandenen Positionen
         $existing = DB::table($table)
@@ -28,7 +28,7 @@ class UpdatePositions extends Command
 
         // Hole alle Einträge ohne Position (die repariert werden müssen)
         $rows = DB::table($table)
-            ->orderBy('id',"DESC")
+            ->orderBy('ordering',"DESC")
             ->get();
 
         foreach ($rows as $row) {

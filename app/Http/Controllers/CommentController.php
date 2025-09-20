@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Rating;
 use App\Models\User;
 use App\Models\UsersRight;
+use Illuminate\Support\Facades\Schema;
 
 class CommentController extends Controller
 {
@@ -329,6 +330,9 @@ class CommentController extends Controller
 
     if (!$userId) {
         // throw new \Exception('User not authenticated');
+    }
+    if(!Schema::hasTable("comments")){
+        return;
     }
 
     // // 1. Hole alle unique_id Werte aus users_rights, die zum angemeldeten User gehören

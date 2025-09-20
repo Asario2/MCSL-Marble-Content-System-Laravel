@@ -52,6 +52,8 @@
 import IconArrowLongRight from "@/Application/Components/Icons/ArrowLongRight.vue";
 import IconBook from "@/Application/Components/Icons/Book.vue";
 import IconNews from "@/Application/Components/Icons/iconNews.vue";
+import IconContacts from "@/Application/Components/Icons/IconContacts.vue";
+import IconLost from "@/Application/Components/Icons/IconLost.vue";
 
 import IconProjects from "@/Application/Components/Icons/IconProjects.vue";
 import IconProjectsSheets from "@/Application/Components/Icons/IconProjectsSheets.vue";
@@ -59,6 +61,7 @@ import IconStar from "@/Application/Components/Icons/IconStar.vue";
 import IconTexts from "@/Application/Components/Icons/IconTexts.vue";
 import IconInfos from "@/Application/Components/Icons/IconInfos.vue";
 import IconRight from "@/Application/Components/Icons/IconRight.vue";
+import IconHyperlink from "@/Application/Components/Icons/IconHyperlink.vue";
 import IconPictures from "@/Application/Components/Icons/IconPictures.vue";
 import IconDB from "@/Application/Components/Icons/db.vue";
 import IconLogs from "@/Application/Components/Icons/IconLogs.vue";
@@ -75,16 +78,19 @@ export default {
         IconProjects,
         IconProjectsSheets,
         IconDB,
+        IconLost,
         IconRight,
         IconPictures,
         IconLogs,
         IconDidyou,
         IconStory,
+        IconHyperlink,
         IconComment_bl,
         IconNews,
         IconTexts,
         IconInfos,
         IconStar,
+        IconContacts,
     },
 
     props: {
@@ -138,6 +144,9 @@ export default {
                 IconComment_bl,
                 IconNews,
                 IconTexts,
+                IconContacts,
+                IconHyperlink,
+                IconLost,
                 IconStar,
             };
             //

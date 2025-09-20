@@ -30,7 +30,9 @@
         public static array $no_req = ['exif_copyright','exif_comp','exif_model','Mpixel','modul','is_admin','is_customer','is_employee','customer_id','admin_id','company_id',
                                        'profile_photo_path',"category_id","type_id",'message','message_en',
                                        'position','ordering','image_path','link','format','preis','format_en','music','interest',"about",'story_en',
-                                       'img_bild',"img_thumb",'occupation','name_res','desc_res','new_res','birthday','answer_en','prename','xis_ai','typ',"about",'id_new','exif_comp','exif_model',"interests","occupation","fbd","website","about_en","about"];
+                                       'img_bild',"img_thumb",'occupation','name_res','desc_res','new_res','birthday','answer_en','prename','xis_ai','typ',"about",'id_new','exif_comp','exif_model',"interests","occupation","fbd","website","about_en","about"
+                                       ,'db_name','db_new','db_desc','db_link','db_icon',
+                                    ];
 
 
 
@@ -70,6 +72,8 @@
             'news'=>"headline",
             "people"=>"name",
             "ratings"=>"table",
+            "kontakt"=>"name",
+            "lostnfound"=>"headline",
 
     ];
     public static array $searchable = [
@@ -101,6 +105,8 @@
             "privacy"=>["headline","message"],
             "people" =>['name',"abouttext",'realname','aufgaben','wohnort','website',"email"],
             "ratings"=>['table',"images.name"],
+            "kontakt"=>["name","email","strasse","plz","tel"],
+            "lostnfound"=>["headline","message"],
 
     ];
     public static array $otherField = [
@@ -125,11 +131,14 @@
         "projects"=>'Umfang',
         "people"=>"abouttext",
         "ratings"=>"rating",
+        "kontakt"=>"email",
+        "lostnfound"=>"message"
     ];
     public static array $namealias = [
         "comments"=>"Kommentar",
         "ratings"=>"Galerie",
         "projects_sheets"=>"Projekt",
+        "lostnfound"=>"Überschrift",
     ];
     public static array $descalias = [
         "comments"=>"Autor",
@@ -140,6 +149,8 @@
         "texts"=>"Autor",
         "images"=>"Autor",
         "projects_sheets"=>"Aufgabe",
+        "kontakt"=>"Email",
+        "lostnfound"=>"Text",
     ];
     public static array $underCals=[
     'comments' => "name",

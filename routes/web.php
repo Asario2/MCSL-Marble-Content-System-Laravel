@@ -70,6 +70,22 @@ if(SD() == "mfx"){
 
             return response()->view('allroutes', ['routes' => $routes]);
         });
+        Route::get('/impressum', [HomeController::class, 'imprint_dag'])->name('home.imprint.dag');
+//
+// DAGIE
+//
+Route::middleware(\App\Http\Middleware\CheckSubd::class . ':dag,monikadargies')->group(function () {
+    Route::get("/", [HomeController::class, "home_index"])->name("home.index");
+    Route::get("/api/spruch-des-monats", [HomeController::class, "spruch_des_monats"])->name("home.spruch");
+    Route::get("/lostnfound", [HomeController::class, "lostnfound"])->name("home.lostnfound");
+    Route::get('/privacy', [HomeController::class, 'home_privacy'])->name('home.privacy.dag');
+
+    Route::get("/contacts", [HomeController::class, "dag_contacts"])->name("home.contacts.dag");
+    Route::get("/links", [HomeController::class, "dag_links"])->name("home.links");
+
+});
+
+
 
 //
 //     AB- Asarios BLog
@@ -86,7 +102,7 @@ Route::middleware(\App\Http\Middleware\CheckSubd::class . ':ab,asario')->group(f
     // Imprint
     Route::get('/home/imprint', [HomeController::class, 'home_imprint'])->name('home.imprint');
     // Privacy
-    Route::get('/home/privacy', [HomeController::class, 'home_privacy'])->name('home.privacy');
+
     // Terms
     Route::get('/home/terms', [HomeController::class, 'home_terms'])->name('home.terms');
     // Ai Content
@@ -137,7 +153,7 @@ Route::get('/home/user_is_no_admin', [HomeController::class, 'home_user_is_no_ad
 Route::get('/home/user_is_no_employee', [HomeController::class, 'home_user_is_no_employee'])->name('home.user_is_no_employee');
 Route::get('/home/user_is_no_customer', [HomeController::class, 'home_user_is_no_customer'])->name('home.user_is_no_customer');
 Route::get('/home/invalid_signature', [HomeController::class, 'home_invalid_signature'])->name('home.invalid_signature');
-
+Route::get('/home/privacy', [HomeController::class, 'home_privacy'])->name('home.privacy');
 
     #
     #
@@ -157,14 +173,14 @@ Route::get('/home/invalid_signature', [HomeController::class, 'home_invalid_sign
         Route::get('/home/images/show/{id}', [HomeController::class, 'home_images_show_mfx'])->name('home.images.mfx');
 
         Route::get('/home/people', [HomeController::class, 'people'])->name('home.people.mfx');
-        Route::get('/home/impressum', [HomeController::class, 'imprint'])->name('home.imprint.mfx');
+        Route::get('/home/impressum', [HomeController::class, 'imprint_mfx'])->name('home.imprint.mfx');
         Route::get('/home/privacy_info', [HomeController::class, 'infos_privacy'])->name('home.privacy.mfx');
 
         Route::get('/home/infos', [HomeController::class, 'infos_index'])->name('home.infos.mfx');
         Route::get('/home/contacts', [HomeController::class, 'contacts_mfx'])->name('home.contacts.mfx');
         Route::get('/home/infos/show/{id}', [HomeController::class, 'infos_show'])->name('home.infos.show.mfx');
-        Route::get('/home/privacy', [HomeController::class, 'infos_privacy'])->name('home.privacy');
-        Route::get('/home/powered-by-mcs', [HomeController::class, 'infos_pow'])->name('home.powered.show.mfx');
+		// Route::get('/home/privacy', [HomeController::class, 'infos_privacy'])->name('home.privacy');
+        Route::get('/powered-by-mcsl', [HomeController::class, 'infos_pow'])->name('home.powered.show.mfx');
         Route::get('/dashboard', function () {
             return redirect('/admin/dashboard');
         })->name('dashboard');
@@ -634,7 +650,7 @@ Route::get('/tables/sort-enumis/{table}/{name}', [TablesController::class, 'getO
         Route::get("/",[HomeController::class,"home_index"])->name("home.index");
         Route::get('/ri', [HomeController::class, 'home_rindex'])->name('home.rindex');
         Route::fallback(function () {
-            return Inertia::render('Homepage/NoPageFound');
+            return Inertia::render('Homepage/NoPageFound_'.SD());
         });
 
 

@@ -16,7 +16,7 @@ class ExportPrivacyMarkdown extends Command
     public function handle()
     {
         GlobalController::SetDomain();
-        $entries = DB::table('cleo.privacy')->where("xico_doms","mfx_mcsl")->orderBy('ordering',"DESC")->get();
+        $entries = DB::table('dagidag.privacy')->where("xico_doms","ab_mcsl")->orderBy('position',"ASC")->get();
 
         if ($entries->isEmpty()) {
             $this->error('Keine Einträge in der Tabelle "privacy" gefunden.');
@@ -49,8 +49,8 @@ class ExportPrivacyMarkdown extends Command
         }
 
         // Datei speichern
-        Storage::disk('md')->put('privacy_mfx.md', $markdown);
-        $this->info("Markdown-Datei wurde unter storage/app/privacy_mfx.md gespeichert.");
+        Storage::disk('md')->put('privacy_dag.md', $markdown);
+        $this->info("Markdown-Datei wurde unter storage/app/privacy_dag.md gespeichert.");
     }
     protected function convertToMarkdown(string $message): string
     {

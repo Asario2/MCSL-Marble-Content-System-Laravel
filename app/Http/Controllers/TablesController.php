@@ -829,8 +829,15 @@ class TablesController extends Controller
             header("Location: /no-rights");
             exit;
         }
+
+        $ob = "name";
+
+        if(Schema::hasColumn("admin_table","position"))
+        {
+            $ob = "position";
+        }
         $tables = Table::select("admin_table.name as full_name","admin_table.name","admin_table.*")->filterBlog($request->only('search'))
-            ->orderBy('name', 'ASC')
+            ->orderBy($ob, 'ASC')
             ->paginate(20)
             ->withQueryString();
 
@@ -2289,7 +2296,7 @@ return response()->json($user);
             header("Location: /no-rights");
             exit;
         }
-        $tables = AdminTable::orderBy("name","ASC")->select('name')->get(); // oder dein gewünschtes Sortierfeld
+        $tables = AdminTable::orderBy("position","ASC")->select('name')->get(); // oder dein gewünschtes Sortierfeld
 
         // Beispiel: Aktuell eingeloggter Nutzer mit Rolle z. B. Moderator-ID = 1
         $urid  = $request->urid ? $request->urid : "1";

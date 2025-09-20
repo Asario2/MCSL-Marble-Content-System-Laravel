@@ -245,7 +245,7 @@
         </section>
 
         <!-- Footer -->
-        <footer class="foot bg-layout-sun-50 text-layout-sun-900 dark:bg-layout-night-50 dark:text-layout-night-900 border-t border-layout-sun-200 dark:border-layout-night-200" aria-labelledby="footer-heading">
+        <footer class="foot  text-layout-sun-900 dark:bg-layout-night-2050 dark:text-layout-night-900 border-t border-layout-sun-200 dark:border-layout-night-200" aria-labelledby="footer-heading">
             <div class="container mx-auto max-w-6xl">
             <h2 id="footer-heading" class="sr-only">Footer</h2>
             <div class="px-1 md:px-4 lg:px-8 pb-8 pt-8">

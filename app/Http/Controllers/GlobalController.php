@@ -17,7 +17,11 @@ class GlobalController extends Controller
 
         if (SD() === 'mfx') {
             config(['database.default' => 'mariadb_mfx']);
-        } else {
+        }
+        elseif(SD() === "dag"){
+            config(['database.default' => 'mariadb_dag']);
+        }
+        else {
             config(['database.default' => 'mariadb']);
         }
         //     if ($subdomain == 'mfx') {

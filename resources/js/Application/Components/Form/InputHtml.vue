@@ -172,7 +172,7 @@
         }
         // this.$nextTick(() => this.setCursorAtEnd());
         // this.setInitialContent();
-
+        this.updateValue();
     },
         computed: {
         content: {
@@ -180,25 +180,24 @@
             return this.modelValue;
             },
             set(value) {
-            this.$emit("update:modelValue", rumLaut(value));
+            this.$emit("update:modelValue", rumLaut(value).replace('%5B', '[').replace('%5D', ']'));
             },
         },
         },
         watch: {
-        modelValue(newVal) {
-            if (this.$refs.editor && this.$refs.editor.innerHTML !== newVal) {
-            this.$refs.editor.innerHTML = this.rumLaut(newVal);
-            this.setCursorAtEnd();
-
-            }
-        },
-        },
+            modelValue(newVal) {
+                if (this.$refs.editor && this.$refs.editor.innerHTML !== newVal) {
+                this.$refs.editor.innerHTML = this.decodeBrackets(rumLaut(newVal));
+                this.setCursorAtEnd();
+                }
+            },
+                    },
         methods: {
   isValid() {
       if (!this.required) return true;
 
       let html = this.$refs.editor?.innerHTML || '';
-      html = rumLaut(html);
+      html = rumLaut(html).replace('%5B', '[').replace('%5D', ']');
       const plain = html.replace(/<[^>]*>/g, '').trim();
 
       const isValid = plain.length > 0;
@@ -220,8 +219,12 @@
     //     this.$emit('validationPassed');
     //   }
     // },
-    setInitialContent() {
-      this.$refs.editor.innerHTML = rumLaut(this.content);
+    decodeBrackets(str) {
+    if (!str) return "";
+    return str.replace(/%5B/g, "[").replace(/%5D/g, "]");
+  },
+  setInitialContent() {
+    this.$refs.editor.innerHTML = this.decodeBrackets(rumLaut(this.content));
     },
 
             getLabel(name) {
@@ -229,13 +232,11 @@
   },
 
   updateValue() {
-    // this.cleanupEmptyTags();
-    let html = this.$refs.editor.innerHTML.replace('%5B', '[').replace('%5D', ']');
-    html = rumLaut(html);
-    this.$emit('update:modelValue', rumLaut(html));
-
-        document.getElementById(this.name + "_alt").value = html;
-  },
+    let html = this.$refs.editor.innerHTML;
+    html = rumLaut(this.decodeBrackets(html));
+    this.$emit('update:modelValue', html);
+    document.getElementById(this.name + "_alt").value = html;
+    },
 
   setCursorAtEnd() {
     const el = this.$refs.editor;
@@ -258,7 +259,7 @@
       .forEach(el => el.remove());
     // alert("cleaned");
     // Entferne doppelte <br>
-    editor.innerHTML = editor.innerHTML.replace(/(<br\s*\/?>\s*){2,}/g, '<br>');
+    editor.innerHTML = editor.innerHTML.replace(/(<br\s*\/?>\s*){2,}/g, '<br>').replace('%5B', '[').replace('%5D', ']');
   },
 
   toggleFormat(format) {
@@ -449,11 +450,13 @@ restoreSelection() {
         this.insertImageIntoEditor(imageUrl);
       },
 
-            onInput(e) {
-                let html = e.target.innerHTML.trim();
-                this.$emit('update:modelValue', html);
-                this.hasError = html.replace(/<[^>]*>/g, '').trim().length === 0;
-    },
+      onInput(e) {
+        let html = e.target.innerHTML.trim();
+        html = this.decodeBrackets(html);
+        this.$emit('update:modelValue', html);
+        this.hasError = html.replace(/<[^>]*>/g, '').trim().length === 0;
+        },
+
     get content() {
       return this.modelValue;
     },

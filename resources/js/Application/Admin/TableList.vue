@@ -38,11 +38,11 @@
                                 :href="route('admin.tables.show', data.datarow.full_name)"
                                 class="text-blue-600 dark:text-blue-600 hover:underline"
                             >
-                                {{ data.datarow.name }}
+                                <span v-html="data.datarow.name"></span>
                             </a>
                         </td>
                         <td class="np-dl-td-normal" v-if="canView(data.datarow.full_name)">
-                            {{ data.datarow.description }}
+                            <span v-html="data.datarow.description"></span>
                         </td>
                     </template>
             </list-container>
