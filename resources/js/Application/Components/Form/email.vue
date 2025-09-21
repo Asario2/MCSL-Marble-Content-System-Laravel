@@ -43,7 +43,7 @@ class="max-w-xl mx-auto space-y-6 p-6
 <div class="flex items-center">
     <input v-model="form.accepted" type="checkbox" id="accept" class="mr-2" />
     <label for="accept" class="text-layout-sun-1000 dark:text-layout-night-1000">
-        Ich akzeptiere die Datenschutz-Bestimmungen
+        Ich akzeptiere die <a href='/home/privacy'>Datenschutz-Bestimmungen</a>
     </label>
 </div>
 

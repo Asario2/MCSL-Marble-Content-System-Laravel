@@ -329,7 +329,6 @@
         </main>
     </template>
     <script>
-alert("sadddddddddddd");
     import axios from "axios";
     import { router } from "@inertiajs/vue3";
     import { useLoadingStore } from "@/loading";

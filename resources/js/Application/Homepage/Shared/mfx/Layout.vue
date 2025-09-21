@@ -296,10 +296,12 @@
     </main>
   </template>
 <script>
-alert("sadddddddddddd");
+alert("sadddddd2222ddddd222222222222d");
 import axios from "axios";
 import { router } from "@inertiajs/vue3";
 import { useLoadingStore } from "@/loading";
+import mfxlogo from "@/Application/Shared/mfxlogo.vue";
+
 import IconMCSL from "@/Application/Components/Icons/IconMCSL.vue";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import BrandHeader from "@/Application/Shared/BrandHeader.vue";
@@ -326,6 +328,7 @@ export default {
     Toast,
     IconMenu,
     IconMCSL,
+    mfxlogo,
     Dropdown,
     DropdownLink,
     ButtonChangeMode,
