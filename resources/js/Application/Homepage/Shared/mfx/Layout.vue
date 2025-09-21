@@ -296,32 +296,24 @@
     </main>
   </template>
 <script>
+alert("sadddddddddddd");
 import axios from "axios";
+import { router } from "@inertiajs/vue3";
+import { useLoadingStore } from "@/loading";
 import IconMCSL from "@/Application/Components/Icons/IconMCSL.vue";
-import { useLoadingStore } from '@/loading';
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import BrandHeader from "@/Application/Shared/BrandHeader.vue";
-import mfxlogo from "@/Application/Shared/mfxlogo.vue";
 import Dropdown from "@/Application/Components/Content/Dropdown.vue";
 import DropdownLink from "@/Application/Components/Content/DropdownLink.vue";
-import LinkHeader from "@/Application/Shared/LinkHeader_mfx.vue";
+import LinkHeader from "@/Application/Shared/LinkHeader.vue";
 import BrandFooter from "@/Application/Shared/BrandFooter.vue";
 import LinkFooter from "@/Application/Shared/LinkFooter.vue";
-import IconMenu from "@/Application/Components/Icons/Menu.vue"
+import IconMenu from "@/Application/Components/Icons/Menu.vue";
 import Toast from "@/Application/Components/Content/Toast.vue";
 import ButtonChangeMode from "@/Application/Components/ButtonChangeMode.vue";
-// import * as Ziggy from 'ziggy-js';
-// // import { Ziggy } from '@/ziggy';
+import { SD } from "@/helpers";
+import { ref } from "vue";
 
-// // Globale Wrapper-Funktion
-// window.route = function(name, params = {}, absolute = true) {
-//     if (!Ziggy.namedRoutes[name]) {
-//         console.warn(`Ziggy: Route '${name}' nicht gefunden. Leite auf 404 um.`);
-//         window.location.href = '/404';
-//         return; // Falls 404 sofort verlässt
-//     }
-//     return originalRoute(name, params, absolute);
-// };
 export default {
   name: "Homepage_Shared_Layout",
 
@@ -332,12 +324,18 @@ export default {
     BrandFooter,
     LinkFooter,
     Toast,
-    IconMCSL,
-    mfxlogo,
     IconMenu,
+    IconMCSL,
     Dropdown,
     DropdownLink,
-    ButtonChangeMode
+    ButtonChangeMode,
+  },
+
+  props: {
+    sd: {
+      type: String,
+      required: true,
+    },
   },
 
   setup() {
@@ -347,40 +345,43 @@ export default {
 
   data() {
     return {
-      mode: localStorage.theme ? localStorage.theme : "light",
+      mode: localStorage.theme ? localStorage.theme : "dark",
       isOpen_Menu: false,
       year: new Date().getFullYear(),
       pendingRequests: 0,
-      isLoading: localStorage.getItem('loading') === 'true',
-      search: '',
+      isLoading: localStorage.getItem("loading") === "true",
+      search: "",
       searchval: false,
       imagesLoaded: false,
-      searchTimeout: null, // Timeout für Inaktivitätsprüfung
+      searchTimeout: null,
     };
   },
 
   mounted() {
 
-    // Den 'search' Parameter prüfen
+    const shouldReload = localStorage.getItem("reload_dashboard");
+    if (shouldReload) {
+      localStorage.removeItem("reload_dashboard");
+    }
+
+    // URL-Parameter auslesen
     const urlParams = new URLSearchParams(window.location.search);
-    const searchParam = urlParams.get('search');
+    const searchParam = urlParams.get("search");
+    this.search = searchParam ?? "";
 
-    this.search = searchParam ?? '';
-
-    if (searchParam === '' || searchParam === null) {
+    if (searchParam === "" || searchParam === null) {
       this.setLoadingState(true);
       this.searchval = true;
-
-      // Startet Timeout für spätere leere Suche
       this.startSearchTimeout();
     } else {
       this.setLoadingState(false);
       this.searchval = false;
     }
 
-    // Axios Interceptoren
+    // Axios Interceptor
     axios.interceptors.request.use((config) => {
       this.pendingRequests += 1;
+      console.log("⬆️ Request gestartet", this.pendingRequests);
       this.setLoadingState(this.searchval);
       return config;
     });
@@ -388,65 +389,60 @@ export default {
     axios.interceptors.response.use(
       (response) => {
         this.pendingRequests -= 1;
+        console.log("⬇️ Response erhalten", this.pendingRequests);
         this.checkLoadingState();
         return response;
       },
       (error) => {
         this.pendingRequests -= 1;
+        console.log("⚠️ Response Fehler", this.pendingRequests);
         this.checkLoadingState();
         return Promise.reject(error);
       }
     );
 
-    // Bilder laden überwachen
+    // Bilder beobachten
     this.waitForImagesToLoad();
 
     if (this.isLoading) {
-      localStorage.setItem('loading', 'true');
+      localStorage.setItem("loading", "true");
     }
-
-
-    if (this.$page.props.flash?.needsReload && !sessionStorage.getItem('needsReload')) {
-        sessionStorage.setItem('needsReload', '1');
-        alert("RELAODED");
-        //window.location.reload();
-
-    } else {
-        // Nach einmaligem Reload entfernen, damit es nicht erneut feuert
-        sessionStorage.removeItem('needsReload');
-    }
-
-
   },
 
   methods: {
-    SD(){
-        return window.subdomain ;
-    },
-    reopenCookieBanner() {
-        window.LaravelCookieConsent.reset();
-        //   // Whitecube-API aufrufen, wenn verfügbar
-    //   if (window.CookieConsent && typeof window.CookieConsent.showBanner === "function") {
-    //     window.CookieConsent.showBanner();
-    //   } else {
-    //     console.log("Whitecube CookieConsent API nicht gefunden.");
-    //   }
-    },
+    SD,
+
     setLoadingState(state) {
+      console.log("🔄 setLoadingState:", state);
       this.isLoading = state;
-      localStorage.setItem('loading', state.toString());
+      localStorage.setItem("loading", state.toString());
+    },
+
+    reopenCookieBanner() {
+      if (window.LaravelCookieConsent) {
+        window.LaravelCookieConsent.reset();
+      }
     },
 
     checkLoadingState() {
+      console.log("🔍 checkLoadingState()", {
+        pending: this.pendingRequests,
+        imagesLoaded: this.imagesLoaded,
+        isLoading: this.isLoading,
+      });
+
       if (this.pendingRequests === 0 && this.imagesLoaded) {
+        console.log("✅ Ladezustand beendet");
         this.setLoadingState(false);
       }
     },
 
     waitForImagesToLoad() {
-      const images = document.querySelectorAll('img');
+      const images = document.querySelectorAll("img");
       const totalImages = images.length;
       let imagesLoadedCount = 0;
+
+      console.log("📸 Images gefunden:", totalImages);
 
       if (totalImages === 0) {
         this.imagesLoaded = true;
@@ -454,24 +450,23 @@ export default {
         return;
       }
 
-      images.forEach((img, index) => {
+      const markImageDone = (src, type) => {
+        imagesLoadedCount++;
+        console.log(`📸 Bild ${type}:`, src, `${imagesLoadedCount}/${totalImages}`);
+        if (imagesLoadedCount === totalImages) {
+          this.imagesLoaded = true;
+          this.checkLoadingState();
+        }
+      };
+
+      images.forEach((img) => {
         if (img.complete) {
-          imagesLoadedCount++;
+          markImageDone(img.src, "complete");
         } else {
-          img.addEventListener('load', () => {
-            imagesLoadedCount++;
-            if (imagesLoadedCount === totalImages) {
-              this.imagesLoaded = true;
-              this.checkLoadingState();
-            }
-          });
+          img.addEventListener("load", () => markImageDone(img.src, "load"));
+          img.addEventListener("error", () => markImageDone(img.src, "error"));
         }
       });
-
-      if (imagesLoadedCount === totalImages) {
-        this.imagesLoaded = true;
-        this.checkLoadingState();
-      }
     },
 
     toggleNavbar() {
@@ -483,36 +478,19 @@ export default {
       localStorage.theme = this.mode;
     },
 
-   async logoutUser() {
-
-    try {
-        await this.$inertia.post(this.route('logout'));
-
-        // // Logout erfolgreich → einmaliges Reload
-        // if (!sessionStorage.getItem('needsReload')) {
-        //     sessionStorage.setItem('needsReload', '1');
-        //     window.location.reload();
-        // } else {
-        //     sessionStorage.removeItem('needsReload');
-        // }
-
-        } catch (e) {
-        console.error(e);
-        }
-
+    logoutUser() {
+      this.$inertia.post(this.route("logout"));
     },
 
-    // Startet 3-Sekunden-Timeout, wenn der Nutzer mit Tippen aufhört
     startSearchTimeout() {
       clearTimeout(this.searchTimeout);
       this.searchTimeout = setTimeout(() => {
-        if (this.search.trim() !== '') {
+        if (this.search.trim() !== "") {
           this.setLoadingState(true);
         }
       }, 3000);
     },
 
-    // Bei Eingabe im Suchfeld
     onSearchInput(event) {
       this.search = event.target.value;
       this.startSearchTimeout();

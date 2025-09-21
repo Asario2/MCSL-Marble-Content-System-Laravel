@@ -905,7 +905,8 @@ if(!function_exists("SD"))
                "dag"=>"Monika Dargies",
                 "mfx"=>"MarbleFX",
                 "mjs"=>"Mitja Schult",
-                "chh"=>"Rechtsanwalt Christian Henning"];
+                "chh"=>"Rechtsanwalt Christian Henning",
+                "mail"=>"MCSL Mail Service"];
         switch($subb){
             case "asario":
                 $subb = "ab";
@@ -953,7 +954,7 @@ if(!function_exists("SD"))
         if(!$pn){
             return $subb;
         }
-        return $pm[$subb];
+        return @$pm[$subb];
     // Den Host in Teile aufteilen (subdomain.localhost.de -> ['subdomain', 'localhost', 'de'])
 
 

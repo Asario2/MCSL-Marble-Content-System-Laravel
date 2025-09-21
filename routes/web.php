@@ -183,14 +183,16 @@ Route::get('/home/privacy', [HomeController::class, 'home_privacy'])->name('home
         Route::get('/home/privacy_info', [HomeController::class, 'infos_privacy'])->name('home.privacy.mfx');
 
         Route::get('/home/infos', [HomeController::class, 'infos_index'])->name('home.infos.mfx');
-        Route::get('/home/contacts', [HomeController::class, 'contacts_mfx'])->name('home.contacts.mfx');
+
         Route::get('/home/infos/show/{id}', [HomeController::class, 'infos_show'])->name('home.infos.show.mfx');
 		// Route::get('/home/privacy', [HomeController::class, 'infos_privacy'])->name('home.privacy');
         Route::get('/powered-by-mcsl', [HomeController::class, 'infos_pow'])->name('home.powered.show.mfx');
         Route::get('/dashboard', function () {
             return redirect('/admin/dashboard');
         })->name('dashboard');
+        Route::get('/contacts_mfx', [HomeController::class, 'contacts_mfx'])->name('home.contacts.mfx');
     });
+
     Route::get('/api/table-columns/{table}', [TablesController::class, 'getTableColumns'])
     ->name('api.table-columns');
     Route::get('/login', [CustomLoginController::class, 'showLoginForm'])->name('login');

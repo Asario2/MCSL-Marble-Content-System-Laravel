@@ -7,7 +7,7 @@
     $subdomain = SD(); // z.B. "foo", "bar"
     $pagen = SD("pn");
     $favicon = "/images/_{$subdomain}/web/alogo.png";
-    $ahost = $_SERVER['HTTP_HOST'];
+    $ahost = request()->getHost();
 
     // Fallback, falls Datei nicht existiert
     if (!file_exists(public_path($favicon))) {
