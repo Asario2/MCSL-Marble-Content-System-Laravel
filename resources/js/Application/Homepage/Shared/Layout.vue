@@ -93,6 +93,7 @@
             <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 xl:col-span-2 xl:mt-0">
               <div class="md:grid md:grid-cols-2 md:gap-4">
                 <!-- Webseite -->
+
                 <div class="text-center md:text-left">
                   <h3 class="text-sm font-semibold leading-6 px-2">Webseite</h3>
                   <ul role="list" class="mt-6 space-y-4 list-none">
@@ -118,9 +119,7 @@
               <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-xs">
                 <brand-footer />
                 <div class="flex gap-2">
-                  <!-- <a href="https://www.facebook.de" target="_blank"><icon-facebook class="w-6 h-6" /></a>
-                  <a href="https://www.xing.de" target="_blank"><icon-xing class="w-6 h-6" /></a>
-                  <a href="https://whatsapp.com" target="_blank"><icon-whatsapp class="w-6 h-6" /></a> -->
+                  <!---->
                 </div>
               </div>
               <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-xs mt-2">
@@ -156,7 +155,7 @@
     name: "Homepage_Shared_Layout",
     components: {
       MetaHeader,
-      BrandHeader,
+      BrandHeader,  
       LinkHeader,
       BrandFooter,
       LinkFooter,

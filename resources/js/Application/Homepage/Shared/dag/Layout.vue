@@ -26,6 +26,8 @@
             <div class="container mx-auto max-w-6xl p-6 pb-0 lg:flex lg:items-center lg:justify-between trans" style='z-index:50;'>
                 <div class="flex items-center justify-between ">
                 <!-- <brand-header :route-name="route('home.index')" :brand_1="$page.props.applications.brand_name_1" :brand_2="$page.props.applications.brand_name_2" :app-name="$page.props.applications.app_name"></brand-header> -->
+                <a href="/"><dag_logo></dag_logo></a>
+                
                 <!-- Mobile menu button -->
                 <div class="flex lg:hidden">
                     <button v-on:click="toggleNavbar()" type="button" class="focus:outline-none text-primary-sun-1000 hover:text-primary-sun-800 focus:text-primary-sun-800 dark:text-primary-night-1000 dark:hover:text-primary-night-800 dark:focus:text-primary-night-800" aria-label="toggle menu">
@@ -140,7 +142,7 @@
     import { useLoadingStore } from '@/loading';
     import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
     import BrandHeader from "@/Application/Shared/BrandHeader.vue";
-    import mfxlogo from "@/Application/Shared/mfxlogo.vue";
+    import daglogo from "@/Application/Shared/daglogo.vue";
     import Dropdown from "@/Application/Components/Content/Dropdown.vue";
     import DropdownLink from "@/Application/Components/Content/DropdownLink.vue";
     import LinkHeader from "@/Application/Shared/LinkHeader_mfx.vue";
@@ -172,7 +174,7 @@
         LinkFooter,
         Toast,
         IconMCSL,
-        mfxlogo,
+        daglogo,
         IconMenu,
         Dropdown,
         DropdownLink,

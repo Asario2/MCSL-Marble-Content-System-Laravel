@@ -361,7 +361,7 @@ class ImageUploadController extends Controller
 
             // Subdomain (erstes Segment des Hostnames)
             $host = $request->getHost();
-            $subdomain = explode('.', $host)[0] ?? 'default';
+            $subdomain = explode('.', str_replace("www.","",$host))[0] ?? 'default';
 
             // Zielverzeichnis im public-Ordner
             $folder = public_path("images/_{$subdomain}/users/profile_photo_path");
@@ -369,7 +369,7 @@ class ImageUploadController extends Controller
             // Ordner anlegen, falls nicht vorhanden
             if (!File::exists($folder)) {
                 // 0755; setze recursive true
-                File::makeDirectory($folder, 0755, true);
+                File::makeDirectory($folder, 0777, true);
             }
 
             // Alten File löschen (falls vorhanden)

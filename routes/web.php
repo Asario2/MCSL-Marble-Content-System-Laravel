@@ -194,7 +194,7 @@ Route::get('/home/privacy', [HomeController::class, 'home_privacy'])->name('home
     Route::get('/api/table-columns/{table}', [TablesController::class, 'getTableColumns'])
     ->name('api.table-columns');
     Route::get('/login', [CustomLoginController::class, 'showLoginForm'])->name('login');
-
+    Route::get('/home/contacts', [HomeController::class, 'contacts'])->name('home.contacts');
     // Login absenden
     Route::post('/login', [CustomLoginController::class, 'login']);
     Route::post('/logout', [CustomLoginController::class, 'logout'])
