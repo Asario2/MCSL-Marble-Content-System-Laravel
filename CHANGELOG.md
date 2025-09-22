@@ -85,6 +85,6 @@
 ![Version](https://img.shields.io/badge/version-2.93.4-orange) Hotfix - fix bug in privacy/imprint handling (#140)  
 ![Version](https://img.shields.io/badge/version-2.94.9-orange) Hotfix - Search on tables/show (#141)  
 ![Version](https://img.shields.io/badge/version-2.95.6-orange) Hotfix - image on profiles Bug (#142)  
-![Version](https://img.shields.io/badge/version-2.96.7-orange) Bug - Admin/Layout.vue no logo on dag page (#143) 
+![Version](https://img.shields.io/badge/version-2.96.7-orange) Bug - Admin/Layout.vue no logo on dag page (#143)    
 ![Version](https://img.shields.io/badge/version-2.97.3-orange) Hotfix - fixed several Bugs in Layouts (#144)  
   
