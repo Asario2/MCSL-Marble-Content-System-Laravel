@@ -79,4 +79,12 @@
 ![Version](https://img.shields.io/badge/version-2.87.6-orange) BUG Fixed evil bugs in tailwind css modules (#108)  
 ![Version](https://img.shields.io/badge/version-2.88.9-orange) BUGs in profile, Darkmode, Admin Panel & Co. (#110)   
 ![Version](https://img.shields.io/badge/version-2.89.2-orange) Feature - add user icon on table/show (#123)  
-![Version](https://img.shields.io/badge/version-2.90.0-orange) Feature - Administration Cards by table (#68)  
+![Version](https://img.shields.io/badge/version-2.90.0-orange) BUG - fixed bugs in tableform.vue (#126)  
+![Version](https://img.shields.io/badge/version-2.91.4-orange) BUG - MetaHeader not found on Privacy.vue (#137)  
+![Version](https://img.shields.io/badge/version-2.92.2-orange) Hotfix - Route should exists (#139)    
+![Version](https://img.shields.io/badge/version-2.93.4-orange) Hotfix - fix bug in privacy/imprint handling (#140)  
+![Version](https://img.shields.io/badge/version-2.94.9-orange) Hotfix - Search on tables/show (#141)  
+![Version](https://img.shields.io/badge/version-2.95.6-orange) Hotfix - image on profiles Bug (#142)  
+![Version](https://img.shields.io/badge/version-2.96.7-orange) Bug - Admin/Layout.vue no logo on dag page (#143) 
+![Version](https://img.shields.io/badge/version-2.97.3-orange) Hotfix - fixed several Bugs in Layouts (#144)  
+  
