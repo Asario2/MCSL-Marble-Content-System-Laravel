@@ -17,7 +17,7 @@
                     </div>
 
                     <!-- Rechte Spalte: Spruch des Monats -->
-                    <div class="col-span-12 md:col-span-3 flex flex-col gap-4">
+                    <div class="phid col-span-12 md:col-span-3 flex flex-col gap-4">
                         <Poems :quotes="quotes" :rumLaut="rumLaut" />
                     </div>
                 </div>
@@ -126,4 +126,9 @@ P{
     background-color:rgba(0,0,0,0) !important;
 }
 
+@media (max-width: 1023px) {
+    .phid{
+display:none !important;
+}
+  }
 </style>

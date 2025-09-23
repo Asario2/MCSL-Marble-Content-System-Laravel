@@ -296,7 +296,6 @@
     </main>
   </template>
 <script>
-alert("sadddddd2222ddddd222222222222d");
 import axios from "axios";
 import { router } from "@inertiajs/vue3";
 import { useLoadingStore } from "@/loading";

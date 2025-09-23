@@ -1,6 +1,6 @@
 <template>
     <div :class="['ai-button', big ? 'big' : 'small', bigger ? 'bigger' : '']" @click.stop>
-        <a href="/home/ai">
+        <a :href="AiRoute">
             <img :key="localDma" :src="'/images/icons/ai-' + (localDma || 'dark') + '.png'"
                  alt="Made with AI"
                  title="Made with AI"
@@ -16,12 +16,19 @@ export default {
     props: {
         big: Boolean,
         bigger: Boolean,
-        dma: String
+        dma: String,
+        nohome: Boolean,
     },
     computed: {
         localDma() {
             return this.dma || 'dark';
-        }
+        },
+        AiRoute(){
+            if(this.nohome){
+                return "/ai";
+            }
+            return "/home/ai";
+        },
     },
     methods: {
         handleImageError(event) {

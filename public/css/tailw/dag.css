@@ -4,6 +4,26 @@
 
 
 }
+.dark\:bg-layout-night-200t:is(.dark *){
+    background-color: rgba(218, 83, 14,0.8) !important;
+    border-radius:5px !important;
+
+
+}
+/* .dark\:bg-layout-night-100  :is(.dark *){
+    background-color: rgb(218, 83, 14) !important;
+} */
+/* .dark\:bg-layout-night-0 :is(.dark *){
+    background-color: rgb(218, 83, 14) !important;
+} */
+.dark .dark\:bg-layout-night-100 {
+    background-color: rgb(218, 83, 14) !important;
+  }
+
+  .dark .dark\:bg-layout-night-0 {
+    background-color: rgb(218, 83, 14) !important;
+  } 
+
 .dark\:bg-layout-night-2000:is(.dark *) {
     background-color: rgba(218, 83, 14,0.1) !important;
     border-radius:5px !important;

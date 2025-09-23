@@ -25,7 +25,7 @@
                     <h2 v-html="contacts.headline" class="text-xl font-semibold mb-2"></h2>
                     <p v-html="rumLaut(contacts.text)" class="text-layout-sun-900 dark:text-layout-night-900"></p>
                     <div class="relative">
-                    <img :src="'/images/_mfx/web/contacts_ai.jpg'" class="mx-auto mw-[100%] mt-[12px] ai-image-corner"/><AiButton :dma="dmaa"></AiButton>
+                    <img :src="'/images/_mfx/web/contacts_ai.jpg'" class="mx-auto mw-[100%] mt-[12px] ai-image-corner"/><AiButton :nohome="true" :dma="dmaa"></AiButton>
                 </div>
                 </div>
 
