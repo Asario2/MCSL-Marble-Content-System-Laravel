@@ -68,7 +68,7 @@
 
                   <a class="ddl " href="/"><div>Startseite</div></a><br />
                   <a class="ddl " href="/lostnfound"><div>Lost &amp; Found</div></a><br />
-                  <a class="ddl " href="https://www.phpgedview.monikadargies.de/index.php" target="_pgv"><div>Ahnenforschungstool</div></a><br />
+                  <a class="ddl " href="https://www.monikadargies.de/webtrees" target="_pgv"><div>Ahnenforschungstool</div></a><br />ysad
                   <a class="ddl " href="https://www.ancestry.de/family-tree/tree/69588419/family/pedigree?cfpid=48202672474&selnode=1" target="_anc"><div>Ancestry.de</div></a><br />
                   <a class="ddl " href="/links"><div>Links</div></a><br />
                 </div>
@@ -83,7 +83,7 @@
                   <ul class="navv flex space-x-6">
                     <li><a href="/" class="clo cl1"><div class="hd">Startseite</div></a></li>
                     <li><a href="/lostnfound" class="clo cl2"><div class="hd">Lost &amp; Found</div></a></li>
-                    <li><a href="https://www.phpgedview.monikadargies.de/index.php" class="clo cl3" target="_pgv"><div class="hd">Ahnenforschungstool</div></a></li>
+                    <li><a href="https://www.monikadargies.de/webtrees" class="clo cl3" target="_pgv"><div class="hd">Ahnenforschungstool</div></a></li>
                     <li><a href="https://www.ancestry.de/family-tree/tree/69588419/family/pedigree?cfpid=48202672474&selnode=1" class="clo cl4" target="_anc"><div class="hd">Ancestry.de</div></a></li>
                     <li><a href="/links" class="clo cl5"><div class="hd">Links</div></a></li>
                   </ul>

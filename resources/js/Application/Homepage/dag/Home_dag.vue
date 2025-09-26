@@ -9,10 +9,7 @@
                     <div class="col-span-12 md:col-span-9">
                         <h1 class="text-black blackcan">Willkommen liebe Besucher</h1>
                         <b>
-                            Mein Name ist Monika Dargies, geb.Mai, komme aus Bad Bramstedt und betreibe Familienforschung seit 2005.<br /><br />
-                            Die genealogischen Informationen dieser Homepage werden privat zusammengetragen und ich bitte darum, dass diese nicht einfach nur abgeschrieben werden. Ich freue mich über jeden, der mir eine Email schreibt zwecks Datenaustausch.<br /><br />
-                            Meine Vorfahren stammen väterlicherseits "Mai" aus Schlesien, "Williges" aus Helsa und mütterlicherseits "Hagemann" aus Vorpommern, "Meyn" aus Haseldorfer Marsch. Des Weiteren ist die Familie meines Mannes Dargies/Fago aus Ostpreussen vertreten.<br /><br />
-                            Ein besonderer Dank gilt Asario, der diese Website für mich erstellt hat.
+                        <span v-html="rumLaut(text)"></span>
                         </b>
                     </div>
 

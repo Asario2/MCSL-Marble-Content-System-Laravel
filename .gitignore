@@ -18,6 +18,7 @@ vendor/
 # Ausnahme: bestimmte Datei tracken
 !vendor/laravel/jetstream/**
 !vendor/laravel/framework/src/Illuminate/Http/**
+!public/css/webfonts/**
 .env.backup
 .env.production
 .phpunit.result.cache

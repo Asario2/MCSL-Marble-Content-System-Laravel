@@ -42,7 +42,10 @@ class HomeController extends Controller
         return Inertia::render('Homepage/AiContent', ["data" => [$data]]); // <-- in Array umwandeln
     }
     public function home_dag(){
-        return Inertia::render('Homepage/dag/Home_dag');
+        $text  = DB::table("texts")->where("type","dag_home")->select("text")->first();
+        return Inertia::render('Homepage/dag/Home_dag', [
+            'text' => $text ? $text->text : null, // sicheres Array
+        ]);
     }
     public function lostnfound(){
         $data = DB::table("lostnfound")->where("pub","1")->select('typ','headline','message')->get();

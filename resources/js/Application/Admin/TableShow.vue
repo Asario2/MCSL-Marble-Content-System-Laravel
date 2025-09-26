@@ -100,7 +100,7 @@
 
             <!-- Name -->
             <td class="np-dl-td-normal break-words whitespace-normal max-w-[600px]">
-              <span v-html="ucf(data.datarow.name)"></span>
+              <span v-html="rumLaut(data.datarow.name)"></span>
             </td>
 
             <!-- User bei Kommentaren -->
@@ -133,7 +133,7 @@
               class="np-dl-td-normal break-words whitespace-normal"
               v-if="table !== 'comments' && table != 'ratings' && table != 'projects_sheets'"
             >
-              <span v-html="data.datarow.description"></span>
+              <span v-html="rumLaut(data.datarow.description)"></span>
             </td>
 
             <!-- Ratings -->
@@ -171,7 +171,7 @@
   import ListContainer from "@/Application/Components/Lists/ListContainer.vue";
   import PublishButton from "@/Application/Components/Form/PublishButton.vue";
   import IconStar from "@/Application/Components/Icons/IconStar.vue";
-  import { CleanTable, ucf, SD, GetSettings } from "@/helpers";
+  import { CleanTable, ucf, SD, GetSettings, rumLaut} from "@/helpers";
   import Sortable from "sortablejs";
   import axios from "axios";
 
@@ -273,6 +273,7 @@
       CleanTable,
       ucf,
       SD,
+      rumLaut,
 
       async removeItem() {
         try {
