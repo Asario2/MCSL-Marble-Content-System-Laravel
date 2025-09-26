@@ -92,7 +92,7 @@
             :namee="value"
             :namee2="name"
             :Message="true"
-
+            :isModalOpen="modals[field.name]"
             @insertImage="insertImage"
             @close="closeModal"
             @uploaded="insertImageIntoEditor"
@@ -148,6 +148,7 @@
         return {
             isFocused: false,
             isModalOpen: false,
+            modals: [],
             nf2: null,
             settings: {},
             savedRange: null,
@@ -276,7 +277,7 @@ requestAnimationFrame(() => {
   const range = sel.getRangeAt(0);
   if (range.collapsed && !['email', 'link'].includes(format)) return;
 
-  const selectedText = range.toString();
+  const selectedText = range ? range.toString() : '';
 
   const parent = range.commonAncestorContainer.nodeType === 3
     ? range.commonAncestorContainer.parentNode
@@ -412,10 +413,12 @@ restoreSelection() {
   openModal_alt2() {
     this.saveSelection();
     this.isModalOpen = true;
+    this.modals[this.name] = true;
   },
 
   closeModal() {
     this.isModalOpen = false;
+    this.modals[this.name] = false;
   },
   insertImageIntoEditor(imageUrl) {
         const editor = this.$refs.editor;

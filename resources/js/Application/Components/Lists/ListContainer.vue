@@ -135,6 +135,7 @@ import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
 import { hasRight } from "@/utils/rights";
+import { safeInertiaGet,safeInertiaVisit } from '@/utils/inertia';
 
 export default {
     name: "Contents_Lists_ListContainer",
@@ -259,7 +260,7 @@ export default {
                             [this.routeParamName]: this.routeParamValue,
                         }),
                     };
-                    this.$inertia.get(url, params, { preserveState: true });
+                    safeInertiaGet(url ?? '', params ?? '', { preserveState: true });
                 }
             }, 0),
             deep: true,
@@ -289,7 +290,7 @@ export default {
     onDragStart(event, index) {
     if (!this.rows[index]) return;
     event.dataTransfer.effectAllowed = "move";
-    event.dataTransfer.setData("text/plain", index.toString());
+    event.dataTransfer.setData("text/plain", index ? index.toString() : '');
   },
 
   onDrop(event, dropIndex) {
@@ -460,7 +461,7 @@ async pstate(){
   };
 },
         editDataRow(id) {
-            this.$inertia.visit(`/admin/tables/edit/${id}/${this.tableq}`, {
+            safeInertiaVisit(`/admin/tables/edit/${id}/${this.tableq}`, {
             preserveScroll: true,
             preserveState: false, // <- Wichtig: sorgt für kompletten reload
             });

@@ -54,7 +54,7 @@
         }
 
         // Konvertiere zu Float und ersetze Dezimaltrennzeichen
-        let floatValue = parseFloat(value.toString().replace(",", "."));
+        let floatValue = parseFloat(value ? value.toString().replace(",", "."):'');
         // console.log("PARSE FLOAT:", floatValue);
 
         if (!isNaN(floatValue)) {

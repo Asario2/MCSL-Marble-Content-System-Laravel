@@ -171,7 +171,9 @@
   import ListContainer from "@/Application/Components/Lists/ListContainer.vue";
   import PublishButton from "@/Application/Components/Form/PublishButton.vue";
   import IconStar from "@/Application/Components/Icons/IconStar.vue";
-  import { CleanTable, ucf, SD, GetSettings, rumLaut} from "@/helpers";
+  import { CleanTable, ucf, SD, GetSettings, rumLaut } from "@/helpers";
+  import { safeInertiaGet } from '@/utils/inertia';
+
   import Sortable from "sortablejs";
   import axios from "axios";
 
@@ -250,7 +252,7 @@
     },
     watch: {
     searchValue(newVal) {
-        this.$inertia.get(route('admin.tables.show', this.table_q), { search: newVal }, { preserveState: true, replace: true });
+        safeInertiaGet(route('admin.tables.show', this.table_q ?? ''), { search: newVal ?? '' }, { preserveState: true, replace: true });
     }
     },
 

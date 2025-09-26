@@ -448,7 +448,7 @@
         SD,
         setLoadingState(state) {
         this.isLoading = state;
-        localStorage.setItem('loading', state.toString());
+        localStorage.setItem('loading', state ? state.toString():'');
         },
         reopenCookieBanner() {
             window.LaravelCookieConsent.reset();

@@ -240,7 +240,7 @@ export default {
                 this.form.photo = this.$refs.photoInput.files[0];
             }
 
-            this.form.post(route("user-profile-information.update"), {
+            this.form.post(route("user-profile-information.update_alt"), {
                 errorBag: "updateProfileInformation",
                 preserveScroll: true,
                 forceFormData: true,

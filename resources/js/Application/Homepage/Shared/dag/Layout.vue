@@ -294,7 +294,7 @@
 
       setLoadingState(state) {
         this.isLoading = state;
-        localStorage.setItem('loading', state.toString());
+        localStorage.setItem('loading',  state ? state.toString():'');
       },
 
       checkLoadingState() {

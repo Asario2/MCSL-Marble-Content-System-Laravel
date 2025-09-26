@@ -29,7 +29,7 @@ const updateProfileInformation = () => {
         form.photo = photoInput.value.files[0];
     }
 
-    form.post(route("user-profile-information.update"), {
+    form.post(route("user-profile-information.update_alt"), {
         errorBag: "updateProfileInformation",
         preserveScroll: true,
         onSuccess: () => clearPhotoFileInput(),
@@ -135,7 +135,7 @@ const clearPhotoFileInput = () => {
                 >
                     Remove Photo
                 </SecondaryButton>
-                
+
                 <InputError :message="form.errors.photo" class="mt-2" />
             </div>
 
