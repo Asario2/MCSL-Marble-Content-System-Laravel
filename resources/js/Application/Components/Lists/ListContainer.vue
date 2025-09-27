@@ -42,11 +42,11 @@
                     <tbody v-if="numberOfRows > 0">
                     <!-- Draggable rows -->
                     <template v-for="(row, index) in rows" :key="'draggable-' + row.id">
-                    <tr v-if="row.position !== null && row.position !== undefined"
-                        draggable="true"
-                        @dragstart="onDragStart($event, index)"
-                        @dragover.prevent
-                        @drop="onDrop($event, index)"
+                        <tr v-if="row.position !== null && row.position !== undefined"
+                        :draggable="this.CleanTable() !== ''"
+                        @dragstart="this.CleanTable() !== '' && onDragStart($event, index)"
+                        @dragover.prevent="this.CleanTable() !== ''"
+                        @drop="this.CleanTable() !== '' && onDrop($event, index)"
                         class="cursor-move hover:dark:bg-gray-800 hover:bg-gray-800">
 
                         <slot name="datarow" :datarow="row" />
@@ -221,7 +221,13 @@ export default {
 
     },
     computed: {
-
+        drg(){
+            if(CleanTable()){
+                alert("CLT");
+                return true;
+            }
+            return false;
+        },
 
         numberOfRows() {
             if (Array.isArray(this.datarows.data)) {
@@ -278,6 +284,7 @@ export default {
   },
     },
     methods: {
+        CleanTable,
         initRows() {
       this.currentPage = this.datarows.current_page || 1
       this.perPage = this.datarows.per_page || 20

@@ -71,7 +71,9 @@
         <!-- additional Scripts -->
         {{-- <script src="{{ mix('resources/js/user.js') }}"></script> --}}
         <!-- https://github.com/whitecube/laravel-cookie-consent -->
-        @cookieconsentscripts
+
+
+
     </head>
 
     <body class="font-sans antialiased">
@@ -79,14 +81,16 @@
 
         @routes
         @inertia
-
         <!-- https://github.com/whitecube/laravel-cookie-consent -->
         @cookieconsentview
+        @cookieconsentscripts
+
         <script>
             @if(session('force_reload'))
                 sessionStorage.setItem("force_reload", "true");
             @endif
         </script>
+
     </body>
 
     </html>

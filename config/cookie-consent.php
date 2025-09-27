@@ -8,6 +8,8 @@ return [
         'secure' => false,
         'http_only' => false,
         'same_site' => 'lax', // ← Ändern!
+        'domain' => '.marblefx.net', // Punkt vor der Domain = alle Subdomains
+
     ],
 
 

@@ -57,7 +57,7 @@ class ImageUploadController extends Controller
     }
 
     $subdomain = SD();
-    $Message = $request->Message == "1modal";
+    $Message = $request->Message == "1";
     \Log::info("POST",$request->all());
     $path = $request->ulpath;
     if ($path === "undefined" || empty($path)) $path = '';

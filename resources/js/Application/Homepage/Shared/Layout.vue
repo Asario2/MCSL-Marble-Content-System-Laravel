@@ -346,6 +346,7 @@
     import { SD } from "@/helpers";
     import { ref } from "vue";
 
+
     export default {
       name: "Homepage_Shared_Layout",
 
@@ -395,7 +396,7 @@
         if (shouldReload) {
           localStorage.removeItem("reload_dashboard");
         }
-
+        this.waitForConsent();
         // URL-Parameter auslesen
         const urlParams = new URLSearchParams(window.location.search);
         const searchParam = urlParams.get("search");
@@ -439,7 +440,13 @@
         if (this.isLoading) {
           localStorage.setItem("loading", "true");
         }
-      },
+        this.$nextTick(() => {
+        if (window.LaravelCookieConsent) {
+            console.log("CookieConsent ready");
+        }
+        });
+
+        },
 
       methods: {
         SD,
@@ -450,11 +457,31 @@
           localStorage.setItem("loading", state ? state.toString() : '');
         },
 
-        reopenCookieBanner() {
-          if (window.LaravelCookieConsent) {
-            window.LaravelCookieConsent.reset();
-          }
+        waitForConsent(callback) {
+            const interval = setInterval(() => {
+            if (window.LaravelCookieConsent) {
+                clearInterval(interval);
+                console.log("Consent ready");
+                if (callback) callback();
+            }
+            }, 50);
         },
+        openCookieBanner() {
+            // Sicherstellen, dass das Script geladen ist
+            this.$nextTick(() => {
+                if (window.LaravelCookieConsent && typeof window.LaravelCookieConsent.show === 'function') {
+                window.LaravelCookieConsent.reset();
+                } else {
+                console.warn("CookieConsent noch nicht geladen");
+                }
+            });
+
+        },
+        reopenCookieBanner() {
+        if (window.LaravelCookieConsent && typeof window.LaravelCookieConsent.reset === 'function') {
+          window.LaravelCookieConsent.reset();
+        }
+      },
 
         checkLoadingState() {
           console.log("🔍 checkLoadingState()", {

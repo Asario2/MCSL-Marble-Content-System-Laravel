@@ -218,10 +218,9 @@ const logout = () => {
                                         >
                                             <img
                                                 class="h-8 w-8 rounded-full object-cover"
-                                                :src="
-                                                    $page.props.auth.user
-                                                        .profile_photo_url.replace('public','')
-                                                "
+                                                :src="`/images/_${SD()}/users/profile_photo_path/` +
+                                                $page.props.auth.user?.profile_photo_url.replace('public','').replace('http://localhost/images/','').replace('images/images/','images/') || '/images/profile-photos/008.jpg'
+                                                    "
                                                 :alt="
                                                     $page.props.auth.user.name
                                                 "

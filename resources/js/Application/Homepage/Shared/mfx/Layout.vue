@@ -57,7 +57,9 @@
                 <img
                     id="prof_pic"
                     class="h-8 w-8 rounded-full object-cover"
-                    :src="$page.props.auth.user?.profile_photo_url || '/images/profile-photos/008.jpg'"
+                    :src="`/images/_${SD()}/users/profile_photo_path/` +
+                                                $page.props.auth.user?.profile_photo_url.replace('public','').replace('http://localhost/images/','').replace('images/images/','images/') || '/images/profile-photos/008.jpg'
+                                                    "
                     :alt="$page.props.userdata.full_name"
                 /></link-header><br />
                 <hr />
@@ -88,8 +90,8 @@
                                             <img
                                             id="prof_pic"
                                             class="h-8 w-8 rounded-full object-cover"
-                                                :src="
-                                               $page.props.auth.user?.profile_photo_url.replace('public','').replace('images/images/','images/') || '/images/profile-photos/008.jpg'
+
+                                               :src="'/images/_' + SD() + '/users/profile_photo_path/'+ $page.props.auth.user.profile_photo_url.replace('public','')
                                                 "
                                                 :alt="
                                                     $page.props.userdata

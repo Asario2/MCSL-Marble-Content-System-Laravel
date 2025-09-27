@@ -269,7 +269,10 @@
                         <link-footer name="Kontakt" :route-name="route('home.contacts')"></link-footer>
                         </li>
                         <li>
-                            <link-footer @click="reopenCookieBanner"><b>Cookie-Einstellungen</b></link-footer>
+                            <LinkFooter @click="reopenCookieBanner">
+                            <b>Cookie-Einstellungen</b>
+                            </LinkFooter>
+                            
                         </li>
                     </ul>
                     </div>
@@ -296,7 +299,7 @@
                         <brand-footer></brand-footer>
                     </div>
                     <div>
-                        <link-footer>
+                        <!-- <link-footer>
                         <a href="https://www.facebook.com" target="_blank" class="bg-layout-sun-0 dark:bg-layout-night-0">
                             <icon-facebook class="flex-shrink-0 w-6 h-6"></icon-facebook>
                         </a>
@@ -310,7 +313,7 @@
                         <a href="https://youtube" target="_blank" class="bg-layout-sun-0 dark:bg-layout-night-0">
                             <icon-youtube class="flex-shrink-0 w-6 h-6"></icon-youtube>
                         </a>
-                        </link-footer>
+                        </link-footer> -->
                     </div>
                     </div>
 
@@ -451,13 +454,12 @@
         localStorage.setItem('loading', state ? state.toString():'');
         },
         reopenCookieBanner() {
-            window.LaravelCookieConsent.reset();
-            //   // Whitecube-API aufrufen, wenn verfügbar
-        //   if (window.CookieConsent && typeof window.CookieConsent.showBanner === "function") {
-        //     window.CookieConsent.showBanner();
-        //   } else {
-        //     console.log("Whitecube CookieConsent API nicht gefunden.");
-        //   }
+            console.log("test");
+            console.log(window.LaravelCookieConsent);
+
+            if (window.LaravelCookieConsent && typeof window.LaravelCookieConsent.reset === 'function') {
+            window.LaravelCookieConsent.show();
+            }
         },
         checkLoadingState() {
         if (this.pendingRequests === 0 && this.imagesLoaded) {

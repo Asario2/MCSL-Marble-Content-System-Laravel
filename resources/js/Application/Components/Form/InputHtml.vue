@@ -191,9 +191,17 @@
         },
         watch: {
             modelValue(newVal) {
-                if (this.$refs.editor && this.$refs.editor.innerHTML !== newVal) {
-                this.$refs.editor.innerHTML = this.decodeBrackets(rumLaut(newVal));
-                this.setCursorAtEnd();
+                const editor = this.$refs.editor;
+                if (!editor) return;
+
+                const currentHtml = editor.innerHTML;
+                const decodedNewVal = this.decodeEntities(newVal);
+                decodedNewVal = this.rumLaut(newVal);
+                // Nur updaten, wenn sich was geändert hat
+                if (currentHtml !== decodedNewVal) {
+                this.saveSelection();
+                editor.innerHTML = decodedNewVal;
+                this.restoreSelection();
                 }
             },
                     },
@@ -236,15 +244,20 @@
     return this.settings?.exl?.[name] ?? name;
   },
 
-  updateValue() {
-    let html = this.$refs.editor.innerHTML;
-    html = rumLaut(this.decodeBrackets(html));
-    this.$emit('update:modelValue', html);
-    if (this.name && document.getElementById(this.name + "_alt")) {
+  onInput() {
+  this.updateValue();
+},
+updateValue() {
+  let html = this.$refs.editor.innerHTML.trim();
+  html = rumLaut(this.decodeBrackets(html));
+  this.$emit('update:modelValue', html);
+
+  this.hasError = html.replace(/<[^>]*>/g, '').trim().length === 0;
+
+  if (this.name && document.getElementById(this.name + "_alt")) {
     document.getElementById(this.name + "_alt").value = html;
-}
-    // document.getElementById(this.name + "_alt").value = html;
-    },
+  }
+},
 
   setCursorAtEnd() {
     const el = this.$refs.editor;
@@ -388,18 +401,18 @@ selectionHelper.restore();
 
   },
   saveSelection() {
-  const sel = window.getSelection();
-  if (sel && sel.rangeCount > 0) {
-    this.savedRange = sel.getRangeAt(0).cloneRange();
-  }
-},
-restoreSelection() {
-  const sel = window.getSelection();
-  sel.removeAllRanges();
-  if (this.savedRange) {
-    sel.addRange(this.savedRange);
-  }
-},
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      this.savedRange = sel.getRangeAt(0).cloneRange();
+    }
+  },
+  restoreSelection() {
+    if (this.savedRange) {
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(this.savedRange); // keine collapse()!
+    }
+  },
   AddHr() {
     const hr = document.createElement("hr");
     const range = this.getSelection();
@@ -481,12 +494,12 @@ restoreSelection() {
         this.insertImageIntoEditor(imageUrl);
       },
 
-      onInput(e) {
-        let html = e.target.innerHTML.trim();
-        html = this.decodeBrackets(html);
-        this.$emit('update:modelValue', html);
-        this.hasError = html.replace(/<[^>]*>/g, '').trim().length === 0;
-        },
+    //   onInput(e) {
+    //     let html = e.target.innerHTML.trim();
+    //     html = this.decodeBrackets(html);
+    //     this.$emit('update:modelValue', html);
+    //     this.hasError = html.replace(/<[^>]*>/g, '').trim().length === 0;
+    //     },
 
     get content() {
       return this.modelValue;
