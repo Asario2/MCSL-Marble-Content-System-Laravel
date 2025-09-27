@@ -252,7 +252,7 @@
     },
     watch: {
     searchValue(newVal) {
-        safeInertiaGet(route('admin.tables.show', this.table_q ?? ''), { search: newVal ?? '' }, { preserveState: true, replace: true });
+      safeInertiaGet(route('admin.tables.show', this.table_q ?? ''), { search: newVal ?? '' }, { preserveState: true, replace: true });
     }
     },
 

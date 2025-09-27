@@ -257,7 +257,7 @@
                     <button type="button" @click="openModal(field.name)">
                         <img
                             :src="getPreviewSrc(field)"
-                            width="100"
+                            class="max-w-[100px] object-contain"
                             alt="Vorschau2"
                             :id="'com_'+field.name"
                         />
@@ -918,27 +918,37 @@ export default defineComponent({
         },
 
         async getOF() {
-            const path = window.location.pathname;
-            this.xid = CleanId();
-            this.xtable = CleanTable();
-            try {
-                const response = await axios.get(`/api/images/${this.xtable}/${this.xid}`);
-                this.nf = response.data;
+        this.xid = CleanId();
+        this.xtable = CleanTable();
 
-                if(document.getElementById(this.column) && document.getElementById(this.column).value != "008.jpg"){
-                    this.nf = document.getElementById(this.column).value;
-                }
-                else if(this.nf === "[]") {
-                    this.nf = this.ffo[this.column]['value'];
-                }
-                else {
-                    this.nf = this.ffo[this.column]['value'];
-                }
-                return this.nf;
-            } catch (error){
-                console.error("Not fetchable");
+        try {
+            // API call
+            const response = await axios.get(`/api/images/${this.xtable}/${this.xid}`);
+            let apiValue = response.data;
+
+            // DOM-Wert prüfen
+            const domEl = document.getElementById(this.column);
+            let domValue = domEl ? domEl.value : null;
+
+            // Default-Wert aus ffo
+            let defaultValue = this.ffo?.[this.column]?.['value'] ?? '';
+
+            // Entscheidung: Priorität DOM > API > Default
+            if (domValue && domValue !== "008.jpg") {
+            this.nf = domValue;
+            } else if (apiValue && apiValue !== "[]" && apiValue !== null) {
+            this.nf = apiValue;
+            } else {
+            this.nf = defaultValue;
             }
+
+            return this.nf;
+        } catch (error) {
+            console.error("Not fetchable", error);
+            return this.ffo?.[this.column]?.['value'] ?? '';
+        }
         },
+
 
         async fetchImage(id,table) {
             try {

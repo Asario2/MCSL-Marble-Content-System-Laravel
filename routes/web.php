@@ -79,7 +79,7 @@ Route::middleware(\App\Http\Middleware\CheckSubd::class . ':dag,monikadargies')-
     Route::get("/api/spruch-des-monats", [HomeController::class, "spruch_des_monats"])->name("home.spruch");
     Route::get("/lostnfound", [HomeController::class, "lostnfound"])->name("home.lostnfound");
     Route::get('/privacy', [HomeController::class, 'home_privacy'])->name('home.privacy.dag');
-    Route::get('/ai', [HomeController::class, 'home_AI'])->name('home.ai');
+    Route::get('/ai', [HomeController::class, 'home_AI'])->name('home.ai.dag');
     Route::get("/contacts", [HomeController::class, "dag_contacts"])->name("home.contacts.dag");
     Route::get("/links", [HomeController::class, "dag_links"])->name("home.links");
 

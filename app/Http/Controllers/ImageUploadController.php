@@ -1,357 +1,335 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Settings;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\File;
-
-
-
-
-
-use Storage;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class ImageUploadController extends Controller
 {
-    public function upload_ori(Request $request,$table,$iswatermark="1")
+    protected ImageManager $imageManager;
+
+    public function __construct()
     {
-        return $this->upload($request,$table,$iswatermark,1);
-    }
-    public function upload(Request $request,$table,$iswatermark='1',$oripath='0')
-    {
-        // Validierung der Eingabedaten
-        // $validated = $request->validate([
-        //     'image' => 'image|mimes:jpeg,png,jpg,gif',
-        //     'table' => 'string',
-        //     'column' => 'string',
-        //     'path' => 'string',
-        //     'name' => "string"
-        // ]);
+        $this->imageManager = new ImageManager(new Driver());
 
-            // \Log::info($request->all());
-        // Das hochgeladene Bild holen
-
-        $image = $request->file('image');
-        $is_imgdir = $request->is_imgdir;
-            if($is_imgdir){
-
-
-        $is_imgdir = str_replace("//","/",$is_imgdir);
-        \Log::info("iid: ".$is_imgdir);
-        $is_imgdir = explode("/",$is_imgdir);
-        $is_imgdir = $is_imgdir[count($is_imgdir)-2];
 
     }
-        $subdomain = SD();
-        \Log::info(CleanTable().$subdomain.$request->column);
-        $Message = $request->Message === "true" ? true : false;
-        if (!$request->hasFile('image')) {
-           // \Log::info('Keine Datei empfangen!');
-            return response()->json(['error' => 'Keine Datei empfangen!'], 400);
-        }
-        else{
-             //\Log::info("Table: ".json_encode($request->table));
-        }
-        //\Log::info('Datei-Info:', [
-       //     'original_name' => $image->getClientOriginalName(),
-         //   'mime_type' => $image->getMimeType(),
-           // 'size' => $image->getSize()
-       // ]);
-        $image = $request->file('image') ?? [];
-        $path = $request->ulpath;
-//$table_dir = Settings::$image_paths[$request->table];
-        $watermarkfile = $request->copyleft;
-        // \Log::info("WMF: ".$watermarkfile);
-        $table = $table_ori = $request->table;
-        $column = $request->column;
 
-            // \Log::info(($Message));
+    public function upload_ori(Request $request, string $table, string $iswatermark = "1"): JsonResponse
+    {
+        return $this->upload($request, $table, $iswatermark, 1);
+    }
 
-        // Den Dateinamen generieren und Bild speichern
-        $imageName = md5($image->getClientOriginalName()."_".Auth::id()).".".$image->getClientOriginalExtension();
-        //$imagePath = $image->storeAs($path, $imageName, 'public');
+    public function upload(Request $request, string $table, string $iswatermark = '1', string|int $oripath = '0'): JsonResponse
+{
+    \Log::debug('UPLOAD DEBUG', [
+        'table'   => $request->table,
+        'column'  => $request->column,
+        'is_imgdir' => $request->is_imgdir,
+        'ulpath'  => $request->ulpath,
+        'hasFile' => $request->hasFile('image'),
+        'Message' => $request->Message,
+    ]);
 
-        $filename = basename($imageName);
-        // Speicherpfad definieren
+    if (!$request->hasFile('image')) {
+        return response()->json(['error' => 'Keine Datei empfangen!'], 400);
+    }
+
+    $image = $request->file('image');
+    $is_imgdir = $request->is_imgdir;
+    if ($is_imgdir === "undefined" || empty($is_imgdir)) {
+        $is_imgdir = null;
+    } else {
+        $is_imgdir = str_replace("//", "/", $is_imgdir);
+        $parts = explode("/", $is_imgdir);
+        $is_imgdir = $parts[count($parts) - 2] ?? null;
+    }
+
+    $subdomain = SD();
+    $Message = $request->Message == "1modal";
+    \Log::info("POST",$request->all());
+    $path = $request->ulpath;
+    if ($path === "undefined" || empty($path)) $path = '';
+    $watermarkfile = $request->copyleft;
+    $column = $request->column;
+
+    // WICHTIG: MD5 Name VOR table-Zuweisung generieren
+    $imageName = md5($image->getClientOriginalName() . "_" . Auth::id()) . "." . $image->getClientOriginalExtension();
+    $filename = basename($imageName);
+
+    $sizes = [1200]; // default
+    $tmpname = $image->getRealPath();
+
+    // Table-Logik korrigiert
+    $table_ori = $request->table;
+    $table = $table_ori; // Standardwert
+
+    if ($Message) {
+        $table = "messages";
         $sizes = [1200];
-        $tmpname = $_FILES['image']['tmp_name'];
-       if(!$Message && !array_key_exists($table, Settings::$impath)){
-        $IMOpath =  public_path("images/_{$subdomain}/{$table}/{$column}/{$is_imgdir}/orig/".basename($filename)."");
-
-        copy($tmpname,$IMOpath);
-
-        $sizes = [350, 800, 1400];
+    } elseif (!array_key_exists($table_ori, Settings::$impath)) {
+        // Nur orig Ordner erstellen wenn nicht Message und nicht special table
+        $IMOpath = public_path("images/_{$subdomain}/{$table}/{$column}/{$is_imgdir}/orig/" . $filename);
+        if (!File::exists(dirname($IMOpath))) {
+            File::makeDirectory(dirname($IMOpath), 0777, true, true);
         }
-        elseif($Message)
-        {
-            $table = "messages";
-            // $prepath = "/images/messages/";
-        }
-        if(array_key_exists($table_ori, Settings::$impath)){
-            $sizes = ["500"];
-            $table = '';
-        }
-        list($oldsize,$oldheight) = getimagesize($tmpname);
+        copy($tmpname, $IMOpath);
+        $sizes = [350, 800, 1400]; // thumbs, normal, big
+    }
 
-        // Bildgrößen anpassen und speichern
-          // Beispiel für 3 verschiedene Auflösungen
-        $big = ["350"=>"/thumbs/","1200"=>'/','500'=>"/","800"=>'/',"1400"=>"/big/"];
-        foreach ($sizes as $size) {
+    if (array_key_exists($table_ori, Settings::$impath)) {
+        $sizes = [500];
+        $table = '';
+    }
 
-            if($size > $oldsize)
-            {
-                $size2 = $oldsize;
-            }
-            else{
+    $imgSize = @getimagesize($tmpname);
+    if (!$imgSize) return response()->json(['error' => 'Bild konnte nicht gelesen werden!'], 400);
+    [$oldsize, $oldheight] = $imgSize;
 
-                $size2 = $size;
-            }
-            $resizedPath = public_path("/images/_{$subdomain}/{$request->table}/{$column}/{$is_imgdir}{$big[$size]}".basename($imageName))."";
-            if(!$oripath)
-            {
-                $subdomain = SD();
-                $resizedPath = public_path("/images/_{$subdomain}/{$table}{$big[$size]}".basename($imageName))."  ";
-            }
+    // Pfad-Definitionen korrigiert
+    $big = [
+        "350" => "thumbs/",
+        "1200" => '/',
+        "500" => "/",
+        "800" => '/',
+        "1400" => "big/"
+    ];
 
-            // \Log::info("RP:".$resizedPath);
-            // Neues Imagick-Objekt erstellen
-            $imagick = new \Imagick();
-            $imagick->readImage($image->getPathname());
+    $width = null;
+    $height = null;
 
-            // Bildgröße anpassen
-            $imagick->resizeImage($size2, 0, \Imagick::FILTER_LANCZOS, 1); // 0 für automatische Höhe
+    foreach ($sizes as $size) {
+        $size2 = ($size > $oldsize) ? $oldsize : $size;
 
-            // Speicherpfad für jede Version
-            if($iswatermark && $big[$size] != "/thumbs/" && !empty($watermarkfile) && !$Message)
-            {
-                $imagePath = $tmpname;
-                $watermarkPath = public_path("images/copyleft/".$watermarkfile.".png");
-
-                // Neues ImageMagick-Objekt erstellen
-                $imagick = new \Imagick($imagePath);
-                $imagick->resizeImage($size2, 0, \Imagick::FILTER_LANCZOS, 1); // 0 für automatische Höhe
-                // Wasserzeichenbild laden
-                $watermark = new \Imagick($watermarkPath);
-
-                // Berechne die Position des Wasserzeichens: rechte untere Ecke
-                $xPosition = $imagick->getImageWidth() - $watermark->getImageWidth() - 10; // 10px Abstand vom Rand
-                $yPosition = $imagick->getImageHeight() - $watermark->getImageHeight() - 10; // 10px Abstand vom Rand
-
-                // Setze das Wasserzeichen auf das Bild
-                $imagick->compositeImage($watermark, \Imagick::COMPOSITE_OVER, $xPosition, $yPosition);
-
-                // Speichern des neuen Bildes mit Wasserzeichen
-                $imagick->writeImage($resizedPath);
-            }
-            else{
-                $imagick->writeImage($resizedPath);
-            }
-            // Bild speichern
-
-            if($size == 1400 || $Message || $size == "500")
-            {
-                list($width,$height) = getimagesize($resizedPath);
-
-                $imageName = "/".$resizedPath;
-            }
-
-            // Speicher freigeben
-            $imagick->clear();
-            $imagick->destroy();
-            $url = "/".str_replace("/big/","/",$resizedPath);
-            $name = $request->name;
-
-
+        // KORRIGIERTE Pfad-Logik
+        if ($Message) {
+            // Für Messages: einfacher Pfad
+            $resizedPath = public_path("/images/_{$subdomain}/messages/{$filename}");
+        } elseif ($oripath && $is_imgdir) {
+            // Mit oripath und imgdir
+            $resizedPath = public_path("/images/_{$subdomain}/{$table_ori}/{$column}/{$is_imgdir}/{$big[$size]}{$filename}");
+        } elseif ($is_imgdir) {
+            // Nur imgdir
+            $resizedPath = public_path("/images/_{$subdomain}/{$table_ori}/{$column}/{$is_imgdir}/{$big[$size]}{$filename}");
+        } else {
+            // Standard
+            $resizedPath = public_path("/images/_{$subdomain}/{$table_ori}/{$column}/{$big[$size]}{$filename}");
         }
 
-        if($is_imgdir){
-            $this->AddJson($path."/".$is_imgdir,$filename);
-        }
-        if($Message){
-            $imageName = ($imageName);
-            // \Log::info($Message);
-        }
-
-        $imageName = str_replace("/images/_".$subdomain."/".$table."/".$column."//big/",'',basename($imageName));
-        $imageName = $column."/".basename($imageName);
-        \Log::info($imageName);
-        // $iid = DB::table($table_dir)->insertGetId([
-        //     'name' => $name,
-        //     'url' => $url,
-        //     'created_at' => now(),
-        //     'updated_at' => now(),
-        // ]);
-        //\Log::info(json_encode(['message' => $imageName]));
-        return response()->json([
-            'message' => 'Bild erfolgreich hochgeladen.',
-            'image_url' => $imageName,
-            "img_x" => $width,
-            "img_y" => $height,
+        \Log::debug("Creating image for size {$size}", [
+            'path' => $resizedPath,
+            'Message' => $Message,
+            'table_ori' => $table_ori,
+            'table' => $table,
+            'is_imgdir' => $is_imgdir
         ]);
-    }
-    public function save(Request $request,$table)
-    {
-        // \Log::info("resa:".$table);
 
+        if (!File::exists(dirname($resizedPath))) {
+            File::makeDirectory(dirname($resizedPath), 0777, true, true);
+        }
+
+        try {
+            $img = $this->imageManager->read($tmpname);
+
+            // Thumbnail quadratisch
+            if ($size == 350) {
+                $img->cover($size2, $size2);
+            } else {
+                $img->scale(width: $size2);
+            }
+
+            // Wasserzeichen (nur wenn nicht Message und nicht Thumb)
+            if ($iswatermark == '1' && $size != 350 && !empty($watermarkfile) && !$Message) {
+                $watermarkPath = public_path("images/copyleft/" . $watermarkfile . ".png");
+                if (file_exists($watermarkPath)) {
+                    $watermark = $this->imageManager->read($watermarkPath);
+                    $watermark->scale(height: 50);
+                    $img->place($watermark, 'bottom-right', 10, 10);
+                }
+            }
+
+            $img->save($resizedPath, quality: 90);
+
+            \Log::debug("Image saved successfully", ['size' => $size, 'path' => $resizedPath]);
+
+            // Größen für Response speichern
+            if ($size == 1400 || $Message || $size == 500) {
+                $imgSize2 = @getimagesize($resizedPath);
+                if ($imgSize2) {
+                    [$width, $height] = $imgSize2;
+                }
+            }
+
+        } catch (\Exception $e) {
+            \Log::error("Image processing error for size {$size}: " . $e->getMessage());
+            return response()->json(['error' => 'Bildverarbeitung fehlgeschlagen: ' . $e->getMessage()], 500);
+        }
     }
-    public function CopyLeft()
+
+    // JSON für imgdir hinzufügen (nur wenn nicht Message)
+    if ($is_imgdir && !$Message) {
+        $this->AddJson($path . "/" . $is_imgdir, $filename);
+    }
+
+    // KORRIGIERTE Response Pfad-Erstellung
+    if ($Message) {
+        $fullPath = "/images/_{$subdomain}/messages/{$filename}";
+    } elseif ($is_imgdir) {
+        $fullPath = "/images/_{$subdomain}/{$table_ori}/{$column}/{$is_imgdir}/big/{$filename}";
+    } else {
+        $fullPath = $filename; //"/images/_{$subdomain}/{$table_ori}/{$column}/{$filename}";
+    }
+
+    \Log::info('Upload completed successfully', [
+        'filename' => $filename,
+        'fullPath' => $fullPath,
+        'Message' => $Message,
+        'final_filename' => $filename // Sollte MD5 sein
+    ]);
+
+    return response()->json([
+        'message' => 'Bild erfolgreich hochgeladen.',
+        'image_url' => $fullPath,
+        "img_x" => $width,
+        "img_y" => $height,
+        "debug_filename" => $filename // Zur Kontrolle
+    ]);
+}
+
+
+    public function save(Request $request, string $table): Response
+    {
+        // noch zu implementieren
+        return response("save() Platzhalter", 200);
+    }
+
+    public function CopyLeft(): JsonResponse
     {
         $cl = DB::table('copyleft')->select('tag', 'name')->get();
         return response()->json([
             'message' => 'Copyleft Success',
             'copyleft' => $cl,
         ]);
-
     }
-    public function store_json(Request $request)
+
+    public function store_json(Request $request): JsonResponse
     {
         $data = $request->images;
-        // dd($request->all());
-        // Pfad zur Datei z. B. via folder:
         $folder = $request->input('folder');
         $path = public_path($folder . '/index.json');
-        \Log::info($data);
+
+        if (!File::exists(dirname($path))) {
+            File::makeDirectory(dirname($path), 0777, true, true);
+        }
 
         file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         return response()->json(['success' => true]);
     }
-    public function AddJson($folder,$fn)
+
+    public function AddJson(string $folder, string $fn): void
     {
-        if(!is_file(public_path("/images/".$folder."/index.json")))
-        {
-            file_put_contents(public_path("/images/".$folder."/index.json"), json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        $jsonPath = public_path("/images/" . $folder . "/index.json");
+
+        if (!is_file($jsonPath)) {
+            if (!File::exists(dirname($jsonPath))) {
+                File::makeDirectory(dirname($jsonPath), 0777, true, true);
+            }
+            file_put_contents($jsonPath, json_encode([], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
         }
-        $oldjs = file_get_contents(public_path("/images/".$folder."/index.json"));
 
-        $array = json_decode($oldjs);
+        $oldjs = file_get_contents($jsonPath);
+        $array = json_decode($oldjs) ?? [];
 
+        $size = @getimagesize(public_path("images/" . $folder . "/big/" . $fn));
+        $w = $size[0] ?? 0;
+        $h = $size[1] ?? 0;
 
-        // Neue Werte
-        $filename = $fn;
-        $size = getimagesize("images/".$folder."/big/".$fn);
-        $w = $size[0];
-        $h = $size[1];
-
-        // Letzte Position ermitteln
         $lastPosition = 0;
         if (!empty($array)) {
             $last = end($array);
-            $lastPosition = $last->position;
+            $lastPosition = $last->position ?? 0;
         }
         $filenames = array_map(fn($item) => $item->filename, $array);
 
-        if (!in_array($fn, $filenames))
-        {
-            // Neues Objekt anhängen
+        if (!in_array($fn, $filenames)) {
             $array[] = (object)[
                 'position' => $lastPosition + 1,
-                'filename' => $filename,
+                'filename' => $fn,
                 'label' => '',
                 'width' => $w,
                 'height' => $h,
-        ];
+            ];
         }
-        file_put_contents(public_path("/images/".$folder."/index.json"), json_encode($array, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-    }
-    function Del_Image($column,$folder,$posi=1){
-        if(!CheckRights(Auth::id(),CleanTable(),"delete"))
-        {
-            return response()->json(["success"=>"false","message"=>"Rechte nicht vorhanden"]);
-        }
-        $path = public_path("/images/_".SD()."/images/".$column."/".$folder."/");
-        $oldjs = file_get_contents(public_path("/images/_".SD()."/images/".$column."/".$folder."/index.json"));
-        $oldjs = json_decode($oldjs,true);
-        $newjs = $this->deleteImageByPosition($oldjs,($posi+1),$path);
-        \Log::info("old: ".json_encode($oldjs,JSON_PRETTY_PRINT));
-        \Log::info("new: ".json_encode($newjs,JSON_PRETTY_PRINT));
-        file_put_contents(public_path("/images/_".SD()."/images/".$column."/".$folder."/index.json"), json_encode($newjs, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-        return response()->json(["success"=>"true","message"=>"Bild wurde erfolgreich gelöscht"]);
-    }
-    function deleteImageByPosition(array $images, int $deletePosition, string $path): array
-{
-    // Wenn nur 1 Element vorhanden ist und das gelöscht werden soll → leere JSON
-    if (count($images) === 1 && $images[0]['position'] == $deletePosition) {
-        \Log::info("P:".$path);
-        $file = $images[0]['filename'];
-        if (is_file($path.$file)) {
-            @unlink($path."thumbs/".$images[0]['filename']);
-            @unlink($path."orig/".$images[0]['filename']);
-            @unlink($path."big/".$images[0]['filename']);
-            @unlink($path."".$file);
-            file_put_contents($path."index.json","[]");
 
-        }
-        return []; // JSON wird geleert
+        file_put_contents($jsonPath, json_encode($array, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     }
 
-    // Normales Entfernen des Elements mit der gewünschten Position + Datei löschen
-    $images = array_filter($images, function($item) use ($deletePosition, $path) {
-        if ($item['position'] === $deletePosition) {
-            $file = $item['filename'];
-            if( is_file($path."/".$file)) {
-                @unlink($path."/thumbs/".$item['filename']);
-                @unlink($path."/orig/".$item['filename']);
-                @unlink($path."/big /".$item['filename']);
-                @unlink($path."/".$file);
+    public function Del_Image(string $column, string $folder, int $posi = 1): JsonResponse
+    {
+        if (!CheckRights(Auth::id(), CleanTable(), "delete")) {
+            return response()->json(["success" => "false", "message" => "Rechte nicht vorhanden"]);
+        }
+        $path = public_path("/images/_" . SD() . "/images/" . $column . "/" . $folder . "/");
+        $oldjs = file_get_contents($path . "index.json");
+        $oldjs = json_decode($oldjs, true);
+        $newjs = $this->deleteImageByPosition($oldjs ?? [], ($posi + 1), $path);
+        file_put_contents($path . "index.json", json_encode($newjs, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        return response()->json(["success" => "true", "message" => "Bild wurde erfolgreich gelöscht"]);
+    }
+
+    protected function deleteImageByPosition(array $images, int $deletePosition, string $path): array
+    {
+        if (count($images) === 1 && ($images[0]['position'] ?? null) == $deletePosition) {
+            $file = $images[0]['filename'];
+            @unlink($path . "thumbs/" . $file);
+            @unlink($path . "orig/" . $file);
+            @unlink($path . "big/" . $file);
+            @unlink($path . $file);
+            file_put_contents($path . "index.json", "[]");
+            return [];
+        }
+
+        $images = array_filter($images, function ($item) use ($deletePosition, $path) {
+            if (($item['position'] ?? null) === $deletePosition) {
+                $file = $item['filename'];
+                @unlink($path . "thumbs/" . $file);
+                @unlink($path . "orig/" . $file);
+                @unlink($path . "big/" . $file);
+                @unlink($path . $file);
+                return false;
             }
-            return false; // Entfernen
+            return true;
+        });
+
+        $images = array_values($images);
+        foreach ($images as $index => &$item) {
+            $item['position'] = $index + 1;
         }
-        return true;
-    });
-
-    // Neu indizieren
-    $images = array_values($images);
-
-    // Positionen neu zuweisen
-    foreach ($images as $index => &$item) {
-        $item['position'] = $index + 1;
+        return $images;
     }
 
-    return $images;
-}
-
-    function old_deleteImageByPosition(array $images, int $deletePosition, string $path): array
-{
-    // 1. Entferne das Element mit der gewünschten Position und lösche die Datei
-    $images = array_filter($images, function($item) use ($deletePosition, $path) {
-        if ($item['position'] === $deletePosition) {
-            $file = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $item['filename'];
-            if (is_file($file)) {
-                unlink($path."/thumbs/".$item['filename']);
-                unlink($path."/orig/".$item['filename']);
-                unlink($path."/big /".$item['filename']);
-                unlink($file);
-            }
-            return false; // Element wird entfernt
-        }
-        return true; // Element bleibt
-    });
-
-    // 2. Neu indizieren
-    $images = array_values($images);
-
-    // 3. Positionen neu zuweisen
-    foreach ($images as $index => &$item) {
-        $item['position'] = $index + 1;
-    }
-
-    return $images;
-}
-    public function update(Request $request)
+    public function update(Request $request): Response
     {
         $user = $request->user();
 
-        // Validierung (erweitere Regeln nach Bedarf)
         $request->validate([
             'name' => 'required|string|max:255',
             'first_name' => 'nullable|string|max:255',
             'email' => 'required|email|max:255',
-            'photo' => 'nullable|image|max:4096', // bis 4MB
+            'photo' => 'nullable|image|max:4096',
         ]);
 
-        // === Dateiverarbeitung ===
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
 
@@ -359,66 +337,44 @@ class ImageUploadController extends Controller
                 return back()->withErrors(['photo' => 'Upload fehlgeschlagen.']);
             }
 
-            // Subdomain (erstes Segment des Hostnames)
             $host = $request->getHost();
-            $subdomain = explode('.', str_replace("www.","",$host))[0] ?? 'default';
-
-            // Zielverzeichnis im public-Ordner
+            $subdomain = explode('.', str_replace("www.", "", $host))[0] ?? 'default';
             $folder = public_path("images/_{$subdomain}/users/profile_photo_path");
 
-            // Ordner anlegen, falls nicht vorhanden
             if (!File::exists($folder)) {
-                // 0755; setze recursive true
                 File::makeDirectory($folder, 0777, true);
             }
 
-            // Alten File löschen (falls vorhanden)
             if (!empty($user->profile_photo_path)) {
                 $oldPath = $folder . DIRECTORY_SEPARATOR . $user->profile_photo_path;
                 if (File::exists($oldPath)) {
-                    try {
-                        File::delete($oldPath);
-                    } catch (\Exception $e) {
-                        // optional loggen, aber nicht blockieren
-                        \Log::warning('Altes Profilbild konnte nicht gelöscht werden: '.$e->getMessage());
-                    }
+                    File::delete($oldPath);
                 }
             }
 
-            // Neuer Dateiname (Zeitstempel + uniqid)
-            $filename = md5($file->getClientOriginalName()."_".Auth::id()).".".$file->getClientOriginalExtension();
-
-            // Datei verschieben
+            $filename = md5($file->getClientOriginalName() . "_" . Auth::id() . uniqid()) . "." . $file->getClientOriginalExtension();
             $file->move($folder, $filename);
-
-            // In DB nur den Dateinamen speichern (so wie Vue computedPhotoUrl erwartet)
             $user->profile_photo_path = $filename;
         }
 
-        // === Restliche Felder speichern ===
         $user->name = $request->input('name');
         if ($request->has('first_name')) {
             $user->first_name = $request->input('first_name');
         }
         $user->email = $request->input('email');
-
         $user->save();
 
-        // Wenn du Inertia/Jetstream verwendest: Inertia-Redirect / response
-        // Wir redirecten zurück — Inertia-Frontend macht onSuccess + reload auth
         return back(303)->with('success', 'Profil aktualisiert');
     }
 
-
-    public function getProfilePhoto(Request $request)
+    public function getProfilePhoto(Request $request): JsonResponse
     {
         $user = $request->user();
-
         return response()->json([
             'path' => $user->profile_photo_path
-                ? asset($user->profile_photo_path)
+                ? asset("images/_" . SD() . "/users/profile_photo_path/" . $user->profile_photo_path)
                 : asset('images/default_profile.png'),
         ]);
     }
-
 }
+

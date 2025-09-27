@@ -618,3 +618,7 @@ export function stripTags(text, allowed = []) {
     allow.includes(tag.toLowerCase()) ? match : ''
   );
 }
+
+// In der Browser-Konsole ausführen:
+console.log('Inertia props:', window?.$inertia?.page?.props)
+console.log('Route params:', window?.route?.params)

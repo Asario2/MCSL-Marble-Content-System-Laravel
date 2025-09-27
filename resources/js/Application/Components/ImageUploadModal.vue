@@ -3,15 +3,20 @@
       v-if="isModalOpen"
       class="fixed inset-0 z-100 flex items-start justify-center bg-black bg-opacity-50 pt-[160px] overflow-y-auto mb-[50px]"
     >
-      <div class="bg-layout-sun-100 dark:bg-layout-night-100 rounded-lg shadow-lg w-full max-w-lg p-6 max-h-[calc(100vh-200px)] ">
-
+      <div
+        class="bg-layout-sun-100 dark:bg-layout-night-100 rounded-lg shadow-lg w-full max-w-lg p-6 max-h-[calc(100vh-200px)]"
+      >
         <!-- Tabs & Inhalte -->
         <div v-if="!pxa">
           <!-- Tabs -->
           <div v-if="is_imgdir" class="mb-4 border-b border-layout-sun-300 dark:border-layout-night-300">
             <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-              <button :class="tabClass('upload')" @click="activeTab = 'upload'" type="button">Upload</button>
-              <button :class="tabClass('gallery')" @click="activeTab = 'gallery'" type="button">Galerieverwaltung</button>
+              <button :class="tabClass('upload')" @click="activeTab = 'upload'" type="button">
+                Upload
+              </button>
+              <button :class="tabClass('gallery')" @click="activeTab = 'gallery'" type="button">
+                Galerieverwaltung
+              </button>
             </nav>
           </div>
 
@@ -21,12 +26,12 @@
               <h3 class="text-2xl font-semibold text-center mb-4">Bild hochladen</h3>
 
               <CopyLeftSelect
-                v-if="isImages && !Message && !column.includes('img_thumb')"
+                v-if="isImages && !this.Message && !column.includes('img_thumb')"
                 v-model="form.copyleft"
                 label="Wasserzeichen"
                 name="copyleft"
               />
-              
+
               <!-- Dropzone -->
               <div
                 class="border-2 border-dashed border-layout-sun-500 dark:border-layout-night-500 rounded-lg p-6 text-center cursor-pointer hover:bg-layout-sun-200 dark:hover:bg-layout-night-200"
@@ -43,13 +48,17 @@
                   @change="handleFileChange"
                 />
                 <p class="text-layout-sun-700 dark:text-layout-night-700">
-                  Ziehe das Bild hierher oder klicke, um eine Datei auszuwählen.
+                  Ziehe Bilder hierher oder klicke, um Dateien auszuwählen.
                 </p>
               </div>
 
               <!-- Vorschau -->
               <div v-if="previewImages[column]" class="mt-4 text-center">
-                <img :src="previewImages[column]" alt="Bildvorschau" class="w-full h-auto rounded-lg shadow-md" />
+                <img
+                  :src="previewImages[column]"
+                  alt="Bildvorschau"
+                  class="w-full h-auto rounded-lg shadow-md"
+                />
               </div>
 
               <!-- Upload-Fortschritt -->
@@ -60,7 +69,11 @@
 
               <!-- Buttons -->
               <div class="mt-6 flex justify-between">
-                <button type="button" @click="closeModal" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
+                <button
+                  type="button"
+                  @click="closeModal"
+                  class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                >
                   Schliessen
                 </button>
                 <button
@@ -90,7 +103,11 @@
 
         <!-- Alternative Ansicht, wenn pxa gesetzt ist -->
         <div v-else class="space-y-4">
-          <label class="block text-sm font-medium text-layout-sun-700 dark:text-layout-night-300"> Bilderordner </label>
+          <label
+            class="block text-sm font-medium text-layout-sun-700 dark:text-layout-night-300"
+          >
+            Bilderordner
+          </label>
 
           <input
             type="text"
@@ -100,30 +117,30 @@
           />
           <div class="flex justify-between mt-6">
             <button
-                type="button"
-                @click="closeModal"
-                class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+              type="button"
+              @click="closeModal"
+              class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
             >
-                Schliessen
+              Schliessen
             </button>
 
-            <button type="button"
-                @click="savedir"
-                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            <button
+              type="button"
+              @click="savedir"
+              class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
             >
-                Weiter
+              Weiter
             </button>
-            </div>
-
-            </div>
+          </div>
+        </div>
       </div>
     </div>
   </template>
 
   <script>
   import { CleanTable as cleanTableFn, GetAuth } from '@/helpers';
-  import CopyLeftSelect from "@/Application/Components/Content/CopyLeftSelect.vue";
-  import ImageJsonEditor from "@/Application/Admin/ImageJsonEditor.vue";
+  import CopyLeftSelect from '@/Application/Components/Content/CopyLeftSelect.vue';
+  import ImageJsonEditor from '@/Application/Admin/ImageJsonEditor.vue';
 
   export default {
     name: 'ImageUploadModal',
@@ -133,8 +150,7 @@
     },
     props: {
       is_imgdir: { type: Boolean, default: false },
-      isOpen: [Boolean, Number],
-      isModalOpen: { type: [Boolean, Number,String], default: false },
+      isModalOpen: { type: [Boolean, Number, String], default: false },
       column: String,
       domain: String,
       path: String,
@@ -144,11 +160,18 @@
       alt_path: String,
       pxa: { type: Boolean, default: false },
       field: { type: Object, default: () => ({ value: '' }) },
-      path: String,
-      modelValue: String, // Für v-model Unterstützung
+      modelValue: String, // v-model Unterstützung
     },
 
-    emits: ['update:modelValue', 'imageUploaded', 'close', 'previewUpdated'],
+    emits: [
+      'update:modelValue',
+      'imageUploaded',
+      'close',
+      'previewUpdated',
+      'insertImage',
+      'jsonUpdated',
+      'refresh-preview',
+    ],
 
     data() {
       return {
@@ -158,13 +181,9 @@
         selectedImages: {},
         uploading: false,
         progress: 0,
-        newFname: '',
-        tablex: this.CleanTable(),
-        oripath: 1,
+        tablex: cleanTableFn(),
         ulpath: this.alt_path,
-        modals: {},
         GetAuth: null,
-        pxa: null,
         localPath: this.path,
         finalPath: this.path + this.field.value,
       };
@@ -175,25 +194,16 @@
         return cleanTableFn() === 'images';
       },
       uploadPath() {
-        return `${this.domain}/${this.CleanTable()}/${this.column}`;
+        return `${this.domain}/${cleanTableFn()}/${this.column}`;
       },
     },
 
     async mounted() {
       this.GetAuth = await GetAuth();
-      const paths = window.location.pathname;
-      const segments = paths.split("/");
-      if(segments[segments.length - 2] == "create" && this.is_imgdir) {
-        // this.pxa = true;
-      }
-      let finalPath = this.path;
+      console.log("msg:" + this.Message);
     },
 
     methods: {
-      CleanTable() {
-        return cleanTableFn();
-      },
-
       tabClass(tab) {
         return [
           'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
@@ -226,11 +236,11 @@
             url: previewUrl,
           });
 
-          if (this.Message) {
-            const extension = file.name.split('.').pop();
-            const newfg = (file.name + "_" + this.GetAuth()) + '.' + extension;
-            this.$emit('insertImage', newfg);
-          }
+        //   if (this.Message) {
+        //     const extension = file.name.split('.').pop();
+        //     const newfg = `${file.name}_${this.GetAuth}.${extension}`;
+        //     this.$emit('insertImage', newfg);
+        //   }
         }
       },
 
@@ -244,91 +254,101 @@
       },
 
       async uploadImage() {
-        const selectedImage = this.selectedImages[this.column];
-        if (!selectedImage) return;
+  const selectedImage = this.selectedImages[this.column];
+  if (!selectedImage) return;
 
-        this.uploading = true;
-        this.progress = 0;
+  this.uploading = true;
+  this.progress = 0;
 
-        const formData = new FormData();
-        formData.append('image', selectedImage);
-        formData.append('path', this.finalPath);
-        formData.append('ulpath', this.ulpath);
-        formData.append('column', this.column);
-        formData.append('namee', this.namee);
-        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
-        formData.append('table', this.tablex);
-        formData.append('copyleft', this.form.copyleft);
-        formData.append("Message", this.Message);
-        formData.append("is_imgdir", this.finalPath);
+  const formData = new FormData();
+  formData.append('image', selectedImage);
+  formData.append('ulpath', this.ulpath);
+  formData.append('column', this.column);
+  formData.append('namee', this.namee);
+  formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+  formData.append('table', this.tablex);
+  formData.append('copyleft', this.form.copyleft);
+  formData.append('Message', this.Message ? 1 : 0);
+  formData.append('is_imgdir', this.finalPath);
 
-        const xhr = new XMLHttpRequest();
+  const xhr = new XMLHttpRequest();
 
-        xhr.upload.addEventListener('progress', (event) => {
-          if (event.lengthComputable) {
-            this.progress = Math.round((event.loaded / event.total) * 100);
-          }
-        });
+  xhr.upload.addEventListener('progress', (event) => {
+    if (event.lengthComputable) {
+      this.progress = Math.round((event.loaded / event.total) * 100);
+    }
+  });
 
-        let imd = false;
-        xhr.onload = () => {
-          this.uploading = false;
-          if (xhr.status === 200) {
-            const response = JSON.parse(xhr.responseText);
-            const fileName = response.image_url.replace(this.column + "/", '');
+  xhr.onload = () => {
+    this.uploading = false;
+    if (xhr.status === 200) {
+      let response = {};
+      try {
+        response = JSON.parse(xhr.responseText);
+      } catch (e) {
+        console.error('Ungültige Antwort vom Server:', xhr.responseText);
+        return;
+      }
 
-            // Emitieren für v-model
-            this.$emit('update:modelValue', fileName);
+      const filePath = response.image_url; // serverseitiger fullPath
 
-            // Emitieren für event handling
-            this.$emit('imageUploaded', fileName);
+      // ModelValue und Upload-Event
+      this.$emit('update:modelValue', filePath);
+      this.$emit('imageUploaded', filePath);
 
-            if (this.Message) {
-              this.$emit('insertImage', fileName);
-            } else if(!this.is_imgdir) {
-              document.getElementById(this.column).value = "/images/" + this.ulpath.replace("//","/") + "/thumbs/" + fileName;
-              if(document.getElementById("com_" + this.column)) {
-                document.getElementById("com_" + this.column).src = "/images/" + this.ulpath.replace("//","/") + "/thumbs/" + fileName;
-              }
-            } else {
-                document.getElementById(this.column).value = fileName;
-                imd = true;
-                this.$emit("refresh-preview");
-                this.$refs.editor2.fetchImages();
-            }
+      // Bei Messages: InsertImage mit korrektem Pfad
+      if (this.Message) {
+        this.$emit('insertImage', filePath);
+      } else if (!this.is_imgdir) {
+        const el = document.getElementById(this.column);
+        if (el) el.value = `/images/${this.ulpath.replace('//', '/')}/thumbs/${filePath}`;
 
-            if(!imd) {
-                this.closeModal();
-            }
-          } else {
-            console.error("Fehler beim Upload:", xhr.status);
-          }
-        };
+        const imgEl = document.getElementById(`com_${this.column}`);
+        if (imgEl) imgEl.src = `/images/${this.ulpath.replace('//', '/')}/thumbs/${filePath}`;
+      } else {
+        const el = document.getElementById(this.column);
+        if (el) el.value = filePath;
 
-        xhr.onerror = () => {
-          this.uploading = false;
-          console.error("Fehler beim Hochladen", xhr.status);
-        };
+        if (this.$refs.editor2) this.$refs.editor2.fetchImages();
+        this.$emit('refresh-preview');
+      }
 
-        let isw = (this.CleanTable() === "images" && !this.Message) ? "1" : "0";
-        const endpoint = (typeof this.oripath === "undefined" || this.oripath == "0")
-          ? `/upload-image/${this.CleanTable()}/${isw}`
-          : `/upload-image_alt/${this.CleanTable()}/${isw}/${this.oripath}`;
+      // Modal schließen
+      this.closeModal();
+    } else {
+      console.error('Fehler beim Upload:', xhr.status, xhr.responseText);
+    }
+  };
 
-        xhr.open('POST', endpoint, true);
-        xhr.send(formData);
-      },
+  xhr.onerror = () => {
+    this.uploading = false;
+    console.error('Fehler beim Hochladen:', xhr.status);
+  };
+
+  const isw = this.isImages && !this.Message ? '1' : '0';
+  const endpoint =
+    typeof this.oripath === 'undefined' || this.oripath == '0'
+      ? `/upload-image/${this.tablex}/${isw}`
+      : `/upload-image_alt/${this.tablex}/${isw}/${this.oripath}`;
+
+  xhr.open('POST', endpoint, true);
+  xhr.send(formData);
+},
+
 
       onJsonUpdated(newJson) {
         this.$emit('jsonUpdated', newJson);
       },
 
       savedir() {
-        const dir = document.getElementById("folder_save").value;
-        this.field.value = dir;
-
         if (this.field.value && this.field.value.trim() !== '') {
-            this.pxa = false;
+          this.pxa = false;
+        }
+      },
+
+      refreshGallery() {
+        if (this.$refs.editor2) {
+          this.$refs.editor2.fetchImages();
         }
       },
     },

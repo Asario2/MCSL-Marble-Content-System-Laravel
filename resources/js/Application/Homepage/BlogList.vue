@@ -98,6 +98,7 @@ import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
+import { safeInertiaGet } from '@/utils/inertia';
 
 export default defineComponent({
     name: "Homepage_BlogList",
@@ -145,8 +146,7 @@ export default defineComponent({
             handler: throttle(function () {
                 const query = pickBy(this.form);
 
-                this.$inertia.get(
-                    this.route(
+safeInertiaGet(this.route(
                         "home.blog.index",
                         Object.keys(query).length ? query : { remember: "forget" },
                     ),

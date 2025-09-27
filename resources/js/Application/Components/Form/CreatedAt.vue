@@ -61,6 +61,9 @@
         /* 3) Erster Aufruf → echten Request starten */
         fetchPromise = axios.get('/api/created-at')
           .then(({ data }) => {
+            if(!data){
+                data = '';
+            }
             const formatted = {}
             for (const [tbl, rowsRaw] of Object.entries(data)) {
               formatted[tbl] = {}

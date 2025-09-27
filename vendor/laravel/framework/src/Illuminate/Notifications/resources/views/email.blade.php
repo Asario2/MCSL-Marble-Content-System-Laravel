@@ -1,4 +1,4 @@
-<x-mail::message>   
+<x-mail::message>
 {{-- Greeting --}}
 @if (! empty($greeting))
 # {{ $greeting }}
@@ -40,7 +40,7 @@
 {{ $salutation }}
 @else
 @lang('Regards,')<br>
-{{ config('app.name') }} Team
+{{ config('app.name') }}
 @endif
 
 {{-- Subcopy --}}

@@ -2,7 +2,7 @@
         <div>
         <!-- Menü -->
         <div class="mb-4 h-14 p-4 flex items-center bg-layout-sun-300 dark:bg-layout-night-300 rounded-lg edit0R">
-            <p class='border rounded label p-1'><nobr>{{getLabel(name)}}</nobr></p>
+            <p class='border rounded label p-1'><nobr>{{name ? getLabel(name): ''}}</nobr></p>
 
             <!-- Formatierungsbuttons -->
             <button type="button" @click="toggleBold()" class="icon-btn" v-tippy aria-label="Fett">
@@ -92,7 +92,7 @@
             :namee="value"
             :namee2="name"
             :Message="true"
-            :isModalOpen="modals[field.name]"
+            :isModalOpen="modals[name]"
             @insertImage="insertImage"
             @close="closeModal"
             @uploaded="insertImageIntoEditor"
@@ -141,6 +141,10 @@
         required: {
             type:[Number,Boolean,String],
             default:false
+        },
+        name: {
+            type: String,
+            default: 'editor'
         },
         vcol:String,
         },
@@ -236,7 +240,10 @@
     let html = this.$refs.editor.innerHTML;
     html = rumLaut(this.decodeBrackets(html));
     this.$emit('update:modelValue', html);
+    if (this.name && document.getElementById(this.name + "_alt")) {
     document.getElementById(this.name + "_alt").value = html;
+}
+    // document.getElementById(this.name + "_alt").value = html;
     },
 
   setCursorAtEnd() {
@@ -421,30 +428,51 @@ restoreSelection() {
     this.modals[this.name] = false;
   },
   insertImageIntoEditor(imageUrl) {
-        const editor = this.$refs.editor;
-        if (!editor) return alert("NO EDITOR");
-        const img = document.createElement("img");
-        img.src = imageUrl;
-        img.alt = "Bild";
-        img.class = "inline";
-        img.style.display = "inline";
-        const br = document.createElement("br");
-        this.$nextTick(() => {
-          const selection = window.getSelection();
-          selection.removeAllRanges();
-          const range = this.savedRange ?? document.createRange();
-          range.collapse(false);
-          range.insertNode(br);
-          range.insertNode(img);
-          const newRange = document.createRange();
-          newRange.setStartAfter(br);
-          newRange.setEndAfter(br);
-          selection.addRange(newRange);
-          editor.focus();
-          this.updateValue();
-          this.savedRange = null;
-        });
-      },
+  const editor = this.$refs.editor;
+  if (!editor) return alert("NO EDITOR");
+
+  const img = document.createElement("img");
+  img.src = imageUrl;
+  img.alt = "Bild";
+  img.className = "inline";
+  img.style.display = "inline";
+
+  const br = document.createElement("br");
+
+  this.$nextTick(() => {
+    let range;
+    const selection = window.getSelection();
+
+    // Wenn gespeicherter Range vorhanden und innerhalb des Editors
+    if (this.savedRange && editor.contains(this.savedRange.commonAncestorContainer)) {
+      range = this.savedRange;
+    } else {
+      // Sonst neuen Range ans Ende des Editors
+      range = document.createRange();
+      range.selectNodeContents(editor);
+      range.collapse(false);
+    }
+
+    // Auswahl setzen
+    selection.removeAllRanges();
+    selection.addRange(range);
+
+    // Einfügen von Bild und Zeilenumbruch
+    range.insertNode(br);
+    range.insertNode(img);
+
+    // Cursor nach dem Bild setzen
+    const newRange = document.createRange();
+    newRange.setStartAfter(img);
+    newRange.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(newRange);
+
+    editor.focus();
+    this.updateValue();
+    this.savedRange = null;
+  });
+},
       handleImageUpload(imageUrl) {
         this.nf2 = imageUrl;
         this.insertImageIntoEditor(this.nf2);

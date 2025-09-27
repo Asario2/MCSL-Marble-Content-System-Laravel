@@ -16,7 +16,7 @@
       <label v-if="selectedCategory" for="medium" class="block mb-2 text-sm font-medium text-layout-sun-900 dark:text-layout-night-900">
         Medium wählen:
       </label>
-      <select 
+      <select
         v-if="selectedCategory && formattedMediums(selectedCategory).length > 0"
         id="type_id"
         v-model="selectedMedium"
