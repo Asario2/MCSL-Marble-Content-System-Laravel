@@ -12,7 +12,7 @@ class GlobalController extends Controller
     }
     public static function SetDomain()
     {
-        $subdomain = explode('.', request()->getHost())[0]; // Subdomain extrahieren
+        $subdomain = SD(); // Subdomain extrahieren
     //     \Log::info("sd: ".$subdomain);
 
         if (SD() === 'mfx') {

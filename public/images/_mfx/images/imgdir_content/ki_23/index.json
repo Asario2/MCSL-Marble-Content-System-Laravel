@@ -2,7 +2,7 @@
     {
         "position": 1,
         "filename": "child_bw.jpg",
-        "label": "Kind in S\/W",
+        "label": "Kind in S/W",
         "width": 1200,
         "height": 1200
     },
@@ -22,7 +22,7 @@
     },
     {
         "position": 4,
-        "filename": "dome_st.jpg",
+        "filename": "dome_St.jpg",
         "label": "Dome",
         "width": 1200,
         "height": 1200
@@ -65,7 +65,7 @@
     {
         "position": 10,
         "filename": "lamas_with_hats_big.jpg",
-        "label": "Lamas mit Hüten",
+        "label": "Lamas mit H\u00fcten",
         "width": 1200,
         "height": 1200
     },

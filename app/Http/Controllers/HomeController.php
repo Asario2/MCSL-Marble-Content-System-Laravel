@@ -294,7 +294,7 @@ return Inertia::render('Homepage/Pictures', [
 
             ->when($search, function ($query, $search) {
                 return $query->where(function($q) use ($search) {
-                    $q->where("images.headline", "like", "%{$search}%")
+                    $q->where("images.name", "like", "%{$search}%")
                       ->orWhere("images.message", "like", "%{$search}%")
                       ->orWhere("images.created_at", "like", "%{$search}%");
                 });
@@ -348,7 +348,7 @@ return Inertia::render('Homepage/Pictures', [
 
             ->when($search, function ($query, $search) {
                 return $query->where(function($q) use ($search) {
-                    $q->where("images.headline", "like", "%{$search}%")
+                    $q->where("images.name", "like", "%{$search}%")
                       ->orWhere("images.message", "like", "%{$search}%")
                       ->orWhere("images.created_at", "like", "%{$search}%");
                 });

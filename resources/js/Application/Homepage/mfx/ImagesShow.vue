@@ -1,7 +1,7 @@
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 <template>
     <layout :header-url="$page.props.saas_url + '/'">
-    <MetaHeader :title="'Galerie: ' + images.headline" />
+    <MetaHeader :title="'Galerie: ' + images.name" />
     <back-btn url="/home/images"></back-btn>
       <page-content>
         <template #content>
@@ -11,7 +11,7 @@ import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
                     {{ Redirect() }}
                 </span>
               <span class="dark:text-layout-night-1050 text-layout-sun-1000 inline">
-                Bildergalerie: {{ images.headline }} <editbtns style="float:left;" :id="CleanId()" table="images" />
+                Bildergalerie: {{ images.name }} <editbtns style="float:left;" :id="CleanId()" table="images" />
               </span>
             </template>
           </page-title>

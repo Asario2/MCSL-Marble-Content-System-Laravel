@@ -41,7 +41,7 @@ class ImageUploadController extends Controller
         'hasFile' => $request->hasFile('image'),
         'Message' => $request->Message,
     ]);
-
+    \Log::info("IMA: ".$request->ulpath);
     if (!$request->hasFile('image')) {
         return response()->json(['error' => 'Keine Datei empfangen!'], 400);
     }
@@ -126,9 +126,10 @@ class ImageUploadController extends Controller
             // Standard
             $resizedPath = public_path("/images/_{$subdomain}/{$table_ori}/{$column}/{$big[$size]}{$filename}");
         }
+        $rp = basename($is_imgdir);
 
         \Log::debug("Creating image for size {$size}", [
-            'path' => $resizedPath,
+            'path' => $rp,
             'Message' => $Message,
             'table_ori' => $table_ori,
             'table' => $table,
@@ -186,7 +187,7 @@ class ImageUploadController extends Controller
     if ($Message) {
         $fullPath = "/images/_{$subdomain}/messages/{$filename}";
     } elseif ($is_imgdir) {
-        $fullPath = "/images/_{$subdomain}/{$table_ori}/{$column}/{$is_imgdir}/big/{$filename}";
+        $fullPath = basename($rp);
     } else {
         $fullPath = $filename; //"/images/_{$subdomain}/{$table_ori}/{$column}/{$filename}";
     }
@@ -319,7 +320,7 @@ class ImageUploadController extends Controller
         return $images;
     }
 
-    public function update(Request $request): Response
+    public function update(Request $request)
     {
         $user = $request->user();
 
@@ -338,7 +339,7 @@ class ImageUploadController extends Controller
             }
 
             $host = $request->getHost();
-            $subdomain = explode('.', str_replace("www.", "", $host))[0] ?? 'default';
+            $subdomain = SD();
             $folder = public_path("images/_{$subdomain}/users/profile_photo_path");
 
             if (!File::exists($folder)) {
@@ -352,7 +353,7 @@ class ImageUploadController extends Controller
                 }
             }
 
-            $filename = md5($file->getClientOriginalName() . "_" . Auth::id() . uniqid()) . "." . $file->getClientOriginalExtension();
+            $filename = md5($file->getClientOriginalName() . "_" . Auth::id()) . "." . $file->getClientOriginalExtension();
             $file->move($folder, $filename);
             $user->profile_photo_path = $filename;
         }
@@ -364,7 +365,7 @@ class ImageUploadController extends Controller
         $user->email = $request->input('email');
         $user->save();
 
-        return back(303)->with('success', 'Profil aktualisiert');
+        return redirect()->back()->with('success', 'Bild erfolgreich aktualisiert');
     }
 
     public function getProfilePhoto(Request $request): JsonResponse

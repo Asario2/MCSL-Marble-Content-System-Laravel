@@ -8,7 +8,7 @@ class CheckSubdomain
 {
     public function handle($request, Closure $next, $allowedSubdomains)
     {
-        $subdomain = explode('.', str_replace('www.', '', $request->getHost()))[0];
+        $subdomain = SD();
         $allowedList = explode('|', $allowedSubdomains);
 
         if (!in_array($subdomain, $allowedList)) {

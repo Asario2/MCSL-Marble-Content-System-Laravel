@@ -10,49 +10,49 @@
         "position": 2,
         "filename": "20190310_120025_659.png",
         "label": "Flixbus im Tunnel",
-        "width": 900,
-        "height": 1600
+        "width": 720,
+        "height": 1280
     },
     {
         "position": 3,
-        "filename": "p1000143.jpg",
+        "filename": "P1000143.jpg",
         "label": "Kaktee",
-        "width": 1350,
-        "height": 1012
+        "width": 1600,
+        "height": 1200
     },
     {
         "position": 4,
-        "filename": "p1000172.jpg",
+        "filename": "P1000172.jpg",
         "label": "Mascha Relaxing",
-        "width": 1350,
-        "height": 1012
+        "width": 1600,
+        "height": 1200
     },
     {
         "position": 5,
-        "filename": "p1010033.jpg",
+        "filename": "P1010033.jpg",
         "label": "Stifte",
-        "width": 1350,
-        "height": 1012
+        "width": 1600,
+        "height": 1200
     },
     {
         "position": 6,
-        "filename": "p1010224.jpg",
+        "filename": "P1010224.jpg",
         "label": "Klee",
-        "width": 1350,
-        "height": 1012
+        "width": 1600,
+        "height": 1200
     },
     {
         "position": 7,
-        "filename": "p1010373.jpg",
+        "filename": "P1010373.jpg",
         "label": "Mascha der Wachhund",
-        "width": 1350,
-        "height": 1012
+        "width": 1600,
+        "height": 1200
     },
     {
         "position": 8,
-        "filename": "p1010818.jpg",
+        "filename": "P1010818.jpg",
         "label": "Mein neugeborener Neffe",
-        "width": 1350,
-        "height": 1012
+        "width": 1600,
+        "height": 1200
     }
 ]

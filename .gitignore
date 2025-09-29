@@ -1,5 +1,5 @@
 _work/*
-**/orig/**
+
 /.phpunit.cache
 /node_modules
 /public/build
@@ -10,6 +10,7 @@ _work/*
 README.md
 /public/*.sql
 !/public/**
+**/orig/**
 vendor/
 .env
 *.bat

@@ -167,6 +167,7 @@
                         :is-modal-open="modals[field.name]"
                         :column="field.name"
                         :isModalOpen="modals[field.name]"
+                        :is_imgdir = "false"
                         @close="modals[field.name] = false"
                         @imageUploaded="handleImageUploaded(field.name, $event)"
                         v-model="field.value"
@@ -197,12 +198,14 @@
                 <input-container v-else-if="field.type ==='imgal'">
                     <ImageUploadModal
                         v-if="modals[field.name]"
-                        :is-modal-open="modals[field.name]"
+                        :is-modal-open="true"
                         :column="field.name"
-                        :is_imgdir="true"
+                        :is_imgdir = "true"
+                        :jspath="'/images/_mfx/images/imgdir_content/'+field.value+'/'"
                         :path="'/images/_mfx/images/imgdir_content/'+field.value+'/'"
                         :isModalOpen="modals[field.name]"
-                        @close="modals[field.name] = false"
+                        @close="val => { if (val.force) modals[field.name] = false }"
+                        @reset="console.log('nur reset, nicht schließen')"
                         @imageUploaded="handleImageUploaded(field.name, $event)"
                         v-model="field.value"
                         :namee="field.value"
@@ -214,7 +217,8 @@
                         :image="field.value"
                         :namee2="field.name"
                         :Message="false"
-                        @refresh-preview="getPreviewImagez"
+                        @refresh-preview="handleRefreshPreview"
+                        @refresh-gallery="handleRefreshPreview"
                     />
 
                     <button type="button" @click="openModal(field.name)">
@@ -241,6 +245,7 @@
                         v-show="modals[field.name]"
                         :isModalOpen="modals[field.name]"
                         :tablex="table_x"
+                        :is_imgdir = "false"
                         :column="field.name"
                         :path="tablex"
                         :ref="field.name"
@@ -249,7 +254,7 @@
                         :namee="field.value"
                         :namee2="field.name"
                         :Message="false"
-                        @close="closeModal(field.name)"
+                        @close="modals[field.name] = false"
                         @imageUploaded="handleImageUploaded(field.name, $event)"
                         v-model="field.value"
                     />
@@ -656,7 +661,7 @@ export default defineComponent({
 
     data() {
         return {
-            isModalOpen: false,
+            isModalOpen: true,
             ulpath: '',
             previewHtml: '',
             table: reactive({ id: "1" }),
@@ -779,7 +784,17 @@ export default defineComponent({
     },
 
     methods: {
+        handleModalClose(fieldName) {
+    console.log('Modal close requested, but checking if we should close...');
 
+    // Nur schließen wenn wirklich gewünscht, nicht nach Upload
+    // Sie können hier eine Bedingung hinzufügen
+    this.modals[fieldName] = false;
+  },
+        handleRefreshPreview() {
+    this.getPreviewImagez(); // Ihre existierende Methode
+    // Zusätzlich: Event an die Gallery Komponente weiterleiten falls nötig
+  },
         async getPreviewImagez() {
             const field = this.field;
             const ppa = `/images/_${window.subdomain}/images/${field.name}/${field.value}/index.json`;

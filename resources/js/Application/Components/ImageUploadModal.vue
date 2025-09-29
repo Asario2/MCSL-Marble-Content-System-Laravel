@@ -26,7 +26,7 @@
               <h3 class="text-2xl font-semibold text-center mb-4">Bild hochladen</h3>
 
               <CopyLeftSelect
-                v-if="isImages && !this.Message && !column.includes('img_thumb')"
+                v-if="isImages && !Message && !column.includes('img_thumb')"
                 v-model="form.copyleft"
                 label="Wasserzeichen"
                 name="copyleft"
@@ -41,7 +41,6 @@
               >
                 <input
                   ref="fileInput"
-                  multiple
                   type="file"
                   accept="image/*"
                   class="hidden"
@@ -69,18 +68,10 @@
 
               <!-- Buttons -->
               <div class="mt-6 flex justify-between">
-                <button
-                  type="button"
-                  @click="closeModal"
-                  class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                >
+                <button type="button" @click="closeModal" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">
                   Schliessen
                 </button>
-                <button
-                  type="submit"
-                  v-if="selectedImages[column]"
-                  class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                >
+                <button type="submit" v-if="selectedImages[column]" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
                   Hochladen
                 </button>
               </div>
@@ -90,12 +81,13 @@
           <!-- Galerieverwaltung -->
           <div v-show="activeTab === 'gallery' && is_imgdir">
             <ImageJsonEditor
+              ref="editor3"
               :folder="path"
+              :JsonPath="jspath"
               :column="column"
               @jsonUpdated="onJsonUpdated"
               @imageUploaded="refreshGallery"
               @refresh-gallery="$emit('refresh-preview')"
-              ref="editor2"
               @close="closeModal"
             />
           </div>
@@ -103,12 +95,7 @@
 
         <!-- Alternative Ansicht, wenn pxa gesetzt ist -->
         <div v-else class="space-y-4">
-          <label
-            class="block text-sm font-medium text-layout-sun-700 dark:text-layout-night-300"
-          >
-            Bilderordner
-          </label>
-
+          <label class="block text-sm font-medium text-layout-sun-700 dark:text-layout-night-300">Bilderordner</label>
           <input
             type="text"
             v-model="field.value"
@@ -116,21 +103,8 @@
             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
           />
           <div class="flex justify-between mt-6">
-            <button
-              type="button"
-              @click="closeModal"
-              class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-            >
-              Schliessen
-            </button>
-
-            <button
-              type="button"
-              @click="savedir"
-              class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-            >
-              Weiter
-            </button>
+            <button type="button" @click="closeModal" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Schliessen</button>
+            <button type="button" @click="savedir" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Weiter</button>
           </div>
         </div>
       </div>
@@ -138,31 +112,28 @@
   </template>
 
   <script>
-  import { CleanTable as cleanTableFn, GetAuth } from '@/helpers';
   import CopyLeftSelect from '@/Application/Components/Content/CopyLeftSelect.vue';
   import ImageJsonEditor from '@/Application/Admin/ImageJsonEditor.vue';
+  import { CleanTable as cleanTableFn, GetAuth, SD } from '@/helpers';
+  import { nextTick } from 'vue';
 
   export default {
     name: 'ImageUploadModal',
-    components: {
-      CopyLeftSelect,
-      ImageJsonEditor,
-    },
+    components: { CopyLeftSelect, ImageJsonEditor },
     props: {
-      is_imgdir: { type: Boolean, default: false },
-      isModalOpen: { type: [Boolean, Number, String], default: false },
+      is_imgdir: { type: String,Array,Object,Boolean, default: false },
+      isModalOpen: { type: Boolean, default: false },
       column: String,
       domain: String,
       path: String,
+      jspath: String,
       namee: String,
-      namee2: String,
       Message: { type: [Boolean, Number], default: false },
       alt_path: String,
       pxa: { type: Boolean, default: false },
       field: { type: Object, default: () => ({ value: '' }) },
-      modelValue: String, // v-model Unterstützung
+      modelValue: String,
     },
-
     emits: [
       'update:modelValue',
       'imageUploaded',
@@ -171,8 +142,8 @@
       'insertImage',
       'jsonUpdated',
       'refresh-preview',
+      'refresh-gallery',
     ],
-
     data() {
       return {
         activeTab: 'upload',
@@ -184,26 +155,31 @@
         tablex: cleanTableFn(),
         ulpath: this.alt_path,
         GetAuth: null,
-        localPath: this.path,
         finalPath: this.path + this.field.value,
       };
     },
-
     computed: {
       isImages() {
         return cleanTableFn() === 'images';
       },
-      uploadPath() {
-        return `${this.domain}/${cleanTableFn()}/${this.column}`;
+      jspath_alt() {
+        return `images/_${this.SD()}/${this.tablex}/${this.column}/index.json`;
       },
     },
-
+    watch: {
+      field: {
+        deep: true,
+        handler() {
+          this.finalPath = this.path + this.field.value;
+        },
+      },
+    },
     async mounted() {
       this.GetAuth = await GetAuth();
-      console.log("msg:" + this.Message);
     },
-
     methods: {
+      SD,
+
       tabClass(tab) {
         return [
           'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
@@ -216,140 +192,100 @@
       triggerFileInput() {
         this.$refs.fileInput.click();
       },
-
       handleDrop(event) {
-        const files = event.dataTransfer.files;
-        if (files.length > 0) {
-          this.handleFileChange({ target: { files } });
+        if (event.dataTransfer.files.length) {
+          this.handleFileChange({ target: { files: event.dataTransfer.files } });
         }
       },
-
       handleFileChange(event) {
         const file = event.target.files[0];
-        if (file) {
-          this.selectedImages[this.column] = file;
-          const previewUrl = URL.createObjectURL(file);
-          this.previewImages[this.column] = previewUrl;
+        if (!file) return;
 
-          this.$emit('previewUpdated', {
-            column: this.column,
-            url: previewUrl,
-          });
+        this.selectedImages = { ...this.selectedImages, [this.column]: file };
+        this.previewImages = { ...this.previewImages, [this.column]: URL.createObjectURL(file) };
 
-        //   if (this.Message) {
-        //     const extension = file.name.split('.').pop();
-        //     const newfg = `${file.name}_${this.GetAuth}.${extension}`;
-        //     this.$emit('insertImage', newfg);
-        //   }
-        }
+        this.$emit('previewUpdated', { column: this.column, url: this.previewImages[this.column] });
       },
 
       closeModal() {
-        this.selectedImages[this.column] = null;
-        this.previewImages[this.column] = null;
+        this.selectedImages = { ...this.selectedImages, [this.column]: null };
+        this.previewImages = { ...this.previewImages, [this.column]: null };
         this.uploading = false;
         this.progress = 0;
         this.activeTab = 'upload';
-        this.$emit('close');
+        if (!this.is_imgdir) {
+                alert("can close");
+                this.$emit('close');
+            } else {
+                alert("noclose");
+                this.$emit('reset');
+            }
+
       },
 
       async uploadImage() {
-  const selectedImage = this.selectedImages[this.column];
-  if (!selectedImage) return;
+        const file = this.selectedImages[this.column];
+        if (!file) return;
 
-  this.uploading = true;
-  this.progress = 0;
+        this.uploading = true;
+        this.progress = 0;
 
-  const formData = new FormData();
-  formData.append('image', selectedImage);
-  formData.append('ulpath', this.ulpath);
-  formData.append('column', this.column);
-  formData.append('namee', this.namee);
-  formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
-  formData.append('table', this.tablex);
-  formData.append('copyleft', this.form.copyleft);
-  formData.append('Message', this.Message ? 1 : 0);
-  formData.append('is_imgdir', this.finalPath);
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+        formData.append('ulpath', this.ulpath);
+        formData.append('column', this.column);
+        formData.append('namee', this.namee);
+        formData.append('table', this.tablex);
+        formData.append('copyleft', this.form.copyleft);
+        formData.append('Message', this.Message ? 1 : 0);
+        formData.append('is_imgdir', this.finalPath);
 
-  const xhr = new XMLHttpRequest();
+        try {
+          const res = await fetch(`/upload-image/${this.tablex}/1`, { method: 'POST', body: formData });
+          const data = await res.json();
 
-  xhr.upload.addEventListener('progress', (event) => {
-    if (event.lengthComputable) {
-      this.progress = Math.round((event.loaded / event.total) * 100);
-    }
-  });
+          if (!data.image_url) throw new Error('Upload fehlgeschlagen');
 
-  xhr.onload = () => {
-    this.uploading = false;
-    if (xhr.status === 200) {
-      let response = {};
-      try {
-        response = JSON.parse(xhr.responseText);
-      } catch (e) {
-        console.error('Ungültige Antwort vom Server:', xhr.responseText);
-        return;
-      }
+          const filePath = data.image_url;
+          this.$emit('update:modelValue', filePath);
+          this.$emit('imageUploaded', filePath);
 
-      const filePath = response.image_url; // serverseitiger fullPath
+          if (this.Message) this.$emit('insertImage', filePath);
 
-      // ModelValue und Upload-Event
-      this.$emit('update:modelValue', filePath);
-      this.$emit('imageUploaded', filePath);
+          if (this.is_imgdir) {
+            alert("ITIS");
+            // Reset upload state
+            this.selectedImages = { ...this.selectedImages, [this.column]: null };
+            this.previewImages = { ...this.previewImages, [this.column]: null };
+            this.uploading = false;
+            this.progress = 0;
 
-      // Bei Messages: InsertImage mit korrektem Pfad
-      if (this.Message) {
-        this.$emit('insertImage', filePath);
-      } else if (!this.is_imgdir) {
-        const el = document.getElementById(this.column);
-        if (el) el.value = `/images/${this.ulpath.replace('//', '/')}/thumbs/${filePath}`;
+            await nextTick();
+            if (this.$refs.editor3) {
+              await this.$refs.editor3.fetchImages();
+            }
 
-        const imgEl = document.getElementById(`com_${this.column}`);
-        if (imgEl) imgEl.src = `/images/${this.ulpath.replace('//', '/')}/thumbs/${filePath}`;
-      } else {
-        const el = document.getElementById(this.column);
-        if (el) el.value = filePath;
-
-        if (this.$refs.editor2) this.$refs.editor2.fetchImages();
-        this.$emit('refresh-preview');
-      }
-
-      // Modal schließen
-      this.closeModal();
-    } else {
-      console.error('Fehler beim Upload:', xhr.status, xhr.responseText);
-    }
-  };
-
-  xhr.onerror = () => {
-    this.uploading = false;
-    console.error('Fehler beim Hochladen:', xhr.status);
-  };
-
-  const isw = this.isImages && !this.Message ? '1' : '0';
-  const endpoint =
-    typeof this.oripath === 'undefined' || this.oripath == '0'
-      ? `/upload-image/${this.tablex}/${isw}`
-      : `/upload-image_alt/${this.tablex}/${isw}/${this.oripath}`;
-
-  xhr.open('POST', endpoint, true);
-  xhr.send(formData);
-},
-
+            this.$emit('refresh-gallery');
+            this.$emit('refresh-preview');
+            this.activeTab = 'gallery';
+          } else {
+            //this.closeModal();
+          }
+        } catch (e) {
+          console.error(e);
+          this.uploading = false;
+        }
+      },
 
       onJsonUpdated(newJson) {
         this.$emit('jsonUpdated', newJson);
       },
-
       savedir() {
-        if (this.field.value && this.field.value.trim() !== '') {
-          this.pxa = false;
-        }
+        if (this.field.value.trim()) this.pxa = false;
       },
-
       refreshGallery() {
-        if (this.$refs.editor2) {
-          this.$refs.editor2.fetchImages();
-        }
+        if (this.$refs.editor3) this.$refs.editor3.fetchImages();
       },
     },
   };

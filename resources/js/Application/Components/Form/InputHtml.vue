@@ -195,8 +195,8 @@
                 if (!editor) return;
 
                 const currentHtml = editor.innerHTML;
-                const decodedNewVal = this.decodeEntities(newVal);
-                decodedNewVal = this.rumLaut(newVal);
+
+                 let decodedNewVal = this.rumLaut(newVal);
                 // Nur updaten, wenn sich was geändert hat
                 if (currentHtml !== decodedNewVal) {
                 this.saveSelection();
@@ -206,6 +206,7 @@
             },
                     },
         methods: {
+            rumLaut,
   isValid() {
       if (!this.required) return true;
 

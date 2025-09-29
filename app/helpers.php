@@ -965,7 +965,7 @@ if(!function_exists('changeDatetimeToTimestamp'))
     function changeDatetimeToTimestamp($databaseName='laravel_tutorial')
     {
         $host = request()->getHost();
-        $subdomain = explode('.', $host)[0]; // Nehme den ersten Teil als Subdomain
+        $subdomain = SD(); // Nehme den ersten Teil als Subdomain
         if($subdomain != "" && $subdomain != 'ab')
         {
             $databaseName .= "_".$subdomain;

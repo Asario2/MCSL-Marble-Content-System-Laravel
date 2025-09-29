@@ -1,44 +1,65 @@
 [
     {
         "position": 1,
-        "filename": "rotten-psychos-background.jpg",
+        "filename": "Rotten-Psychos-Background.jpg",
         "label": "Rotten-Psychos-Background",
         "width": 1024,
         "height": 672
     },
     {
         "position": 2,
-        "filename": "rp-obsidian2.jpg",
+        "filename": "RP-Obsidian2.jpg",
         "label": "Rotten-Psychos2",
         "width": 1024,
         "height": 768
     },
     {
         "position": 3,
-        "filename": "smell the roses.jpg",
+        "filename": "Smell the Roses.jpg",
         "label": "Smell the Roses",
         "width": 1024,
         "height": 768
     },
     {
         "position": 4,
-        "filename": "southpole-backyard.jpg",
+        "filename": "Southpole-Backyard.jpg",
         "label": "Southpole-Backyard",
         "width": 1024,
         "height": 768
     },
     {
         "position": 5,
-        "filename": "they say jump.jpg",
+        "filename": "They say jump.jpg",
         "label": "They say jump",
         "width": 1024,
         "height": 768
     },
     {
         "position": 6,
-        "filename": "where are you.jpg",
+        "filename": "Where are you.jpg",
         "label": "Where are you",
         "width": 1024,
         "height": 768
+    },
+    {
+        "position": 7,
+        "filename": "565ab7ccc016282fbb603eab28c68630.webp",
+        "label": "",
+        "width": 1400,
+        "height": 1400
+    },
+    {
+        "position": 8,
+        "filename": "7bc17c16dbc62aec719d7b372b19a678.jpg",
+        "label": "",
+        "width": 512,
+        "height": 512
+    },
+    {
+        "position": 9,
+        "filename": "7af60bc378fb196c9d71f6fa90d68604.jpg",
+        "label": "",
+        "width": 512,
+        "height": 512
     }
 ]

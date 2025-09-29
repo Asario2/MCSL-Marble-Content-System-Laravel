@@ -3,43 +3,65 @@
       class="bg-white dark:bg-gray-900 p-4 rounded mx-auto shadow-md w-full max-w-4xl overflow-y-auto"
       :style="`max-height: ${windowHeight - 160}px`"
     >
-      <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
-        🖼️ Galerie bearbeiten
-      </h3>
-      <div v-if="images.length !== 0">
+      <div v-if="images.length > 0">
         <div
-  v-for="(element, index) in images"
-  :key="element.filename"
-  class="flex items-center gap-4 border-b border-gray-200 dark:border-gray-700 py-3"
-  draggable="true"
-  @dragstart="onDragStart(index)"
-  @dragover.prevent
-  @drop="onDrop(index)"
->
-  <span class="text-sm text-gray-500 dark:text-gray-400 cursor-move">
-    #{{ element.position }}
-  </span>
-  <span class="min-w-[100px] cursor-move" align="right">
-    <img
-      :src="`${folder}/thumbs/${element.filename}`"
-      alt=""
-      class="max-w-[100px] max-h-[75px] rounded shadow"
-    />
-  </span>
-  <input
-    type="text"
-    class="txt w-full p-2.5 text-sm rounded-lg block border focus:ring-3 focus:ring-opacity-75 bg-layout-sun-0 text-layout-sun-900 border-primary-sun-500 focus:border-primary-sun-500 focus:ring-primary-sun-500 placeholder:text-layout-sun-400 selection:bg-layout-sun-200 selection:text-layout-sun-1000 dark:bg-layout-night-0 dark:text-layout-night-900 dark:border-primary-night-500 dark:focus:border-primary-night-500 dark:focus:ring-primary-night-500 placeholder:dark:text-layout-night-400 dark:selection:bg-layout-night-200 dark:selection:text-layout-night-1000"
-    v-model="element.label"
-  />
-  <form @submit.prevent="deletePost(index)" style="display:inline">
-    <button @click.stop type="submit" onclick="return confirm('Sind Sie sicher, dass Sie dieses Bild löschen möchten?');">
-      &nbsp;<IconTrash style="margin-top:-27px;" class="sm-pencil cursor-pointer"></IconTrash>
-    </button>
-  </form>
-</div>
-</div>
+          v-for="(element, index) in images"
+          :key="element.filename"
+          class="flex items-center gap-4 border-b border-gray-200 dark:border-gray-700 py-3"
+          draggable="true"
+          @dragstart="onDragStart(index)"
+          @dragover.prevent
+          @drop="onDrop(index)"
+        >
+          <span class="text-sm text-gray-500 dark:text-gray-400 cursor-move">
+            #{{ element.position }}
+          </span>
 
-      <div class="mt-6 flex justify-between">
+          <span class="min-w-[100px] cursor-move">
+            <img
+              :src="`${localFolder}/thumbs/${element.filename}`"
+              :alt="element.filename"
+              class="max-w-[100px] max-h-[75px] rounded shadow"
+              @error="handleImageError(element.filename)"
+            />
+          </span>
+
+          <input
+            type="text"
+            v-model="element.label"
+            class="txt w-full p-2.5 text-sm rounded-lg block border focus:ring-3 focus:ring-opacity-75
+                   bg-layout-sun-0 text-layout-sun-900 border-primary-sun-500 focus:border-primary-sun-500
+                   focus:ring-primary-sun-500 placeholder:text-layout-sun-400 selection:bg-layout-sun-200
+                   selection:text-layout-sun-1000 dark:bg-layout-night-0 dark:text-layout-night-900
+                   dark:border-primary-night-500 dark:focus:border-primary-night-500 dark:focus:ring-primary-night-500
+                   placeholder:dark:text-layout-night-400 dark:selection:bg-layout-night-200 dark:selection:text-layout-night-1000"
+          />
+
+          <form @submit.prevent="deletePost(index)" style="display:inline">
+            <button
+              @click.stop
+              type="submit"
+              onclick="return confirm('Sind Sie sicher, dass Sie dieses Bild löschen möchten?');"
+            >
+              <IconTrash class="sm-pencil cursor-pointer mt-1" />
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div v-else class="text-gray-500 dark:text-gray-400 text-center py-10">
+        ❌ Keine Bilder vorhanden.
+        <div class="mt-2">
+          <button @click="fetchImages" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2">
+            Erneut versuchen
+          </button>
+          <button @click="testJsonUrl" class="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600">
+            JSON URL testen
+          </button>
+        </div>
+      </div>
+
+     <div class="mt-6 flex justify-between">
         <button
           type="button"
           @click="$emit('close')"
@@ -62,148 +84,171 @@
   import axios from 'axios';
   import IconTrash from "@/Application/Components/Icons/Trash.vue";
   import { toastBus } from '@/utils/toastBus';
-
-  import emitter from '@/eventBus';
-
+  import { SD } from "@/helpers";
   export default {
     name: 'ImageJsonEditor',
-    components: {
-        IconTrash,
-        toastBus,
-    },
+    components: { IconTrash },
     props: {
-      folder: {
-        type: String,
-        required: true,
-        default: ''
-      },
-      column:{
-        type:String,
-        required:true,
-        default:'',
-      }
+      folder: { type: String, required: true },
+      column: { type: String, required: true },
+      JsonPath: {type:String},
     },
     data() {
       return {
         images: [],
         windowHeight: window.innerHeight,
         draggedIndex: null,
+        status: 'Not loaded',
+        localFolder: this.folder, // Kopie vom Prop
+
       };
     },
-    methods: {
-        onDragStart(index) {
-    this.draggedIndex = index;
-  },
-  onDrop(dropIndex) {
-    if (this.draggedIndex === null) return;
-
-    // Element verschieben
-    const movedItem = this.images.splice(this.draggedIndex, 1)[0];
-    this.images.splice(dropIndex, 0, movedItem);
-
-    // Positionen neu setzen
-    this.images.forEach((img, idx) => {
-      img.position = idx + 1;
-    });
-
-    this.draggedIndex = null;
-  },
-        refreshGallery() {
-            emitter.emit('refresh-preview');
-        },
-        hasRight() {
-      return this.$hasRight; // Zugriff auf globale Methode
-    },
-        async deletePost(id) {
-        try {
-            if(!this.hasRight("delete","images"))
-            {
-                 alert("Sie haben nicht die benötigten Rechet zum löschen des Bildes");
-                 return "";
-            }
-            // console.log(`aad: admin/tables/delete/${this.table}/${this.id}`);
-            // DELETE-Anfrage mit Parametern in der URL
-            const parts = this.folder.replace(/\/+$/, '').split('/');
-            const last = parts[parts.length - 1];
-            const folder_alt = last;
-
-            const response = await axios.post(`/api/del_image/${this.column}/${folder_alt}/${id}`, {
-                params: {
-                    edit: "blogposts.index",
-                }
-            });
-            // console.log(response.data);
-            toastBus.emit('toast', response.data); // ← erwartet { status: "...", message: "..." }
-            this.$inertia.reload();
-            this.refreshGallery();
-            // this.$emit('refresh-preview');
-            emitter.emit('refresh-preview');
-            console.log('refresh-preview emitted');
-            // Optional: Seite neu laden oder Liste aktualisieren
-        } catch (error) {
-            console.error("Fehler beim Löschen:", error);
-        }
-    },
-      decodeHTMLEntities(str) {
-        const textarea = document.createElement('textarea');
-        textarea.innerHTML = str;
-        return textarea.value;
-      },
-      async fetchImages() {
-        try {
-          const response = await axios.get(`${this.folder}/index.json`);
-          if (this.validJson(response.data)) {
-            this.images = response.data;
-            // this.refreshGallery();
-          }
-        } catch (err) {
-          console.error('Fehler beim Laden der JSON:', err);
-          alert('Fehler beim Laden der Bilder');
-        }
-      },
-      validJson(data) {
-        try {
-          JSON.stringify(data);
-          return typeof data === 'object' && data !== null;
-        } catch (e) {
-          return false;
-        }
-      },
-      async saveJson() {
-        try {
-          await axios.post('/api/save-json', {
-            folder: this.folder,
-            images: this.images
-          });
+    watch: {
+      folder: {
+        immediate: true,
+        handler(newFolder) {
+          console.log('🔄 Folder changed:', newFolder);
           this.fetchImages();
-        } catch (err) {
-          console.error(err);
-          alert('❌ Fehler beim Speichern');
         }
-      },
+      }
+    },
+    methods: {
+        SD,
       updateWindowHeight() {
         this.windowHeight = window.innerHeight;
       },
 
-      // Diese Methode kann vom Parent oder anderen Komponenten über $refs aufgerufen werden
+      // Drag & Drop
+      onDragStart(index) {
+        this.draggedIndex = index;
+      },
+
+      onDrop(dropIndex) {
+        if (this.draggedIndex === null) return;
+        const movedItem = this.images.splice(this.draggedIndex, 1)[0];
+        this.images.splice(dropIndex, 0, movedItem);
+        this.images.forEach((img, idx) => (img.position = idx + 1));
+        this.draggedIndex = null;
+      },
+
+      // Bild löschen
+      async deletePost(index) {
+        // if (!confirm('Sind Sie sicher, dass Sie dieses Bild löschen möchten?')) return;
+        const image = this.images[index];
+
+        try {
+          const folderName = this.localFolder.replace(/\/+$/, '').split('/').pop();
+          const response = await axios.post(`/api/del_image/${this.column}/${folderName}/${index}`);
+          toastBus.emit('toast', response.data);
+
+          this.images.splice(index, 1);
+          this.refreshGallery();
+        } catch (err) {
+          console.error('Fehler beim Löschen:', err);
+          alert('Fehler beim Löschen');
+        }
+      },
+
+      // JSON speichern
+      async saveJson() {
+        try {
+          await axios.post('/api/save-json', { folder: this.localFolder, images: this.images });
+          this.fetchImages();
+          toastBus.emit('toast', { status: 'success', message: 'Galerie gespeichert' });
+        } catch (err) {
+          console.error(err);
+          alert('Fehler beim Speichern');
+        }
+      },
+
+      // TEST METHODE: JSON URL direkt testen
+      async testJsonUrl() {
+        console.log('🧪 Testing JSON URL...');
+        const testUrl = `${this.localFolder}/index.json`;
+        console.log('📡 Testing URL:', testUrl);
+
+        try {
+          const response = await fetch(testUrl);
+          console.log('📊 Response status:', response.status);
+          console.log('📊 Response ok:', response.ok);
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log('✅ JSON Data received:', data);
+            this.status = `✅ OK - ${data.length} images`;
+          } else {
+            console.log('❌ Response not OK');
+            this.status = `❌ Error: ${response.status}`;
+          }
+        } catch (error) {
+          console.error('💥 Fetch error:', error);
+          this.status = `💥 Fetch Error: ${error.message}`;
+        }
+      },
+
+      // Bilder aus index.json laden
+      async fetchImages() {
+        console.log('🚀 fetchImages() called');
+        console.log('📁 Folder:', this.localFolder);
+
+        this.status = 'Loading...';
+
+        try {
+          // Cache Busting
+          const timestamp = new Date().getTime();
+          const url = `${this.localFolder}/index.json?t=${timestamp}`;
+          console.log('📡 Fetching from:', url);
+
+          const response = await axios.get(url);
+          console.log('📨 Response received:', response);
+
+          if (Array.isArray(response.data)) {
+            this.images = response.data;
+            console.log(`✅ SUCCESS: ${this.images.length} images loaded`);
+            this.status = `Loaded ${this.images.length} images`;
+
+            // Debug: Log each image
+            this.images.forEach((img, index) => {
+              console.log(`🖼️ ${index + 1}: ${img.filename} (pos: ${img.position})`);
+            });
+          } else {
+            console.log('⚠️ Response is not an array:', response.data);
+            this.images = [];
+            this.status = 'No array data';
+          }
+        } catch (err) {
+          console.error('💥 ERROR loading JSON:', err);
+          console.error('💥 Error details:', err.response);
+          this.images = [];
+          this.status = `Error: ${err.message}`;
+        }
+      },
+
+      handleImageError(filename) {
+        console.log(`❌ Image failed to load: ${filename}`);
+      },
+
+      // Vom Parent aufrufbar
       refreshGallery() {
+        console.log('🔄 refreshGallery() called from parent');
         this.fetchImages();
+        this.$emit('refresh-gallery');
       }
     },
     mounted() {
+        // this.localFolder = this.JsonPath;
+        console.log('🎯 ImageJsonEditor MOUNTED');
+      console.log('📁 Initial folder:', this.localFolder);
+      console.log('📝 Column:', this.column);
+
+
+
       this.fetchImages();
       this.updateWindowHeight();
       window.addEventListener('resize', this.updateWindowHeight);
-      this.refreshGallery();
-    //   emitter.on('refresh-preview', this.getPreviewImagez);
     },
     beforeUnmount() {
       window.removeEventListener('resize', this.updateWindowHeight);
-      this.refreshGallery();
     }
   };
   </script>
-
-  <style scoped>
-  /* keine body.modal-open mehr nötig */
-  </style>

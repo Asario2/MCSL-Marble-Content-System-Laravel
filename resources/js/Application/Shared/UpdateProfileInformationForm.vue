@@ -217,7 +217,7 @@ export default {
         computedPhotoUrl() {
             if (this.user.profile_photo_path) {
                 // Benutzerpfad im Subdomain-Verzeichnis
-                const subdomain = window.location.hostname.replace("www.",'').split(".")[0];
+                const subdomain = SD();
                 return `/images/_${subdomain}/users/profile_photo_path/${this.user.profile_photo_path}`;
             }
             return this.user.profile_photo_url; // fallback jetstream

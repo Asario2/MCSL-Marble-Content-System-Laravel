@@ -19,8 +19,8 @@
         <!-- Bild -->
         <img
           :src="'/images/_mfx/images/img_thumb/thumbs/' + item.img_thumb"
-          :alt="item.headline"
-          :title="item.headline"
+          :alt="item.name"
+          :title="item.name"
           class="w-full h-auto md:w-[104px] max-w-[320px] md:h-[104px] object-cover rounded-lg nor_border flex-shrink-0 mr-[-3px]"
         />
 
@@ -29,7 +29,7 @@
           <div class="flex items-center space-x-3">
             <span
               class="dark:text-layout-night-1050 text-layout-sun-1000 font-bold p-2"
-              v-html="cleanHtml(item.headline)"
+              v-html="cleanHtml(item.name)"
             ></span>
             <editbtns :id="item?.id" table="images" />
           </div>
@@ -54,7 +54,7 @@
         </page-content>
     </layout>
 </template>
-<script>
+<script>        
 import { defineComponent } from "vue";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import Layout from "@/Application/Homepage/Shared/mfx/Layout.vue";
@@ -100,6 +100,9 @@ export default defineComponent({
 
     methods: {
         cleanHtml(html) {
+            if(!html){
+                html = '';
+            }
             html = marked(html);
             const result = rumLaut(html);
 
