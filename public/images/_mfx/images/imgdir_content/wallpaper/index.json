@@ -40,26 +40,5 @@
         "label": "Where are you",
         "width": 1024,
         "height": 768
-    },
-    {
-        "position": 7,
-        "filename": "565ab7ccc016282fbb603eab28c68630.webp",
-        "label": "",
-        "width": 1400,
-        "height": 1400
-    },
-    {
-        "position": 8,
-        "filename": "7bc17c16dbc62aec719d7b372b19a678.jpg",
-        "label": "",
-        "width": 512,
-        "height": 512
-    },
-    {
-        "position": 9,
-        "filename": "7af60bc378fb196c9d71f6fa90d68604.jpg",
-        "label": "",
-        "width": 512,
-        "height": 512
     }
 ]

@@ -8,20 +8,6 @@
       >
         <!-- Tabs & Inhalte -->
         <div v-if="!pxa">
-          <!-- Tabs -->
-          <div v-if="is_imgdir" class="mb-4 border-b border-layout-sun-300 dark:border-layout-night-300">
-            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-              <button :class="tabClass('upload')" @click="activeTab = 'upload'" type="button">
-                Upload
-              </button>
-              <button :class="tabClass('gallery')" @click="activeTab = 'gallery'" type="button">
-                Galerieverwaltung
-              </button>
-            </nav>
-          </div>
-
-          <!-- Upload Tab -->
-          <div v-show="activeTab === 'upload'">
             <form @submit.prevent="uploadImage">
               <h3 class="text-2xl font-semibold text-center mb-4">Bild hochladen</h3>
 
@@ -76,21 +62,7 @@
                 </button>
               </div>
             </form>
-          </div>
 
-          <!-- Galerieverwaltung -->
-          <div v-show="activeTab === 'gallery' && is_imgdir">
-            <ImageJsonEditor
-              ref="editor3"
-              :folder="path"
-              :JsonPath="jspath"
-              :column="column"
-              @jsonUpdated="onJsonUpdated"
-              @imageUploaded="refreshGallery"
-              @refresh-gallery="$emit('refresh-preview')"
-              @close="closeModal"
-            />
-          </div>
         </div>
 
         <!-- Alternative Ansicht, wenn pxa gesetzt ist -->
@@ -213,13 +185,8 @@
         this.uploading = false;
         this.progress = 0;
         this.activeTab = 'upload';
-        if (!this.is_imgdir) {
-                alert("can close");
-                this.$emit('close');
-            } else {
-                alert("noclose");
-                this.$emit('reset');
-            }
+        this.$emit('close');
+
 
       },
 
@@ -254,7 +221,7 @@
           if (this.Message) this.$emit('insertImage', filePath);
 
           if (this.is_imgdir) {
-            alert("ITIS");
+
             // Reset upload state
             this.selectedImages = { ...this.selectedImages, [this.column]: null };
             this.previewImages = { ...this.previewImages, [this.column]: null };
@@ -268,9 +235,9 @@
 
             this.$emit('refresh-gallery');
             this.$emit('refresh-preview');
-            this.activeTab = 'gallery';
+
           } else {
-            //this.closeModal();
+            this.closeModal();
           }
         } catch (e) {
           console.error(e);

@@ -204,7 +204,7 @@
                         :jspath="'/images/_mfx/images/imgdir_content/'+field.value+'/'"
                         :path="'/images/_mfx/images/imgdir_content/'+field.value+'/'"
                         :isModalOpen="modals[field.name]"
-                        @close="val => { if (val.force) modals[field.name] = false }"
+                        @close="modals[field.name] = false"
                         @reset="console.log('nur reset, nicht schließen')"
                         @imageUploaded="handleImageUploaded(field.name, $event)"
                         v-model="field.value"
@@ -220,10 +220,38 @@
                         @refresh-preview="handleRefreshPreview"
                         @refresh-gallery="handleRefreshPreview"
                     />
+                    <ImageJsonEditor
+                        v-if="gals?.[field.name]"
+                        :column="field.name"
+
+                        ref="editor3"
+                        :jspath="'/images/_mfx/images/imgdir_content/'+field.value+'/'"
+                        :path="'/images/_mfx/images/imgdir_content/'+field.value+'/'"
+                        :isGalOpen="gals[field.name]"
+                        :folder="'/images/_mfx/images/imgdir_content/'+field.value+'/'"
+                        @close="gals[field.name] = false"
+                        @reset="console.log('nur reset, nicht schließen')"
+                        @imageUploaded="handleImageUploaded(field.name, $event)"
+                        v-model="field.value"
+                        :namee="field.value"
+                        :alt_path="'_' + subdomain + '/' + CleanTable_alt() + '/' + field.name"
+                        :domain="subdomain"
+                        :tablex="table_x"
+                        :value="imageId"
+                        :image="field.value"
+                        :namee2="field.name"
+                        :Message="false"
+                        @refresh-preview="handleRefreshPreview"
+                        @refresh-gallery="handleRefreshPreview"
+                    />
 
                     <button type="button" @click="openModal(field.name)">
-                        <span style='float:left;'><b>{{ field.label }}</b><br />
+                        <span style='float:left;'><b>Upload</b><br />
                         <div v-html="previewHtml"></div></span>
+                    </button>
+                    <button type="button" @click="openGal(field.name)">
+                        <span style='float:left;'><b>Galerie</b><br />
+                        <div v-html="previewgal"></div></span>
                     </button>
                     <input type="hidden" :name="field.name" :id="field.name"  v-model="field.value" />
                 </input-container>
@@ -558,6 +586,7 @@ import { toastBus } from '@/utils/toastBus';
 import { reactive } from "vue";
 import PublicRadio from "@/Application/Components/Form/PublicRadio.vue";
 import Alert from "@/Application/Components/Content/Alert.vue";
+import ImageJsonEditor from "@/Application/Admin/ImageJsonEditor.vue";
 
 export default defineComponent({
     name: "Admin_TableForm",
@@ -590,6 +619,7 @@ export default defineComponent({
         InputFormTextArea,
         InputFormDate,
         InputFormPrice,
+        ImageJsonEditor,
         InputError,
         DialogModal,
         Alert,
@@ -657,12 +687,16 @@ export default defineComponent({
             type: String,
             default: '',
         },
-    },
 
+    },
+    // DZ
     data() {
         return {
-            isModalOpen: true,
+            gals:[],
+            isModalOpen: false,
             ulpath: '',
+            GalOpen:false,
+
             previewHtml: '',
             table: reactive({ id: "1" }),
             formDatas: {},
@@ -716,7 +750,9 @@ export default defineComponent({
         hasRight() {
             return this.$hasRight;
         },
-
+        previewgal(){
+            return "<img src='/images/icons/gal.jpg' />";
+        },
         sortedOptions_sel() {
             let options_sel;
             if (Array.isArray(this.options_sel)) {
@@ -800,7 +836,7 @@ export default defineComponent({
             const ppa = `/images/_${window.subdomain}/images/${field.name}/${field.value}/index.json`;
 
             if(ppa.includes("undefined/")){
-                this.previewHtml = '<img src="/images/blogs/thumbs/009.jpg" alt="Jetzt Bild Hochladen" width="100" title="Jetzt Bild Hochladen" style="float: left; margin-right: 12px;">';
+                this.previewHtml = '<img src="/images/icons/upl.jpg" alt="Jetzt Bild Hochladen" width="200" title="Jetzt Bild Hochladen" style="float: left; margin-right: 12px;">';
                 return;
             }
 
@@ -809,7 +845,7 @@ export default defineComponent({
                 this.images = response.data;
 
                 if(!this.validJson(this.images)) {
-                    this.previewHtml = '<img src="/images/blogs/thumbs/009.jpg" alt="Jetzt Bild Hochladen" width="100" title="Jetzt Bild Hochladen" style="float: left; margin-right: 12px;">';
+                    this.previewHtml = '<img src="/images/icons/upl.jpg" alt="Jetzt Bild Hochladen" width="200" title="Jetzt Bild Hochladen" style="float: left; margin-right: 12px;">';
                     return;
                 }
 
@@ -889,11 +925,19 @@ export default defineComponent({
                 return `/images/_${this.subdomain}/${this.CleanTable_alt()}/${field.name}/${this.thumb}${field.value}`;
             }
 
-            return '/images/blogs/thumbs/009.jpg';
+            return '/images/icons/upl.jpg';
         },
 
         openModal(name) {
             this.modals[name] = true;
+
+        },
+        openGal(name) {
+            this.gals[name] = true;
+
+        },
+        openGal(name) {
+            this.gals[name] = true;
 
         },
 

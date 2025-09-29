@@ -1,4 +1,11 @@
 <template>
+        <div
+      v-if="GalOpen"
+      class="fixed inset-0 z-100 flex items-start justify-center bg-black bg-opacity-50 pt-[160px] overflow-y-auto mb-[50px]"
+    >
+    <div
+        class="bg-layout-sun-100 dark:bg-layout-night-100 rounded-lg shadow-lg w-full max-w-lg p-6 max-h-[calc(100vh-200px)]"
+      >
     <div
       class="bg-white dark:bg-gray-900 p-4 rounded mx-auto shadow-md w-full max-w-4xl overflow-y-auto"
       :style="`max-height: ${windowHeight - 160}px`"
@@ -51,20 +58,12 @@
 
       <div v-else class="text-gray-500 dark:text-gray-400 text-center py-10">
         ❌ Keine Bilder vorhanden.
-        <div class="mt-2">
-          <button @click="fetchImages" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2">
-            Erneut versuchen
-          </button>
-          <button @click="testJsonUrl" class="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600">
-            JSON URL testen
-          </button>
-        </div>
       </div>
 
      <div class="mt-6 flex justify-between">
         <button
           type="button"
-          @click="$emit('close')"
+          @click="closeModal"
           class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
         >
           Schliessen
@@ -77,6 +76,8 @@
           💾 Speichern
         </button>
       </div>
+    </div>
+    </div>
     </div>
   </template>
 
@@ -92,6 +93,7 @@
       folder: { type: String, required: true },
       column: { type: String, required: true },
       JsonPath: {type:String},
+      isGalOpen: {type:[String,Number,Boolean]},
     },
     data() {
       return {
@@ -99,6 +101,7 @@
         windowHeight: window.innerHeight,
         draggedIndex: null,
         status: 'Not loaded',
+        GalOpen: this.isGalOpen ?? false,
         localFolder: this.folder, // Kopie vom Prop
 
       };
@@ -122,7 +125,9 @@
       onDragStart(index) {
         this.draggedIndex = index;
       },
-
+      closeModal(){
+        this.$emit('close');
+      },
       onDrop(dropIndex) {
         if (this.draggedIndex === null) return;
         const movedItem = this.images.splice(this.draggedIndex, 1)[0];
