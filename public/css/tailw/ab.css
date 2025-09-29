@@ -1,3 +1,17 @@
+@font-face {
+    font-family: "ald2";
+    src:  url("../webfonts/ald2.woff2") format("woff2"), /* Modern Browsers */
+          url("../webfonts/ald2.woff") format("woff"), /* Modern Browsers */
+
+    src: url("../webfonts/ald2.eot"); /* IE9 Compat Modes */
+    src: url("../webfonts/ald2.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+      url("../webfonts/ald2.otf") format("opentype"), /* Open Type Font */
+      url("../webfonts/ald2.svg") format("svg"), /* Legacy iOS */
+      url("../webfonts/ald2.ttf") format("truetype");
+
+
+  }
+
 .\!row-span-1 {
   grid-row: span 1 / span 1 ;
 }

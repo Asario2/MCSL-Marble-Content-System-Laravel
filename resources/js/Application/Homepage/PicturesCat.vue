@@ -43,20 +43,20 @@
                     <div
                     class="absolute left-0 right-0 text-center text-white transition-all duration-300 bott title-top"
                     >
-                    <h5
-                        class="text-lg font-semibold group-hover:text-shadow-md transition-all duration-300 ucfirst"
+                    <span
+                        class="text-lg font-semibold group-hover:text-shadow-md transition-all duration-300 capitalize font-ald2"
                     >
                         {{ ima.name }}
-                    </h5>
+                </span>
                     </div>
 
                     <!-- Text unten -->
                     <div
                     class="absolute bott2 left-0 right-0 text-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                     >
-                    <p class="text-sm opacity-75 text-shadow ucfirst">
+                    <span class="text-sm opacity-75 text-shadow ucfirst">
                         {{ decodeEntities(ima.heading_alt) }}
-                    </p>
+                    </span>
                     </div>
                 </a>
                 </div>
@@ -153,14 +153,16 @@
 
     /* Textschatten für untere Zeile */
     .text-shadow {
-        text-shadow:
-
-        3px 3px 0px rgba(0, 0, 0, 1.0),
-        -3px -3px 0px rgba(0, 0, 0, 1.0),
-        -3px 3px 0px rgba(0, 0, 0, 1.0),
-        3px -3px 0px rgba(0, 0, 0, 1.0);
+color:#000;
+background-color:#fff;
+border-radius:3px;
+padding:0 3px;
+margin:7px;
     }
-
+    .font-ald2{
+        font-family:ald2;
+        font-size:25px;
+    }
     /* Position obere Zeile */
     .bott {
         bottom: 120px;
