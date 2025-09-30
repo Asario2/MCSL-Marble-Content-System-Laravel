@@ -1,26 +1,24 @@
-        @import 'button.css';
-        @import '../../public/Shariff/shariff-complete.less';
-		@import 'footer.css';
-		@import 'form.css';
-		@import 'navigation.css';
-		@import 'markdown.css';
-		@import 'table.css';
-		@import 'v_tippy.css';
-        @tailwind base;
-		@tailwind components;
-		@tailwind utilities;
+@import "button.css";
+@import "footer.css";
+@import "form.css";
+@import "markdown.css";
+@import "navigation.css";
+@import "table.css";
+@import "v_tippy.css";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 [x-cloak] {
     display: none;
 }
-
 ul {
     display: block;
     list-style-type: disc;
 }
 ul {
-    list-style-position: outside; /* Bullet Points au?erhalb */
+    list-style-position: outside; /* Bullet Points au�erhalb */
     padding-left: 0px; /* Abstand von der linken Seite */
     margin-top: 0;
     margin-bottom: 0;
@@ -40,7 +38,7 @@ ul {
 
 li {
     /* Standard-Bullet-Point */
-    margin-left: 1.5rem; /* Einr?ckung */
+    margin-left: 1.5rem; /* Einr�ckung */
     line-height: 1.8; /* Passt die Textausrichtung an */
 }
 .prose :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *))::before {
@@ -54,6 +52,9 @@ content: "" !important;
 	color:#000 !Important;
 	padding:5px;
 	border-radius:4px;
+}
+.cookies{
+    z-index:9990000 !important;
 }
 code, code em, code > strong{
 	color:#000 !Important;
@@ -97,9 +98,9 @@ li {
 }
 ul {
     list-style-type: disc; /* Aktiviert Bullet Points */
-    list-style-position: outside; /* Bullet Points au?erhalb des Textblocks */
-    margin-left: 20px; /* Abstand links f?r die Bullet Points */
-    padding-left: 20px; /* Zus?tzliche Einr?ckung */
+    list-style-position: outside; /* Bullet Points au�erhalb des Textblocks */
+    margin-left: 20px; /* Abstand links f�r die Bullet Points */
+    padding-left: 20px; /* Zus�tzliche Einr�ckung */
 }
 ul {
     /* display: flex; */
@@ -108,7 +109,7 @@ ul {
 }
 
 ul {
-    list-style-type: disc; /* ?berschreibt globale Regeln */
+    list-style-type: disc; /* �berschreibt globale Regeln */
 }
 .fa-solid {
     font-family: "Font Awesome"; /* Specify the font family */
@@ -433,4 +434,3 @@ A
 		SPAN .fab .fa-twitter:before {
  content: "\e61b" !important;
 }
-
