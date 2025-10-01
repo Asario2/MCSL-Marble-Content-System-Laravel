@@ -1,8 +1,8 @@
-import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue"; 
+import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 <template>
     <Layout>
     <MetaHeader title="Datenschutzerklärung" />
-        <div class="prose prose-layout dark:prose-invert max-w-none">
+        <div class="prose prose-layout dark:prose-invert max-w-none bg-layout-sun-100 dark:bg-layout-night-100 p-7">
             <div v-html="privacy" />
         </div>
     </Layout>

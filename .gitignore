@@ -2,21 +2,23 @@ _work/*
 
 /.phpunit.cache
 /node_modules
-/public/build
-/public/hot
-/public/storage
+
 /storage/*.key
 /storage/debugbar/**
 README.md
 /public/*.sql
 !/public/**
+/public/build
+/public/hot
+/public/storage
 **/orig/**
 vendor/
 .env
 *.bat
 *.sh
 *.yml
-/public/_assets
+/public/_assets/**
+/public/build/**
 # Ausnahme: bestimmte Datei tracken
 !vendor/laravel/jetstream/**
 !vendor/laravel/framework/src/Illuminate/Http/**

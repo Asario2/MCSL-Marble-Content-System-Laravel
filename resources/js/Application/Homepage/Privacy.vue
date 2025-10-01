@@ -2,7 +2,7 @@
 <template>
     <Layout>
     <MetaHeader title="Datenschutzerklärung" />
-        <div class="prose prose-layout dark:prose-invert max-w-none">
+        <div class="prose prose-layout dark:prose-invert max-w-none block max-w-sm gap-3 mx-auto  sm:max-w-full group hover:no-underline focus:no-underline lg:grid lg:grid-cols-12 bg-layout-sun-100 dark:bg-layout-night-100">
             <div v-html="ch(privacy)"></div>
         </div>
     </Layout>

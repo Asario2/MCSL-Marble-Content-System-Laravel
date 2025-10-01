@@ -10,7 +10,112 @@ class UpdateChangelog extends Command
     protected $signature = 'changelog:update';
     protected $description = 'Lädt alle geschlossenen GitHub-Issues (ohne PRs), versioniert sie nach closed_at und schreibt sie in die CHANGELOG.md';
 
+
+
+
     public function handle()
+    {
+        $owner = "Asario2";
+        $repo = "MCSL-based-on-Starter-Eleven";
+        $changelogPath = 'E:\git\git-olirein\CHANGELOG.md';
+
+        $allIssues = collect();
+        $page = 1;
+        $perPage = 100;
+
+        $this->info("📥 Lade geschlossene Issues von GitHub...");
+
+        // Alle geschlossenen Issues mit Pagination abrufen
+        do {
+            $this->info("📥 Lade Seite {$page} mit {$perPage} Issues...");
+            $response = Http::withOptions(['verify' => false])
+                ->withHeaders(['Accept' => 'application/vnd.github+json'])
+                ->get("https://api.github.com/repos/{$owner}/{$repo}/issues", [
+                    'state' => 'closed',
+                    'per_page' => $perPage,
+                    'page' => $page,
+                ]);
+
+            if ($response->failed()) {
+                $this->error('❌ Fehler beim Laden der GitHub-Issues');
+                return Command::FAILURE;
+            }
+
+            // Filter: keine PRs & nicht geplante/duplizierte
+            $issues = collect($response->json())->reject(fn($issue) => !empty($issue['pull_request']))
+                ->filter(function ($issue) {
+                    $labels = collect($issue['labels'])->pluck('name')->map(fn($l) => strtolower($l));
+                    return !$labels->contains('not planned') && !$labels->contains('duplicate');
+                });
+
+            $allIssues = $allIssues->merge($issues);
+            $this->info("➡️ Gefundene Issues auf Seite {$page}: {$issues->count()}");
+
+            $page++;
+        } while ($issues->count() === $perPage);
+
+        $this->info("✅ Insgesamt gefundene Issues: {$allIssues->count()}");
+
+        // Nach closed_at sortieren (älteste zuerst)
+        $allIssues = $allIssues->sortBy('closed_at')->values();
+
+        // CHANGELOG einlesen
+        $changelog = file_exists($changelogPath) ? file_get_contents($changelogPath) : '';
+
+        // Bereits vorhandene Issue-IDs suchen
+        preg_match_all('/\(#(\d+)\)/', $changelog, $existingMatches);
+        $existingIds = collect($existingMatches[1] ?? [])->map(fn($id) => (int)$id);
+
+        // Nur neue Issues
+        $newIssues = $allIssues->reject(fn($issue) => $existingIds->contains((int)$issue['number']));
+        if ($newIssues->isEmpty()) {
+            $this->info("ℹ️ Alle Issues sind bereits im Changelog vorhanden.");
+            return Command::SUCCESS;
+        }
+
+        // Letzte Version im Changelog auslesen
+        preg_match_all('/version-(\d+)\.(\d+)\.(\d+)/', $changelog, $versionMatches);
+        $versionArray = $versionMatches[0] ?? [];
+        $lastVersion = !empty($versionArray) ? end($versionArray) : null;
+
+        if ($lastVersion) {
+            preg_match('/(\d+)\.(\d+)\.(\d+)/', $lastVersion, $matches);
+            $major = (int)($matches[1] ?? 2);
+            $minor = (int)($matches[2] ?? 4);
+        } else {
+            $major = 2;
+            $minor = 4;
+        }
+
+        $entries = '';
+
+        foreach ($newIssues as $issue) {
+            // Minor/major hochzählen
+            if ($minor >= 99) {
+                $major++;
+                $minor = 0;
+            } else {
+                $minor++;
+            }
+            $patch = rand(0, 9);
+
+            $version = sprintf("%d.%02d.%d", $major, $minor, $patch);
+            $badge = "![Version](https://img.shields.io/badge/version-{$version}-orange)";
+
+            $entries .= "{$badge} {$issue['title']} (#{$issue['number']})  \n";
+        }
+
+        // Neue Sektion unten anhängen
+        $newChangelog = $changelog . "" . $entries;
+        file_put_contents($changelogPath, $newChangelog);
+
+        $this->info("📄 Alle neuen Issues nach {$changelogPath} geschrieben.");
+        return Command::SUCCESS;
+    }
+
+
+
+    public function handle_getallnew()
     {
         $owner = "Asario2";
         $repo = "MCSL-based-on-Starter-Eleven";

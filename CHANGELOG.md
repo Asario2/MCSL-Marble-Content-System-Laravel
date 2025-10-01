@@ -97,3 +97,4 @@
 ![Version](https://img.shields.io/badge/version-3.01.9-orange) FEATURE - invert colors on home/pictures (#155)  
 ![Version](https://img.shields.io/badge/version-3.02.7-orange) BUG - cookie link on ab.marblefx.net doesn't works (#162)  
 ![Version](https://img.shields.io/badge/version-3.03.3-orange) Added changelog automatic generator (#167)  
+![Version](https://img.shields.io/badge/version-3.04.7-orange) DARK BG in privacy ab.dom (#166)  
