@@ -1793,6 +1793,54 @@ class TablesController extends Controller
 
 
     }
+    public function show_contacts(){
+        if(!CheckZRights("Contacts")){
+            return redirect("/no-rights");
+        }
+
+        $data = DB::table("kontakte")
+        ->orderBy("Gruppe", "ASC")
+        ->orderBy("Name", "ASC")
+        ->get()
+        ->map(function($item) {
+            foreach ($item as $key => $value) {
+                $item->$key = decval($value); // jede Spalte entschlüsseln
+            }
+            return $item;
+        });
+
+return Inertia::render('Admin/Contacts', [
+    'contacts' => $data,
+]);
+    }
+
+    private function decryptField($encryptController, $value)
+    {
+        if (empty($value) || !is_string($value)) {
+            return $value;
+        }
+
+        try {
+            $decrypted = $encryptController->decryptString($value);
+            return strip_tags(trim($decrypted));
+        } catch (\Exception $e) {
+            \Log::warning("Decrypt Fehler: " . $e->getMessage());
+            return $value;
+        }
+    }
+    private function safeDecval($value)
+    {
+        if (empty($value) || !is_string($value)) {
+            return $value;
+        }
+
+        try {
+            return decval($value);
+        } catch (\Exception $e) {
+            \Log::warning('Decval Fehler für Wert: ' . substr($value, 0, 50));
+            return $value; // Fallback: unveränderter Wert
+        }
+    }
     public function update(Request $request, $table, $id,$edit='')
     {
         if (!Schema::hasTable($table)) {

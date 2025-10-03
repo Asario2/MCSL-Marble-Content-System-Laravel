@@ -42,6 +42,19 @@
                     Hier kannst du alle Datenbankinhalte bearbeiten
                 </template>
             </navigation-card>
+            <navigation-card v-if="modulRights?.Contacts"
+                class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
+                title="Kontakte"
+                :routeName="route('admin.contacts')"
+                linkName="Kontake verwalten"
+                target="_self"
+                :withIcon="true"
+                icon="IconContacts"
+            >
+                <template #description>
+                    Hier kannst du alle Datenbankinhalte bearbeiten
+                </template>
+            </navigation-card>
             <!-- laravel.log -->
             <navigation-card v-if="modulRights?.LogViewer"
                 class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"

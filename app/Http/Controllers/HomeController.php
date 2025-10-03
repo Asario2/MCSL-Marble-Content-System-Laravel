@@ -330,6 +330,9 @@ return Inertia::render('Homepage/Pictures', [
 
         return Inertia::render('Homepage/mfx/ImagesShow', ["images"=>$images,"im_cont"=>$im_cont,"def"=>$def]);
     }
+    public function QRCodaH(){
+        return Inertia::render('Components/QRCodaH');
+    }
     public function home_images_cat_mfx(Request $request)
     {
         // if($slug != "Alphabet")

@@ -1,5 +1,7 @@
 <?php
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Crypt;
+use App\Http\Controllers\EncryptController;
 use Illuminate\Support\Facades\File;
 use League\CommonMark\CommonMarkConverter;
 use League\CommonMark\Environment\Environment;
@@ -39,6 +41,30 @@ if(!function_exists("SD_ALT")){
             ? 'ab'   // Fallback, wenn kein Request existiert
             : explode('.', str_replace("www.",'',request()->getHost()))[0];
     }
+}
+if(!function_exists("encval"))
+{
+function encval($value)
+{
+    if ($value === null || $value === '') {
+        return $value;
+    }
+    return Crypt::encryptString((string) $value);
+}
+}
+if(!function_exists("decval"))
+{
+function decval($value)
+{
+    if ($value === null || $value === '') {
+        return $value;
+    }
+    try {
+        return Crypt::decryptString($value);
+    } catch (\Exception $e) {
+        return $value; // Fallback falls schon im Klartext
+    }
+}
 }
 if(!function_exists("RUMLAUT"))
 {
@@ -1207,6 +1233,104 @@ if(!function_exists("ConvertTypes"))
 
     }
 }
+
+// if (!function_exists('decval')) {
+//     function decval($data)
+//     {
+//         if ($data === null) {
+//             return null;
+//         }
+
+//         $enc = new EncryptController();
+
+//         // 🔹 Strings behandeln
+//         if (is_string($data)) {
+//             $maxAttempts = 4; // falls mehrfach verschlüsselt
+//             $attempt = 0;
+
+//             while ($attempt < $maxAttempts) {
+//                 $decrypted = $enc->decryptString($data);
+
+//                 // Wenn nichts passiert → abbrechen
+//                 if ($decrypted === $data) {
+//                     break;
+//                 }
+
+//                 $data = $decrypted;
+//                 $attempt++;
+//             }
+
+//             return strip_tags(trim($data));
+//         }
+
+//         // 🔹 Objekte behandeln (z. B. stdClass von DB)
+//         if (is_object($data)) {
+//             foreach ($data as $key => $val) {
+//                 $data->$key = decval($val);
+//             }
+//             return $data;
+//         }
+
+//         // 🔹 Arrays behandeln
+//         if (is_array($data)) {
+//             foreach ($data as $key => $val) {
+//                 $data[$key] = decval($val);
+//             }
+//             return $data;
+//         }
+
+//         // 🔹 Zahlen, bool usw. unverändert zurückgeben
+//         return $data;
+//     }
+
+
+// }
+// if(!function_exists("decval_old")){
+
+
+//     function decval_old($data)
+//     {
+//         if (!$data) return $data;
+
+//         $enc = new EncryptController(env('APP_HASHCODE', "SECRET"));
+
+//         // Wenn es ein String ist
+//         if (is_string($data)) {
+//             // Mehrfach entschlüsseln
+//             $maxAttempts = 4;
+//             $attempt = 0;
+//             while ($attempt < $maxAttempts) {
+//                 $decrypted = $enc->decryptString($data);
+//                 if ($decrypted === false) break;
+//                 $data = $decrypted;
+//                 $attempt++;
+//             }
+
+//             $data = strip_tags($data);
+//             $data = trim($data);
+//             return $data;
+//         }
+
+//         // Wenn es ein Objekt ist, rekursiv alle String-Felder entschlüsseln
+//         if (is_object($data)) {
+//             foreach ($data as $key => $val) {
+//                 $data->$key = decval($val);
+//             }
+//             return $data;
+//         }
+
+//         // Wenn es ein Array ist, rekursiv alle Elemente bearbeiten
+//         if (is_array($data)) {
+//             foreach ($data as $key => $val) {
+//                 $data[$key] = decval($val);
+//             }
+//             return $data;
+//         }
+
+//         return $data;
+//     }
+
+// }
 if(!function_exists("CheckZRights"))
 {
     function CheckZRights($right)

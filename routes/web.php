@@ -103,8 +103,9 @@ Route::middleware(\App\Http\Middleware\CheckSubd::class . ':ab,asario')->group(f
     Route::get('/dashboard', function () {
         return redirect('/admin/dashboard');
     })->name('dashboard');
-
+    Route::get('/home/QRCodaH', [HomeController::class, 'QRCodaH'])->name('home.qrcodah');
     Route::get('/home/aboutme', [HomeController::class, 'home_about'])->name('home.about');
+    Route::get("/admin/contacts", [TablesController::class, "show_contacts"])->name('admin.contacts');
     // Imprint
     Route::get('/home/imprint', [HomeController::class, 'home_imprint'])->name('home.imprint');
     // Privacy
