@@ -225,6 +225,8 @@ export default {
             rows: [...this.datarows.data],
             currentPage: 1,
             perPage: 20,
+            seaRoute:'',
+            tab:'',
 
         };
     },
@@ -274,9 +276,17 @@ export default {
       // Immer search param senden, auch wenn leer
       const params = { ...query, table: this.table };
       if (!params.search) params.search = null;
-
+        if(CleanTable() == "")
+        {
+            this.seaRoute = "admin.tables.index";
+            this.tab = '';
+        }
+        else{
+            this.seaRoute = "admin.tables.show"
+            this.tab = CleanTable();
+        }
       this.$inertia.visit(
-        this.route("admin.tables.index"),
+        this.route(this.seaRoute,this.tab),
         {
           method: "get",
           data: params,

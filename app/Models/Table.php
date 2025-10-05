@@ -12,8 +12,8 @@ class Table extends Model
     public function scopeFilterBlog(Builder $query, $filters)
     {
         if (!empty($filters['search'])) {
-            $query->where('name', 'like', '%' . $filters['search'] . '%')
-            ->orWhere('description', 'like', '%' . $filters['search'] . '%');
+            $query->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($filters['search']) . '%'])
+            ->orWhereRaw('LOWER(description) LIKE ?', ['%' . strtolower($filters['search']) . '%']);
         }
 
         return $query;

@@ -565,9 +565,12 @@ class TablesController extends Controller
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function($q) use ($search, $headline, $otherField, $table) {
-                $q->where($table.'.'.$headline, 'LIKE', "%{$search}%");
+                $searchLower = strtolower($search);
+
+                $q->whereRaw("LOWER({$table}.{$headline}) LIKE ?", ["%{$searchLower}%"]);
+
                 if ($otherField && !in_array($otherField, ['id', 'created_at', 'updated_at'])) {
-                    $q->orWhere($table.'.'.$otherField, 'LIKE', "%{$search}%");
+                    $q->orWhereRaw("LOWER({$table}.{$otherField}) LIKE ?", ["%{$searchLower}%"]);
                 }
             });
         }
