@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
 use Auth;
+use App\Http\Controllers\Controller;
+use App\Models\User; // <-- WICHTIG!
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -311,23 +313,37 @@ class TablesController extends Controller
         $breadcrumbs = $breadcrumbs->put('Liste der Tabellen', route('admin.tables.index'));
         $breadcrumbs->put('Tabelle '.ucf($table), route('admin.tables.show',(["table"=>$table])));
         $breadcrumbs = $breadcrumbs->toArray();
+        DB::enableQueryLog();
 
-        $tables = DB::table($table)->get();
+        $query = DB::table($table);
 
-        $tables->transform(function ($item) {
-            if (!empty($item->profile_photo_path)) {
-                $item->profile_photo_path = "/images/_".SD()."/users/profile_photo_path/" . $item->profile_photo_path;
-            }
-            return $item;
-        });
-        // if(!substr_count($taxx[$id]->profile_photo_path, "images") && Schema::hasColumn("profile_photo_path",$taxx  ))
-        // {
-        //     $taxx->profile_photo_path = "/images/".$taxx->profile_photo_path;
-        // }
-        $exf = $this->ExportFields($table,$id);
+        // Exklusionsbedingungen anwenden
+        $query = $this->applyExclWhere($table, $query,"1");
+
+        // Daten holen
+        $tables = $query->first();
+
+        // Danach kannst du transform() auf der Collection anwenden
+        // $tables->transform(function ($item) {
+        //     if (!empty($item->profile_photo_path)) {
+        //         $item->profile_photo_path = "/images/_".SD()."/users/profile_photo_path/" . $item->profile_photo_path;
+        //     }
+        //     return $item;
+        // });
+        $exf = $this->ExportFields($table,$id,1);
+
         // \Log::info("item:".json_encode($exf,JSON_PRETTY_PRINT));
         if(!@$kk){
-            $entry = DB::table($table)->find($id);
+
+            $query = DB::table($table);
+
+            // Exklusionsbedingungen anwenden
+            $query = $this->applyExclWhere($table, $query,"1");
+
+            // Jetzt das gewünschte Element holen
+            $entry = $query->where('id', $id)->first();
+            \Log::info(DB::getQueryLog());
+            // dd($tables);
             return Inertia::render('Admin/TableForm', [
                 'entry'=> $entry,
                 'datarows' => $tables,
@@ -369,7 +385,7 @@ class TablesController extends Controller
         $sortop = FormController::getOptions_itemscope($table,$name);
         return response()->json([$name.".sortedOptions_sel" => $sortop]);
     }
-    public function ExportFields($table,$id)
+    public function ExportFields($table,$id,$safe='')
     {
         $create = '';
         if ($table == "blogs" || $table == "mindblog" || $table == "comments") {
@@ -406,6 +422,7 @@ class TablesController extends Controller
         //     $query = DB::table($table)->where("pub", "=", 1);
         // } else {
             $query = DB::table($table);
+            $query = $this->applyExclWhere($table, $query,$safe);
         // }
         if($id)
         {
@@ -577,13 +594,19 @@ class TablesController extends Controller
             $ord = ["created_at","ASC"];
         } elseif($table == "texts") {
             $ord = ["headline","ASC"];
-        } else {
+        }
+        elseif($table == "contacts")
+        {
+            $ord = ["Name","ASC"];
+        }
+        else {
             $ord = ["id", "DESC"];
         }
-
+        // dd($ord);
         $orderColumn = $table.".".$ord[0];
         $orderDirection = strtoupper($ord[1]) === 'DESC' ? 'DESC' : 'ASC';
-        $query->orderByRaw('CAST('.$orderColumn.' AS UNSIGNED) '.$orderDirection);
+        $query->orderBy($orderColumn, $orderDirection);
+        $query = $this->applyExclWhere($table, $query);
 
         // Pagination
         $pag = 20;
@@ -627,7 +650,6 @@ class TablesController extends Controller
             'filters' => array_filter($request->only(['search'])),
             'searchValue' => $request->input('search'),
             'breadcrumbs' => [
-                'Home' => route('admin.dashboard'),
                 'Liste der Tabellen' => route('admin.tables.index'),
                 "Tabelle ".ucf($table) => null
             ],
@@ -645,8 +667,51 @@ class TablesController extends Controller
         ]);
     }
 
+    public function applyExclWhere($table, $query,$safe = false)
+    {
+        $this->safe = $safe;
+        $conditions = Settings::exclWhere();
 
-        public function ShowTable_old_def(Request $request, $table_alt = null)
+        if (!isset($conditions[$table])) {
+            return $query; // Keine Filter für diese Tabelle
+        }
+
+        // Prüfen, ob mindestens ein OR existiert
+        $hasOr = collect($conditions[$table])->contains(fn($c) => ($c['type'] ?? 'where') === 'orWhere');
+
+        if ($hasOr) {
+            // Gruppe für Klammern
+            $query->where(function ($q) use ($conditions, $table) {
+                foreach ($conditions[$table] as $cond) {
+                    $type  = $cond['type'] ?? 'where';
+                    $name  = $cond['name'];
+                    $value = $cond['value'];
+
+                    if ($type === 'where') {
+                        $q->where($name, $value);
+                    } elseif ($type === 'orWhere' && !$this->safe) {
+                        $q->orWhere($name, $value);
+                    }
+                }
+            });
+        } else {
+            // Normale Reihenfolge ohne OR
+            foreach ($conditions[$table] as $cond) {
+                $type  = $cond['type'] ?? 'where';
+                $name  = $cond['name'];
+                $value = $cond['value'];
+
+                if ($type === 'where') {
+                    $query->where($name, $value);
+                } elseif ($type === 'orWhere' && !$this->safe) {
+                    $query->orWhere($name, $value);
+                }
+            }
+        }
+        return $query;
+    }
+
+    public function ShowTable_old_def(Request $request, $table_alt = null)
     {
         $table = $table_alt ?? 'images';
         $path = strtolower(request()->path());
@@ -932,6 +997,18 @@ class TablesController extends Controller
         }
          \Log::info("rows:".json_encode($crea));
         return response()->json($crea);
+    }
+    public function getUserName(Request $request)
+    {
+        $userId = $request->query('id');
+        $user = User::find($userId);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+        return response()->json([
+            'name' => $user->name,
+        ]);
     }
     public function save_order(Request $request,$table)
     {
@@ -1798,9 +1875,11 @@ class TablesController extends Controller
             return redirect("/no-rights");
         }
 
-        $data = DB::table("kontakte")
+        $data = DB::table("contacts")
         ->orderBy("Gruppe", "ASC")
         ->orderBy("Name", "ASC")
+        ->where("us_poster",Auth::id())
+        ->orWhere("xis_public_con","1")
         ->get()
         ->map(function($item) {
             foreach ($item as $key => $value) {
@@ -1809,7 +1888,7 @@ class TablesController extends Controller
             return $item;
         });
 
-return Inertia::render('Admin/Contacts', [
+return Inertia::render('Admin/Kontakte', [
     'contacts' => $data,
 ]);
     }
@@ -1994,7 +2073,20 @@ return Inertia::render('Admin/Contacts', [
         if (Schema::hasColumn($table, 'image_path') && empty($formData['image_path'])) {
             $formData['image_path'] = "008.jpg";
         }
+        if($table == "contacts")
+        {
+            $formData['Vorname'] = encval(@$formData['Vorname']);
+            $formData['Nachname'] = encval(@$formData['Nachname']);
+            $formData['Email'] = encval(@$formData['Email']);
+            $formData['Telefon'] = encval(@$formData['Telefon']);
+            $formData['Handy'] = encval(@$formData['Handy']);
+            $formData['Strasse'] = encval(@$formData['Strasse']);
+            $formData['Plz'] = encval(@$formData['Plz']);
+            $formData['Geburtsdatum'] = encval(@$formData['Geburtsdatum']);
+            $formData['Kommentar'] = encval(@$formData['Kommentar']);
 
+
+        }
         $columns = Schema::getColumnListing($table);
         $hasOnColumn = collect($columns)->contains(fn($column) => str_contains($column, '_on'));
 
@@ -2392,7 +2484,13 @@ return Inertia::render('Admin/Contacts', [
         }
 
         // 7. Datensatz löschen
-        DB::table($table)->where('id', $id)->delete();
+        $query = DB::table($table)->where('id', $id);
+
+        // Exklusionsbedingungen anwenden
+        $query = $this->applyExclWhere($table, $query);
+
+        // Jetzt löschen
+        $query->delete();
 
         return response()->json(["status" => "success", "message" => "Eintrag erfolgreich gelöscht"]);
     }

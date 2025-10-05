@@ -5,7 +5,9 @@
         viewBox="0 0 24 24"
         stroke-width="1.5"
         stroke="currentColor" fill="none"
+        width="25" height="25"
     >
+
         <path
             stroke-linecap="round"
             stroke-linejoin="round"

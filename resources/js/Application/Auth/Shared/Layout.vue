@@ -129,6 +129,10 @@ export default {
         {
             return window.pagename;
         }
-    }
+    },
+    mounted(){
+    
+  },
+
 };
 </script>

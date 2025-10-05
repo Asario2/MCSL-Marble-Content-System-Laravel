@@ -22,13 +22,16 @@
                 <!-- Liste der Fehler -->
                 <error-list :errors="errors" />
 
-                <input-subtitle>Daten</input-subtitle>
+                <div class="flex justify-between items-center mb-4">
+                    <!-- Linker Teil: Subtitle -->
+                    <InputSubtitle>Daten</InputSubtitle>
+
+                    <!-- Rechter Teil: Add Button -->
+                    <Addbtn :table="CleanTable_alt()" class="mt-5"/>
+                </div>
                 <template style="display: inline-block">
-                    <div>
-                        <a v-if="hasRight('add',tablex)" :href="'/admin/tables/create/' + tablex" target="" class="inline-flex items-center
-                        px-1 py-1.5 md:px-2 md:py-2 h-6 md:h-8 rounded-md font-medium text-xs tracking-widest
-                         disabled:opacity-25 transition cursor-pointer focus:ring focus:outline-none button_bg
-                          button_text_case_bg"><div class="flex items-center whitespace-nowrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" class="button_icon"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path></svg> Erstelle </div></a>
+
+
                         <input-group>
 
     <form @submit.prevent="submitForm" enctype="multipart/form-data" >
@@ -160,7 +163,17 @@
                         <template #label>{{ field.label }}</template>
                     </InputFormPrice>
                 </input-container>
-
+                <input-container v-else-if="field.class === 'poster_id'">
+                    <InputFormPoster
+                        :id="field.name"
+                        :name="field.name"
+                        v-model="field.value"
+                        :placeholder="field.placeholder || ''"
+                        :required="isRequired(field.required)"
+                        >
+                        <template #label>{{ field.label }}</template>
+                    </InputFormPoster>
+                </input-container>
                 <input-container v-else-if="field.type ==='imul'">
                     <ImageUploadModal
                         v-if="modals[field.name]"
@@ -395,6 +408,7 @@
             <InputSelect
             @input-change="updateFormData"
             :id="field.name"
+            v-model="field.value"
             :model-value="field.value"
             :disabled="field.disabled"
             :class="field.disabled ? 'cursor-not-allowed' : ''"
@@ -456,7 +470,7 @@
         </button>
     </form>
 </input-group>
-                    </div>
+
                 </template>
             </template>
 
@@ -472,7 +486,7 @@
                     </input-danger-button>
                     <smooth-scroll href="#app-layout-start" v-if="table.id > 0">
                         <input-button
-                            type="button"
+                            type="submit"
                             @click.prevent="debugUpdateTableData"
                         >
                             {{ItemName}} ändern
@@ -545,7 +559,7 @@ import $ from "jquery";
 import pickBy from "lodash/pickBy";
 import { computed } from "vue";
 import { ref, watch } from "vue";
-import { CleanTable, CleanId,cc } from '@/helpers';
+import { CleanTable, CleanId, cc } from '@/helpers';
 import ImageUploadModal from '@/Application/Components/ImageUploadModal.vue';
 import InputPosition from '@/Application/Components/InputPosition.vue';
 
@@ -556,6 +570,8 @@ import SmoothScroll from "@/Application/Components/SmoothScroll.vue";
 import PageTitle from "@/Application/Components/Content/PageTitle.vue";
 import SectionForm from "@/Application/Components/Content/SectionForm.vue";
 import InputPWD from "@/Application/Components/Form/InputPWD.vue";
+import Addbtn from "@/Application/Components/Form/addbtn.vue"; // KORREKTUR: Import hinzugefügt
+import InputFormPoster from "@/Application/Components/Form/InputFormPoster.vue";
 import ButtonGroup from "@/Application/Components/Form/ButtonGroup.vue";
 import InputButton from "@/Application/Components/Form/InputButton.vue";
 import ArtSelect from "@/Application/Components/Form/ArtSelect.vue";
@@ -566,7 +582,7 @@ import InputFormTextArea from "@/Application/Components/Form/InputFormTextArea.v
 import InputDangerButton from "@/Application/Components/Form/InputDangerButton.vue";
 import InputLoading from "@/Application/Components/Form/InputLoading.vue";
 import ErrorList from "@/Application/Components/Form/ErrorList.vue";
-import InputSubtitle from "@/Application/Components/Form/InputSubtitle.vue";
+import InputSubtitle from "@/Application/Components/Form/InputSubtitle.vue"; // KORREKTUR: Import hinzugefügt
 import InputGroup from "@/Application/Components/Form/InputGroup.vue";
 import InputContainer from "@/Application/Components/Form/InputContainer.vue";
 import InputLabel from "@/Application/Components/Form/InputLabel.vue";
@@ -581,18 +597,20 @@ import Editor from "@/Application/Components/Form/InputHtml.vue";
 import InputError from "@/Application/Components/Form/InputError.vue";
 import { throttle } from "lodash";
 import DialogModal from "@/Application/Components/DialogModal.vue";
-import { hasRight,loadAllRights,isRightsReady } from '@/utils/rights';
+import { hasRight, loadAllRights, isRightsReady } from '@/utils/rights';
 import { toastBus } from '@/utils/toastBus';
 import { reactive } from "vue";
 import PublicRadio from "@/Application/Components/Form/PublicRadio.vue";
 import Alert from "@/Application/Components/Content/Alert.vue";
 import ImageJsonEditor from "@/Application/Admin/ImageJsonEditor.vue";
+import { Inertia } from "@inertiajs/inertia";
 
 export default defineComponent({
     name: "Admin_TableForm",
 
     components: {
         Layout,
+        Addbtn, // KORREKTUR: Komponente registriert
         Breadcrumb,
         SmoothScroll,
         PublicRadio,
@@ -606,7 +624,7 @@ export default defineComponent({
         InputDangerButton,
         InputLoading,
         ErrorList,
-        InputSubtitle,
+        InputSubtitle, // KORREKTUR: Komponente registriert
         InputContainer,
         InputGroup,
         InputLabel,
@@ -626,6 +644,7 @@ export default defineComponent({
         ArtSelect,
         ImageUploadModal,
         InputPosition,
+        InputFormPoster,
     },
 
     props: {
@@ -820,6 +839,7 @@ export default defineComponent({
     },
 
     methods: {
+        CleanTable,
         handleModalClose(fieldName) {
     console.log('Modal close requested, but checking if we should close...');
 
@@ -1461,6 +1481,13 @@ export default defineComponent({
     },
 
     async mounted() {
+
+        if(!this.ffo || this.ffo.length < 3 || this.ffo === "undefined"){
+            alert(this.ffo);
+
+            this.$inertia.visit('/no-rights');
+
+        }
     this.ulpath = "/images/_"+ this.subdomain + "/"+this.CleanTable_alt()+ "/";
 
     // Event Listener korrigiert

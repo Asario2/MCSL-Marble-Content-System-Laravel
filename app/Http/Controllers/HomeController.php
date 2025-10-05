@@ -109,6 +109,10 @@ class HomeController extends Controller
         }
 
     }
+    public function index(Request $request)
+    {
+        return $this->home_index($request);
+    }
     //
     public function home_blog_index(Request $request)
     {

@@ -3,7 +3,7 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
     use App\Helpers;
-
+    use Illuminate\Support\Facades\Auth;
     $subdomain = SD(); // z.B. "foo", "bar"
     $pagen = SD("pn");
     $favicon = "/images/_{$subdomain}/web/alogo.png";
@@ -29,6 +29,7 @@
            window.Laravel = {
                     userId: {{ auth()->id() ?? 'null' }},
                 };
+                window.authid = "{{Auth::id()}}"
                 window.subdomain = "{{ $subdomain }}";
                 window.subdomain_alt = "{{ $sd_alt }}";
                 window.pagename = "{{ $pagen }}";

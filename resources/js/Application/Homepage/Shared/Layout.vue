@@ -391,6 +391,17 @@
       },
 
       mounted() {
+        const params = new URLSearchParams(window.location.search);
+    const search = params.get("search");
+
+    // Wenn search gesetzt ist, verstecke das Loading-Div
+    if (search && search.trim() !== "") {
+
+      this.isLoading = false;
+    }
+    else{
+        this.isLoading = true;
+    }
 
         const shouldReload = localStorage.getItem("reload_dashboard");
         if (shouldReload) {

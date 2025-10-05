@@ -416,6 +416,18 @@ export default {
             localStorage.removeItem('reload_dashboard');
             window.location.reload();
         }
+
+        const params = new URLSearchParams(window.location.search);
+        const search = params.get("search");
+
+            // Wenn search gesetzt ist, verstecke das Loading-Div
+            if (search && search.trim() !== "") {
+        this.isLoading = false
+        this.loading = false
+        } else {
+        this.isLoading = false  // Loader auch deaktivieren wenn kein search
+        }
+
     },
 
     methods: {

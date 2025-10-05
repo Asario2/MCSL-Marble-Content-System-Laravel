@@ -3,12 +3,15 @@
     namespace App\Models;
 
     use Illuminate\Database\Eloquent\Model;
+    use Illuminate\Support\Facades\Auth;
     use Illuminate\Database\Eloquent\Factories\HasFactory;
     class Settings extends Model
     {
         // Definiere hier deine Konstanten oder statischen Variablen
         public static array $excl_cols = ['updated_at', 'published_at','remember_token','email_verified_at','google2fa_secret','is_two_factor_authenticated','two_factor_authenticated',
-                        'two_factor_enabled',"password_old",'reserved_at','available_at','is_two_factor_enabled','temp_google2fa_secret','new_email','email_change_token','email_verification_token','two_factor_token',"author_name","users_rights_id","chg_date","xico_doms",'xkis_IsFeed','xis_mailed','users_rights_id','two_factor_secret','two_factor_recovery_codes','two_factor_confirmed_at','two_factor_enabled','remember_token'];
+                        'two_factor_enabled',"password_old",'reserved_at','available_at','is_two_factor_enabled','temp_google2fa_secret','new_email','email_change_token','email_verification_token','two_factor_token',"author_name","users_rights_id","chg_date","xico_doms",'xkis_IsFeed','xis_mailed','users_rights_id','two_factor_secret','two_factor_recovery_codes','two_factor_confirmed_at','two_factor_enabled','remember_token',
+                        "hasyear",'hasryear',
+                    ];
         public static array $excl_heads = ["date_begin"];
         public static array $excl_disabled = ['id'];
         public static array $excl_datefields  = []; //['birthday','created_at'];
@@ -25,13 +28,14 @@
     "Megapixel","view_table"=>"Anzeigen",'add_table'=>"Hinzufügen",'story_en'=>"Geschichte Englisch",'story'=>"Geschichte","edit_table"=>"Bearbeiten","publish_table"=>"Veröffentlichen","date_table"=>"Datum Ändern","delete_table"=>"Löschen","short_tag" => "Tag","exif_copyright" => "Exif copy",
     'autoslug'=>"Url der Seite","admin_table_id"=>"Tabelle","exif_comp" => "exif Comp","exif_model" => "Exif Model","AdminPanel"=>"Admin Dashboard","UserRights"=>"BenutzerRechte",'LogViewer'=>"Log Viewer","SendMail"=>"Emails verschicken","ChangePassword"=>"Passwort Ändern","CommentsCenter"=>"Kommentar Admin Center","DataBases"=>"Datenbank Admin"
     ,"about"=>"Über dich","ischecked"=>"Überprüft",'projects_id'=>'Aktuelles Projekt',"xis_mcsl"=>"mit MCSL erstellt","xis_mcs"=>"mit MCS erstellt","about_en"=>"Über dich Englisch","website" => "Website","fbd"=>"facebook ID","xis_disabled"=>"Benutzer deaktivieren","CommentsEdit"=>"Alle Felder bearbeiten",
-    'wohnort'=>"Wohnort","realname"=>"Realname","aufgaben"=>"Aufgaben",'abouttext'=>"Über User","img_thumb"=>"Bild klein","img_big"=>"Bild gross","imgdir_content"=>"Galerie"];
+    'wohnort'=>"Wohnort","realname"=>"Realname","aufgaben"=>"Aufgaben",'abouttext'=>"Über User","img_thumb"=>"Bild klein","img_big"=>"Bild gross","imgdir_content"=>"Galerie","xis_public_con"=>"Für alle Benutzer sichtbar","ripdate"=>"Todesdatum",
+    "us_poster"=>"Author"];
 
         public static array $no_req = ['exif_copyright','exif_comp','exif_model','Mpixel','modul','is_admin','is_customer','is_employee','customer_id','admin_id','company_id',
                                        'profile_photo_path',"category_id","type_id",'message','message_en',
                                        'position','ordering','image_path','link','format','preis','format_en','music','interest',"about",'story_en',
                                        'img_bild',"img_thumb",'occupation','name_res','desc_res','new_res','birthday','answer_en','prename','xis_ai','typ',"about",'id_new','exif_comp','exif_model',"interests","occupation","fbd","website","about_en","about"
-                                       ,'db_name','db_new','db_desc','db_link','db_icon',
+                                       ,'db_name','db_new','Format','db_desc','db_link','db_icon',"xis_public_con","Kommentar","Telefon","Handy","Strasse","Plz","Geburtsdatum","ripdate","xis_public_con","Email","Nachname","Vorname",
                                     ];
 
 
@@ -39,6 +43,24 @@
         public static array $big_thumb = ["users","blog_posts","images"];
         public static array $int_date_tables = ["didyouknow"];
         public static array $textfield = ["Mdown"]; // Mdown / HTML
+
+        public static function exclWhere(): array
+        {
+            return [
+                'contacts' => [
+                    [
+                        'name'  => 'us_poster',
+                        'value' => Auth::id(),
+                        'type'  => 'where',
+                    ],
+                    [
+                        'name'  => 'xis_public_con',
+                        'value' => 1,
+                        'type'  => 'orWhere',
+                    ],
+                ],
+            ];
+        }
 
         public static array $disa = [
             'comments' => ['users_id','post_id', 'admin_table_id', 'nick', 'email'],
@@ -52,6 +74,7 @@
         [
             "admin_table" => 'name',
             "blogs" => 'title',
+            "contacts" => "Gruppe",
             "blog_authors" => 'name',
             "blog_categories" => 'name',
             "blog_images" => 'name',
@@ -109,6 +132,7 @@
             "kontakt"=>["name","email","strasse","plz","tel"],
             "lostnfound"=>["headline","message"],
             "links"=>["headline","url","messsage"],
+            "contacts"=>["Name","Gruppe"],
 
     ];
     public static array $otherField = [
@@ -136,12 +160,14 @@
         "kontakt"=>"email",
         "lostnfound"=>"message",
         "links"=>"url",
+        "contacts"=>'Name',
     ];
     public static array $namealias = [
         "comments"=>"Kommentar",
         "ratings"=>"Galerie",
         "projects_sheets"=>"Projekt",
         "lostnfound"=>"Überschrift",
+        "contacts"=>"Gruppe",
     ];
     public static array $descalias = [
         "comments"=>"Autor",
@@ -155,6 +181,7 @@
         "kontakt"=>"Email",
         "lostnfound"=>"Text",
         "links"=>"URL",
+        'contacts'=>"Name",
     ];
     public static array $underCals=[
     'comments' => "name",

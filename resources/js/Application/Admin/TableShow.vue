@@ -4,7 +4,6 @@
       <template #header>
         <breadcrumb :breadcrumbs="breadcrumbs" :current="tablet"></breadcrumb>
       </template>
-
       <!-- Table -->
       <section class="mt-8">
         <list-container
@@ -24,6 +23,7 @@
           :tableq="this.tableq ?? ''"
           @update-checked-status="onCheckedStatusUpdate"
         >
+
           <!-- Header-Spalten -->
           <template #header>
             <tr>
@@ -159,7 +159,37 @@
             </td>
           </template>
         </list-container>
-      </section>
+        <div class="flex items-center justify-center flex-wrap mt-6 -mb-1 text-xs md:text-base bg-transparent text-layout-sun-700 dark:text-layout-night-700">
+
+            <template v-for="(link, index) in rows.links" :key="index">
+      <!-- Deaktivierte Links -->
+      <div
+        v-if="!link.url"
+        class="flex items-center px-3 py-0.5 mx-1 mb-1 rounded-md cursor-not-allowed"
+      >
+        <span v-html="link.label"></span>
+      </div>
+
+      <!-- Aktive Seite -->
+      <a
+        v-else-if="link.active"
+        :href="link.url"
+        class="flex items-center px-2.5 py-0.5 mx-1 mb-1 h-7 transition-colors duration-200 transform rounded-md border border-primary-sun-500 text-primary-sun-900 dark:border-primary-night-500 dark:text-primary-night-900 hover:bg-layout-sun-200 hover:text-layout-sun-800 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-800 font-bold"
+      >
+        <span v-html="link.label"></span>
+      </a>
+
+      <!-- Normale Links -->
+      <a
+        v-else
+        :href="link.url"
+        class="flex items-center px-2.5 py-0.5 mx-1 mb-1 h-7 transition-colors duration-200 transform rounded-md border hover:bg-layout-sun-200 hover:text-layout-sun-800 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-800"
+      >
+        <span v-html="link.label"></span>
+      </a>
+    </template>
+  </div>
+    </section>
     </layout>
   </template>
 
@@ -172,7 +202,7 @@
   import PublishButton from "@/Application/Components/Form/PublishButton.vue";
   import IconStar from "@/Application/Components/Icons/IconStar.vue";
   import { CleanTable, ucf, SD, GetSettings, rumLaut } from "@/helpers";
-  import { safeInertiaGet } from '@/utils/inertia';
+  //import { safeInertiaGet } from '@/utils/inertia';
 
   import Sortable from "sortablejs";
   import axios from "axios";
@@ -252,7 +282,7 @@
     },
     watch: {
     searchValue(newVal) {
-      safeInertiaGet(route('admin.tables.show', this.table_q ?? ''), { search: newVal ?? '' }, { preserveState: true, replace: true });
+      Inertia.get(route('admin.tables.show', this.table_q ?? ''), { search: newVal ?? '' }, { preserveState: true, replace: true });
     }
     },
 

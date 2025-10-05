@@ -46,10 +46,12 @@
 
         this.loading = true;
         try {
-          const response = await axios.get("/api/search", {
-            params: { search: this.searchQuery, table: this.table },
-          });
-          this.results = response.data;
+            Inertia.get(route('admin.tables.show'),
+  { search: this.searchQuery, table: this.table },
+  { preserveState: true, replace: true });
+
+
+        // this.results = response.data;
         } catch (error) {
           console.error("Fehler bei der Suche:", error);
         }

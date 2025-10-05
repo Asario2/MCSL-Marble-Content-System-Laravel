@@ -32,6 +32,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Http\Request;
+use App\Models\User;
 use App\Http\Middleware\CheckSubdomain;
 use App\Http\Controllers\TablesController;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -105,7 +106,7 @@ Route::middleware(\App\Http\Middleware\CheckSubd::class . ':ab,asario')->group(f
     })->name('dashboard');
     Route::get('/home/QRCodaH', [HomeController::class, 'QRCodaH'])->name('home.qrcodah');
     Route::get('/home/aboutme', [HomeController::class, 'home_about'])->name('home.about');
-    Route::get("/admin/contacts", [TablesController::class, "show_contacts"])->name('admin.contacts');
+    Route::get("/admin/Kontakte", [TablesController::class, "show_contacts"])->name('admin.kontakte');
     // Imprint
     Route::get('/home/imprint', [HomeController::class, 'home_imprint'])->name('home.imprint');
     // Privacy
@@ -480,6 +481,14 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         // Route::get("api/get-image-id/{table}/{id}",[TablesController::class,"GetImageId"])
         //     ->name("api-get-image-id");
 
+        Route::get('/api/user-id', function () {
+            $user = Auth::user();
+            return response()->json([
+                'id' => $user->id,
+                'name' => $user->name,
+            ]);
+        });
+
         Route::get('/api/roles/{urid}', [TablesController::class, 'getRoles']);
         Route::get("/api/images/{table}/{id}",[TablesController::class,"GetImageUrl"])
             ->name("/api-get-image-url");
@@ -520,6 +529,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         // Update des Blogartikels
         Route::put('/admin/blogs/{blog}', [BlogController::class, 'admin_blog_update'])
             ->name('admin.blog.update');
+
+        Route::get('/api/getuname', [TablesController::class, 'getUserName']);
         // ====
         // Tables
         // ====

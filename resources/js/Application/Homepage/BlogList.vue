@@ -22,6 +22,7 @@
                     <search-filter
                         v-model="form.search"
                         class="w-full"
+
                         @reset="reset"
                     />
                 </div>
@@ -95,10 +96,9 @@ import BlogPreviewSmall from "@/Application/Homepage/Shared/BlogPreviewSmall.vue
 import SearchFilter from "@/Application/Components/Lists/SearchFilter.vue";
 import Alert from "@/Application/Components/Content/Alert.vue";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
-import mapValues from "lodash/mapValues";
-import pickBy from "lodash/pickBy";
-import throttle from "lodash/throttle";
-import { safeInertiaGet } from '@/utils/inertia';
+import { throttle, pickBy, mapValues } from 'lodash';
+import { Inertia } from "@inertiajs/inertia";
+//import { safeInertiaGet } from '@/utils/inertia';
 
 export default defineComponent({
     name: "Homepage_BlogList",
@@ -140,31 +140,52 @@ export default defineComponent({
             },
         };
     },
-
     watch: {
-        form: {
-            handler: throttle(function () {
-                const query = pickBy(this.form);
+  form: {
+    deep: true,
+    handler: throttle(function () {
+      // Loader sofort aktivieren
+      this.loading = true;
 
-safeInertiaGet(this.route(
-                        "home.blog.index",
-                        Object.keys(query).length ? query : { remember: "forget" },
-                    ),
-                    this.form,
-                    {
-                        preserveState: true,
-                        replace: true,
-                    },
-                );
-            }, 150),
-            deep: true,
-        },
-    },
+      // Leere Werte filtern
+      const query = pickBy(this.form, (v) => v !== "" && v !== null);
 
+      // Immer search param senden, auch wenn leer
+      const params = { ...query, table: this.table };
+      if (!params.search) params.search = null;
+
+      this.$inertia.visit(
+        this.route("home.blog.index"),
+        {
+          method: "get",
+          data: params,
+          preserveState: true,
+          replace: true,
+          onFinish: () => {
+            this.loading = false; // Loader ausblenden nach Inertia-Finish
+          },
+        }
+      );
+    }, 500), // throttle auf 500ms
+  },
+},
     methods: {
         reset() {
             this.form = mapValues(this.form, () => null);
         },
     },
+    mounted() {
+        const params = new URLSearchParams(window.location.search);
+    const search = params.get("search");
+
+    // Wenn search gesetzt ist, verstecke das Loading-Div
+    if (search && search.trim() !== "") {
+
+      this.isLoading = false;
+    }
+    else{
+        this.isLoading = true;
+    }
+}
 });
 </script>

@@ -13,6 +13,7 @@
           name="search"
           :placeholder="placeholder"
           :value="modelValue"
+          @submit.prevent="searchData"
           @input="$emit('update:modelValue', $event.target.value)"
         />
         <button

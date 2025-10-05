@@ -75,7 +75,7 @@ export function hasRightSync(right, table) {
 
   table = table ?? CleanTable();
   const rightKey = `${right}_table`;
-  const rightsString = userRights[rightKey];
+  const rightsString = userRights?.[rightKey];
   const position = adminTablePositions[table];
 
   if (typeof rightsString !== 'string') {

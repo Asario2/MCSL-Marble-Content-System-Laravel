@@ -173,7 +173,19 @@ export default defineComponent({
             immediate: false,
         },
     },
+    mounted() {
+        const params = new URLSearchParams(window.location.search);
+    const search = params.get("search");
 
+    // Wenn search gesetzt ist, verstecke das Loading-Div
+    if (search && search.trim() !== "") {
+
+      this.isLoading = false;
+    }
+    else{
+        this.isLoading = true;
+    }
+},
     methods: {
         reset() {
             this.form = mapValues(this.form, () => null);

@@ -11,6 +11,8 @@
   </template>
 
   <script>
+  import throttle from 'lodash/throttle';
+
   export default {
     name: 'Loader',
 
@@ -23,12 +25,50 @@
     },
 
     mounted() {
+        const params = new URLSearchParams(window.location.search);
+    const search = params.get("search");
+
+    // Wenn search gesetzt ist, verstecke das Loading-Div
+    if (search && search.trim() !== "") {
+
+      this.isLoading = false;
+      this.loading = false;
+    }
+    else{
+        this.isLoading = true;
+    }
       this.monitorAxios();
       this.waitForImagesToLoad();
 //       this.isLoading = true;
 //   setTimeout(() => this.isLoading = false, 3000);
 
     },
+    watch: {
+    form: {
+      deep: true,
+      handler: throttle(function () {
+        this.loading = true;
+
+        // Entfernt leere Werte
+        const query = pickBy(this.form, (value) => value !== "" && value !== null);
+
+        // Falls kein Wert mehr übrig ist, search explizit auf null setzen
+        const params = Object.keys(query).length
+          ? { ...query, table: this.table }
+          : { search: null, table: this.table };
+
+        // Inertia Request
+        Inertia.get(
+          this.route("admin.tables.show", params),
+          this.form,
+          { preserveState: true, replace: true }
+        );
+
+        this.loading = false;
+      }, 500), // 500ms Throttle
+    },
+  },
+
 
     methods: {
       setLoading(state) {

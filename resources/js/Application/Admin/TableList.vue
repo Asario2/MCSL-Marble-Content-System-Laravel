@@ -14,7 +14,7 @@
                 route-index="admin.tables.index"
                 :filters="filters"
                 :search-filter="true"
-                search-text="Gesucht werden alle Tabellen, die den Suchbegriff im Titel, in der Zusammenfassung bzw. im Artikel selbst enthalten."
+                search-text="Gesucht werden alle Tabellen, die den Suchbegriff im Titel bzw. der Zusammenfassung haben"
                 :edit-on="false"
                 route-edit="admin.tables.edit"
                 :create-on="false"
@@ -103,6 +103,18 @@ export default defineComponent({
     },
 
     async mounted() {
+
+        const params = new URLSearchParams(window.location.search);
+        const search = params.get("search");
+
+            // Wenn search gesetzt ist, verstecke das Loading-Div
+            if (search && search.trim() !== "") {
+        this.isLoading = false
+        this.loading = false
+        } else {
+        this.isLoading = false  // Loader auch deaktivieren wenn kein search
+        }
+
         // Dummy-Wartefunktion (wenn benötigt)
         const waitUntilReady = () =>
             new Promise((resolve) => {

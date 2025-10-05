@@ -272,7 +272,7 @@
                             <LinkFooter @click="reopenCookieBanner">
                             <b>Cookie-Einstellungen</b>
                             </LinkFooter>
-                            
+
                         </li>
                     </ul>
                     </div>
@@ -391,11 +391,23 @@
         search: '',
         searchval: false,
         imagesLoaded: false,
-        searchTimeout: null, // Timeout für Inaktivitätsprüfung
+        searchTimeout: 6000, // Timeout für Inaktivitätsprüfung
         };
     },
 
     mounted() {
+        const params = new URLSearchParams(window.location.search);
+    const search = params.get("search");
+
+    // Wenn search gesetzt ist, verstecke das Loading-Div
+    if (search && search.trim() !== "") {
+
+        this.setLoading(false);
+    }
+    else{
+        //this.setLoading(true);
+    }
+    alert("found");
         const shouldReload = localStorage.getItem('reload_dashboard');
 
         if (shouldReload) {
@@ -446,6 +458,26 @@
         localStorage.setItem('loading', 'true');
         }
     },
+    watch: {
+  form: {
+    handler: throttle(function () {
+      const query = pickBy(this.form); // Entfernt leere Felder
+
+      Inertia.get(
+        this.route(
+          "home.index",
+          Object.keys(query).length ? query : { search: null, table: this.table } // leere Suche zurücksetzen
+        ),
+        this.form,
+        {
+          preserveState: true,
+          replace: true,
+        }
+      );
+    }, 500),
+    deep: true,
+  },
+},
 
     methods: {
         SD,
@@ -518,7 +550,7 @@
             if (this.search.trim() !== '') {
             this.setLoadingState(true);
             }
-        }, 3000);
+        },6000);
         },
 
         // Bei Eingabe im Suchfeld

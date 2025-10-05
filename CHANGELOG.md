@@ -98,3 +98,6 @@
 ![Version](https://img.shields.io/badge/version-3.02.7-orange) BUG - cookie link on ab.marblefx.net doesn't works (#162)  
 ![Version](https://img.shields.io/badge/version-3.03.3-orange) Added changelog automatic generator (#167)  
 ![Version](https://img.shields.io/badge/version-3.04.7-orange) DARK BG in privacy ab.dom (#166)  
+![Version](https://img.shields.io/badge/version-3.05.4-orange) FEATURE - QR Code Generator for all domains (#154)  
+![Version](https://img.shields.io/badge/version-3.06.7-orange) Feature - Emigrate Contacts from MCS to MCSL (#172)  
+![Version](https://img.shields.io/badge/version-3.07.6-orange) Feature - Add Contactlist & fixed  several Bugs  (#173)  

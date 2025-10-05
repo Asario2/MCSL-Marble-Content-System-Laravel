@@ -95,7 +95,9 @@ class FormController extends Controller
                 $value = $_SESSION['asd'];
             }
             $value = str_replace("&nbsp;",'',$value);
-
+            $value = decval($value);
+            $value = rumlaut($value);
+            $value = html_entity_decode($value);
 
         $label = isset(Settings::$exl[$name]) ? Settings::$exl[$name] : ucf($name);
         $class = FormController::getClass($name,1,$table);
@@ -288,8 +290,16 @@ class FormController extends Controller
             ];
 
         }
+        if($name == "Gruppe"){
+            $statusvals =[
+                            ["id"=>"Familie","name"=>"Familie"],
+                            ["id"=>"Friends","name"=>"Freunde"],
+                            ["id"=>"Kunden","name"=>"Kunden"],
+                            ["id"=>"Offiziell","name"=>"Offiziell"],
+                            ["id"=>"Projects","name"=>"Projekte"],
+            ];
 
-
+        }
         // Direkt als assoziatives Array aufbauen
         $result = $statusvals;
         \Log::info("RESULT:".json_encode($result));
@@ -397,6 +407,9 @@ class FormController extends Controller
             case "description_en":
                 return "textarea";
             break;
+            case "Gruppe":
+                return "select";
+            break;
             case "image_categories_id":
                 return "select_id";
             break;
@@ -423,6 +436,9 @@ class FormController extends Controller
             break;
             case "itemscope":
                 return "select";
+            break;
+            case "Kommentar":
+                return "textarea";
             break;
             case "last_login_at":
                 if($cl){
@@ -493,6 +509,9 @@ class FormController extends Controller
             break;
             case "typ":
                 return "select";
+            break;
+            case "us_poster":
+                return "poster_id";
             break;
             case "users_id":
                 return "select_id";

@@ -3,13 +3,7 @@
             <MetaHeader title="Meine Bilder Übersicht" />
             <newbtn table="images">
             </newbtn>
-            <div class="flex justify-between items-center">
-                         <search-filter
-                            v-model="form.search"
-                            class="w-full"
-                            @reset="reset"
-                        />
-                    </div>
+
 
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
             <div class="container mx-auto py-8">

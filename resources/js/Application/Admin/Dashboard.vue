@@ -45,14 +45,14 @@
             <navigation-card v-if="modulRights?.Contacts"
                 class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
                 title="Kontakte"
-                :routeName="route('admin.contacts')"
-                linkName="Kontake verwalten"
+                :routeName="route('admin.kontakte')"
+                linkName="Kontakte verwalten"
                 target="_self"
                 :withIcon="true"
                 icon="IconContacts"
             >
                 <template #description>
-                    Hier kannst du alle Datenbankinhalte bearbeiten
+                    Deine Kontakte
                 </template>
             </navigation-card>
             <!-- laravel.log -->

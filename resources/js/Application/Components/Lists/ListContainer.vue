@@ -135,7 +135,8 @@ import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
 import { hasRight } from "@/utils/rights";
-import { safeInertiaGet,safeInertiaVisit } from '@/utils/inertia';
+import { Inertia } from '@inertiajs/inertia'
+//import { safeInertiaGet,safeInertiaVisit } from '@/utils/inertia';
 
 export default {
     name: "Contents_Lists_ListContainer",
@@ -185,6 +186,18 @@ export default {
   if (!this.datarow?.full_name) {
     this.datarow.full_name = CleanTable();
   }
+  const params = new URLSearchParams(window.location.search);
+    const search = params.get("search");
+
+    // Wenn search gesetzt ist, verstecke das Loading-Div
+    if (search && search.trim() !== "") {
+
+      this.isLoading = false;
+      this.loading = false;
+    }
+    else{
+        this.isLoading = true;
+    }
  this.pstate();
 //  this.$emit('status-changed', this.checkedStatus);
  this.fetchCheckedStatus();
@@ -249,28 +262,33 @@ export default {
     }
     },
     watch: {
-        form: {
-            handler: throttle(function () {
-                let query = pickBy(this.form);
-                let url = this.routeIndex;
+  form: {
+    deep: true,
+    handler: throttle(function () {
+      // Loader sofort aktivieren
+      this.loading = true;
 
-                if (!(typeof url === "string" && url.startsWith("http"))) {
-                    url = this.route(this.routeIndex, Object.keys(query).length ? query : { remember: "forget" });
-                }
+      // Leere Werte filtern
+      const query = pickBy(this.form, (v) => v !== "" && v !== null);
 
-                if (this.searchFilter) {
-                    const params = {
-                        search: this.form.search,
-                        page: 1,
-                        ...(this.routeParamName && this.routeParamValue && {
-                            [this.routeParamName]: this.routeParamValue,
-                        }),
-                    };
-                    safeInertiaGet(url ?? '', params ?? '', { preserveState: true });
-                }
-            }, 0),
-            deep: true,
-        },
+      // Immer search param senden, auch wenn leer
+      const params = { ...query, table: this.table };
+      if (!params.search) params.search = null;
+
+      this.$inertia.visit(
+        this.route("admin.tables.index"),
+        {
+          method: "get",
+          data: params,
+          preserveState: true,
+          replace: true,
+          onFinish: () => {
+            this.loading = false; // Loader ausblenden nach Inertia-Finish
+          },
+        }
+      );
+    }, 50), // throttle auf 500ms
+  },
         datarows: {
     handler(newVal) {
       if (newVal && Array.isArray(newVal.data)) {
@@ -468,7 +486,7 @@ async pstate(){
   };
 },
         editDataRow(id) {
-            safeInertiaVisit(`/admin/tables/edit/${id}/${this.tableq}`, {
+            Inertia.visit(`/admin/tables/edit/${id}/${this.tableq}`, {
             preserveScroll: true,
             preserveState: false, // <- Wichtig: sorgt für kompletten reload
             });

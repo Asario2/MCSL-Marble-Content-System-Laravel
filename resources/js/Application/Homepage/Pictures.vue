@@ -172,7 +172,7 @@ import "photoswipe/style.css";
 import he from "he";
 import BackBtn from "@/Application/Components/Form/BackBtn.vue";
 import Alert from "@/Application/Components/Content/Alert.vue";
-
+import { CleanTable } from '@/helpers';
 export default {
   components: {
     Layout,
@@ -234,7 +234,7 @@ export default {
             const query = pickBy(this.form);
 
             this.$inertia.get(
-                this.route('home.images.search.cat'),
+                this.route('home.images.gallery',{ slug: this.CleanTable() }),
                 query,
                 {
                     preserveState: true,
@@ -253,6 +253,7 @@ export default {
 
 },
   methods: {
+    CleanTable,
     reset() {
         this.form = mapValues(this.form, () => null);
     },
@@ -319,7 +320,18 @@ export default {
       showHideAnimationType: "zoom",
       galleryUID: "photoswipe-gallery",
     });
+    const params = new URLSearchParams(window.location.search);
+    const search = params.get("search");
 
+    // Wenn search gesetzt ist, verstecke das Loading-Div
+    if (search && search.trim() !== "") {
+
+      this.isLoading = false;
+      this.loading = false;
+    }
+    else{
+        this.isLoading = true;
+    }   
     this.lightbox.init();
   },
   beforeUnmount() {

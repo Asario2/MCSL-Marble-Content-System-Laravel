@@ -19,6 +19,7 @@
 
     library.add(faPencilAlt, faTrashCan, faXTwitter);
 
+    // Query-Parameter aus der URL holen
 
     // Globale Ziggy-Route mit Fallback
     function safeRoute(...args) {
