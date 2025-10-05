@@ -3,6 +3,20 @@
       <div class="p-4 bg-gray-900 text-white min-h-screen">
         <addbtn table="contacts" text="Neuer Kontakt"></addbtn>
         <!-- Prüfen ob Kontakte vorhanden sind -->
+<newbtn table="didyouknow">
+            </newbtn>
+            <div class="flex justify-between items-center">
+                <search-filter
+                v-if="searchFilter"
+                v-model="form.search"
+                class="w-full"
+                ref="searchField"
+                @reset="reset"
+                />
+
+                </div>
+
+
         <template v-if="hasContacts">
           <template v-for="letter in sortedLetters" :key="letter">
             <div class="mb-6 rounded-lg overflow-hidden border border-black">
@@ -98,79 +112,127 @@
       </div>
     </Layout>
   </template>
+<script>
+import Layout from "@/Application/Admin/Shared/Layout.vue";
+import { rumLaut } from "@/helpers";
+import editbtns from "@/Application/Components/Form/editbtns.vue";
+import { throttle } from "lodash";
+import Addbtn from "@/Application/Components/Form/addbtn.vue";
+import SearchFilter from "@/Application/Components/Lists/SearchFilter.vue";
+import pickBy from "lodash/pickBy";
+import mapValues from "lodash/mapValues";
 
-  <script>
-  import Layout from "@/Application/Admin/Shared/Layout.vue";
-  import { rumLaut } from "@/helpers";
-  import editbtns from "@/Application/Components/Form/editbtns.vue";
-  import Addbtn from "@/Application/Components/Form/addbtn.vue"; // KORREKTUR: Import hinzugefügt
-  export default {
-    name: 'ContactTable',
-    components: {
-        Layout,
-        editbtns,
-        Addbtn,
+export default {
+  name: 'ContactTable',
+  components: {
+    Layout,
+    editbtns,
+    Addbtn,
+    SearchFilter
+  },
+  props: {
+    contacts: {
+      type: Array,
+      required: true,
+      default: () => []
     },
-    props: {
-      contacts: {
-        type: Array,
-        required: true,
-        default: () => []
-      }
+    searchFilter: {
+      type: Boolean,
+      default: true,
     },
-    data() {
-      return {
-        expandedRows: [] // IDs der aktuell geöffneten Zeilen
-      };
+    filters: {
+      type: Object,
+      default: () => ({}),
     },
-    computed: {
-      // Prüft ob Kontakte vorhanden sind
-      hasContacts() {
-        return Array.isArray(this.contacts) && this.contacts.length > 0;
-      },
-
-      // Gruppiert Kontakte nach dem ersten Buchstaben des Namens
-      groupedContacts() {
-        if (!Array.isArray(this.contacts) || this.contacts.length === 0) {
-          return {};
-        }
-        const grouped = {};
-        this.contacts.forEach(contact => {
-          if (contact && contact.Name) {
-            const firstLetter = contact.Name.charAt(0).toUpperCase();
-            if (!grouped[firstLetter]) grouped[firstLetter] = [];
-            grouped[firstLetter].push(contact);
-          }
-        });
-        return grouped;
-      },
-      UID(){
-        return window.authid;
-      },
-
-      // Sortierte Buchstaben für die Überschriften
-      sortedLetters() {
-        return Object.keys(this.groupedContacts).sort();
-      }
-    },
-    methods: {
-      rumLaut,
-      handleImageError(event) {
-        event.target.style.display = 'none';
-      },
-      toggleDetails(id) {
-        if (this.expandedRows.includes(id)) {
-          this.expandedRows = this.expandedRows.filter(r => r !== id);
-        } else {
-          this.expandedRows.push(id);
-        }
-      },
-      isExpanded(id) {
-        return this.expandedRows.includes(id);
-      }
+    searchText: {
+      type: String,
+      default: "Hier kannst du den Suchbegriff eingeben",
     }
-  };
-  </script>
+  },
+  data() {
+    return {
+      form: {
+        search: this.filters?.search ?? "",
+      },
+      expandedRows: [],
+      searchTimeout: null,
+      isLoading: false,
+      loading: false
+    }
+  },
+  watch: {
+    'form.search': {
+      handler: throttle(function (newSearch) {
+        const query = pickBy({ search: newSearch });
+        this.$inertia.get(
+          this.route("admin.kontakte"),
+          query,
+          {
+            preserveState: true,
+            replace: true,
+          }
+        );
+      }, 300),
+      immediate: false,
+    },
+  },
+  computed: {
+    hasContacts() {
+      return Array.isArray(this.contacts) && this.contacts.length > 0;
+    },
+    groupedContacts() {
+      if (!Array.isArray(this.contacts) || this.contacts.length === 0) {
+        return {};
+      }
+      const grouped = {};
+      this.contacts.forEach(contact => {
+        if (contact && contact.Name) {
+          const firstLetter = contact.Name.charAt(0).toUpperCase();
+          if (!grouped[firstLetter]) grouped[firstLetter] = [];
+          grouped[firstLetter].push(contact);
+        }
+      });
+      return grouped;
+    },
+    UID(){
+      return window.authid;
+    },
+    sortedLetters() {
+      return Object.keys(this.groupedContacts).sort();
+    }
+  },
+  methods: {
+    reset() {
+      this.form.search = "";
+    },
+    rumLaut,
+    handleImageError(event) {
+      event.target.style.display = 'none';
+    },
+    toggleDetails(id) {
+      if (this.expandedRows.includes(id)) {
+        this.expandedRows = this.expandedRows.filter(r => r !== id);
+      } else {
+        this.expandedRows.push(id);
+      }
+    },
+    isExpanded(id) {
+      return this.expandedRows.includes(id);
+    }
+  },
+  mounted() {
+    const params = new URLSearchParams(window.location.search);
+    const search = params.get("search");
+
+    if (search && search.trim() !== "") {
+      this.isLoading = false;
+      this.loading = false;
+    } else {
+      this.isLoading = false;
+    }
+  }
+};
+</script>
 
   <style scoped>
   .circle {

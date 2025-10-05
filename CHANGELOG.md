@@ -101,3 +101,4 @@
 ![Version](https://img.shields.io/badge/version-3.05.4-orange) FEATURE - QR Code Generator for all domains (#154)  
 ![Version](https://img.shields.io/badge/version-3.06.7-orange) Feature - Emigrate Contacts from MCS to MCSL (#172)  
 ![Version](https://img.shields.io/badge/version-3.07.6-orange) Feature - Add Contactlist & fixed  several Bugs  (#173)  
+![Version](https://img.shields.io/badge/version-3.08.7-orange) Feature . Search has to be added to contact list (#174)  

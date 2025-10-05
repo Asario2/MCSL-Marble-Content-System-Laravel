@@ -473,6 +473,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
         Route::get('/api/admin-tables', [TablesController::class, 'GetDBTables'])->name("get.db.tables");
         Route::get('/api/chkcom/{id?}', [CommentController::class, 'checkComment'])->name("comments.check");
+        Route::get('/api/contacts', [TablesController::class, 'api_contacts'])->name("admin.contacts");
         Route::post("/personal_update", [PersonalController::class, 'update'])->name("personal.update");
         Route::get('/api/created-at', [TablesController::class, 'getCreatedAt'])->name("created.at");
         Route::get("/api/GetCat/{table}/{id}", [TablesController::class, 'GetCats'])->name("GetCats");

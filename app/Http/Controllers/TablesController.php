@@ -1870,28 +1870,80 @@ class TablesController extends Controller
 
 
     }
-    public function show_contacts(){
+    public function show_contacts(Request $request){
         if(!CheckZRights("Contacts")){
             return redirect("/no-rights");
         }
+        $search = $request->input('search');
 
-        $data = DB::table("contacts")
-        ->orderBy("Gruppe", "ASC")
-        ->orderBy("Name", "ASC")
-        ->where("us_poster",Auth::id())
-        ->orWhere("xis_public_con","1")
-        ->get()
-        ->map(function($item) {
-            foreach ($item as $key => $value) {
-                $item->$key = decval($value); // jede Spalte entschlüsseln
+$data = DB::table('contacts')
+    ->where(function ($query) {
+        $query->where('us_poster', Auth::id())
+              ->orWhere('xis_public_con', '1');
+    })
+    ->when($request->filled('search'), function ($query) use ($search) {
+        $search = strtolower(trim($search)); // Kleinbuchstaben für case-insensitive
+        $headline = 'Name';
+        $otherField = 'Gruppe';
+
+        $query->where(function ($q) use ($search, $headline, $otherField) {
+            $q->whereRaw('LOWER(' . $headline . ') LIKE ?', ["%{$search}%"]);
+
+            if ($otherField && !in_array($otherField, ['id', 'created_at', 'updated_at'])) {
+                $q->orWhereRaw('LOWER(' . $otherField . ') LIKE ?', ["%{$search}%"]);
             }
-            return $item;
         });
+    })
+    ->orderBy('Gruppe', 'ASC')
+    ->orderBy('Name', 'ASC')
+    ->get()
+    ->map(function ($item) {
+        foreach ($item as $key => $value) {
+            $item->$key = decval($value); // 🔐 jede Spalte entschlüsseln
+        }
+        return $item;
+    });
+
 
 return Inertia::render('Admin/Kontakte', [
+    'filters' => Request()->all('search'),
     'contacts' => $data,
 ]);
     }
+    public function api_contacts(Request $request) {
+        if (!CheckZRights("Contacts")) {
+            return redirect("/no-rights");
+        }
+
+        $search = trim($request->input('search', ''));
+
+        $data = DB::table('contacts')
+            ->where(function ($query) {
+                $query->where('us_poster', Auth::id())
+                      ->orWhere('xis_public_con', '1');
+            })
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->whereRaw('LOWER(Name) LIKE ?', ['%' . strtolower($search) . '%'])
+                      ->orWhereRaw('LOWER(Gruppe) LIKE ?', ['%' . strtolower($search) . '%']);
+                });
+            })
+            ->orderBy('Gruppe', 'ASC')
+            ->orderBy('Name', 'ASC')
+            ->get()
+            ->map(function ($item) {
+                // Andere Felder entschlüsseln, falls nötig
+                foreach ($item as $key => $value) {
+                    if (!in_array($key, ['Name','Gruppe'])) {
+                        $item->$key = decval($value);
+                    }
+                }
+                return $item;
+            });
+
+        return ['contacts' => $data];
+    }
+
 
     private function decryptField($encryptController, $value)
     {
@@ -2025,7 +2077,7 @@ return Inertia::render('Admin/Kontakte', [
         // $id = $request->id;        // Die ID der Zeile
         $field = $request->field;  // Das Feld, das aktualisiert wird
         $value = $request->value;  // Der neue Wert
-        file_put_contents(storage_path("logs/asd.log"),"table6: ".$table."\nfield: ".$field."\nval: ".$value."\nid: ".$id);
+       // file_put_contents(storage_path("logs/asd.log"),"table6: ".$table."\nfield: ".$field."\nval: ".$value."\nid: ".$id);
         // Überprüfe."<br />". ob die Tabelle und das Feld existieren
         if (Schema::hasTable($table) && Schema::hasColumn($table, $field)) {
             // Aktualisiere den entsprechenden Datensatz in der dynamischen Tabelle
@@ -2084,6 +2136,7 @@ return Inertia::render('Admin/Kontakte', [
             $formData['Plz'] = encval(@$formData['Plz']);
             $formData['Geburtsdatum'] = encval(@$formData['Geburtsdatum']);
             $formData['Kommentar'] = encval(@$formData['Kommentar']);
+            $formData['ripdate'] = encval(@$formData['ripdate']);
 
 
         }
@@ -2279,6 +2332,21 @@ return Inertia::render('Admin/Kontakte', [
                 }
 
             }
+            if($table == "contacts")
+        {
+            $formData['Vorname'] = encval(@$formData['Vorname']);
+            $formData['Nachname'] = encval(@$formData['Nachname']);
+            $formData['Email'] = encval(@$formData['Email']);
+            $formData['Telefon'] = encval(@$formData['Telefon']);
+            $formData['Handy'] = encval(@$formData['Handy']);
+            $formData['Strasse'] = encval(@$formData['Strasse']);
+            $formData['Plz'] = encval(@$formData['Plz']);
+            $formData['Geburtsdatum'] = encval(@$formData['Geburtsdatum']);
+            $formData['Kommentar'] = encval(@$formData['Kommentar']);
+            $formData['ripdate'] = encval(@$formData['ripdate']);
+
+
+        }
 
         if(!FormController::CheckCreate()){
             unset($formData['password']);
