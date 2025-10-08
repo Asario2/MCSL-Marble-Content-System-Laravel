@@ -103,3 +103,5 @@
 ![Version](https://img.shields.io/badge/version-3.07.6-orange) Feature - Add Contactlist & fixed  several Bugs  (#173)  
 ![Version](https://img.shields.io/badge/version-3.08.7-orange) Feature . Search has to be added to contact list (#174)  
 ![Version](https://img.shields.io/badge/version-3.09.9-orange) Hotfix - Repaired Search on TableShow (#175)  
+![Version](https://img.shields.io/badge/version-3.10.9-orange) Hotfix - Changed profile image path (#186)  
+![Version](https://img.shields.io/badge/version-3.11.2-orange) Hotfix - Cursor jumped on input (#187)  

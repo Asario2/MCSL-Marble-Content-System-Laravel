@@ -4,6 +4,7 @@ import { Head, Link, router } from "@inertiajs/vue3";
 import ApplicationMark from "@/Components/ApplicationMark.vue";
 import Banner from "@/Components/Banner.vue";
 import Dropdown from "@/Components/Dropdown.vue";
+import { GetProfileImagePath } from "@/helpers";
 import DropdownLink from "@/Components/DropdownLink.vue";
 import NavLink from "@/Components/NavLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
@@ -218,9 +219,7 @@ const logout = () => {
                                         >
                                             <img
                                                 class="h-8 w-8 rounded-full object-cover"
-                                                :src="`/images/_${SD()}/users/profile_photo_path/` +
-                                                $page.props.auth.user?.profile_photo_url.replace('public','').replace('http://localhost/images/','').replace('images/images/','images/') || '/images/profile-photos/008.jpg'
-                                                    "
+                                                :src="GetProfileImagePath($page.props.auth.user.profile_photo_url)"
                                                 :alt="
                                                     $page.props.auth.user.name
                                                 "

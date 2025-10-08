@@ -110,7 +110,6 @@ Route::middleware(\App\Http\Middleware\CheckSubd::class . ':ab,asario')->group(f
     // Imprint
     Route::get('/home/imprint', [HomeController::class, 'home_imprint'])->name('home.imprint');
     // Privacy
-
     // Terms
     Route::get('/home/terms', [HomeController::class, 'home_terms'])->name('home.terms');
     // Ai Content
@@ -554,6 +553,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             ->name("admin.tables.show");
         Route::get('/tables/sort-data/{name}', [TablesController::class, 'getOptionz'])
             ->name("GetTableOpt");
+
         // Tables Edit table
         Route::get("/admin/tables/edit/{id}/{table}",[TablesController::class,"EditTables"])
             ->name("admin.tables.edit");
@@ -563,6 +563,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         // Tables UPDATE
         Route::post("/admin/tables/update/{table}/{id?}",[TablesController::class,"UpdateTable"])
             ->name("admin.table.update");
+        // Email Modul
+        Route::get('/admin/email', [TablesController::class, 'emailmod'])->name('admin.email');
+
         // Blogartikel Delete
         Route::delete('/admin/blogs/{blog}', [BlogController::class, 'admin_blog_delete'])
             ->name('admin.blog.delete');

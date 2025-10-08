@@ -11,7 +11,7 @@
 </template>
 <script>
 export default {
-    name: "Contents_Form_InputTextarea",
+    name: "InputTextarea",
     //
     props: {
         name: {

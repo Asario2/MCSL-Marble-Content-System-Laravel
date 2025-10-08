@@ -669,7 +669,14 @@ class TablesController extends Controller
             'users' => $users_img,
         ]);
     }
-
+    public function emailmod(){
+        if(!CheckZRights("SendMail")){
+            header("Location: /no-rigths");
+        }
+        $sigs = DB::table("signatur")->orderBy("position","ASC")->get();
+        $users = DB::table("users")->where("xis_disabled","0")->orderBy("name","ASC");
+        return Inertia::render('Components/Social/EmailSender',["sig"=>$sigs,"users"=>$users]);
+    }
     public function applyExclWhere($table, $query,$safe = false)
     {
         $this->safe = $safe;

@@ -88,9 +88,7 @@
                                                 <img
                                                 id="prof_pic"
                                                 class="h-8 w-8 rounded-full object-cover"
-                                                    :src="`/images/_${SD()}/users/profile_photo_path/` +
-                                                $page.props.auth.user?.profile_photo_url.replace('public','').replace('http://localhost/images/','').replace('images/images/','images/') || '/images/profile-photos/008.jpg'
-                                                    "
+                                                    :src="GetProfileImagePath($page.props.auth.user.profile_photo_url)"
                                                     :alt="
                                                         $page.props.userdata
                                                             .full_name
@@ -168,7 +166,15 @@
                                                     :route-name="route('home.index')">
                                                     Home
                                             </dropdown-link>
+                                            <dropdown-link
+                                                :with-icon="false"
+                                                :with-route="true"
+                                                :route-name="
+                                                    route('admin.kontakte')
+                                                ">
 
+                                           Kontakte
+                                            </dropdown-link>
 
                                             <!-- Account Management -->
                                             <div
@@ -349,7 +355,7 @@
     import IconMenu from "@/Application/Components/Icons/Menu.vue"
     import Toast from "@/Application/Components/Content/Toast.vue";
     import ButtonChangeMode from "@/Application/Components/ButtonChangeMode.vue";
-    import { SD } from '@/helpers';
+    import { SD,GetProfileImagePath } from '@/helpers';
     import { ref } from "vue";
 
     export default {
@@ -480,6 +486,7 @@
 },
 
     methods: {
+        GetProfileImagePath,
         SD,
         setLoadingState(state) {
         this.isLoading = state;

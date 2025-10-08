@@ -180,6 +180,7 @@ class FormController extends Controller
     }
     public static function getOptions($name)
 {
+
     if (!substr_count($name, "_id")) {
         return [];
     }
@@ -189,19 +190,21 @@ class FormController extends Controller
     if (!Schema::hasTable($table)) {
         return [];
     }
+
     // Bestimmen, welche ID-Spalte verwendet werden soll
     $id = 'id'; // Standardmäßig 'id'
     if (Schema::hasColumn($table, 'position')) {
     $id2 = "position";
     }
     else{
-        $id2 = "id";
+        $id2 = "name";
     }
     // \Log::info("tab: ".$table);
     // Abfrage vorbereiten, abhängig von der Spalte 'pub'
     if (Schema::hasColumn($table, 'pub')) {
-        $query = DB::table($table)->where("pub", "=", 1)->orderBy("name", "ASC");  // Nach 'name' sortieren
-    } else {
+        $query = DB::table($table)->where("pub", "=", 1)->orderBy($id2, "ASC");  // Nach 'name' sortieren
+    }
+    else{
         $query = DB::table($table)->orderBy("name", "ASC");  // Nach 'name' sortieren
     }
 

@@ -29,7 +29,7 @@
     'autoslug'=>"Url der Seite","admin_table_id"=>"Tabelle","exif_comp" => "exif Comp","exif_model" => "Exif Model","AdminPanel"=>"Admin Dashboard","UserRights"=>"BenutzerRechte",'LogViewer'=>"Log Viewer","SendMail"=>"Emails verschicken","ChangePassword"=>"Passwort Ändern","CommentsCenter"=>"Kommentar Admin Center","DataBases"=>"Datenbank Admin"
     ,"about"=>"Über dich","ischecked"=>"Überprüft",'projects_id'=>'Aktuelles Projekt',"xis_mcsl"=>"mit MCSL erstellt","xis_mcs"=>"mit MCS erstellt","about_en"=>"Über dich Englisch","website" => "Website","fbd"=>"facebook ID","xis_disabled"=>"Benutzer deaktivieren","CommentsEdit"=>"Alle Felder bearbeiten",
     'wohnort'=>"Wohnort","realname"=>"Realname","aufgaben"=>"Aufgaben",'abouttext'=>"Über User","img_thumb"=>"Bild klein","img_big"=>"Bild gross","imgdir_content"=>"Galerie","xis_public_con"=>"Für alle Benutzer sichtbar","ripdate"=>"Todesdatum",
-    "us_poster"=>"Author"];
+    "us_poster"=>"Author","mail_body"];
 
         public static array $no_req = ['exif_copyright','exif_comp','exif_model','Mpixel','modul','is_admin','is_customer','is_employee','customer_id','admin_id','company_id',
                                        'profile_photo_path',"category_id","type_id",'message','message_en',

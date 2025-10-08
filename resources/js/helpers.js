@@ -16,6 +16,13 @@ export async function GetColumns(table) {
         return {};
     }
 }
+export function GetProfileImagePath(path){
+if(path.includes("https://ui-avatars.com/api/"))
+{
+return path;
+}
+return '/images/_' + SD() + '/users/profile_photo_path' + path;
+}
 export async function loadRightsOnce() {
   if (!cache.tables) {
     try {
@@ -523,6 +530,10 @@ export async function loadRights() {
 export function GetSRights(modul) {
     return cachedRights?.[modul] === true;
 }
+export function nl2br(str)
+{
+    return str.replace("\n","<br />");
+}
 export function rumLaut(input, table = '') {
     let str = input;
     if(!str){
@@ -541,8 +552,10 @@ export function rumLaut(input, table = '') {
         str = str.replace(/<p>/gi, '');
         str = str.replace(/<\/p>/gi, '');
         str = str.replace(/<br\s*\/?>/gi, '');
+
     }
-    str = str.replace('%5B', '[').replace('%5D', ']')
+
+    str = str.replace('%5B', '[').replace('%5D', ']');
     // 4. Zeichen ersetzen
     str = str.replace(/â€“/g, '-');
 

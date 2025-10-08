@@ -111,7 +111,7 @@
               <div v-if="users[data.datarow.users_id]?.img && users[data.datarow.users_id].img !== '008.jpg'">
                 <nobr>
                   <img
-                    :src="'/images/_' + SD() + '/users/profile_photo_path/' + users[data.datarow.users_id].img"
+                    :src="GetProfileImagePath(users[data.datarow.users_id].img)"
                     class="w-[24px] h-[24px] object-cover rounded-full inline"
                   />
                   &nbsp;{{ data.datarow.users }}
@@ -201,7 +201,7 @@
   import ListContainer from "@/Application/Components/Lists/ListContainer.vue";
   import PublishButton from "@/Application/Components/Form/PublishButton.vue";
   import IconStar from "@/Application/Components/Icons/IconStar.vue";
-  import { CleanTable, ucf, SD, GetSettings, rumLaut } from "@/helpers";
+  import { CleanTable, ucf, SD, GetSettings, rumLaut,GetProfileImagePath } from "@/helpers";
   //import { safeInertiaGet } from '@/utils/inertia';
 
   import Sortable from "sortablejs";
@@ -302,6 +302,7 @@
       this.initSortable();
     },
     methods: {
+        GetProfileImagePath,
       CleanTable,
       ucf,
       SD,

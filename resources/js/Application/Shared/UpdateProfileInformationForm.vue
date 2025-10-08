@@ -159,7 +159,7 @@
 <script>
 import { Link, router, useForm } from "@inertiajs/vue3";
 import SectionForm from "@/Application/Components/Content/SectionForm.vue";
-import { SD } from "@/helpers";
+import { SD,GetProfileImagePath } from "@/helpers";
 import InputGroup from "@/Application/Components/Form/InputGroup.vue";
 import InputContainer from "@/Application/Components/Form/InputContainer.vue";
 import InputLabel from "@/Application/Components/Form/InputLabel.vue";
@@ -225,6 +225,7 @@ export default {
     },
 
     methods: {
+        GetProfileImagePath,
         SD,
         AiImage() {
             const val = this.aiCheckValue;
