@@ -240,11 +240,15 @@ export default {
         },
 
         handleKeyDown(e) {
-            // VERÄNDERT: Nur bei Space das normale Verhalten zulassen, aber LTR erzwingen
+            if (e.key === 'Enter' && !e.shiftKey) {
+                document.execCommand('insertParagraph', false, null);
+                e.preventDefault();
+                this.updateValue();
+                return;
+            }
+
             if (e.key === ' ' && !e.ctrlKey && !e.altKey && !e.metaKey) {
-                // Speichere Selection vor dem Space
                 this.saveSelection();
-                // Lasse das normale Space-Verhalten zu, aber erzwinge sofort LTR
                 setTimeout(() => {
                     this.forceLTR();
                     this.restoreSelection();
@@ -257,7 +261,7 @@ export default {
                 return;
             }
 
-            if (['Enter', 'Tab', 'Backspace', 'Delete'].includes(e.key)) {
+            if (['Tab', 'Backspace', 'Delete'].includes(e.key)) {
                 this.saveSelection();
             }
         },
@@ -267,9 +271,11 @@ export default {
                 this.isComposing = false;
             }
 
-            // Nach JEDEM Tastendruck LTR erzwingen
+            // Nach JEDEM Tastendruck LTR erzwingen – außer Enter
             this.$nextTick(() => {
-                this.forceLTR();
+                if (e.key !== 'Enter') {
+                    this.forceLTR();
+                }
             });
         },
 
@@ -515,8 +521,78 @@ export default {
         },
 
         toggleCode() {
-            this.toggleFormat('code');
-        },
+        this.saveSelection();
+
+        requestAnimationFrame(() => {
+            this.restoreSelection();
+            const sel = window.getSelection();
+            if (!sel || sel.rangeCount === 0) return;
+
+            const range = sel.getRangeAt(0);
+
+            // Prüfen, ob die Auswahl in einem <code> ist
+            let parent = range.commonAncestorContainer;
+            while (parent && parent.nodeType === 3) parent = parent.parentNode;
+
+            if (parent && parent.tagName && parent.tagName.toLowerCase() === "code") {
+                // Nur den selektierten Teil aus dem Code entfernen
+                const selectedText = range.toString();
+
+                if (selectedText.length > 0) {
+                    const before = parent.textContent.substring(0, range.startOffset);
+                    const after = parent.textContent.substring(range.endOffset);
+
+                    // Neues Textkonstrukt zusammenbauen:
+                    const newFragment = document.createDocumentFragment();
+
+                    if (before) {
+                        const beforeNode = document.createElement("code");
+                        beforeNode.textContent = before;
+                        newFragment.appendChild(beforeNode);
+                    }
+
+                    newFragment.appendChild(document.createTextNode(selectedText));
+
+                    if (after) {
+                        const afterNode = document.createElement("code");
+                        afterNode.textContent = after;
+                        newFragment.appendChild(afterNode);
+                    }
+
+                    parent.replaceWith(newFragment);
+                } else {
+                    // Wenn nichts markiert → gesamten Code entfernen
+                    const textNode = document.createTextNode(parent.textContent);
+                    parent.replaceWith(textNode);
+                }
+
+                this.updateValue();
+                this.forceLTR();
+                return;
+            }
+
+            // Wenn kein Text markiert → abbrechen
+            if (range.collapsed) return;
+
+            // <code>-Tag um Auswahl herumsetzen
+            const selectedText = range.toString();
+            const code = document.createElement("code");
+            code.textContent = selectedText;
+
+            range.deleteContents();
+            range.insertNode(code);
+
+            // Cursor hinter das Code-Element setzen
+            const newRange = document.createRange();
+            newRange.setStartAfter(code);
+            newRange.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(newRange);
+
+            this.updateValue();
+            this.forceLTR();
+        });
+    },
 
         AddHr() {
             this.saveSelection();
@@ -618,7 +694,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .edit0R {
     max-width: 1177px;
     overflow: auto;
@@ -693,5 +769,9 @@ export default {
 .editor {
     white-space: pre-wrap !important;
     word-wrap: break-word !important;
+}
+.editor code{
+    background-color: #ccc !important;
+    padding: 4px;
 }
 </style>

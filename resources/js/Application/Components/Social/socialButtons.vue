@@ -230,12 +230,12 @@ export default {
 #commentBox { max-width:300px !important; width:300px !important; }
 
 @media screen and (max-width:1000px){
-    .MaTable{ margin-left:-58px; }
+    /* .MaTable{ margin-left:-58px; } */
     .SmMaTable{ margin-left:-7px; }
     .MaTable_blogs{ margin-left:-38px; }
     .SmMaTable_blogs{ margin-left:-38px; }
 }
-@media screen and (max-width:361px){ .MaTable{ margin-left:-68px !important; } }
+@media screen and (max-width:361px){ .MaTable{ margin-left:-22px !important; } }
 @media screen and (min-width:1024px){ .Matable{ margin-left:0px; } }
 
 /* Shariff Twitter Anpassungen */

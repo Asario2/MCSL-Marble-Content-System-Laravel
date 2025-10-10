@@ -105,3 +105,4 @@
 ![Version](https://img.shields.io/badge/version-3.09.9-orange) Hotfix - Repaired Search on TableShow (#175)  
 ![Version](https://img.shields.io/badge/version-3.10.9-orange) Hotfix - Changed profile image path (#186)  
 ![Version](https://img.shields.io/badge/version-3.11.2-orange) Hotfix - Cursor jumped on input (#187)  
+![Version](https://img.shields.io/badge/version-3.12.9-orange) Hotfix - code formating failed (#189)  
