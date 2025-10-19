@@ -38,6 +38,7 @@
             <input
                 type="checkbox"
                 :value="user.id"
+                :id="'u' + user.id"
                 :checked="selectedIds.includes(user.id)"
                 @change="toggleItem(user.id, $event.target.checked)"
                 :aria-label="`Auswählen ${user.name}`"
@@ -58,12 +59,13 @@
                     v-else
                     class="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-sm text-gray-600 dark:text-gray-300"
                 >
-                    {{ initials(user.name) }}
+                <label class="cursor-pointer" :for="'u' + user.id">{{ initials(user.name) }}</label>
+
                 </div>
                 </div>
                 <div>
                 <div class="font-medium text-sm text-gray-900 dark:text-gray-100">
-                    {{ user.name }}
+                    <label class="cursor-pointer" :for="'u' + user.id">{{ user.name }}</label>
                 </div>
                 </div>
             </div>

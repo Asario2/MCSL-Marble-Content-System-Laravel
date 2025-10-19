@@ -33,6 +33,7 @@ return [
     |            "postmark", "log", "array", "failover", "roundrobin"
     |
     */
+    'maintainer' => env('MAIL_MAINTAINER', 'parie@gmx.de'),
 
     'mailers' => [
 

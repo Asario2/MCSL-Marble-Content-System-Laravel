@@ -1,8 +1,8 @@
 <template>
 <MetaHeader title="Asarios Blog" />
 <div class="flex items-center gap-2 mb-4">
-  <back-btn url="/">Asarios Blog</back-btn>
-  <newbtn table="blogs"></newbtn>
+  <back-btn url="/blogs" class="!m-0 !h-8">Asarios Blog</back-btn>
+  <newbtn table="blogs" class="!m-0 !h-8"></newbtn>
 </div>
 
 

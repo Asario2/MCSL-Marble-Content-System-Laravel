@@ -22,12 +22,13 @@
         <td class="pl-4 text-left">
           <input
             type="checkbox"
+            :id="'c' + c.id"
             class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-400"
             :checked="selectedContactIds.includes(c.id)"
             @change="toggleContact(c.id, $event.target.checked)"
           />
         </td>
-        <td class="py-2 pr-4 text-left">{{ c.name }}</td>
+        <td class="py-2 pr-4 text-left"><label class="cursor-pointer" :for="'c' + c.id">{{ c.name }}</label></td>
       </tr>
     </tbody>
   </table>

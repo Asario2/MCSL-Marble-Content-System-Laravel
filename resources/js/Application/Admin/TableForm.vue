@@ -664,9 +664,10 @@ export default defineComponent({
             type: [String, Number],
             default: 1,
         },
-        // ffo: {
-        //     type: [Object,Array],
-        // },
+       ffo: {
+        type: [Object, Array],
+        default: () => ({ original: {} })
+        },
         editstate: {
             type: String,
             default: "",
@@ -718,7 +719,7 @@ export default defineComponent({
             formDatas: {},
             oobj:{},
             formData: {},
-            localFfo: JSON.parse(JSON.stringify(this.ffo)),
+            localFfo: JSON.parse(JSON.stringify(this.ffo ?? {})),
             sanitizedContent: '',
             uploadedIid: null,
             ItemName: "Beitrag",
@@ -1482,6 +1483,7 @@ export default defineComponent({
             alert(this.ffo);
 
             this.$inertia.visit('/no-rights');
+            return;
 
         }
     this.ulpath = "/images/_"+ this.subdomain + "/"+this.CleanTable_alt()+ "/";

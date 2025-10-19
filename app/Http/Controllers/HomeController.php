@@ -773,6 +773,16 @@ public function imprint_dag()
     {
         return $this->infos_show("43");
     }
+    public function contacts(){
+        $text = DB::table("texts")->where("type", "ContactsHeader")->select('headline', 'text')->first();
+        $contacts = DB::table("texts")->where("type", "ContactsInfos")->select('headline', 'text')->first();
+        // \Log::info("TT:".json_encode($text));
+
+        return Inertia::render('Homepage/ab/contacts', [
+            "text" => $text,
+            'contacts'=>$contacts,
+        ]);
+    }
     public function contacts_mfx(){
         $text = DB::table("texts")->where("type", "ContactsHeader")->select('headline', 'text')->first();
         $contacts = DB::table("texts")->where("type", "ContactsInfos")->select('headline', 'text')->first();

@@ -106,3 +106,7 @@
 ![Version](https://img.shields.io/badge/version-3.10.9-orange) Hotfix - Changed profile image path (#186)  
 ![Version](https://img.shields.io/badge/version-3.11.2-orange) Hotfix - Cursor jumped on input (#187)  
 ![Version](https://img.shields.io/badge/version-3.12.9-orange) Hotfix - code formating failed (#189)  
+![Version](https://img.shields.io/badge/version-3.13.8-orange) Feature - Email Sending Center (#135)  
+![Version](https://img.shields.io/badge/version-3.14.5-orange) BUG - redirect to gallery on search (#136)  
+![Version](https://img.shields.io/badge/version-3.15.8-orange) changed position of back & new Button (#196)  
+![Version](https://img.shields.io/badge/version-3.16.1-orange) Feature - Added Contacts page (#197)  

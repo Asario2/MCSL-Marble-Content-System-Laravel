@@ -761,7 +761,7 @@ class TablesController extends Controller
         // dd($content);
 
 
-        return $ma->PrevMail($request,"[MCSL] Newsletter","emails.newsletter",$email,$nick,$link,$content,$signatur);
+        return $ma->PrevMail($request,SD(1)." Newsletter","emails.newsletter",$email,$nick,$link,$content,$signatur);
 
 
 

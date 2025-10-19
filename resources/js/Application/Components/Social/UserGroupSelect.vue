@@ -18,13 +18,13 @@
         <td class="pl-4 text-left">
           <input
             type="checkbox"
-            :id="'group_' + g.id"
+            :id="'g' + g.id"
             :checked="selectedGroupIds.includes(g.id)"
             @change="toggleItem(g.id, $event.target.checked)"
             class="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-400"
           />
         </td>
-        <td class="py-2 pr-4 text-left">{{ g.name }}</td>
+        <td class="py-2 pr-4 text-left"><label class="cursor-pointer" :for="'g' + g.id">{{ g.name }}</label></td>
       </tr>
     </tbody>
   </table>

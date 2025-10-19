@@ -274,7 +274,9 @@
                         <li>
                             <link-footer @click="reopenCookieBanner"><b>Cookie-Einstellungen</b></link-footer>
                         </li>
-
+                        <li>
+                            <link-footer name="Kontakt" :route-name="route('home.contacts')"></link-footer>
+                        </li>
                     </ul>
                     <br />
                     <NewsletterSubscribe class="mb-[-2px]"/>

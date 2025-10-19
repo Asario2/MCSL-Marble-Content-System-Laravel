@@ -51,7 +51,7 @@
       />
 
       <!-- Mailbody Select -->
-      <InputLabel name="mailbody"><b>Vorlage wählen</b></InputLabel>
+      <InputLabel name="mailbody" class="mt-4"><b>Vorlage wählen</b></InputLabel>
       <InputSelect
         id="mailbodysel"
         v-model="selectedMbId"
@@ -59,7 +59,9 @@
         :options="mailbodyOptions"
         @input-change="updateMailbody"
       />
-
+      <inputFormText>
+        <template #label><b>Betreff</b></template>
+        </inputFormText>
     <!-- E-Mail Text -->
     <InputHtml
         id="mail_body"
@@ -109,6 +111,7 @@ import Layout from "@/Application/Admin/Shared/Layout.vue";
 import SelectRecipient from "./SelectRecipient.vue";
 import InputHtml from "@/Application/Components/Form/InputHtml.vue";
 import InputTextarea from "@/Application/Components/Form/InputTextarea.vue";
+import InputFormText from "@/Application/Components/Form/InputFormText.vue";
 import InputSelect from "@/Application/Components/Form/InputSelect.vue";
 import InputLabel from "@/Application/Components/Form/InputLabel.vue";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
@@ -124,6 +127,7 @@ export default {
     InputHtml,
     InputLabel,
     InputSelect,
+    InputFormText,
     MetaHeader,
     InputTextarea,
   },

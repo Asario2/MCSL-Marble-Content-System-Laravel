@@ -120,7 +120,7 @@ import { throttle } from "lodash";
 import Addbtn from "@/Application/Components/Form/addbtn.vue";
 import SearchFilter from "@/Application/Components/Lists/SearchFilter.vue";
 import pickBy from "lodash/pickBy";
-import mapValues from "lodash/mapValues";
+
 
 export default {
   name: 'ContactTable',

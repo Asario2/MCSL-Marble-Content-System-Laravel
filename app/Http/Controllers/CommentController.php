@@ -179,7 +179,7 @@ class CommentController extends Controller
     }
     else{
         unset($_SESSION['captcha_text']);
-        Mail::to('parie@gmx.de')->send(new ContactMail($_SERVER['HTTP_HOST'],$request->name,$request->email,$request->subject,$request->message));
+        Mail::to(comfig('mail.maintainer'))->send(new ContactMail(request()->getHost(),$request->name,$request->email,$request->subject,$request->message));
         return "1";
     }
     return false;

@@ -342,7 +342,6 @@
     </template>
     <script>
     import axios from "axios";
-    import { router } from '@inertiajs/vue3';
     import { useLoadingStore } from '@/loading';
     import IconMCSL from "@/Application/Components/Icons/IconMCSL.vue";
     import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
@@ -356,7 +355,8 @@
     import Toast from "@/Application/Components/Content/Toast.vue";
     import ButtonChangeMode from "@/Application/Components/ButtonChangeMode.vue";
     import { SD,GetProfileImagePath } from '@/helpers';
-    import { ref } from "vue";
+    import { throttle } from 'lodash';
+    import pickBy from "lodash/pickBy";
 
     export default {
         name: "Homepage_Shared_Layout",
@@ -413,7 +413,7 @@
     else{
         //this.setLoading(true);
     }
-    alert("found");
+
         const shouldReload = localStorage.getItem('reload_dashboard');
 
         if (shouldReload) {
