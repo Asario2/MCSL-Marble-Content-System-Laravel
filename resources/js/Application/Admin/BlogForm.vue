@@ -287,10 +287,10 @@ import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 
 import SmoothScroll from "@/Application/Components/SmoothScroll.vue";
 
-import PageTitle from "@/Application/Components/Content/PageTitle.vue";
+
 
 import SectionForm from "@/Application/Components/Content/SectionForm.vue";
-import SectionBorder from "@/Application/Components/Content/SectionBorder.vue";
+
 
 import ButtonGroup from "@/Application/Components/Form/ButtonGroup.vue";
 import InputButton from "@/Application/Components/Form/InputButton.vue";
@@ -321,9 +321,7 @@ export default defineComponent({
         Layout,
         Breadcrumb,
         SmoothScroll,
-        PageTitle,
         SectionForm,
-        SectionBorder,
         ButtonGroup,
         InputButton,
         InputDangerButton,

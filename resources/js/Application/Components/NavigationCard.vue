@@ -60,7 +60,8 @@ import IconProjectsSheets from "@/Application/Components/Icons/IconProjectsSheet
 import IconStar from "@/Application/Components/Icons/IconStar.vue";
 import IconTexts from "@/Application/Components/Icons/IconTexts.vue";
 import IconInfos from "@/Application/Components/Icons/IconInfos.vue";
-import IconRight from "@/Application/Components/Icons/IconRight.vue";
+import IconLock from "@/Application/Components/Icons/IconLock.vue";
+import IconMail from "@/Application/Components/Icons/IconMail.vue";
 import IconHyperlink from "@/Application/Components/Icons/IconHyperLink.vue";
 import IconPictures from "@/Application/Components/Icons/IconPictures.vue";
 import IconDB from "@/Application/Components/Icons/db.vue";
@@ -78,8 +79,9 @@ export default {
         IconProjects,
         IconProjectsSheets,
         IconDB,
+        IconMail,
         IconLost,
-        IconRight,
+        IconLock,
         IconPictures,
         IconLogs,
         IconDidyou,
@@ -133,7 +135,7 @@ export default {
             const icons = {
                 IconBook,
                 IconDB,
-                IconRight,
+                IconLock,
                 IconPictures,
                 IconLogs,
                 IconDidyou,
@@ -148,6 +150,7 @@ export default {
                 IconHyperlink,
                 IconLost,
                 IconStar,
+                IconMail,
             };
             //
             return icons[this.icon];

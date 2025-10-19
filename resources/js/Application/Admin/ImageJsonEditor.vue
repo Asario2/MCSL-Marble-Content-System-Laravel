@@ -139,7 +139,7 @@
       // Bild löschen
       async deletePost(index) {
         // if (!confirm('Sind Sie sicher, dass Sie dieses Bild löschen möchten?')) return;
-        const image = this.images[index];
+        //const image = this.images[index];
 
         try {
           const folderName = this.localFolder.replace(/\/+$/, '').split('/').pop();

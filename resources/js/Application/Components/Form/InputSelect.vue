@@ -16,7 +16,7 @@
           :key="option.id"
           :value="option.id"
         >
-          {{ option.name }}
+          {{ rumLaut(option.name) }}
         </option>
       </select>
     </div>
@@ -25,8 +25,9 @@
 
   <script>
   import axios from "axios";
-
+ import {rumLaut } from "@/helpers";
   export default {
+
     name: "Contents_Form_InputSelect",
     inheritAttrs: false,
     emits: ["update:modelValue", "input-change"],
@@ -95,6 +96,7 @@
     },
 
     methods: {
+        rumLaut,
         handleChange(event) {
         let value = event.target.value;
 

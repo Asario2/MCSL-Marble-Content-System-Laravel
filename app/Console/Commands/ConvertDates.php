@@ -18,7 +18,7 @@ class ConvertDates extends Command
     public function handle()
     {
         GlobalController::SetDomain();
-        $table = "ratings";
+        $table = "newsletter";
         // Beispiel: Tabelle "your_table_name"
         $rows = DB::table($table)->get();
 
@@ -31,7 +31,7 @@ class ConvertDates extends Command
                 ->where('id', $row->id)
                 ->update([
                     'created_at' => $createdAt,
-                    'updated_at' => $updatedAt,
+                   'updated_at' => $updatedAt,
                 ]);
 
             $this->info("Updated row ID {$row->id}");

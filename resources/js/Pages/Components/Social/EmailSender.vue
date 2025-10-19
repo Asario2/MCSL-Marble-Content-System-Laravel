@@ -33,8 +33,6 @@
       <SelectRecipient
         :show="showSelectRecipient"
         :user="user"
-        :usergroups="usergroups"
-        :contacts="contacts"
         @close="showSelectRecipient = false"
         @confirm="handleSelectRecipient"
 
@@ -102,8 +100,8 @@
 
 <script>
 import { rumLaut, nl2br } from "@/helpers";
-import { router } from '@inertiajs/vue3';
-//import { Inertia } from '@inertiajs/inertia'
+// import { router } from '@inertiajs/vue3';
+import { Inertia } from '@inertiajs/inertia'
 
 import Layout from "@/Application/Admin/Shared/Layout.vue";
 import SelectRecipient from "./SelectRecipient.vue";
@@ -113,7 +111,6 @@ import InputSelect from "@/Application/Components/Form/InputSelect.vue";
 import InputLabel from "@/Application/Components/Form/InputLabel.vue";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
-
 
 export default {
   name: "EmailSender",
@@ -143,7 +140,6 @@ export default {
       signatureText: "",
       signaturOptions: this.sig,
       selectedMbId: null,
-      subject:"newsletter",
       mailbodyText: "",       // Inhalt für InputHtml
       mailbodyOptions: this.mailbody, // Mailbody-Auswahl
 
@@ -169,32 +165,7 @@ export default {
   methods: {
     rumLaut,
     nl2br,
-    submitForm() {
-    console.log('Sende Daten:', {
-                recipients: this.recipientNames,
-                mailbodyText: this.mailbodyText,
-                signatureText: this.signatureText,
-                subject: this.subject
-            });
-            const formData = {
-                recipients: this.recipientNames,
-                mailbodyId: this.selectedMbId,
-                mailbodyText: this.mailbodyText,
-                signaturId: this.signaturId,
-                signatureText: this.signatureText,
-                subject: this.subject,
-            };
-
-            router.post('/email/preview', formData, {
-                onSuccess: (page) => {
-                    console.log("✅ Vorschau geladen:", page);
-                },
-                onError: (errors) => {
-                    console.error("❌ Fehler:", errors);
-                },
-            });
-        },
-    submitForm_old()
+    submitForm()
     {
         if(!this.mailbodyText){
             document.getElementById("Email Text").style.border = "1.5px solid Red";
@@ -204,19 +175,11 @@ export default {
           const formData = {
             recipients: this.recipientNames,
             mailbodyId: this.selectedMbId,
-            mailbodyText: nl2br(rumLaut(this.mailbodyText)),
+            mailbodyText: this.mailbodyText,
             signaturId: this.signaturId,
-            signatureText: nl2br(rumLaut(this.signatureText)),
-            subject: this?.subject,
+            signatureText: this.signatureText,
         };
-        router.post('/email/preview', formData, {
-                onSuccess: (page) => {
-                    console.log("✅ Vorschau erfolgreich:", page);
-                },
-                onError: (errors) => {
-                    console.error("❌ Fehler beim Senden:", errors);
-                },
-            });
+          Inertia.post('/email/preview/', formData);
 
         console.log(formData);
     },
@@ -240,7 +203,10 @@ export default {
       this.recipientNames = '';
     }
   },
-
+   handleSelectedNames(names) {
+    this.selectedUserNames = names;
+    console.log("Ausgewählte Benutzer:", names);
+  },
   updateSigData(value) {
     this.selectedSigId = value;
   },

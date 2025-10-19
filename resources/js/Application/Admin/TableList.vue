@@ -56,9 +56,11 @@ import Layout from "@/Application/Admin/Shared/Layout.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 import ListContainer from "@/Application/Components/Lists/ListContainer.vue";
 import { CleanTable } from '@/helpers';
-import { toastBus } from '@/utils/toastBus';
-import { data } from "jquery";
-import { hasRight,loadAllRights,isRightsReady } from '@/utils/rights';
+import {route} from 'ziggy-js';
+
+// import { toastBus } from '@/utils/toastBus';
+// import { data } from "jquery";
+import { GetRights } from '@/helpers';
 export default defineComponent({
     name: "Admin_TableList",
 
@@ -66,7 +68,7 @@ export default defineComponent({
         Layout,
         Breadcrumb,
         ListContainer,
-        toastBus,
+        // toastBus,
     },
 
     props: {
@@ -116,17 +118,17 @@ export default defineComponent({
         }
 
         // Dummy-Wartefunktion (wenn benötigt)
-        const waitUntilReady = () =>
-            new Promise((resolve) => {
-                const check = () => {
-                    if (window.isRightsReady && window.isRightsReady()) {
-                        resolve();
-                    } else {
-                        setTimeout(check, 50);
-                    }
-                };
-                check();
-            });
+        // const waitUntilReady = () =>
+        //     new Promise((resolve) => {
+        //         const check = () => {
+        //             if (window.isRightsReady && window.isRightsReady()) {
+        //                 resolve();
+        //             } else {
+        //                 setTimeout(check, 50);
+        //             }
+        //         };
+        //         check();
+        //     });
     },
 
     methods: {

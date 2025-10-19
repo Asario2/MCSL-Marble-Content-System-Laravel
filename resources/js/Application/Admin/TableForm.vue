@@ -551,23 +551,20 @@ const routes = {
 };
 
 import { defineComponent } from "vue";
-import { nextTick } from 'vue';
+
 import emitter from "@/eventBus";
 import { GetSettings } from "@/helpers";
 import axios from "axios";
-import $ from "jquery";
-import pickBy from "lodash/pickBy";
-import { computed } from "vue";
-import { ref, watch } from "vue";
+
 import { CleanTable, CleanId, cc } from '@/helpers';
 import ImageUploadModal from '@/Application/Components/ImageUploadModal.vue';
 import InputPosition from '@/Application/Components/InputPosition.vue';
 
-import { onMounted, watchEffect } from "vue";
+
 import Layout from "@/Application/Admin/Shared/Layout.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 import SmoothScroll from "@/Application/Components/SmoothScroll.vue";
-import PageTitle from "@/Application/Components/Content/PageTitle.vue";
+
 import SectionForm from "@/Application/Components/Content/SectionForm.vue";
 import InputPWD from "@/Application/Components/Form/InputPWD.vue";
 import Addbtn from "@/Application/Components/Form/addbtn.vue"; // KORREKTUR: Import hinzugefügt
@@ -595,15 +592,15 @@ import InputFormPrice from "@/Application/Components/Form/InputFormPrice.vue";
 import InputTextarea from "@/Application/Components/Form/InputTextarea.vue";
 import Editor from "@/Application/Components/Form/InputHtml.vue";
 import InputError from "@/Application/Components/Form/InputError.vue";
-import { throttle } from "lodash";
+
 import DialogModal from "@/Application/Components/DialogModal.vue";
-import { hasRight, loadAllRights, isRightsReady } from '@/utils/rights';
+
 import { toastBus } from '@/utils/toastBus';
 import { reactive } from "vue";
 import PublicRadio from "@/Application/Components/Form/PublicRadio.vue";
 import Alert from "@/Application/Components/Content/Alert.vue";
 import ImageJsonEditor from "@/Application/Admin/ImageJsonEditor.vue";
-import { Inertia } from "@inertiajs/inertia";
+
 
 export default defineComponent({
     name: "Admin_TableForm",
@@ -634,13 +631,13 @@ export default defineComponent({
         InputTextarea,
         InputPWD,
         Editor,
-        InputFormTextArea,
+        // InputFormTextArea,
         InputFormDate,
         InputFormPrice,
         ImageJsonEditor,
-        InputError,
+        // InputError,
         DialogModal,
-        Alert,
+        // Alert,
         ArtSelect,
         ImageUploadModal,
         InputPosition,
@@ -667,9 +664,9 @@ export default defineComponent({
             type: [String, Number],
             default: 1,
         },
-        ffo: {
-            type: [Object,Array],
-        },
+        // ffo: {
+        //     type: [Object,Array],
+        // },
         editstate: {
             type: String,
             default: "",
@@ -694,10 +691,10 @@ export default defineComponent({
             type: Object,
             required: true,
         },
-        id:{
-            type: [String,Number],
-            default: '1',
-        },
+        // id:{
+        //     type: [String,Number],
+        //     default: '1',
+        // },
         users_id:{
             type: [Number,String],
             default:0,
@@ -803,9 +800,9 @@ export default defineComponent({
             return this.$page.props.tables;
         },
 
-        readingTime() {
-            return this.field.value || 1;
-        },
+        // readingTime() {
+        //     return this.field.value || 1;
+        // },
     },
 
     watch:{
@@ -920,6 +917,8 @@ export default defineComponent({
                 Object.entries(data.original).forEach(([key, field]) => {
                     if (field && typeof field === 'object') {
                         result[field.name] = field.value || "";
+                        const kk = key;
+                        this.kk = kk;
                     }
                 });
             }
@@ -931,7 +930,7 @@ export default defineComponent({
             if (this.previewImages[field.name]) {
                 return this.previewImages[field.name];
             }
-            let thumb;
+
             if(CleanTable() != "users")
             {
                 this.thumb = "thumbs/";
@@ -956,11 +955,6 @@ export default defineComponent({
             this.gals[name] = true;
 
         },
-        openGal(name) {
-            this.gals[name] = true;
-
-        },
-
         closeModal(name) {
             this.modals[name] = false;
         },
@@ -971,12 +965,14 @@ export default defineComponent({
 
         handleValidationFailed(index, isRequired) {
             if (isRequired) {
-                this.$set(this.fieldErrors, index, true);
+                this.fieldErrors[index] = true;
+
             }
         },
 
         handleValidationPassed(index) {
-            this.$set(this.fieldErrors, index, false);
+            this.fieldErrors[index] = true;
+
         },
 
         sanitizeContent(content) {
@@ -1087,10 +1083,10 @@ export default defineComponent({
                 this.formData[fieldName] = value;
             }
             if(fieldName == "img_x" || fieldName == "img_y") {
-                this.formData[fieldname] = this.value;
+                this.formData[fieldName] = this.value;
             }
             if(this.fieldtype == "autoslug") {
-                this.formData[fieldname] = value;
+                this.formData[fieldName] = value;
             }
             if(this.fieldname == this.column) {
                 this.formData[this.column] = value;

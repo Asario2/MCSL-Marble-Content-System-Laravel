@@ -22,6 +22,7 @@
   import RightsTable from "@/Application/Admin/UserRights.vue";
   import Layout from "@/Application/Admin/Shared/Layout.vue";
   import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
+  import axios from "axios";
 
   export default {
     name: "UserRightsPage",

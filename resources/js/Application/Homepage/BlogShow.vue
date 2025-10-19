@@ -11,7 +11,7 @@
 </template>
 <script>
 import { defineComponent } from "vue";
-import { Link } from "@inertiajs/vue3";
+// import { Link } from "@inertiajs/vue3";
 import Layout from "@/Application/Homepage/Shared/Layout.vue";
 
 import BlogShow from "@/Application/Homepage/Shared/BlogShow.vue";
@@ -20,7 +20,7 @@ export default defineComponent({
     name: "Homepage_BlogShow",
 
     components: {
-        Link,
+        // Link,
         Layout,
         BlogShow,
         MetaHeader,

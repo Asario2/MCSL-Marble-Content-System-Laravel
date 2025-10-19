@@ -14,6 +14,7 @@ use App\Http\Controllers\NameBindingsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HandbookController;
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\TwoFactorController;
 use App\Http\Controllers\GlobalController;
 use App\Http\Controllers\DashboardAdminController;
@@ -94,6 +95,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/profile/photo', [ImageUploadController::class, 'getProfilePhoto'])->name('profile.photo.get');
 });
+Route::post("/newsl_subscribe", [MailController::class, "Subscribe_Newsl"])->name("mail.subscribe_newsl");
+Route::get("/mail/subscribe/{uhash}/{email}",[TablesController::class, "newsletter_save"])->name("mail.savenewsletter");
 //
 //     AB- Asarios BLog
 //
@@ -298,19 +301,20 @@ Route::get('/api/getVotez', [HomeController::class,"getVotez"])->name("mfx.getvo
 // Route::post('/mail-test',[CommentController::class,"sendm"]);
 
 Route::get('/mail-test', function () {
-    $nick = "test";
-    $content = "test@example.com";
+    // $nick = "Animal";
+    // $content = "test@example.com";
 
-    Mail::to('parie@gmx.de')->send(
-        new RegisterMail(
-            '[MCSL] - Neuer Nutzer auf '.request()->getHost(),
-            'http://' . request()->getHost() . '/admin/tables/users/show?search=' . $nick,
-            $nick,
-            $content
-        )
-    );
+    // Mail::to('parie@gmx.de')->send(
+    //     new RegisterMail(
+    //         '[MCSL] - Neuer Nutzer auf '.request()->getHost(),
+    //         'http://' . request()->getHost() . '/admin/tables/users/show?search=' . $nick,
+    //         $nick,
+    //         $content
+    //     )
+    // );
 
-    return 'Mail wurde versendet (oder an Transport übergeben).';
+    // return 'Mail wurde versendet (oder an Transport übergeben).';
+
 });
 
 // Route::post('/register', [RegisteredUserController::class, 'store'])
@@ -564,8 +568,11 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post("/admin/tables/update/{table}/{id?}",[TablesController::class,"UpdateTable"])
             ->name("admin.table.update");
         // Email Modul
-        Route::get('/admin/email', [TablesController::class, 'emailmod'])->name('admin.email');
+        Route::get('/admin/email', [TablesController::class, 'emailmod'])->name('admin.mailcenter');
 
+        Route::post('/email/preview', [TablesController::class, 'prev_newsl'])->name('admin.mailprev');
+
+        Route::get('/email/send/', [MailController::class, 'send_newsletter'])->name('admin.mail.send');
         // Blogartikel Delete
         Route::delete('/admin/blogs/{blog}', [BlogController::class, 'admin_blog_delete'])
             ->name('admin.blog.delete');

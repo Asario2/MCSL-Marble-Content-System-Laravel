@@ -62,7 +62,7 @@
             <smileys v-if="!nosmilies" :editor="name"></smileys>
         </div>
 
-        <div v-if="hasError && required" class="text-red-500 text-sm mt-1">
+        <div v-if="hasError && required" class="text-red-500 text-sm mt-1" id="editor_empty">
             Dieses Feld darf nicht leer sein.
         </div>
 
@@ -110,7 +110,7 @@
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import ImageUploadModal from '@/Application/Components/ImageUploadModal.vue';
-import { selectionHelper, GetSettings, rumLaut } from "@/helpers";
+import { GetSettings, rumLaut } from "@/helpers";
 import IconPictures from "@/Application/Components/Icons/IconPictures.vue";
 import IconList from "@/Application/Components/Icons/IconList.vue";
 import IconOrdList from "@/Application/Components/Icons/IconOrdList.vue";
@@ -120,7 +120,7 @@ import IconHyperLink from "@/Application/Components/Icons/IconHyperLink.vue";
 import { Tippy } from 'tippy.vue';
 
 export default {
-    name: "Editor",
+    name: "EditorRad",
     components: {
         IconPictures,
         IconCode,
@@ -128,11 +128,11 @@ export default {
         ImageUploadModal,
         IconList,
         IconOrdList,
-        selectionHelper,
-        GetSettings,
+        // SelectionHelper,
+        // GetSettings,
         smileys,
         Tippy,
-        rumLaut,
+        // rumLaut,
     },
     props: {
         imageId: [String, Number],
@@ -150,7 +150,7 @@ export default {
         vcol: String,
         nosmilies: {
             type: String,
-            default: false,
+            default: '',
         }
     },
     data() {
@@ -331,7 +331,7 @@ export default {
                 sel.addRange(range);
 
                 this.$refs.editor.focus();
-            } catch (e) {
+            } catch {
                 this.setCursorToEnd();
             }
         },
@@ -652,7 +652,7 @@ export default {
                         range = document.createRange();
                         range.setStart(this.savedSelection.startContainer, this.savedSelection.startOffset);
                         range.setEnd(this.savedSelection.endContainer, this.savedSelection.endOffset);
-                    } catch (e) {
+                    } catch {
                         range = document.createRange();
                         range.selectNodeContents(editor);
                         range.collapse(false);
@@ -754,15 +754,15 @@ export default {
 
 /* LTR Erzwingung */
 .editor[contenteditable="true"] {
-    direction: ltr !important;
+    /* direction: ltr !important;
     unicode-bidi: plaintext !important;
-    text-align: left !important;
+    text-align: left !important; */
 }
 
 .editor, .editor * {
-    direction: ltr !important;
+    /* direction: ltr !important;
     text-align: left !important;
-    unicode-bidi: plaintext !important;
+    unicode-bidi: plaintext !important; */
 }
 
 /* Wichtig: Whitespace handling für Leerzeichen */

@@ -672,10 +672,105 @@ class TablesController extends Controller
     public function emailmod(){
         if(!CheckZRights("SendMail")){
             header("Location: /no-rigths");
+            exit;
         }
         $sigs = DB::table("signatur")->orderBy("position","ASC")->get();
-        $users = DB::table("users")->where("xis_disabled","0")->orderBy("name","ASC");
-        return Inertia::render('Components/Social/EmailSender',["sig"=>$sigs,"users"=>$users]);
+        $mb = DB::table("newsletter")->orderBy("position","ASC")->get();
+
+        if (CheckZRights("SendMailToAll")) {
+            // Alle User außer id = 0
+            $users = DB::table("users")
+                ->leftJoin('newsletter_blacklist', 'users.email', '=', 'newsletter_blacklist.mail')
+                ->where("xis_disabled", "0")
+                ->where("name", "!=", "Gast")
+                ->select("users.id", "name", "email","xch_newsletter","newsletter_blacklist.mail AS BM"   )
+                ->orderBy("name", "ASC")
+                ->get();
+        } else {
+            // Nur Newsletter-User
+            $users = DB::table('users')
+                ->leftJoin('newsletter_blacklist', 'users.email', '=', 'newsletter_blacklist.mail')
+                ->whereNull('newsletter_blacklist.mail') // ✅ Nur Nutzer, die NICHT in der Blacklist stehen
+                ->where('xch_newsletter', 'LIKE', '%mail%')
+                ->where('xis_disabled', '0')
+                ->where('name', '!=', 'Gast')
+                ->select('users.id', 'users.name', 'users.email', 'users.xch_newsletter')
+                ->orderBy('users.name', 'ASC')
+                ->get();
+
+        }
+        $ugroups = DB::table("users_rights")->select("id","name")->get();
+        $contacts = DB::table("contacts")->where("Email","!=","")->select("id","Email","Name")->orderBy("Name","ASC")->get();
+        foreach($contacts as $key=>$val)
+        {
+                $data[] = [
+        "id" => $val->id,
+        "name" => $val->Name . " (" . decval($val->Email).")",
+    ];
+
+
+        }
+        return Inertia::render('Components/Social/EmailSender',["sig"=>$sigs,"usergroups"=>$ugroups,"user"=>$users,"contacts"=>$data,"mailbody"=>$mb,'breadcrumbs' => [
+
+                'Email/Newsletter' => route('admin.mailcenter'),
+
+            ],]);
+    }
+        function randomString64() {
+        $chars = '-._0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        $length = strlen($chars);
+        $result = '';
+
+        for ($i = 0; $i < 64; $i++) {
+            $result .= $chars[random_int(0, $length - 1)];
+        }
+
+        return $result;
+    }
+        public function prev_newsl(Request $request)
+        {
+
+        if (!CheckZRights("SendMail")) {
+            return redirect('/no-rights');
+        }
+        // return response()->json($request->all());
+
+        // Daten prüfen
+        // return response()->json($request->all());
+        // dd($request->all());
+        // Beispiel: Vorschau anzeigen
+        $nick = explode(", ",$request->recipients)[0];
+        $content = $request->mailbodyText;
+        $signatur = $request->signatureText;
+        $title = @$request->subject;
+
+        $ma = NEW MailController();
+
+
+            $res = DB::table("users")->where("name",$nick)->select("email","uhash","name")->first();
+            //dd("r:".json_encode($request->all(),JSON_PRETTY_PRINT));
+            $uhash = @$res->uhash;
+            $email = @$res->email;
+
+            $link[1] = "http://".request()->getHost()."/unsubscribe/".$uhash."/".$email;
+            $link[0] = "http://".request()->getHost();
+
+
+
+
+        // dd($content);
+
+
+        return $ma->PrevMail($request,"[MCSL] Newsletter","emails.newsletter",$email,$nick,$link,$content,$signatur);
+
+
+
+        }
+    public function newsletter_save($uhash,$email)
+    {
+        DB::table("newsletter_blacklist")->where("mail",$email)->delete();
+        DB::table("newsletter_reci")->where("email",$email)->where("userhash",$uhash)->update(["pub"=>"1","xis_checked"=>"1","subscribed_at"=>now()]);
+        return Inertia::render("Components/Social/newsl_Subscribed");
     }
     public function applyExclWhere($table, $query,$safe = false)
     {
@@ -685,6 +780,17 @@ class TablesController extends Controller
         if (!isset($conditions[$table])) {
             return $query; // Keine Filter für diese Tabelle
         }
+
+
+
+
+
+
+
+
+
+
+
 
         // Prüfen, ob mindestens ein OR existiert
         $hasOr = collect($conditions[$table])->contains(fn($c) => ($c['type'] ?? 'where') === 'orWhere');

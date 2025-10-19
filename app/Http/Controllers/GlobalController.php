@@ -8,7 +8,16 @@ class GlobalController extends Controller
 {
     public function __construct()
     {
+        $i64 = DB::table('users')
+            ->where('uhash', '')
+            ->select('id')
+            ->get();
 
+        foreach ($i64 as $user) {
+            DB::table('users')
+                ->where('id', $user->id)
+                ->update(['uhash' => $this->randomString64()]);
+        }
     }
     public static function SetDomain()
     {

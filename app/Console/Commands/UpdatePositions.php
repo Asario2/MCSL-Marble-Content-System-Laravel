@@ -12,7 +12,7 @@ class UpdatePositions extends Command
 
     public function handle()
     {
-        $table = "dagidag.".$this->argument('table');
+        $table = $this->argument('table');
 
         // Hole alle vorhandenen Positionen
         $existing = DB::table($table)

@@ -274,7 +274,10 @@
                         <li>
                             <link-footer @click="reopenCookieBanner"><b>Cookie-Einstellungen</b></link-footer>
                         </li>
+
                     </ul>
+                    <br />
+                    <NewsletterSubscribe class="mb-[-2px]"/>
                     </div>
                     <div class="text-center md:text-left">
                     <h3 class="text-sm font-semibold leading-6 px-2">
@@ -299,7 +302,7 @@
                         <brand-footer></brand-footer>
                     </div>
                     <div>
-                        <link-footer>
+                        <!-- <link-footer>
                         <a href="https://www.facebook.com" target="_blank" class="bg-layout-sun-0 dark:bg-layout-night-0">
                             <icon-facebook class="flex-shrink-0 w-6 h-6"></icon-facebook>
                         </a>
@@ -313,7 +316,9 @@
                         <a href="https://youtube" target="_blank" class="bg-layout-sun-0 dark:bg-layout-night-0">
                             <icon-youtube class="flex-shrink-0 w-6 h-6"></icon-youtube>
                         </a>
-                        </link-footer>
+                        </link-footer> -->
+
+
                     </div>
                     </div>
 
@@ -336,7 +341,6 @@
     </template>
     <script>
     import axios from "axios";
-    import { router } from "@inertiajs/vue3";
     import { useLoadingStore } from "@/loading";
     import IconMCSL from "@/Application/Components/Icons/IconMCSL.vue";
     import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
@@ -350,7 +354,8 @@
     import Toast from "@/Application/Components/Content/Toast.vue";
     import ButtonChangeMode from "@/Application/Components/ButtonChangeMode.vue";
     import { SD,GetProfileImagePath } from "@/helpers";
-    import { ref } from "vue";
+    import NewsletterSubscribe from "@/Application/Components/Social/NewsletterSubscribe.vue";
+
 
 
     export default {
@@ -368,6 +373,7 @@
         Dropdown,
         DropdownLink,
         ButtonChangeMode,
+        NewsletterSubscribe,
       },
 
       props: {
@@ -584,6 +590,9 @@
     .foot {
     position: relative;
     z-index: 100000;
+    }
+    A#em{
+        color:yellow;
     }
     /* Deine Styles hier */
     </style>

@@ -26,6 +26,7 @@
 import Star from "@/Application/Components/Social/Star.vue";
 
 export default {
+    name: "AverageRating",
   components: { Star },
 
   props: {

@@ -55,6 +55,19 @@
                     Deine Kontakte
                 </template>
             </navigation-card>
+            <navigation-card v-if="modulRights?.SendMail"
+                class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
+                title="Email Center"
+                linkName="E-Mails Senden"
+                target="_self"
+                :routeName="route('admin.mailcenter')"
+                :withIcon="true"
+                icon="IconMail"
+            >
+                <template #description>
+                    Email / Newsletter
+                </template>
+            </navigation-card>
             <!-- laravel.log -->
             <navigation-card v-if="modulRights?.LogViewer"
                 class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
@@ -75,7 +88,7 @@
                 linkName="Benutzerberechtigungen"
                 target="_self"
                 :withIcon="true"
-                icon="IconRight"
+                icon="IconLock"
             >
                 <!-- DB updaten -->
                 <template #description> Benutzer Rechte </template>
@@ -86,13 +99,14 @@
 
 <script>
 import { defineComponent } from "vue";
-
+import {route} from 'ziggy-js';
 import Layout from "@/Application/Admin/Shared/Layout.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 
 import NavigationCard from "@/Application/Components/NavigationCard.vue";
-import { GetSRights,loadRights,ucf } from '@/helpers';
-import { hasRight,loadAllRights,isRightsReady } from '@/utils/rights';
+import { loadRights,ucf,CleanTable,GetRights } from '@/helpers';
+// import { hasRight,loadAllRights,isRightsReady } from '@/utils/rights';
+import axios from "axios";
 export default defineComponent({
     name: "Admin_Dashboard",
 
@@ -132,6 +146,8 @@ export default defineComponent({
     },
     methods: {
         ucf,
+        CleanTable,
+        GetRights,
         fetchAdminTables() {
             axios.get('/api/admin-tables')
                 .then(response => {

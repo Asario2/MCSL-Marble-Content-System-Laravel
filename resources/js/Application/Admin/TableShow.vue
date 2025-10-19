@@ -194,7 +194,7 @@
   </template>
 
   <script>
-  import { defineComponent, nextTick } from "vue";
+  import { defineComponent } from "vue";
   import Layout from "@/Application/Admin/Shared/Layout.vue";
   import CreatedAt from "@/Application/Components/Form/CreatedAt.vue";
   import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
