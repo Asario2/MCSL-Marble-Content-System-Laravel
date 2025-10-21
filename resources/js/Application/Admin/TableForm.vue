@@ -664,7 +664,7 @@ export default defineComponent({
             type: [String, Number],
             default: 1,
         },
-       ffo: {
+        ffo: {
         type: [Object, Array],
         default: () => ({ original: {} })
         },
@@ -1304,7 +1304,41 @@ export default defineComponent({
         },
 
         async submitForm() {
+       const editorRef = this.$refs.editor;
 
+let isValid = true;
+
+if (!editorRef) {
+  // kein Ref gefunden — falls das nicht möglich sein soll, dann als invalid behandeln
+  console.warn('Kein Editor-Ref gefunden (this.$refs.editor ist undefined).');
+  // isValid = false; // optional
+} else if (Array.isArray(editorRef)) {
+  // mehrere Editor-Refs (z.B. v-for) -> alle prüfen
+  isValid = editorRef.every(ref => {
+    if (ref && typeof ref.validate === 'function') {
+      return ref.validate();
+    }
+    // Falls ein einzelner ref kein validate hat, gehe davon aus, dass er gültig ist
+    // oder setze hier false, wenn das ein Fehler ist:
+    console.warn('Ein Editor-Ref hat keine validate()-Methode:', ref);
+    return true;
+  });
+} else if (typeof editorRef.validate === 'function') {
+  // Normalfall: einzelne Komponente
+  isValid = editorRef.validate();
+} else {
+  // Ref existiert, aber bietet keine validate()-Methode (z.B. DOM node)
+  console.warn('this.$refs.editor hat keine validate()-Methode:', editorRef);
+  // Optional: versuche eine DOM-basierte Prüfung:
+  const el = (editorRef.$el) ? editorRef.$el : editorRef;
+  const text = (el?.innerText || el?.textContent || '').replace(/\s+/g, '').trim();
+  isValid = text.length > 0;
+}
+
+if (!isValid) {
+  console.log("Fehler: Feld ist leer");
+  return;
+}
   try {
     // Editor-Validierung mit Null-Checks
     const editors = this.$refs.editor;

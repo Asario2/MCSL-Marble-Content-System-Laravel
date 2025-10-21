@@ -4,10 +4,12 @@
     error_reporting(E_ALL);
     use App\Helpers;
     use Illuminate\Support\Facades\Auth;
+    use App\Http\Controllers\GlobalController;
     $subdomain = SD(); // z.B. "foo", "bar"
     $pagen = SD("pn");
     $favicon = "/images/_{$subdomain}/web/alogo.png";
     $ahost = request()->getHost();
+    $glo = NEW GlobalController();
 
     // Fallback, falls Datei nicht existiert
     if (!file_exists(public_path($favicon))) {

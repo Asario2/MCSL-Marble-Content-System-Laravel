@@ -9,7 +9,7 @@
     {
         // Definiere hier deine Konstanten oder statischen Variablen
         public static array $excl_cols = ['updated_at', 'published_at','remember_token','email_verified_at','google2fa_secret','is_two_factor_authenticated','two_factor_authenticated',
-                        'two_factor_enabled',"password_old",'reserved_at','available_at','is_two_factor_enabled','temp_google2fa_secret','new_email','email_change_token','email_verification_token','two_factor_token',"author_name","users_rights_id","chg_date","xico_doms",'xkis_IsFeed','xis_mailed','users_rights_id','two_factor_secret','two_factor_recovery_codes','two_factor_confirmed_at','two_factor_enabled','remember_token',
+                        'two_factor_enabled',"password_old",'reserved_at','uhash','available_at','is_two_factor_enabled','temp_google2fa_secret','new_email','email_change_token','email_verification_token','two_factor_token',"author_name","users_rights_id","chg_date","xico_doms",'xkis_IsFeed','xis_mailed','users_rights_id','two_factor_secret','two_factor_recovery_codes','two_factor_confirmed_at','two_factor_enabled','remember_token',
                         "hasyear",'hasryear',
                     ];
         public static array $excl_heads = ["date_begin"];
@@ -42,7 +42,7 @@
 
         public static array $big_thumb = ["users","blog_posts","images"];
         public static array $int_date_tables = ["didyouknow"];
-        public static array $textfield = ["Mdown"]; // Mdown / HTML
+        public static array $textfield = ["HTML"]; // Mdown / HTML
 
         public static function exclWhere(): array
         {
@@ -137,7 +137,7 @@
     ];
     public static array $otherField = [
         'admin_table'=> "description",
-        'blog_images'=> 'url',
+        'blog_authors'=> 'info',
         'blogs'=> 'summary',
         "blog_categories" => "summary",
         "image_categories"=>'heading_alt',
@@ -168,9 +168,11 @@
         "projects_sheets"=>"Projekt",
         "lostnfound"=>"Überschrift",
         "contacts"=>"Gruppe",
+        "blog_authors"=>"Author"
     ];
     public static array $descalias = [
         "comments"=>"Autor",
+        "blog_authors"=>"Benutzer",
         "ratings"=>"Benutzer",
         "users"=>"E-Mail",
         "shortpoems"=>"Autor",

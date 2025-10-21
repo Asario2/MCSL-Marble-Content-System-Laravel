@@ -606,10 +606,15 @@ return Inertia::render('Homepage/Pictures', [
 
             $blog->content = RUMLAUT($blog->content);
             $blog->title = RUMLAUT($blog->title);
-
+        $author = DB::table('blog_authors')
+            ->select('img_image')
+            ->where('id', $blog->blog_authors_id)
+            ->first();
         //
-        // \Log::info("bl: ".json_encode($blog));
+        $blog->load('blog_author');
+         \Log::info("author_img: ".json_encode($author));
         return Inertia::render('Homepage/BlogShow', [
+            'author' => $author,
             'blog' => $blog,
             'blogarticle' => $blogarticle
         ]);

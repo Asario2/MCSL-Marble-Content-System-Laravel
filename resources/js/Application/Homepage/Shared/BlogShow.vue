@@ -143,13 +143,30 @@
                     <div>
                         <socialButtons :postId="blog.id" :empty="true" :nostars="true" />
                     </div>
-                    <h2 id="author_info">
-                        Informationen zu {{ blog.blog_author.name }}
-                    </h2>
-                    <div
-                        class="max-w-none min-h-full prose md:prose-md dark:prose-invert prose-headings:font-title prose-pre:bg-layout-sun-100 prose-pre:text-layout-sun-800 dark:prose-pre:bg-layout-night-100 dark:prose-pre:text-layout-night-800"
-                        v-html="blog.blog_author.info"
-                    ></div>
+                    <div class="flex items-start gap-4">
+                        <!-- Profilbild -->
+                         {{ author }}
+                        <img
+                              :src="'/images/_ab/users/profile_photo_path/' + blog.blog_author.img_image"
+                            alt="Profilbild"
+                            class="border object-cover rounded-lg w-32 h-full max-h-[300px]"
+                        />
+
+                        <!-- Textblock -->
+                        <div class="flex-1">
+                            <h2 id="author_info" class="font-semibold text-lg mb-2">
+                                Informationen zu {{ blog.blog_author.name }}
+                            </h2>
+
+                            <div
+                                class="max-w-none min-h-full prose md:prose-md dark:prose-invert
+                                    prose-headings:font-title prose-pre:bg-layout-sun-100
+                                    prose-pre:text-layout-sun-800 dark:prose-pre:bg-layout-night-100
+                                    dark:prose-pre:text-layout-night-800"
+                                v-html="rumLaut(blog.blog_author.info)"
+                            ></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -169,7 +186,7 @@ import editbtns from "@/Application/Components/Form/editbtns.vue";
 import Markdown from "@/Application/Components/Content/Markdown.vue";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import SocialButtons from "@/Application/Components/Social/socialButtons.vue";
-import { CleanTable_alt, replaceSmilies } from '@/helpers';
+import {  rumLaut , replaceSmilies } from '@/helpers';
 export default {
     name: "Shared_BlogShow",
     //
@@ -196,6 +213,7 @@ export default {
         blogarticle: {
             type: String,
         },
+        author:[Array,Object],
     },
 
     data() {
@@ -210,6 +228,7 @@ export default {
         }
     },
     methods: {
+        rumLaut,
         decodeHtml(html) {
             return html.replace(/%5B/g, '[').replace(/%5D/g, ']').replace("\n","<br />");
         },

@@ -62,10 +62,10 @@
             <smileys v-if="!nosmilies" :editor="name"></smileys>
         </div>
 
-        <div v-if="hasError && required" class="text-red-500 text-sm mt-1" id="editor_empty">
+        <div v-if="hasError && required" class="text-red-500 text-sm mt-1">
             Dieses Feld darf nicht leer sein.
         </div>
-
+        <div class="text-xs text-gray-400 mt-1">Debug: hasError={{ hasError }}</div>
         <!-- Textfeld -->
         <div class="mb-4 p-4 bg-layout-sun-0 dark:bg-layout-night-0 rounded-lg edit0R editor">
             <div
@@ -110,7 +110,7 @@
 import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import ImageUploadModal from '@/Application/Components/ImageUploadModal.vue';
-import { GetSettings, rumLaut } from "@/helpers";
+import { GetSettings, rumLaut,nl2br } from "@/helpers";
 import IconPictures from "@/Application/Components/Icons/IconPictures.vue";
 import IconList from "@/Application/Components/Icons/IconList.vue";
 import IconOrdList from "@/Application/Components/Icons/IconOrdList.vue";
@@ -166,18 +166,18 @@ export default {
             isComposing: false,
         };
     },
-    emits: ['update:modelValue'],
+    emits: ['update:modelValue', 'validationFailed', 'validationPassed'],
 
     async mounted() {
         this.settings = await GetSettings();
 
         if (this.$refs.editor) {
-            this.$refs.editor.innerHTML = this.decodeBrackets(rumLaut(this.modelValue)) || "";
+            this.$refs.editor.innerHTML = this.decodeBrackets(nl2br(rumLaut(this.modelValue))) || "";
         }
 
         this.$nextTick(() => {
             tippy('[data-tippy-content]', { placement: 'right', animation: 'scale' });
-            this.forceLTR();
+            // this.forceLTR();
         });
 
         this.updateValue();
@@ -189,7 +189,7 @@ export default {
                 return this.modelValue;
             },
             set(value) {
-                this.$emit("update:modelValue", rumLaut(value).replace('%5B', '[').replace('%5D', ']'));
+                this.$emit("update:modelValue", nl2br(rumLaut(value)).replace('%5B', '[').replace('%5D', ']'));
             },
         },
     },
@@ -200,39 +200,39 @@ export default {
             if (!editor) return;
 
             const currentHtml = editor.innerHTML;
-            let decodedNewVal = this.decodeBrackets(rumLaut(newVal));
+            let decodedNewVal = nl2br(this.decodeBrackets(rumLaut(newVal)));
 
             if (currentHtml !== decodedNewVal) {
                 this.saveSelection();
                 editor.innerHTML = decodedNewVal;
                 this.restoreSelection();
-                this.forceLTR();
+                ///this.forceLTR();
             }
         },
     },
 
     methods: {
-        forceLTR() {
-            const el = this.$refs.editor;
-            if (!el) return;
+        // forceLTR() {
+        //     const el = this.$refs.editor;
+        //     if (!el) return;
 
-            el.setAttribute("dir", "ltr");
-            el.style.direction = "ltr";
-            el.style.unicodeBidi = "plaintext";
-            el.style.textAlign = "left";
+        //     el.setAttribute("dir", "ltr");
+        //     el.style.direction = "ltr";
+        //     el.style.unicodeBidi = "plaintext";
+        //     el.style.textAlign = "left";
 
-            const allElements = el.getElementsByTagName('*');
-            for (let i = 0; i < allElements.length; i++) {
-                const element = allElements[i];
-                element.style.direction = 'ltr';
-                element.style.textAlign = 'left';
-                element.style.unicodeBidi = 'plaintext';
-            }
-        },
+        //     const allElements = el.getElementsByTagName('*');
+        //     for (let i = 0; i < allElements.length; i++) {
+        //         const element = allElements[i];
+        //         element.style.direction = 'ltr';
+        //         element.style.textAlign = 'left';
+        //         element.style.unicodeBidi = 'plaintext';
+        //     }
+        // },
 
         onFocus() {
             this.isFocused = true;
-            this.forceLTR();
+            // this.forceLTR();
         },
 
         onBlur() {
@@ -250,7 +250,7 @@ export default {
             if (e.key === ' ' && !e.ctrlKey && !e.altKey && !e.metaKey) {
                 this.saveSelection();
                 setTimeout(() => {
-                    this.forceLTR();
+                    // this.forceLTR();
                     this.restoreSelection();
                 }, 0);
                 return;
@@ -274,7 +274,7 @@ export default {
             // Nach JEDEM Tastendruck LTR erzwingen – außer Enter
             this.$nextTick(() => {
                 if (e.key !== 'Enter') {
-                    this.forceLTR();
+                    // this.forceLTR();
                 }
             });
         },
@@ -355,7 +355,7 @@ export default {
             if (!this.required) return true;
 
             let html = this.$refs.editor?.innerHTML || '';
-            html = rumLaut(html).replace('%5B', '[').replace('%5D', ']');
+            html = nl2br(rumLaut(html)).replace('%5B', '[').replace('%5D', ']');
             const plain = html.replace(/<[^>]*>/g, '').trim();
 
             const isValid = plain.length > 0;
@@ -378,24 +378,41 @@ export default {
 
             requestAnimationFrame(() => {
                 this.updateValue();
-                this.forceLTR();
+                // this.forceLTR();
                 this.saveSelection();
             });
         },
+        validate() {
+            if (!this.required) return true;
 
-        updateValue() {
             const editor = this.$refs.editor;
-            if (!editor) return;
+            if (!editor) return true;
 
-            let html = editor.innerHTML.trim();
-            html = html.replace(/[\u202A-\u202E\u200E\u200F\u061C]/g, '');
-            html = rumLaut(this.decodeBrackets(html));
+            // Inhalt ohne HTML-Tags prüfen
+            const text = (editor.innerHTML || '').replace(/<[^>]*>/g, '').trim();
 
-            this.$emit('update:modelValue', html);
-            this.hasError = html.replace(/<[^>]*>/g, '').trim().length === 0;
+            if (text.length === 0) {
+                this.hasError = true;
+                this.$emit('validationFailed');
+                return false;
+            } else {
+                this.hasError = false;
+                this.$emit('validationPassed');
+                return true;
+            }
+        },
+        updateValue() {
+        const editor = this.$refs.editor;
+        if (!editor) return;
 
-            const altInput = document.getElementById(this.name + "_alt");
-            if (altInput) altInput.value = html;
+        let html = editor.innerHTML.trim();
+        html = html.replace(/[\u202A-\u202E\u200E\u200F\u061C]/g, '');
+        html = nl2br(rumLaut(this.decodeBrackets(html)));
+
+        this.$emit('update:modelValue', html);
+
+        const altInput = document.getElementById(this.name + "_alt");
+        if (altInput) altInput.value = html;
         },
 
         getSelection() {
@@ -445,9 +462,16 @@ export default {
                         sel.addRange(newRange);
                     }
                     this.updateValue();
-                    this.forceLTR();
+                    // this.forceLTR();
                     return;
                 }
+
+
+
+
+
+
+
 
                 if (format === 'email') {
                     const email = prompt("E-Mail-Adresse eingeben:");
@@ -465,7 +489,7 @@ export default {
                         sel.addRange(newRange);
 
                         this.updateValue();
-                        this.forceLTR();
+                        // this.forceLTR();
                     }
                     return;
                 }
@@ -488,11 +512,11 @@ export default {
                         sel.addRange(newRange);
 
                         this.updateValue();
-                        this.forceLTR();
+                        // this.forceLTR();
                     }
                 }
 
-                this.forceLTR();
+                // this.forceLTR();
             });
         },
 
@@ -502,7 +526,7 @@ export default {
             this.$nextTick(() => {
                 this.restoreSelection();
                 this.updateValue();
-                this.forceLTR();
+                // this.forceLTR();
             });
         },
 
@@ -512,7 +536,7 @@ export default {
             this.$nextTick(() => {
                 this.restoreSelection();
                 this.updateValue();
-                this.forceLTR();
+                // this.forceLTR();
             });
         },
 
@@ -567,7 +591,7 @@ export default {
                 }
 
                 this.updateValue();
-                this.forceLTR();
+                // this.forceLTR();
                 return;
             }
 
@@ -590,7 +614,7 @@ export default {
             sel.addRange(newRange);
 
             this.updateValue();
-            this.forceLTR();
+            // this.forceLTR();
         });
     },
 
@@ -605,7 +629,7 @@ export default {
                 this.$refs.editor.appendChild(hr);
             }
             this.updateValue();
-            this.forceLTR();
+            // this.forceLTR();
             this.restoreSelection();
         },
 
@@ -616,7 +640,7 @@ export default {
             this.$nextTick(() => {
                 this.restoreSelection();
                 this.updateValue();
-                this.forceLTR();
+                // this.forceLTR();
             });
         },
 
@@ -677,7 +701,7 @@ export default {
 
                 editor.focus();
                 this.updateValue();
-                this.forceLTR();
+                // this.forceLTR();
                 this.savedSelection = null;
             });
         },
@@ -752,19 +776,6 @@ export default {
     color:#a00;
 }
 
-/* LTR Erzwingung */
-.editor[contenteditable="true"] {
-    /* direction: ltr !important;
-    unicode-bidi: plaintext !important;
-    text-align: left !important; */
-}
-
-.editor, .editor * {
-    /* direction: ltr !important;
-    text-align: left !important;
-    unicode-bidi: plaintext !important; */
-}
-
 /* Wichtig: Whitespace handling für Leerzeichen */
 .editor {
     white-space: pre-wrap !important;
@@ -773,5 +784,9 @@ export default {
 .editor code{
     background-color: #ccc !important;
     padding: 4px;
+}
+.editor P {
+    margin-top:1.2em;
+    margin-bottom:1.2em;
 }
 </style>

@@ -217,6 +217,7 @@ export default {
             confirming: false,
             disabling: false,
             qrCode: null,
+            two_factor_enabled: false,
             setupKey: null,
             recoveryCodes: [],
             confirmationForm: useForm({
@@ -271,9 +272,18 @@ confirmTwoFactorAuthentication() {
             this.qrCode = null;
             this.setupKey = null;
             this.recoveryCodes = [];
-            this.twoFactorEnabled = true; // JETZT aktivieren!
+            this.twoFactorEnabled = true;
+            this.two_factor_enabled  = "1";
+            axios.post('/user/twofactor/enable')
+            .then(() => {
+                console.log('two_factor_enabled updated in database');
+            })
+            .catch(err => {
+                console.error('Error updating two_factor_enabled:', err);
+            });
         },
     });
+
 },
         showQrCode() {
             return axios.get(route("two-factor.qr-code")).then((response) => {
@@ -323,6 +333,13 @@ confirmTwoFactorAuthentication() {
                     this.confirmationForm.clearErrors();
                 },
             });
+                axios.post('/user/twofactor/disable')
+    .then(() => {
+        console.log('two_factor_enabled updated in database');
+    })
+    .catch(err => {
+        console.error('Error updating two_factor_enabled:', err);
+    });
         },
     },
 };

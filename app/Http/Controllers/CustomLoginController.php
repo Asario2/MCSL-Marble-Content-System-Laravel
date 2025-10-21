@@ -54,7 +54,7 @@ class CustomLoginController extends Controller
 
 
         // Wenn 2FA aktiv, in Session speichern und weiterleiten
-        if ($user->two_factor_secret) {
+        if ($user->two_factor_secret && $user->two_factor_enabled) {
             session([
                 'two_factor:user:id' => $user->id,
                 'two_factor:remember' => $remember,
@@ -66,7 +66,24 @@ class CustomLoginController extends Controller
         Auth::login($user, $remember);
         return app(LoginResponse::class);
     }
+    public function enableTwoFactor(Request $request)
+    {
+        $user = $request->user();
 
+        $user->two_factor_enabled = 1;
+        $user->save();
+
+        return response()->json(['success' => true]);
+    }
+    public function disableTwoFactor(Request $request)
+    {
+        $user = $request->user();
+
+        $user->two_factor_enabled = 0;
+        $user->save();
+
+        return response()->json(['success' => true]);
+    }
     public function showTwoFactorForm()
     {
         if (!session()->has('two_factor:user:id')) {

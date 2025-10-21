@@ -21,7 +21,7 @@ if(path.includes("https://ui-avatars.com/api/"))
 {
 return path;
 }
-return '/images/_' + SD() + '/users/profile_photo_path' + path;
+return '/images/_' + SD() + '/users/profile_photo_path/' + path;
 }
 export async function loadRightsOnce() {
   if (!cache.tables) {

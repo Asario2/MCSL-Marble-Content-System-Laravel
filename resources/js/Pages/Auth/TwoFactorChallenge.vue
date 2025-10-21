@@ -52,6 +52,7 @@
       const form = ref({
         code: '',
         recovery_code: '',
+        two_factor_enabled:'1',
       });
 
       const errors = ref({});

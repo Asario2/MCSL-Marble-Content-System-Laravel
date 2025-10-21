@@ -71,7 +71,7 @@ class MailController extends Controller
 
     $signatur = $this->replink($signatur,$title,$email,$nick,$link);
 
-    $content = $this->replink($content,$title,$email,$nick,$link);
+    $content  = $this->replink($content,$title,$email,$nick,$link);
 
     $signatur2 = $signatur.$this->subm_btn();
         $content_alt = $content.$signatur;
@@ -100,15 +100,70 @@ class MailController extends Controller
     }
     function send_newsletter(){
         $i = 0;
-        foreach (explode(", ",session("reci")) as $rek)
+        $sendm = [];
+        $entries = explode(", ",session("reci"));
+        $groups = [];
+        $ugroups = [];
+        $contacts = [];
+        $users = [];
+        foreach($entries as $key=>$val){
+            if(substr_count($val,"{")){
+                $groups[] = $val;
+            }
+            elseif(substr_count($val,"(")){
+                $contacts[] = $val;
+            }
+            else{
+                $users[] = $val;
+            }
+        }
+        foreach ($groups as $reg){
+            $ug = str_replace(['{', '}'], '', $reg);
+
+            $ugroups = DB::table('users')
+            ->join('users_rights', 'users.users_rights_id', '=', 'users_rights.id')
+            ->leftJoin('newsletter_blacklist', 'newsletter_blacklist.mail', '=', 'users.email')
+            ->where('users_rights.name', $ug)
+            ->whereNull('newsletter_blacklist.mail') // => Nur wenn NICHT in Blacklist
+            ->select('users.email', 'users.uhash', 'users.name')
+            ->get();
+
+        }
+        foreach ($ugroups as $regro)
+        {
+            $uhash = @$regro->uhash;
+            $email = @$regro->email;
+            $nick = @$regro->name;
+            $sendm[] = $email;
+            $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')));
+            $i++;
+        }
+        foreach($contacts as $con)
+        {
+            preg_match_all('/\(([^)]+)\)/', $con, $matches);
+            $email = implode("",$matches[1]);
+            \Log::info($email);
+            $nick = $email;
+            if(!in_array($email,$sendm)){
+                $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')));
+                $i++;
+                $sendm[] = $email;
+            }
+
+        }
+        foreach ($users as $rek)
         {
             $res = DB::table("users")->where("name",$rek)->select("email","uhash","name")->first();
             // dd(session('reci'));
             $uhash = @$res->uhash;
             $email = @$res->email;
             $nick = @$res->name;
-        $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')));
-        $i++;
+            if(!in_array($email,$sendm)){
+                $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')));
+                $i++;
+                $sendm[] = $email;
+            }
+
         }
 
 

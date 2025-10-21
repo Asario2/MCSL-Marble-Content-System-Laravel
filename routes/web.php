@@ -52,7 +52,10 @@ use Whitecube\LaravelCookieConsent\Http\Controllers\AcceptEssentialsController;
 use Whitecube\LaravelCookieConsent\Http\Controllers\ConfigureController;
 
 GlobalController::SetDomain();
+
+
 // dd(class_exists(\App\Http\Middleware\CheckSubd::class)); // Sollte "true" zurückgeben
+
 if(SD() == "mfx"){
     Route::get('/', function () {
         return redirect('/news');
@@ -209,7 +212,10 @@ Route::get('/home/privacy', [HomeController::class, 'home_privacy'])->name('home
     // 2FA-Challenge
     Route::get('/two-factor-challenge', [CustomLoginController::class, 'showTwoFactorForm'])
     ->name('two-factor.login');
-
+    Route::post('/user/twofactor/enable', [CustomLoginController::class, 'enableTwoFactor'])
+    ->name('user.twofactor.enable');
+    Route::post('/user/twofactor/disable', [CustomLoginController::class, 'disableTwoFactor'])
+    ->name('user.twofactor.disable');
     Route::post('/two-factor-challenge', [CustomLoginController::class, 'twoFactorLogin'])
         ->name('two-factor.login.post');
     // Route::get('/two-factor-challenge', [CustomLoginController::class, 'showTwoFactorForm'])

@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 class GlobalController extends Controller
 {
     public function __construct()
     {
+        if (Schema::hasColumn('users', 'uhash')) {
+
+
         $i64 = DB::table('users')
             ->where('uhash', '')
             ->select('id')
@@ -18,6 +22,22 @@ class GlobalController extends Controller
                 ->where('id', $user->id)
                 ->update(['uhash' => $this->randomString64()]);
         }
+        }
+
+        if (Schema::hasTable('contacts') && Schema::hasColumn('contacts', 'uhash')) {
+
+            $i65 = DB::table("contacts")
+                ->where('uhash','')
+                ->select('id')
+                ->get();
+        foreach($i65 as $cont)
+        {
+            DB::table('contacts')
+                ->where('id', $cont->id)
+                ->update(['uhash' => $this->randomString64()]);
+        }
+        }
+
     }
     public static function SetDomain()
     {
@@ -125,6 +145,17 @@ class GlobalController extends Controller
         // Den Host in Teile aufteilen (subdomain.localhost.de -> ['subdomain', 'localhost', 'de'])
 
 
+        }
+        function randomString64() {
+            $chars = '-_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+            $length = strlen($chars);
+            $result = '';
+
+            for ($i = 0; $i < 64; $i++) {
+                $result .= $chars[random_int(0, $length - 1)];
+            }
+
+            return $result;
         }
     }
 

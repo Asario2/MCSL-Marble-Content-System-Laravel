@@ -110,3 +110,5 @@
 ![Version](https://img.shields.io/badge/version-3.14.5-orange) BUG - redirect to gallery on search (#136)  
 ![Version](https://img.shields.io/badge/version-3.15.8-orange) changed position of back & new Button (#196)  
 ![Version](https://img.shields.io/badge/version-3.16.1-orange) Feature - Added Contacts page (#197)  
+![Version](https://img.shields.io/badge/version-3.17.1-orange) Hotfix - add content to mixed content db table (#207)  
+![Version](https://img.shields.io/badge/version-3.18.0-orange) Feature - Added Author Image to blogshow (#208)  

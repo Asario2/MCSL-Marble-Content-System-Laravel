@@ -1310,7 +1310,7 @@ html:not(.dark) .vp-code span {
     margin-top: -8px;
 }
 .vp-doc [class*="language-"] pre,
-.vp-doc [class*="language-"] code {
+/* .vp-doc [class*="language-"] code {
     direction: ltr;
     text-align: left;
     white-space: pre;
@@ -1322,7 +1322,7 @@ html:not(.dark) .vp-code span {
     tab-size: 4;
     -webkit-hyphens: none;
     hyphens: none;
-}
+} */
 .vp-doc [class*="language-"] pre {
     position: relative;
     z-index: 1;
@@ -1414,7 +1414,7 @@ html:not(.dark) .vp-code span {
         border-color 0.5s,
         color 0.5s;
 }
-.vp-doc [class*="language-"] > button.copy {
+/* .vp-doc [class*="language-"] > button.copy {
     direction: ltr;
     position: absolute;
     top: 12px;
@@ -1435,7 +1435,7 @@ html:not(.dark) .vp-code span {
         border-color 0.25s,
         background-color 0.25s,
         opacity 0.25s;
-}
+} */
 .vp-doc [class*="language-"]:hover > button.copy,
 .vp-doc [class*="language-"] > button.copy:focus {
     opacity: 1;
@@ -3922,11 +3922,11 @@ svg.DocSearch-Hit-Select-Icon {
         display: inline-block;
     }
 }
-.DocSearch-Button .DocSearch-Button-Keys {
+/* .DocSearch-Button .DocSearch-Button-Keys {
     direction: ltr;
     display: none;
     min-width: auto;
-}
+} */
 @media (min-width: 768px) {
     .DocSearch-Button .DocSearch-Button-Keys {
         display: flex;

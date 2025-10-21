@@ -3,6 +3,7 @@
     App::setLocale('de');
     setlocale(LC_ALL, 'deu_deu.1252');
     // GlobalController::SetDomain();
+    
     use App\Http\Controllers\DarkModeController;
     if (!session_id()) {
         session_start();

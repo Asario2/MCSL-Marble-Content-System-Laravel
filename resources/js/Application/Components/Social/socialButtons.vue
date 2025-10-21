@@ -1,6 +1,6 @@
 <template>
     <div :class="['w-full h-full mt-2',big ? 'zi2' : '']" style="z-index:1000 !important;">
-        <table :class="['w-full border-collapse mx-auto justify-center rounded-lg shadow-sm table-class', nostars ? 'NSMaTable' : 'MaTable']" style="max-width:300px;margin-bottom:18px;z-index:1000;" @click.stop>
+        <table :class="['w-full border-collapse mx-auto justify-center rounded-lg shadow-sm table-class', nostars ? 'NSMaTable' : 'MaTable']" style="max-width:300px;margin-bottom:0px;z-index:1000;" @click.stop>
             <tbody>
                 <tr class="border-0">
                     <td class="text-center" width="60%">

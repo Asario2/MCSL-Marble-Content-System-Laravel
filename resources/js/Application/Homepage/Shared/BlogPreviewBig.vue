@@ -10,7 +10,7 @@
 
         <img
             :src="`/images/_ab/blogs/image_path/${blog.url}`"
-            style='min-width:300px;max-height:365px;width:100%;'
+            style='min-width:300px;max-height:365px;width:100%;min-height:365px !important;'
             :alt="blog.name"
 
 
@@ -83,14 +83,12 @@
 
 <script>
 import { Link } from "@inertiajs/vue3";
-import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
-
 import DisplayDate from "@/Application/Components/Content/DisplayDate.vue";
 import DisplayNumber from "@/Application/Components/Content/DisplayNumber.vue";
 import AiButton from "@/Application/Components/Content/AiButton.vue";
 import editbtns from "@/Application/Components/Form/editbtns.vue";
 import SocialButtons from "@/Application/Components/Social/socialButtons.vue";
-import { CleanTable_alt, replaceSmilies } from '@/helpers';
+import { replaceSmilies } from '@/helpers';
 export default {
     name: "Homepage_Shared_BlogPreviewBig",
     components: {
@@ -99,7 +97,8 @@ export default {
         DisplayNumber,
         AiButton,
         editbtns,
-        SocialButtons, MetaHeader},
+        SocialButtons,
+    },
     props: {
         blog: {
             type: Object,
@@ -184,7 +183,7 @@ img {
   padding: 0;
   line-height: 0;
   border: none;
-  vertical-align: bottom;
+
 }
 /* Hier kannst du zusätzliche Anpassungen vornehmen, falls nötig */
 </style>
