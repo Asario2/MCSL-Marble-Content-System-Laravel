@@ -749,10 +749,15 @@ class TablesController extends Controller
 
             $res = DB::table("users")->where("name",$nick)->select("email","uhash","name")->first();
             //dd("r:".json_encode($request->all(),JSON_PRETTY_PRINT));
+
+            if(empty($res))
+            {
+                $res = DB::table("contacts")->where("name",$nick)->select("email","uhash","name")->first();
+            }
             $uhash = @$res->uhash;
             $email = @$res->email;
 
-            $link[1] = "http://".request()->getHost()."/unsubscribe/".$uhash."/".$email;
+            $link[1] = "http://".request()->getHost()."/unsubscribe/%uhash%/".$email;
             $link[0] = "http://".request()->getHost();
 
 
@@ -769,7 +774,7 @@ class TablesController extends Controller
     public function newsletter_save($uhash,$email)
     {
         DB::table("newsletter_blacklist")->where("mail",$email)->delete();
-        DB::table("newsletter_reci")->where("email",$email)->where("userhash",$uhash)->update(["pub"=>"1","xis_checked"=>"1","subscribed_at"=>now()]);
+        DB::table("newsletter_reci")->where("email",$email)->where("uhash",$uhash)->update(["pub"=>"1","xis_checked"=>"1","subscribed_at"=>now()]);
         return Inertia::render("Components/Social/newsl_Subscribed");
     }
     public function applyExclWhere($table, $query,$safe = false)
@@ -2266,11 +2271,14 @@ return Inertia::render('Admin/Kontakte', [
         }
 
         if (Schema::hasColumn($table, 'img_x')) {
-            $imgPath = public_path("/images/{$table}/big/{$formData['image_path']}");
+            $imgPath = public_path("/images/_".SD()."{$table}/big/{$formData['image_path']}");
             if (file_exists($imgPath)) {
                 list($width, $height) = getimagesize($imgPath);
                 $formData['img_x'] = $width;
                 $formData['img_y'] = $height;
+            }
+            else{
+                dd($imgPath);
             }
         }
 
@@ -2478,6 +2486,7 @@ return Inertia::render('Admin/Kontakte', [
 
         $formData['img_x'] = $width;
         $formData['img_y'] = $height;
+
         }
         if(Schema::hasColumn($table, 'preis')|| isset($formData['preis']))
         {

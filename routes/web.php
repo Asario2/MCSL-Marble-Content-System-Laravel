@@ -99,6 +99,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/profile/photo', [ImageUploadController::class, 'getProfilePhoto'])->name('profile.photo.get');
 });
 Route::post("/newsl_subscribe", [MailController::class, "Subscribe_Newsl"])->name("mail.subscribe_newsl");
+Route::get("/unsubscribe/{uhash}", [MailController::class, "UnSubscribe_Newsl"])->name("mail.unsubscribe_newsl");
 Route::get("/mail/subscribe/{uhash}/{email}",[TablesController::class, "newsletter_save"])->name("mail.savenewsletter");
 //
 //     AB- Asarios BLog

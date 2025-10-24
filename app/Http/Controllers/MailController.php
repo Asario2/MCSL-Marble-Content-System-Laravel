@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
 use Auth;
-
+use Illuminate\Support\Facades\Crypt;
+use App\Http\Controllers\EncryptController;
 use App\Http\Controllers\Controller;
 use App\Models\User; // <-- WICHTIG!
 use App\Mail\GeneralMail; // <-- WICHTIG!
@@ -54,14 +55,85 @@ class MailController extends Controller
         $uhash = $this->randomString64();
         DB::table("newsletter_reci")->insert([
             "pub"=>0,
-            "userhash"=> $uhash,
+            "uhash"=> $uhash,
             "email"=>$request->email,
             "nick"=>$this->Quote($request->email),
             "title"=>$request->title,
             "prename"=>$request->firstname,
             "surname"=>$request->lastname,
         ]);
-        $this->SendMail("Newslsetter Anmeldung","emails.newslsub",$request->email,$request->title." ".$request->firstname." ".$request->lastname,"http://".request()->getHost()."/mail/subscribe/".$uhash."/".$request->email,'');
+        $title = "Newsletter Anmeldung";
+        $link = "http://".request()->getHost()."/mail/subscribe/".$uhash."/".$request->email;
+        $nick = $this->Quote($request->email);
+        $content_alt = '';
+        $template = '';
+        $signatur = '';
+            $html = html_entity_decode(
+        View::file(
+            resource_path('views/emails/newslsub.blade.php'),
+            compact('title', 'link', 'nick', 'content_alt', 'template', 'signatur'))->render()
+    );
+        $this->SendMail("Newsletter Anmeldung","emails.newslsub",$request->email,$request->title." ".$request->firstname." ".$request->lastname,"http://".request()->getHost()."/mail/subscribe/".$uhash."/".$request->email,$html,$uhash);
+    }
+    function SendMail($title,$template,$email,$nick,$link,$html,$uhash='')
+    {
+        $nick = trim($nick);
+        \Log::info([$template,$email,$nick,$link]);
+        if(empty($email)){
+            return false;
+        }
+
+        $html = str_replace('%uhash%',@$uhash,$html);
+        \Log::info($uhash);
+        // Mail::to($email)->send(new GeneralMail($title,$link,$nick,$html,$template));
+        Mail::send([], [], function ($message) use ($email, $html, $title,$uhash) {
+            $message->to($email)
+                ->subject($title)
+                 ->html($html); // <-- das ist entscheidend!
+        });
+    }
+    public function getEmailByUhash(string $uhash): ?string
+    {
+        // 1. Prüfe Users
+        $user = DB::table('users')
+            ->where('uhash', $uhash)
+            ->select('email')
+            ->first();
+
+        if ($user && !empty($user->email)) {
+            return $user->email;
+        }
+
+        // 2. Prüfe Contacts
+        $contact = DB::table('contacts')
+            ->where('uhash', $uhash)
+            ->select('email')
+            ->first();
+
+        if ($contact && !empty($contact->email)) {
+            return $contact->email;
+        }
+
+        // 3. Prüfe Newsletter_Recei
+        $newsletter = DB::table('newsletter_reci')
+            ->where('uhash', $uhash)
+            ->select('email')
+            ->first();
+
+        if ($newsletter && !empty($newsletter->email)) {
+            return $newsletter->email;
+        }
+
+        // Wenn nichts gefunden wurde
+        return null;
+    }
+    public function UnSubscribe_Newsl($uhash)
+    {
+        $email = $this->getEmailByUhash($uhash);
+        if($email){
+            $resul = DB::table("newsletter_blacklist")->updateOrInsert(["mail"=>$email,"created_at"=>now(),"pub"=>"1"]);
+        }
+
     }
     //return $ma->PrevMail("[MCSl] Newsletter","emails.newsletter",$email,$nick,$link,$content,$signatur);
     function PrevMail(Request $request,$title,$template,$email,$nick,$link,$content,$signatur){
@@ -69,9 +141,9 @@ class MailController extends Controller
 
     $footer = $signatur;
 
-    $signatur = $this->replink($signatur,$title,$email,$nick,$link);
+    $signatur = $this->replink($signatur,$title,$email,$nick,$link,@$uhash);
 
-    $content  = $this->replink($content,$title,$email,$nick,$link);
+    $content  = $this->replink($content,$title,$email,$nick,@$uhash);
 
     $signatur2 = $signatur.$this->subm_btn();
         $content_alt = $content.$signatur;
@@ -83,6 +155,7 @@ class MailController extends Controller
             resource_path('views/vendor/mail/html/send.blade.php'),
             compact('title', 'link', 'nick', 'content_alt', 'template', 'signatur'))->render()
     );
+    // $html2 = str_replace("%uhash%",$uhash,$html2);
     session(['signatur' => $signatur,"reci"=>$request->recipients, "content"=>html_entity_decode($html2), "title"=>$title,"email"=>$email,"nick"=>$nick,"template"=>$template]);
     return $html;
 
@@ -106,6 +179,8 @@ class MailController extends Controller
         $ugroups = [];
         $contacts = [];
         $users = [];
+
+
         foreach($entries as $key=>$val){
             if(substr_count($val,"{")){
                 $groups[] = $val;
@@ -135,17 +210,22 @@ class MailController extends Controller
             $email = @$regro->email;
             $nick = @$regro->name;
             $sendm[] = $email;
-            $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')));
+            $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
             $i++;
         }
         foreach($contacts as $con)
         {
             preg_match_all('/\(([^)]+)\)/', $con, $matches);
             $email = implode("",$matches[1]);
-            \Log::info($email);
+
             $nick = $email;
+
+            $res_alt = DB::table('contacts')->where('email_hash', hash('sha256', $email))->select("uhash")->first();
+
+            $uhash = $res_alt->uhash;
+
             if(!in_array($email,$sendm)){
-                $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')));
+                $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
                 $i++;
                 $sendm[] = $email;
             }
@@ -158,13 +238,29 @@ class MailController extends Controller
             $uhash = @$res->uhash;
             $email = @$res->email;
             $nick = @$res->name;
-            if(!in_array($email,$sendm)){
-                $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')));
+            if(!in_array($email,$sendm) && !empty($res)){
+                $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
                 $i++;
                 $sendm[] = $email;
             }
 
         }
+        // dd($entries);
+        if(in_array("_Externe Empfänger_,",$entries))
+        {
+            $resi = DB::table("newsletter_reci")->where("xis_checked","1")->get();
+            foreach($resi as $rep)
+            {
+                $uhash = $rep->uhash;
+                $email = $rep->email;
+                $ni = $rep->surname." ".$rep->prename;
+                $nick = trim($ni) ?? $email;
+                $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
+                $i++;
+                $sendm[] = $email;
+            }
+        }
+
 
 
 
@@ -188,17 +284,6 @@ class MailController extends Controller
 
 
         return nl2br($con);
-    }
-    function SendMail($title,$template,$email,$nick,$link,$html)
-    {
-        $nick = trim($nick);
-        \Log::info([$template,$email,$nick,$link]);
-        // Mail::to($email)->send(new GeneralMail($title,$link,$nick,$html,$template));
-        Mail::send([], [], function ($message) use ($email, $html, $title) {
-            $message->to($email)
-                ->subject($title)
-                 ->html($html); // <-- das ist entscheidend!
-        });
     }
     function randomString64() {
         $chars = '-_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';

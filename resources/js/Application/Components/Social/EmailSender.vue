@@ -37,7 +37,7 @@
         :contacts="contacts"
         @close="showSelectRecipient = false"
         @confirm="handleSelectRecipient"
-
+        @check-news-changed="handleCheckNews"
       />
 
       <!-- Textarea -->
@@ -59,8 +59,8 @@
         :options="mailbodyOptions"
         @input-change="updateMailbody"
       />
-      <inputFormText>
-        <template #label><b>Betreff</b></template>
+        <inputFormText id="subject" v-model="subject">
+            <template #label><b>Betreff</b></template>
         </inputFormText>
     <!-- E-Mail Text -->
     <InputHtml
@@ -143,13 +143,16 @@ export default {
     return {
       showSelectRecipient: false,
       recipientNames: [],
+      recip: '', // dein Textfeld
+
       selectedSigId: null,
       signatureText: "",
       signaturOptions: this.sig,
       selectedMbId: null,
-      subject:"newsletter",
+      subject:"",
       mailbodyText: "",       // Inhalt für InputHtml
       mailbodyOptions: this.mailbody, // Mailbody-Auswahl
+          checkNews: false, // kommt vom Modal
 
     };
   },
@@ -170,7 +173,7 @@ export default {
       return this.signaturOptions.find(sig => sig.id === this.selectedSigId);
     },
   },
-  methods: {
+    methods: {
     rumLaut,
     nl2br,
     submitForm() {
@@ -198,53 +201,37 @@ export default {
                 },
             });
         },
-    submitForm_old()
-    {
-        if(!this.mailbodyText){
-            document.getElementById("Email Text").style.border = "1.5px solid Red";
-            alert("Bitte füllen sie das Textfeld aus.")
-            return;
-        }
-          const formData = {
-            recipients: this.recipientNames,
-            mailbodyId: this.selectedMbId,
-            mailbodyText: nl2br(rumLaut(this.mailbodyText)),
-            signaturId: this.signaturId,
-            signatureText: nl2br(rumLaut(this.signatureText)),
-            subject: this?.subject,
-        };
-        router.post('/email/preview', formData, {
-                onSuccess: (page) => {
-                    console.log("✅ Vorschau erfolgreich:", page);
-                },
-                onError: (errors) => {
-                    console.error("❌ Fehler beim Senden:", errors);
-                },
-            });
 
-        console.log(formData);
-    },
-    updateMailbody(value) {
-      const selected = this.mailbodyOptions.find(mb => mb.id === value);
-      if (selected) {
-        this.mailbodyText = selected.Body;
-      }
-    },
+
+  updateMailbody(value) {
+    const selected = this.mailbodyOptions.find(mb => mb.id === value);
+    if (selected) {
+      this.mailbodyText = selected.Body || "";
+      this.subject = selected.subject || "";
+    } else {
+      this.mailbodyText = "";
+      this.subject = "";
+    }
+  },
+
 //     handleSelectRecipient(selectedNames) {
 //     // selectedNames = Array von Strings
 //     this.recipientNames = selectedNames.join(', ');
 //   },
 
 
-  handleSelectRecipient(selectedNames) {
-    // selectedNames ist jetzt ein Array von Strings
-    if (selectedNames && selectedNames.length > 0) {
-      this.recipientNames = selectedNames.join(', ');
-    } else {
-      this.recipientNames = '';
-    }
-  },
+   handleSelectRecipient(data) {
+    // data = { names: [...], extern: 'Externe Empfänger' | '' }
+    const allNames = [...data.names];
+    if (data.extern) allNames.push(data.extern);
 
+    this.recipientNames = allNames.join(', ');
+    this.showSelectRecipient = false; // Modal schließen
+  },
+    handleCheckNews(value) {
+        console.log('Newsletter-Checkbox:', value);
+        this.checkNews = value;
+    },
   updateSigData(value) {
     this.selectedSigId = value;
   },

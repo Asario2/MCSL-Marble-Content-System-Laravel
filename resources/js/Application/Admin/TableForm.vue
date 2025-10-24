@@ -441,7 +441,9 @@
                 </input-container>
 
                 <input-container v-else-if="field.type === 'artselect'">
-                    <ArtSelect :id="field.id" :table="this.tablex"/>
+                    <ArtSelect :id="field.id" :table="this.tablex" :form="field"
+                        @update:category="form.categorie_id = $event"
+                        @update:medium="form.type_id = $event" />
                 </input-container>
 
                 <input-container v-else-if="field.type === 'select'">

@@ -1,23 +1,33 @@
-@component('mail::message')
-# Nur noch ein Klick bis zu deiner Anmeldung!
+<h1>Nur noch ein Klick bis zu deiner Anmeldung!</h1>
+
 @php
     $name = $nick ?: 'liebe Leserin, lieber Leser';
 @endphp
-Hallo **{{ $name }}**,
 
-du hast dich für **Asarios** Newsletter angemeldet.
-Um deine Anmeldung abzuschließen, bestätige bitte deine E-Mail-Adresse über den folgenden Link:
+<p>Hallo <strong>{{ $name }}</strong>,</p>
 
-@component('mail::button', ['url' => $link])
-Jetzt Anmeldung bestätigen
-@endcomponent
+<p>
+    Du hast dich für <strong>Asarios</strong> Newsletter angemeldet.<br>
+    Um deine Anmeldung abzuschließen, bestätige bitte deine E-Mail-Adresse über den folgenden Link:
+</p>
 
-Erst nach der Bestätigung wirst du in unseren Verteiler aufgenommen.
-Danach erhältst du regelmäßig spannende Neuigkeiten, Tipps und Updates.
+<p style="text-align:center; margin: 20px 0;">
+    <a href="{{ $link }}" style="display:inline-block; padding:10px 20px; background:#2563eb; color:#fff; text-decoration:none; border-radius:5px;">
+        Jetzt Anmeldung bestätigen
+    </a>
+</p>
 
-Falls du dich nicht selbst für unseren Newsletter angemeldet hast,
-kannst du diese E-Mail einfach ignorieren – es erfolgt keine Registrierung.
+<p>
+    Erst nach der Bestätigung wirst du in unseren Verteiler aufgenommen.<br>
+    Danach erhältst du regelmäßig spannende Neuigkeiten, Tipps und Updates.
+</p>
 
-Mit freundlichen Grüßen,
-**{{ config('app.name') }} Team**
-@endcomponent
+<p>
+    Falls du dich nicht selbst für unseren Newsletter angemeldet hast,
+    kannst du diese E-Mail einfach ignorieren – es erfolgt keine Registrierung.
+</p>
+
+<p>
+    Mit freundlichen Grüßen,<br>
+    <strong>{{ config('app.name') }} Team</strong>
+</p>

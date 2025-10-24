@@ -104,8 +104,13 @@ class HomeController extends Controller
             return $this->home_blog_index($request);
         }
         else{
+
             $ho = "home_".$subdomain;
-            return $this->$ho();
+            if(function_exists(@$this->ho))
+            {
+                return $this->$ho();
+            }
+            return Inertia::render('Homepage/NoPageFound_'.SD());
         }
 
     }

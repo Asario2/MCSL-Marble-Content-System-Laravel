@@ -65,7 +65,7 @@
         <div v-if="hasError && required" class="text-red-500 text-sm mt-1">
             Dieses Feld darf nicht leer sein.
         </div>
-        <div class="text-xs text-gray-400 mt-1">Debug: hasError={{ hasError }}</div>
+
         <!-- Textfeld -->
         <div class="mb-4 p-4 bg-layout-sun-0 dark:bg-layout-night-0 rounded-lg edit0R editor">
             <div

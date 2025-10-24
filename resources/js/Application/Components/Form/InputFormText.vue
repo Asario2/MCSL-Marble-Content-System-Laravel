@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <div class="mt-4">
       <label
         :for="id"
-        class="w-full text-sm font-medium text-gray-700 dark:text-gray-300 pt-[8px]"
+        class="w-full text-sm font-medium text-gray-700 dark:text-gray-300 !mt-4"
       >
         <slot name="label">Label</slot>
       </label>

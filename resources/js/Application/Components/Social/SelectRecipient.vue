@@ -50,15 +50,36 @@
       </div>
 
       <!-- Footer -->
-      <div class="flex justify-end gap-2 p-4 border-t dark:border-gray-700">
-        <button type="button" @click="closeModal" class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200">
-          Abbrechen
-        </button>
-        <button type="button" @click="confirmSelection" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white">
-          Übernehmen ({{ allSelectedNames.length }})
-        </button>
-      </div>
-    </div>
+      <div class="flex items-center justify-between gap-4 p-4 border-t dark:border-gray-700">
+  <!-- Checkbox links -->
+  <div class="flex items-center gap-2">
+    <InputCheckbox id="checkNews" v-model="checkNews" value="1"
+    @change="$emit('check-news-changed', checkNews)"
+    />
+    <label for="checkNews" class="text-sm text-gray-800 dark:text-gray-200">
+     An Externe Newsletter Empfänger senden
+    </label>
+  </div>
+
+  <!-- Buttons rechts -->
+  <div class="flex items-center gap-2">
+    <button
+      type="button"
+      @click="closeModal"
+      class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200"
+    >
+      Abbrechen
+    </button>
+    <button
+      type="button"
+      @click="confirmSelection"
+      class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
+    >
+      Übernehmen ({{ allSelectedNames.length }})
+    </button>
+  </div>
+</div>
+</div>
   </div>
 </template>
 
@@ -67,10 +88,10 @@ import UserSelect from "./UserSelect.vue";
 import UserGroupSelect from "./UserGroupSelect.vue";
 import ContactSelect from "./ContactSelect.vue";
 import { nextTick } from 'vue';
-
+import InputCheckbox from "@/Application/Components/Form/InputCheckbox.vue";
 export default {
   name: "SelectRecipient",
-  components: { UserSelect, UserGroupSelect, ContactSelect },
+  components: { UserSelect, UserGroupSelect, ContactSelect, InputCheckbox},
   props: {
     show: Boolean,
     user: { type: [Array, Object], default: () => [] },
@@ -85,11 +106,13 @@ export default {
         { label: "BenutzerGruppe", value: "benutzergruppe" },
         { label: "Aus Kontakten", value: "kontakte" },
       ],
+        checkNews: "1",
       selected: {
         users: [],
         groups: [],
         contacts: [],
-      }
+      },
+
     };
   },
   computed: {
@@ -98,8 +121,8 @@ export default {
       return [
         ...this.selected.users,
         ...this.selected.groups,
-        ...this.selected.contacts
-      ];
+        ...this.selected.contacts,
+        ];
     },
     allSelectedNames() {
       return this.allSelectedItems.map(i => i.name);
@@ -114,15 +137,14 @@ export default {
     this.$emit('selection', this.allSelectedItems);
   },
 
-  // Wird aufgerufen, wenn der Nutzer auf "Übernehmen" klickt
-  confirmSelection() {
-    // Emit nur Namen
-    this.$emit("confirm", this.allSelectedNames);
-    // Emit komplettes Objekt {id, name}, inkl. abgewählter Items
-    this.$emit("selection", this.allSelectedItems);
-    // Modal schließen
+    // Wird aufgerufen, wenn der Nutzer auf "Übernehmen" klickt
+    confirmSelection() {
+    this.$emit("confirm", {
+        names: this.allSelectedNames,
+        extern: this.checkNews === '1' || this.checkNews === true ? '_Externe Empfänger_, ' : ''
+    });
     this.closeModal();
-  },
+    },
     resetSelection() {
     this.selected = {
       users: [],

@@ -26,8 +26,8 @@ class PagesController extends Controller
     }
     public function RegisterMail(Request $request)
     {
-        $sdr = DB::table("newsletter_reci")->pluck("userhash")->where("email",$request['email'])->first();
-        if($sdr['userhash'] == $request['uhash'])
+        $sdr = DB::table("newsletter_reci")->pluck("uhash")->where("email",$request['email'])->first();
+        if($sdr['uhash'] == $request['uhash'])
         {
             DB::table('newsletter_reci')->insert([
                 'email' => $request['email'],
@@ -36,6 +36,7 @@ class PagesController extends Controller
                 "title"=> $request['title'],
                 'subscribed_at' => now(),
             ]);
+            DB::table("newsletter_blacklist")->where("mail",$request->mail)->delete();
             return true;
         }
         else

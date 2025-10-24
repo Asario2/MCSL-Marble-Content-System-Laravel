@@ -3,6 +3,7 @@
       <label for="category" class="block mb-2 text-sm font-medium text-layout-sun-900 dark:text-layout-night-900">
         Kategorie wählen:
       </label>
+
       <select
         id="category_id"
         v-model="selectedCategory"
@@ -28,9 +29,12 @@
         </option>
       </select>
     </div>
+    <input type="hidden" name="categorie_id" id="categorie_id_alt" :value="selectedCategory" />
+    <input type="hidden" name="type_id" id="type_id_alt" :value="selectedMedium" />
   </template>
 
 <script>
+import {route} from 'ziggy-js';
 import axios from "axios";
 import { CleanId,CleanTable } from '@/helpers';
 export default {
@@ -44,8 +48,15 @@ export default {
     };
   },
   props: {
-
-
+    form: { type: Object, required: true }
+  },
+  watch: {
+    selectedCategory(newVal) {
+      this.form.categorie_id = newVal;
+    },
+    selectedMedium(newVal) {
+      this.form.type_id = newVal;
+    }
   },
   computed: {
     sortedCategories() {
@@ -62,34 +73,35 @@ export default {
     }
   },
   async created() {
-    try {
-        // console.log(`/api/GetCat/${this.table}/${this.id}`);
-      // 1. Lade alle Kategorien mit ihren Types
-      const response = await axios.get(route("ArtAct", [this.table, this.id]));
-      this.categories = response.data.categories || [];
+  try {
+    // 1. Kategorien laden
+    const response = await axios.get(route("ArtAct", [this.table, this.id]));
+    this.categories = response.data.categories || [];
 
-      // 2. Lade gespeicherte Werte (type_id & categorie_id)
-      const defaultResponse = await axios.get(`/api/GetCat/${this.table}/${this.id}`);
-      const defaultData = defaultResponse.data;
+    // 2. Gespeicherte Werte laden
+    const defaultResponse = await axios.get(`/api/GetCat/${this.table}/${this.id}`);
+    const defaultData = defaultResponse.data;
 
-      // 3. Setze defaults, wenn möglich
-      if (defaultData.categorie_id) {
-        this.selectedCategory = defaultData.categorie_id;
-      } else if (this.categories.length > 0) {
-        this.selectedCategory = this.categories[0].id;
-      }
-
-      const availableMediums = this.formattedMediums(this.selectedCategory);
-
-      if (defaultData.type_id && availableMediums.find(m => m.id == defaultData.type_id)) {
-        this.selectedMedium = defaultData.type_id;
-      } else if (availableMediums.length > 0) {
-        this.selectedMedium = availableMediums[0].id;
-      }
-    } catch (error) {
-      console.error("❌ Fehler beim Laden der Daten:", error);
+    // 3. Defaults setzen – hier Number() verwenden!
+    if (defaultData.categorie_id && defaultData.categorie_id !== "0") {
+      this.selectedCategory = Number(defaultData.categorie_id);
+    } else if (this.categories.length > 0) {
+      this.selectedCategory = Number(this.categories[0].id);
     }
+
+    const availableMediums = this.formattedMediums(this.selectedCategory);
+
+    if (defaultData.type_id && availableMediums.find(m => m.id == defaultData.type_id)) {
+      this.selectedMedium = Number(defaultData.type_id);
+    } else if (availableMediums.length > 0) {
+      this.selectedMedium = Number(availableMediums[0].id);
+    }
+
+  } catch (error) {
+    console.error("❌ Fehler beim Laden der Daten:", error);
   }
+}
+
 };
 </script>
 
