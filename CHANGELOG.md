@@ -112,3 +112,4 @@
 ![Version](https://img.shields.io/badge/version-3.16.1-orange) Feature - Added Contacts page (#197)  
 ![Version](https://img.shields.io/badge/version-3.17.1-orange) Hotfix - add content to mixed content db table (#207)  
 ![Version](https://img.shields.io/badge/version-3.18.0-orange) Feature - Added Author Image to blogshow (#208)  
+![Version](https://img.shields.io/badge/version-3.19.1-orange) Hotfix - Artselect saving bug (#211)  
