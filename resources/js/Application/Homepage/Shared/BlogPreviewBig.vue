@@ -10,11 +10,11 @@
 
         <img
             :src="`/images/_ab/blogs/image_path/${blog.url}`"
-            style='min-width:300px;max-height:365px;width:100%;min-height:365px !important;'
+            style='min-width:300px;max-height:365px;width:100%;min-height:auto;'
             :alt="blog.name"
 
 
-            :class="['object-cover w-full rounded lg:col-span-7 object-cover rounded bg-layout-sun-100 dark:bg-layout-night-100', blog.madewithai ? 'ai-image-corner' : '']"
+            :class="['object-cover w-full rounded lg:col-span-7 object-cover rounded biggie bg-layout-sun-100 dark:bg-layout-night-100', blog.madewithai ? 'ai-image-corner' : '']"
 
         />
 
@@ -161,8 +161,10 @@ methods:{
   margin-bottom :236px;
 }
 }
-@media screen and (max-width: 1024px) {
-
+@media screen and (min-width: 1024px) {
+.biggie{
+min-height:365px !important
+}
 }
 .object-cover{
 
@@ -185,5 +187,6 @@ img {
   border: none;
 
 }
+
 /* Hier kannst du zusätzliche Anpassungen vornehmen, falls nötig */
 </style>
