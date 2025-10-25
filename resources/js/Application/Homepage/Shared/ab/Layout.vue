@@ -325,7 +325,7 @@
 
                     <div class="w-full flex flex-col md:flex-row flex-1 items-center justify-between gap-4">
                     <div class="text-xs leading-6">
-                        {{ year }} Starter Eleven/MCSL. Ein Template von Oliver Reinking / Asario.
+                       &copy; {{ year }} Starter Eleven/MCSL. Ein Template von Oliver Reinking / Asario.
                     </div>
 
                     <div class="text-xs leading-6">
@@ -351,6 +351,8 @@
     import LinkHeader from "@/Application/Shared/LinkHeader.vue";
     import BrandFooter from "@/Application/Shared/BrandFooter.vue";
     import LinkFooter from "@/Application/Shared/LinkFooter.vue";
+    import { Inertia } from '@inertiajs/inertia';
+
     import IconMenu from "@/Application/Components/Icons/Menu.vue"
     import Toast from "@/Application/Components/Content/Toast.vue";
     import ButtonChangeMode from "@/Application/Components/ButtonChangeMode.vue";
@@ -517,7 +519,7 @@
             return;
         }
 
-        images.forEach((img, index) => {
+        images.forEach((img) => {
             if (img.complete) {
             imagesLoadedCount++;
             } else {
@@ -575,6 +577,7 @@
         height:32px !important;
         object-fit: cover;
     }
+    
     .foot {
     position: relative;
     z-index: 100000;

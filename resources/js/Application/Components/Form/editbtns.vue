@@ -1,6 +1,6 @@
 <template>
 <span v-if="hasRight('edit',table)">
-<a :href="'/admin/tables/edit/'+ id+ '/' + table + ''" @click.stop><IconPencil class="sm-pencil cursor-pointer"></IconPencil></a>
+<a :href="'/admin/tables/edit/'+ id+ '/' + table + ''" @click.stop><IconPencil class="sm-pencil cursor-pointer tw"></IconPencil></a>
 &nbsp;&nbsp;</span>
 <span v-if="hasRight('delete',table)">
 <form @submit.prevent="deletePost" style="display:inline">

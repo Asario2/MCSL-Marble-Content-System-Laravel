@@ -15,7 +15,7 @@
                     :key="item.id"
                     class="col-span-6 p-4 lg:rounded-lg"
                     >
-                    <a :href="'infos/show/' + item.id" class="block">
+                    <a :href="'infos/show/' + item.id" class="block tw">
                         <div
                         class="bg-layout-sun-50 dark:bg-layout-night-50 lg:rounded-lg pr-2 border border-layout-sun-1000 dark:border-layout-night-1050 flex flex-col md:flex-row min-h-[104px] sm:gap-0"
                         >

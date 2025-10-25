@@ -6,7 +6,7 @@
         <!-- Das Bild des Blog-Posts -->
         <div class="blog-container mh_64 lg:col-span-7" style="padding:0px;margin:0px;">
             <Link
-        :href="route('home.blog.show', blog.autoslug)" class="block">
+        :href="route('home.blog.show', blog.autoslug)" class="block tw">
 
         <img
             :src="`/images/_ab/blogs/image_path/${blog.url}`"
@@ -28,7 +28,7 @@
         </div>
 
         <div id="teaser-img" class="p-6 space-y-1 lg:col-span-5 pb-0">
-  <Link :href="route('home.blog.show', blog.autoslug)">
+  <Link :href="route('home.blog.show', blog.autoslug)" class="tw">
     <div class="flex items-center justify-between w-full">
       <!-- Blog-Titel -->
       <h2

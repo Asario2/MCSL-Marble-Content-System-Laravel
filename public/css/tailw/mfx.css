@@ -18,8 +18,10 @@ H1,H2,H3,H4,H5,H6{
     color:#ffa200 !important;
 
 }
-
-a,.ckoo{
+.ckoo{
+    font-weight:bold;
+}
+a{
    font-weight:bold;
     color:#f68243 !important;
 }

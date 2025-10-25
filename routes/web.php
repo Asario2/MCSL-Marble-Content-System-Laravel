@@ -134,12 +134,12 @@ Route::middleware(\App\Http\Middleware\CheckSubd::class . ':ab,asario')->group(f
     Route::get('/home/didyouknow', [HomeController::class, 'home_didyouknow'])->name('home.didyouknow');
 
     // Blogs
-    Route::get('/blogs', [HomeController::class, 'home_index'])->name('home.blog.index')->middleware('remember');
+    Route::get('/blogs', [HomeController::class, 'home_blog_index'])->name('home.blog.index')->middleware('remember');
     Route::get('/blogs/show/{autoslug}', [HomeController::class, 'home_blog_show'])->name('home.blog.show');
 
     // Root-Redirect
     Route::get('/', function () {
-        return redirect("/blogs");
+        return redirect("/");
     })->name("home.start");
 
     // Dashboard redirect

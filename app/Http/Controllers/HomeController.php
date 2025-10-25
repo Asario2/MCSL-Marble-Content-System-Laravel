@@ -101,12 +101,12 @@ class HomeController extends Controller
     {
         $subdomain = SD();
         if($subdomain == "ab"){
-            return $this->home_blog_index($request);
+            return $this->home_blog_landing($request);
         }
         else{
 
             $ho = "home_".$subdomain;
-            if(function_exists(@$this->ho))
+            if(method_exists(@$this,$ho))
             {
                 return $this->$ho();
             }
@@ -117,6 +117,10 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         return $this->home_index($request);
+    }
+    public function home_blog_landing()
+    {
+        return Inertia::render('Homepage/ab/NewHome');
     }
     //
     public function home_blog_index(Request $request)

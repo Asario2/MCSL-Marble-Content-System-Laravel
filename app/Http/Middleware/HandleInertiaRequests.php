@@ -69,7 +69,10 @@ class HandleInertiaRequests extends Middleware
                     'app_admin_name' => 'Administrator-Anwendung',
                     'app_employee_name' => 'Mitarbeiter-Anwendung',
                     'app_customer_name' => 'Kunden-Anwendung',
-                    'app_name' => 'Ein Template von Oliver Reinking / Asario',
+                    'app_name' => '<div class="flex justify-center items-center gap-2 text-sm text-layout-sun-700 dark:text-layout-night-700">
+                                    <span>Powered by</span>
+                                    <img src="/images/smilies/icon_mcsl.gif" alt="MCSL Icon" class="inline-block mt-2 align-middle" />
+                                    </div>',
                     'brand_name_1' => 'Asarios',
                     'brand_name_2' => 'Blog',
                     'brand_name_subtitle_app_admin' => 'für Administratoren',

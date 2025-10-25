@@ -17,7 +17,7 @@
                                 class="hidden lg:block -mt-0.5 w-3 h-3"
                             />
                             <div class="ml-1 font-medium lg:ml-2">
-                                <b>{{ home }}</b>
+                                <b  class="text-white">{{ home }}</b>
                             </div>
                         </div>
                     </Link>
@@ -31,7 +31,7 @@
                                 class="hidden lg:block -mt-0.5 w-3 h-3"
                             />
                             <div class="ml-1 font-medium lg:ml-2">
-                                {{ home }}
+                                <b  class="text-white">{{ home }}</b>
                             </div>
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                     <Link
                         :href="value"
                         class="ml-1 lg:ml-2 px-2 py-1.5 rounded-lg font-medium hover:bg-layout-sun-200 dark:hover:bg-layout-night-200"
-                        >{{ ucf(key) }}</Link
+                        ><span class="!text-white tw">{{ ucf(key) }}</span></Link
                     >
                 </div>
             </li>
@@ -55,7 +55,7 @@
                         class="hidden lg:block -mt-0.5 w-3 h-3"
                     ></icon-chevron-right>
                     <div
-                        class="px-2 font-medium text-layout-sun-600 dark:text-layout-night-600"
+                        class="px-2 font-medium text-layout-sun-600  text-white"
                     >
                         {{ ucf(current) }}
                     </div>

@@ -22,10 +22,10 @@
                     >
                 </div>
                 <div
-                    class="font-title text-xs lg:text-sm leading-snug whitespace-nowrap tracking-wide"
+                    class="font-title text-xs lg:text-sm leading-snug whitespace-nowrap tracking-wide tw"
                     v-if="appName"
                 >
-                    <span>{{ appName }}</span>
+                    <span v-html="appName"></span>
                 </div>
             </div>
         </Link>

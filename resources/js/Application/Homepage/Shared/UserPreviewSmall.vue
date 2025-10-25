@@ -3,7 +3,7 @@
     <div class="blog-container w-full max-w-sm mx-auto group rounded hover:no-underline focus:no-underline bg-layout-sun-100 dark:bg-layout-night-100">
         <Link
             :href="'/home/users/show/' + user.name + '/' + user.id"
-            class="block"
+            class="block tw"
         >
 
             <div class="relative flex justify-center divvy">

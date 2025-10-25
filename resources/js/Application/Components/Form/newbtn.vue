@@ -1,23 +1,27 @@
-    <template>
-    <span v-if="hasRight('add',table)">
-        <button-group>
-                                    <input-icon-hyperlink
-                                        v-if="hasRight('add',table)"
-                                        :href="'/admin/tables/create/' + table"
-                                        display_type="table"
-                                        @click.stop
-                                    >
-                                        <template #icon>
-                                            <plus-circle
-                                                class="button_icon"
-                                            ></plus-circle>
-                                            Erstelle
-                                        </template>
-                                    </input-icon-hyperlink>
-                                    <slot name="button"></slot>
-                                </button-group>
-    </span>
-    </template>
+<template>
+  <span v-if="hasRight('add', table)">
+    <button-group>
+      <input-icon-hyperlink
+        v-if="hasRight('add', table)"
+        :href="'/admin/tables/create/' + table"
+        display_type="table"
+        @click.stop
+        class="text-black"
+      >
+        <template #icon>
+          <!-- Flex-Container für Icon + Text -->
+          <span class="flex items-center gap-2 text-black">
+            <plus-circle class="w-5 h-5" />
+            Erstellen
+          </span>
+        </template>
+      </input-icon-hyperlink>
+
+      <slot name="button"></slot>
+    </button-group>
+  </span>
+</template>
+
     <script>
     import InputIconHyperlink from "@/Application/Components/Form/InputIconHyperlink.vue";
     import PlusCircle from "@/Application/Components/Icons/PlusCircle.vue";

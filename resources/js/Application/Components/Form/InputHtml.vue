@@ -768,6 +768,8 @@ export default {
 }
 .editor a:link,a:visited,a:active{
     text-decoration: underline;
+    color: #a7dff5 !important;
+
 }
 .editor OL LI{
     list-style-type: decimal;

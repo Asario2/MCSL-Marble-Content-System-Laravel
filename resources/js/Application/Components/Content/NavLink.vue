@@ -6,7 +6,7 @@
             :class="classes"
             :target="target"
         >
-            {{ label }}</a
+            <span class="tw">{{ label }}</span></a
         >
     </div>
     <div v-else class="flex items-center">

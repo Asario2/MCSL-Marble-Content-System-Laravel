@@ -11,7 +11,7 @@
                 </page-title>
                 <div class="grid grid-cols-12">
   <div v-for="item in data.data" :key="item.id" class="col-span-6 p-4 lg:rounded-lg">
-    <a :href="'/home/images/show/' + item.id" class="block">
+    <a :href="'/home/images/show/' + item.id" class="block tw">
       <div
         class="bg-layout-sun-50 dark:bg-layout-night-50 lg:rounded-lg pr-2 border border-layout-sun-1000 dark:border-layout-night-1050
                flex flex-col md:flex-row items-start min-h-[104px]"
@@ -54,7 +54,7 @@
         </page-content>
     </layout>
 </template>
-<script>        
+<script>
 import { defineComponent } from "vue";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import Layout from "@/Application/Homepage/Shared/mfx/Layout.vue";

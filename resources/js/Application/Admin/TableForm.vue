@@ -1564,7 +1564,7 @@ select,datetime-local   {
     max-width:560px !important;
 }
 .editor a:link,.editor a:visited,.editor a:active,.editor a {
-  color: #2563eb !important;
+  color:rgb(14 165 233) !important;
   text-decoration: underline;
 }
 @media (min-width: 1024px) {
