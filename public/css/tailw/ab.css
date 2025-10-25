@@ -36,7 +36,8 @@ a:link,a:visited,a:active{
 
     color:#0ea5e9 !important;
 }
-.tb{color:#000 !important;}
+
+a.tb,.tb{color:#000 !important;}
 A.tw{color:#fff !important;}
     .border-layout-sun-200 {
     --tw-border-opacity: 1;

@@ -2278,7 +2278,7 @@ return Inertia::render('Admin/Kontakte', [
                 $formData['img_y'] = $height;
             }
             else{
-                dd($imgPath);
+                // dd($imgPath);
             }
         }
 

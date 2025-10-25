@@ -1,6 +1,6 @@
 <template>
     <div>
-      <label for="category" class="block mb-2 text-sm font-medium text-layout-sun-900 dark:text-layout-night-900">
+      <label for="category" class="block text-sm font-medium text-layout-sun-900 dark:text-layout-night-900">
         Kategorie wählen:
       </label>
 
@@ -14,7 +14,7 @@
           {{ category.name }}
         </option>
       </select>
-      <label v-if="selectedCategory" for="medium" class="block mb-2 text-sm font-medium text-layout-sun-900 dark:text-layout-night-900">
+      <label v-if="selectedCategory" for="medium" class="block text-sm font-medium text-layout-sun-900 dark:text-layout-night-900">
         Medium wählen:
       </label>
       <select

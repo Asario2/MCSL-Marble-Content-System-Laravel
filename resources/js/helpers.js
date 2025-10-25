@@ -115,7 +115,7 @@ export function replaceSmilies(text) {
     for (const [key, value] of Object.entries(smilies)) {
       const escapedKey = key.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'); // für Regex escapen
       const regex = new RegExp(escapedKey, 'g');
-      const img = `<img src="/images/smilies/icon_${value}.gif" alt="${key}" class="inline" />`;
+      const img = `<img src="/images/smilies/icon_${value}.gif" class="inline" />`;
       text = text?.replace(regex, img);
     }
 

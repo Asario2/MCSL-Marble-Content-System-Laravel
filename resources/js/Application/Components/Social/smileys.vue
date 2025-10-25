@@ -3,13 +3,12 @@
       <span v-for="(val, xkey) in smilies" :key="xkey">
     <img
           @click="add_smilie(xkey, editor)"
-          v-tippy
           :src="'/images/smilies/icon_' + val + '.gif'"
-          :alt="xkey"
-          :title="xkey"
+          :alt="smilie"
+          :title="smilie"
           class="inline_alt cursor-pointer"
         />
-        <tippy>{{xkey}}</tippy>
+
         &nbsp;
 
       </span>
@@ -17,10 +16,8 @@
   </template>
 
   <script>
-   import tippy from 'tippy.js';
-    import 'tippy.js/dist/tippy.css';
   export default {
-    name: "Smileys",
+    name: "SmileysAdd",
     props: {
       editor: String,
     },

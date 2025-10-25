@@ -1,12 +1,12 @@
 <template>
-  <span v-if="hasRight('add', table)">
+  <span v-if="hasRight('add', table)" class="tb">
     <button-group>
       <input-icon-hyperlink
         v-if="hasRight('add', table)"
         :href="'/admin/tables/create/' + table"
         display_type="table"
         @click.stop
-        class="text-black"
+        class="text-black tb"
       >
         <template #icon>
           <!-- Flex-Container für Icon + Text -->

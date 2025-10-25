@@ -4,7 +4,7 @@
             <a
                 :href="href"
                 :target="target"
-                class="inline-flex items-center px-1 py-1.5 md:px-2 md:py-2 h-6 md:h-8 rounded-md font-medium text-xs tracking-widest disabled:opacity-25 transition cursor-pointer focus:ring focus:outline-none button_bg button_text_case_bg"
+                class="inline-flex tb items-center px-1 py-1.5 md:px-2 md:py-2 h-6 md:h-8 rounded-md font-medium text-xs tracking-widest disabled:opacity-25 transition cursor-pointer focus:ring focus:outline-none button_bg button_text_case_bg"
             >
                 <div class="flex items-center whitespace-nowrap">
                     <slot name="icon"></slot>

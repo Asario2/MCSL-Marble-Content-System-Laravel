@@ -467,9 +467,9 @@
             </template>
         </div>
 
-        <button type="submit" class="bg-blue-500 text-white p-2 rounded">
+        <!-- <button type="submit" class="bg-blue-500 text-white p-2 rounded">
             Absenden
-        </button>
+        </button> -->
     </form>
 </input-group>
 
@@ -488,8 +488,9 @@
                     </input-danger-button>
                     <smooth-scroll href="#app-layout-start" v-if="table.id > 0">
                         <input-button
-                            type="submit"
-                            @click.prevent="debugUpdateTableData"
+                            type="button"
+                            @click="submitForm"
+
                         >
                             {{ItemName}} ändern
                         </input-button>
@@ -500,7 +501,7 @@
                     >
                         <input-button
                             type="button"
-                            @click.prevent="createTableData"
+                            @click="submitForm"
                         >
                             {{ItemName}} erstellen
                         </input-button>

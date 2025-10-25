@@ -1,7 +1,7 @@
 <template>
     <label
         :for="name"
-        class="w-full block mb-2 text-sm font-medium text-layout-sun-900 dark:text-layout-night-900 mt-4 mb-4"
+        class="w-full block text-sm font-medium text-layout-sun-900 dark:text-layout-night-900"
         v-tippy
     >
         <div class="inline-flex items-center">
