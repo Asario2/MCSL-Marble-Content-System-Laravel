@@ -329,7 +329,7 @@ class FormController extends Controller
             }
             return "checkbox";
         }
-        elseif(substr_count($name,"img_"    ) && $name != 'img_x' && $name != "img_y")
+        elseif(substr_count($name,"img_") && $name != 'img_x' && $name != "img_y")
         {
             return "imul";
         }

@@ -117,3 +117,4 @@
 ![Version](https://img.shields.io/badge/version-3.21.4-orange) Colors on Footer links (#212)  
 ![Version](https://img.shields.io/badge/version-3.22.8-orange) Feature - create landing Page on asarios blog (#194)  
 ![Version](https://img.shields.io/badge/version-3.23.2-orange) Remove Alt Tags on Smilies (#213)  
+![Version](https://img.shields.io/badge/version-3.24.4-orange) Hotfix - Changed Umlaut character on newsletter (#214)  

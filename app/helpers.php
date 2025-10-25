@@ -811,6 +811,28 @@ if(!function_exists('smilies_oxx'))
         return $str;
    }
 }
+if(!function_exists("rumLaut"))
+{
+    function rumLaut($str)
+    {
+        $find = [
+    '/---/u', '/ÃƒÅ“/u', '/ÃƒÂ¼/u', '/ÃƒÅ¸/u', '/Ãƒ\?/u', '/ÃƒÂ¤/u', '/â€™/u', '/Ã„/u',
+    '/Ãœ/iu', '/Ã/u', '/Ã¶/u', '/Ã"Y/u', '/Ã¼/iu', '/Ã¤/u', '/ÃŸ/iu', '/âEUR¦/u',
+    '/ÃƒÂ¶/u', '/Â§/iu', '/Â©/iu', '/Ã/u'
+];
+
+$replace = [
+    '<hr>', 'Ü', 'ü', 'ß', 'ß', 'ä', "'", 'Ä',
+    'Ü', 'ß', 'ö', 'Ü', 'ü', 'ä', 'ß', '…',
+    'ö', '§', '©', 'ß'
+];
+
+// alle Ersetzungen ausführen
+$str = preg_replace($find, $replace, $str);
+return $str;
+    }
+}
+
 
 
 if(!function_exists("gen_hidemail"))

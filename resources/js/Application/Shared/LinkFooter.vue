@@ -48,11 +48,11 @@ export default {
     },
     mounted() {
  // Erst prüfen, ob ein <a> auf der Seite existiert
-    const link = document.querySelector('a');
-    if (link) {
-      const linkColor = getComputedStyle(link).color;
-      this.$refs.myDiv.style.color = linkColor;
-    }
+    // const link = document.querySelector('a');
+    // if (link) {
+    //   const linkColor = getComputedStyle(link).color;
+    //   this.$refs.myDiv.style.color = linkColor;
+    // }
 
   }
 };

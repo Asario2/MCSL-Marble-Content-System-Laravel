@@ -64,7 +64,7 @@ class MailController extends Controller
         ]);
         $title = "Newsletter Anmeldung";
         $link = "http://".request()->getHost()."/mail/subscribe/".$uhash."/".$request->email;
-        $nick = $this->Quote($request->email);
+        $nick = trim($request->title." ".$request->firstname." ".$request->lastname) ?? "Liebe Leserin, lieber Leser,";
         $content_alt = '';
         $template = '';
         $signatur = '';
@@ -148,13 +148,13 @@ class MailController extends Controller
     $signatur2 = $signatur.$this->subm_btn();
         $content_alt = $content.$signatur;
     $data = [$title,$link,$nick,$content,$template,$footer];
-    $html = html_entity_decode(View::file(resource_path('views/vendor/mail/html/preview.blade.php'), compact('title','link','nick','content','template','signatur2'))->render());
+    $html = html_entity_decode(html_entity_decode((View::file(resource_path('views/vendor/mail/html/preview.blade.php'), compact('title','link','nick','content','template','signatur2'))->render())));
 
-    $html2 = html_entity_decode(
+    $html2 = rumLaut(html_entity_decode(
         View::file(
             resource_path('views/vendor/mail/html/send.blade.php'),
             compact('title', 'link', 'nick', 'content_alt', 'template', 'signatur'))->render()
-    );
+    ));
     // $html2 = str_replace("%uhash%",$uhash,$html2);
     session(['signatur' => $signatur,"reci"=>$request->recipients, "content"=>html_entity_decode($html2), "title"=>$title,"email"=>$email,"nick"=>$nick,"template"=>$template]);
     return $html;

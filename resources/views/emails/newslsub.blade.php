@@ -1,7 +1,11 @@
+<div style="background-color:#000;background-position:right;height:52px;background-repeat:no-repeat;background-image:url('https://www.marblefx.de/_images/mailheader/mcsl_grad.png');">
+        <div style="float:left;position:relative;margin-top:0px;margin-left:0px;">
+        <img src="https://www.marblefx.de/_images/mailheader/mcsl_mail_system2.png" alt="MCS Mail System" title="MCS Mail System">
+    </div></div><br>
 <h1>Nur noch ein Klick bis zu deiner Anmeldung!</h1>
 
 @php
-    $name = $nick ?: 'liebe Leserin, lieber Leser';
+    $name = html_entities($nick) ?: 'liebe Leserin, lieber Leser';
 @endphp
 
 <p>Hallo <strong>{{ $name }}</strong>,</p>

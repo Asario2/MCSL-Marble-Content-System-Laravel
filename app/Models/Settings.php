@@ -109,7 +109,7 @@
         [
             "admin_table" => ['name'],
             "blogs" => ['title','content'/*'content_en','title_en'*/,"blog_categories.name"],
-            "blog_authors" => ['name'],
+            "blog_authors" => ['name',"Info"],
             "blog_categories" => ['name',"summary"],
             "blog_images" => ['name'],
             "images"=> ['name',"message"],
