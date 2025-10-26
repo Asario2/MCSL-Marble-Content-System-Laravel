@@ -121,6 +121,27 @@
                 <input-error :message="form?.errors?.fbd" />
             </input-container>
 
+            <input-container :full-width="true" v-if="isform?.xch_newsletter">
+                <!-- <input-label name="newsl" label="Newsletter" /> -->
+                <!-- <input-element
+                type="text"
+                name="fbd"
+                v-model="form.fbd"
+                placeholder="Facebook"
+                ref="fbd"
+                /> -->
+                <InputCheckbox
+              name="xch_newsletter"
+            v-model="form.xch_newsletter"
+            ref="newsl"
+            label="Newsletter abonnieren"
+
+                >
+
+                </InputCheckbox>
+                <input-error :message="form?.errors?.newsl" />
+
+            </input-container>
             <input-container :full-width="true" v-if="isForm?.about">
                 <InputHtml
                 name="about"
@@ -148,6 +169,7 @@
     </template>
 
 <script>
+import axios from "axios";
 import InputGroup from "@/Application/Components/Form/InputGroup.vue";
 import InputActionMessage from "@/Application/Components/Form/InputActionMessage.vue";
 import InputContainer from "@/Application/Components/Form/InputContainer.vue";
@@ -159,6 +181,7 @@ import SectionForm from "@/Application/Components/Content/SectionForm.vue";
 import InputButton from "@/Application/Components/Form/InputButton.vue";
 import IconCal from "@/Application/Components/Icons/IconCal.vue";
 import { useForm } from '@inertiajs/inertia-vue3';
+import InputCheckbox from "@/Application/Components/Form/InputCheckbox.vue";
 import { GetColumns } from "@/helpers";
 import { route } from 'ziggy-js';
 import dayjs from 'dayjs';
@@ -192,6 +215,7 @@ export default {
     InputError,
     IconCal,
     InputButton,
+    InputCheckbox,
     InputActionMessage,
   },
   data() {
@@ -202,13 +226,13 @@ export default {
       : '',
       form: this.$inertia.form({
         birthday: this.initialForm?.birthday || '',
+        xch_newsletter: this.initialForm?.xch_newsletter || '0',
         music: this.initialForm?.music || '',
         occupation: this.initialForm?.occupation || '',
         interests: this.initialForm?.interests || '',
         fbd: this.initialForm?.fbd || '',
         about: this.initialForm?.about || '',
         headline: this.initialForm?.headline || '',
-        about: this.initialForm?.about || '',
         website: this.initialForm?.website || '',
         aufgabe: this.initialForm?.aufgabe || '',
         location: this.initialForm?.location || '',
@@ -263,7 +287,7 @@ async updateProfileInformation() {
   }
 
   try {
-    const response = await axios.post(route('personal.update'), this.form);
+    const response = await axios.post(route('personal.update'), payload);
 
     this.inputBirthday = this.form.birthday
       ? dayjs(this.form.birthday).format('DD.MM.YYYY')
@@ -310,6 +334,9 @@ async updateProfileInformation() {
     this.isform = await GetColumns("users");
     },
     watch: {
+          'form.xch_newsletter'(val) {
+    console.log("Newsletter:", val);
+  },
   initialForm: {
     handler(newVal) {
       if (newVal) {
@@ -323,6 +350,7 @@ async updateProfileInformation() {
         this.form.location = newVal.location || '';
         this.form.birthday = newVal.birthday || '';
         this.form.headline = newVal.headline || '';
+        this.form.xch_newsletter = newVal.xch_newsletter || '';
         this.inputBirthday = newVal.birthday
           ? dayjs(newVal.birthday).format('DD.MM.YYYY')
           : '';

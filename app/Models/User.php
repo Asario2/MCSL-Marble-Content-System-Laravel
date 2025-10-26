@@ -55,11 +55,12 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'two_factor_confirmed_at' => 'datetime',
             'password' => 'hashed',
-            'new-password' => 'hashed', 
+            'new-password' => 'hashed',
             'last_login_at' => 'datetime',
             'is_admin' => 'boolean',
             'is_employee' => 'boolean',
             'is_customer' => 'boolean',
+            'xch_newsletter' => 'boolean',
         ];
     }
 

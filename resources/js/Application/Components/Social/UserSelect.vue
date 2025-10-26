@@ -136,7 +136,7 @@
     this.newsletterSelected = checked;
 
     const newsletterIds = this.users
-        .filter(u => typeof u.xch_newsletter === "string" && u.xch_newsletter.toLowerCase().includes("mail"))
+        .filter(u => typeof u.xch_newsletter === "string" && u.xch_newsletter == "1")
         .map(u => u.id);
 
     if (checked) {

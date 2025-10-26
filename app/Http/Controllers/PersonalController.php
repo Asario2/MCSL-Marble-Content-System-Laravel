@@ -38,6 +38,7 @@ class PersonalController
             'aufgabe'=>['nullable','string','max:200'],
             'location'=>['nullable','string','max:200'],
             'headline'=>['nullable','string','max:200'],
+            'xch_newsletter' => ['nullable', 'boolean'],
         ], [], [], 'updateProfileInformation');
 
         \Log::info("✅ Empfangen:", $validated);
