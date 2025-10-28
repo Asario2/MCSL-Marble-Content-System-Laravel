@@ -786,6 +786,7 @@
     .editor code{
         background-color: #ccc !important;
         padding: 4px;
+        font-family: 'Courier New', Courier, monospace;
     }
     .editor P {
         margin-top:1.2em;

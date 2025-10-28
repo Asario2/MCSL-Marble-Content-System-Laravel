@@ -9,8 +9,7 @@
 </span>
 
 </template>
-<script>
-import axios from axios;
+<script>    
 import IconPencil from "@/Application/Components/Icons/Pencil.vue";
 import { toastBus } from '@/utils/toastBus';
 import IconTrash from "@/Application/Components/Icons/Trash.vue";

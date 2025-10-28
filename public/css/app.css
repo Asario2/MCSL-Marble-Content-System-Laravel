@@ -58,6 +58,7 @@ content: "" !important;
 }
 code, code em, code > strong{
 	color:#000 !Important;
+    font-family:'Courier New', Courier, monospace
 }
 h1 {
     font-weight: 800;

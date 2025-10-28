@@ -425,6 +425,9 @@ class FormController extends Controller
             case "img_y":
                 return "hidden";
             break;
+            case "info":
+                return "textarea";
+            break;
             case "is_admin":
                 return "isbox";
             break;

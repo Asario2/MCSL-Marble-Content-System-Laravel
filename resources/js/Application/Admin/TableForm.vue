@@ -1410,8 +1410,29 @@ if (!isValid) {
             console.error("Fehler beim Absenden:", error);
         }
     },
-
-        deleteTable() {
+    async deleteTable() {
+        try {
+            // if(!hasRight("delete",this.table))
+            // {
+            //      alert("Sie haben nicht die benötigten Rechet zum löschen des Datensatzes");
+            //      return "";
+            // }
+            // console.log(`aad: admin/tables/delete/${this.table}/${this.id}`);
+            // DELETE-Anfrage mit Parametern in der URL
+            const response = await axios.delete(`/admin/tables/delete/${CleanTable()}/${CleanId()}`, {
+                params: {
+                    edit: "blogposts.index",
+                }
+            });
+            // console.log(response.data);
+            toastBus.emit('toast', response.data); // ← erwartet { status: "...", message: "..." }
+            this.$inertia.reload();
+            // Optional: Seite neu laden oder Liste aktualisieren
+        } catch (error) {
+            console.error("Fehler beim Löschen:", error);
+        }
+    },
+        deleteTable_old() {
             this.confirmingTableDeletion = false;
             this.loading = true;
             this.loadingText = "Der Beitrag wird gelöscht!";

@@ -2681,7 +2681,7 @@ return Inertia::render('Admin/Kontakte', [
         // Jetzt löschen
         $query->delete();
 
-        // return response()->json(["status" => "success", "message" => "Eintrag erfolgreich gelöscht"]);
+        return response()->json(["status" => "success", "message" => "Eintrag erfolgreich gelöscht"]);
         return redirect("admin/tables/$table/show");
     }
 
