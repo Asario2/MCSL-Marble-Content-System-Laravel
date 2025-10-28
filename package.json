@@ -15,7 +15,7 @@
         "@eslint/js": "^9.38.0",
         "@popperjs/core": "^2.11.6",
         "@tailwindcss/forms": "^0.5.7",
-        "@tailwindcss/postcss": "^4.1.15",
+        "@tailwindcss/postcss": "^4.1.16",
         "@tailwindcss/typography": "^0.5.18",
         "autoprefixer": "^10.4.16",
         "bootstrap": "^5.3.8",
@@ -29,7 +29,7 @@
         "prettier": "3.6.2",
         "sass": "^1.93.0",
 
-        "tailwindcss": "^4.1.14",
+        "tailwindcss": "^4.1.16",
         "vite": "^7.1.11",
         "vue": "^3.5.21"
 
@@ -53,7 +53,7 @@
         "@inertiajs/inertia": "^0.11.1",
         "@inertiajs/inertia-vue3": "^0.6.0",
         "@inertiajs/progress": "^0.2.7",
-        "@inertiajs/vue3": "^2.2.8",
+        "@inertiajs/vue3": "^2.2.12",
         "@vitejs/plugin-vue": "^6.0.0",
         "axios": "1.12.0",
         "blueimp-md5": "^2.19.0",
