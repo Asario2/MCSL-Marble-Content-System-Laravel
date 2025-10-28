@@ -691,7 +691,7 @@ class TablesController extends Controller
             $users = DB::table('users')
                 ->leftJoin('newsletter_blacklist', 'users.email', '=', 'newsletter_blacklist.mail')
                 ->whereNull('newsletter_blacklist.mail') // ✅ Nur Nutzer, die NICHT in der Blacklist stehen
-                ->where('xch_newsletter', 'LIKE', '%mail%')
+                ->where('xch_newsletter','1')
                 ->where('xis_disabled', '0')
                 ->where('name', '!=', 'Gast')
                 ->select('users.id', 'users.name', 'users.email', 'users.xch_newsletter')
@@ -743,7 +743,13 @@ class TablesController extends Controller
         $ma = NEW MailController();
 
 
-            $res = DB::table("users")->where("name",$nick)->select("email","uhash","name")->first();
+        if(!CheckZRights("SendMailToAll")){
+            $res = DB::table("users")->where("name",$nick)->where("xch_newsletter","1")->select("email","uhash","name")->first();
+        }
+        else{
+               $res = DB::table("users")->where("name",$nick)->select("email","uhash","name")->first();
+        }
+
             //dd("r:".json_encode($request->all(),JSON_PRETTY_PRINT));
 
             if(empty($res))

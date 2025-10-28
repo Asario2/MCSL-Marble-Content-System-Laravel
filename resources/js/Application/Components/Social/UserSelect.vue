@@ -134,9 +134,9 @@
 
     toggleNewsletterSelect(checked) {
     this.newsletterSelected = checked;
-
+    console.log("mr" + this.modulRights);
     const newsletterIds = this.users
-        .filter(u => typeof u.xch_newsletter === "string" && u.xch_newsletter == "1")
+        .filter(u => u.xch_newsletter || this.modulRights['SendMailToAll'])
         .map(u => u.id);
 
     if (checked) {

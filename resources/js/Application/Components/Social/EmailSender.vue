@@ -339,6 +339,9 @@ try {
       this.selectedSigId = value;
     },
   },
+  async mounted() {
+    console.log(this.users);
+}
 };
 
 </script>

@@ -233,7 +233,12 @@ class MailController extends Controller
         }
         foreach ($users as $rek)
         {
+            if(!CheckZRights("SendMailToAll")){
+            $res = DB::table("users")->where("name",$rek)->where("xch_newsletter","1")->select("email","uhash","name")->first();
+            }
+            else{
             $res = DB::table("users")->where("name",$rek)->select("email","uhash","name")->first();
+            }
             // dd(session('reci'));
             $uhash = @$res->uhash;
             $email = @$res->email;

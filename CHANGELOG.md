@@ -120,3 +120,4 @@
 ![Version](https://img.shields.io/badge/version-3.24.4-orange) Hotfix - Changed Umlaut character on newsletter (#214)  
 ![Version](https://img.shields.io/badge/version-3.25.3-orange) Hotfix -  Remove double buttons on tableform (#195)  
 ![Version](https://img.shields.io/badge/version-3.26.3-orange) Hotfix change font-family on <code> (#210)  
+![Version](https://img.shields.io/badge/version-3.27.2-orange) Feature - Added success / not successed on mail submiting (#221)  
