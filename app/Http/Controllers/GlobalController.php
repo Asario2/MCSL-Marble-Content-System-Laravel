@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -14,6 +15,7 @@ class GlobalController extends Controller
 
         $i64 = DB::table('users')
             ->where('uhash', '')
+            ->orWhere("uhash", NULL)
             ->select('id')
             ->get();
 
@@ -38,6 +40,16 @@ class GlobalController extends Controller
         }
         }
 
+    }
+    public function PasswordPrint(Request $request){
+        echo Hash::make($request->pw);
+    }
+    public function PasswordForm(){
+        echo "<form method='post' action='/tables/pwprint'>
+                <input type='hidden' name='_token' id='token' value='" . csrf_token() . "' />
+                <input type='password' name='pw'>
+                <input type='submit' name='save' value='Anzeigen'>
+            </form>";
     }
     public static function SetDomain()
     {
@@ -97,7 +109,7 @@ class GlobalController extends Controller
 
 
             $subb = explode('.', str_replace("www.",'',request()->getHost()))[0];
-            \Log::info($subb);
+//             \Log::info($subb);
             $pm = ["ab"=>"Asarios Blog",
                    "dag"=>"Monika Dargies",
                     "mfx"=>"MarbleFX",

@@ -331,7 +331,7 @@ try {
     },
 
     handleCheckNews(value) {
-      console.log("Newsletter-Checkbox:", value);
+//       console.log("Newsletter-Checkbox:", value);
       this.checkNews = value;
     },
 

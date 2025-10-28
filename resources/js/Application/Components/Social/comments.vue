@@ -192,7 +192,7 @@
                     try {
                         var table = CleanTable_alt() || "blogs";
                         const response = await axios.get(`/comments/${table}/${this.postId}`);
-                        console.log("fetchComments Antwort:", response.data);
+//                         console.log("fetchComments Antwort:", response.data);
                         this.comments = Array.isArray(response.data) ? response.data : [];
                     } catch (error) {
                         console.error("Fehler beim Laden der Kommentare:", error);
@@ -204,7 +204,7 @@
     },
 
     async submitComment() {
-    console.log("Sende Kommentar:", this.newComment);
+//     console.log("Sende Kommentar:", this.newComment);
 
     if (!this.newComment.trim()) return;
 
@@ -216,7 +216,7 @@
             _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
         });
 
-        console.log("Antwort:", response.data);
+//         console.log("Antwort:", response.data);
 
         if (response.data.redirect) {
             window.location.href = response.data.redirect;

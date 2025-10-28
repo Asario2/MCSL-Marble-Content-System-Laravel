@@ -81,7 +81,7 @@ class FormController extends Controller
                 $bpath = "_".SD()."/images/".$name."/";
                 $value = FormController::generateUniqueFolder("/images/".$bpath);
                 $value2 = public_path("/images/".$bpath.$value);
-                \Log::info($value2);
+//                 \Log::info($value2);
                 mkdir($value2);
                 mkdir($value2."/orig/");
                 mkdir($value2."/big/");
@@ -305,7 +305,7 @@ class FormController extends Controller
         }
         // Direkt als assoziatives Array aufbauen
         $result = $statusvals;
-        \Log::info("RESULT:".json_encode($result));
+//         \Log::info("RESULT:".json_encode($result));
         return $result;
     }
     public static function getOptions_itemscope($table, $name)
@@ -2127,7 +2127,7 @@ upload_files($id);
         {
             $reqi = '';
         }
-        \Log::info("REQUI: ".$reqi);
+//         \Log::info("REQUI: ".$reqi);
         if(Settings::$textfield == "Mdown")
         {
             return TextArea_md($name,$reqi,$value);

@@ -84,7 +84,7 @@
             xval: {
                 immediate: true,
                 handler(newValue) {
-                    console.log('🔹 DB Value received:', newValue);
+//                     console.log('🔹 DB Value received:', newValue);
                     this.pendingDbValue = newValue;
                     this.applyPendingValue();
                 }
@@ -92,7 +92,7 @@
 
             internalValue(newValue) {
                 if (this.isInitialized && newValue !== "0") {
-                    console.log('🔹 Internal value changed to:', newValue);
+//                     console.log('🔹 Internal value changed to:', newValue);
                     this.$emit('update:xval', newValue);
                     this.$emit('update:modelValue', newValue);
 
@@ -104,7 +104,7 @@
             // Wenn Options geladen sind, Wert setzen
             rawOptions: {
                 handler(newOptions) {
-                    console.log('🔹 Raw options loaded, count:', newOptions.length);
+//                     console.log('🔹 Raw options loaded, count:', newOptions.length);
                     this.isLoading = false;
                     this.applyPendingValue();
                 },
@@ -129,7 +129,7 @@
                             options.push(...parsed);
                         } catch (error) {
                             console.warn('❌ Failed to parse options JSON:', error);
-                            console.log('Raw string:', item);
+//                             console.log('Raw string:', item);
                         }
                     }
                     // Wenn es bereits ein Objekt ist, direkt verwenden
@@ -138,7 +138,7 @@
                     }
                 });
 
-                console.log('🔹 Parsed options:', options);
+//                 console.log('🔹 Parsed options:', options);
                 return options;
             }
         },
@@ -148,7 +148,7 @@
                 if (this.pendingDbValue && this.parsedOptions.length > 0 && !this.isInitialized) {
                     this.$nextTick(() => {
                         const dbValue = this.pendingDbValue;
-                        console.log('🔹 Applying DB value:', dbValue, 'to parsed options:', this.parsedOptions);
+//                         console.log('🔹 Applying DB value:', dbValue, 'to parsed options:', this.parsedOptions);
 
                         // Prüfe ob der Wert in Options existiert
                         const valueExists = this.parsedOptions.some(option =>
@@ -156,12 +156,12 @@
                         );
 
                         if (valueExists) {
-                            console.log('✅ DB value found in options, setting to:', dbValue);
+//                             console.log('✅ DB value found in options, setting to:', dbValue);
                             this.internalValue = String(dbValue);
                             this.isInitialized = true;
                         } else {
                             console.warn('❌ DB value not found in options:', dbValue);
-                            console.log('Available options:', this.parsedOptions.map(opt => opt.id));
+//                             console.log('Available options:', this.parsedOptions.map(opt => opt.id));
                             this.internalValue = "0";
                             this.isInitialized = true;
                         }
@@ -180,7 +180,7 @@
 
             onChange(event) {
                 const value = event.target.value;
-                console.log('🔹 User selected:', value);
+//                 console.log('🔹 User selected:', value);
                 this.internalValue = this.normalizeValue(value);
 
                 this.$emit('input-change', this.internalValue, this.xname);
@@ -189,21 +189,21 @@
             },
 
             getOptions() {
-                console.log('🔹 Loading options for:', this.tablex, this.name);
+//                 console.log('🔹 Loading options for:', this.tablex, this.name);
                 this.isLoading = true;
 
                 const table = this.tablex || 'default';
                 const url = `/tables/sort-enum/${table}/${this.name}`;
-                console.log('🔹 API URL:', url);
+//                 console.log('🔹 API URL:', url);
 
                 axios.get(url)
                 .then(response => {
-                    console.log('✅ API Response:', response.data);
+//                     console.log('✅ API Response:', response.data);
 
                     // Die Response kommt als Array mit JSON-Strings zurück
                     // Wir müssen diese parsen
                     this.rawOptions = this.processApiResponse(response.data);
-                    console.log('✅ Processed raw options:', this.rawOptions);
+//                     console.log('✅ Processed raw options:', this.rawOptions);
 
                 })
                 .catch(error => {
@@ -258,25 +258,25 @@
             },
 
             debugState() {
-                console.log('=== SELECT DEBUG ===');
-                console.log('Pending DB Value:', this.pendingDbValue);
-                console.log('Internal Value:', this.internalValue);
-                console.log('Raw Options:', this.rawOptions);
-                console.log('Parsed Options:', this.parsedOptions);
-                console.log('isInitialized:', this.isInitialized);
-                console.log('isLoading:', this.isLoading);
+//                 console.log('=== SELECT DEBUG ===');
+//                 console.log('Pending DB Value:', this.pendingDbValue);
+//                 console.log('Internal Value:', this.internalValue);
+//                 console.log('Raw Options:', this.rawOptions);
+//                 console.log('Parsed Options:', this.parsedOptions);
+//                 console.log('isInitialized:', this.isInitialized);
+//                 console.log('isLoading:', this.isLoading);
 
                 const select = this.$refs.select;
                 if (select) {
-                    console.log('DOM Select value:', select.value);
-                    console.log('Selected option text:', select.options[select.selectedIndex]?.text);
+//                     console.log('DOM Select value:', select.value);
+//                     console.log('Selected option text:', select.options[select.selectedIndex]?.text);
                 }
             }
         },
 
         mounted() {
-            console.log("✅ Component mounted");
-            console.log("DB value (xval):", this.xval);
+//             console.log("✅ Component mounted");
+//             console.log("DB value (xval):", this.xval);
 
             this.getOptions();
 

@@ -15,6 +15,7 @@ class TwoFactorController extends Controller
         if (! $request->user()->two_factor_secret) {
             $request->user()->forceFill([
                 'two_factor_secret' => encrypt(app('pragmarx.google2fa')->generateSecretKey()),
+                'two_factor_enabled' => "1",
             ])->save();
         }
 
@@ -38,7 +39,7 @@ class TwoFactorController extends Controller
 
         $request->user()->forceFill([
             'two_factor_confirmed_at' => now(),
-            'two_factor_enabled' => true,
+            'two_factor_enabled' => "1",
         ])->save();
 
         return response()->noContent();

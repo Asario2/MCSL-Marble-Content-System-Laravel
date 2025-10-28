@@ -43,8 +43,8 @@ class LoginRequest extends FormRequest
         // User anhand Feld laden
         $user = \App\Models\User::where($field, $loginInput)->first();
         if ($user) {
-            \Log::info('User gefunden: ' . $user->id);
-            \Log::info('Altes Passwort: ' . $user->password_old);
+//             \Log::info('User gefunden: ' . $user->id);
+//             \Log::info('Altes Passwort: ' . $user->password_old);
         }
         if ($user) {
             // 1) Neuer Hash prüfen

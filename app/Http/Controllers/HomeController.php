@@ -280,7 +280,7 @@ class HomeController extends Controller
         "entries"=>$data, // falls du Bewertungen dazupackst
         "filters" => request()->only('search'),
     ]);          // ← dann paginierenp
-\Log::info(json_encode($entries));
+// \Log::info(json_encode($entries));
 return Inertia::render('Homepage/Pictures', [
     'entries' => $entries,
     'filters' => ['search' => $search],
@@ -528,7 +528,7 @@ return Inertia::render('Homepage/Pictures', [
             $item->headline = html_entity_decode($item->headline);
             return $item;
         });
-        \Log::info("SQL:".json_encode($values));
+//         \Log::info("SQL:".json_encode($values));
         return Inertia::render('Pages/didyouknow', [
             'items' => $values,
                 'ratings' => $rat,
@@ -620,7 +620,7 @@ return Inertia::render('Homepage/Pictures', [
             ->first();
         //
         $blog->load('blog_author');
-         \Log::info("author_img: ".json_encode($author));
+//          \Log::info("author_img: ".json_encode($author));
         return Inertia::render('Homepage/BlogShow', [
             'author' => $author,
             'blog' => $blog,
@@ -879,7 +879,7 @@ public function imprint_dag()
     public function home_usershow($nick,$id='')
     {
         $users = DB::table("users")->where("name",$nick)->where("pub","1")->where("xis_disabled","0")->select("users.*", "users.xis_aiImage as madewithai")->first();
-        \Log::info("HU:".json_encode($users,JSON_PRETTY_PRINT));
+//         \Log::info("HU:".json_encode($users,JSON_PRETTY_PRINT));
         return Inertia::render('Homepage/Usershow', [
             'users' => $users, // statt 'data'
         ]);

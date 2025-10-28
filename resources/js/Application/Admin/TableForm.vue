@@ -360,7 +360,7 @@
                     <input-checkbox
                         :name="field.name"
                         v-model="field.value"
-                        :exValue.Number="field.value"
+                        :exValue="field.value"
                         :value="field.value"
                         :disabled="field.disabled"
                         :class="field.disabled ? 'cursor-not-allowed' : ''"
@@ -372,7 +372,7 @@
                 <input-container v-else-if="field.type === 'isbox'">
                     <input-isbox
                         :id="field.name"
-                        :exValue.Number="field.value"
+                        :exValue="field.value"
                         :name="field.name"
                         v-model.number="field.value"
                         >
@@ -538,15 +538,15 @@
 </template>
 
 <script>
-const id = CleanId();
+// const id = CleanId();<
 let tablex = CleanTable();
-const table_z = tablex;
+// const table_z = tablex;
 const tablex3 = tablex;
-let table = tablex;
+// let table = tablex;
 let xid3 = CleanId();
 
 const routes = {
-    getform: (tablex, id) => `/tables/form-data/${tablex3}/${xid3}`,
+    getform: () => `/tables/form-data/${tablex3}/${xid3}`,
     getselroute: (name) => `/tables/sort-data/${name}`,
     getselenumroute: (table,name) => `/tables/sort-enum/${table}/${name}`,
     getselenumisroute: (table,name) => `/tables/sort-enumis/${table}/${name}`,
@@ -559,7 +559,7 @@ import emitter from "@/eventBus";
 import { GetSettings } from "@/helpers";
 import axios from "axios";
 
-import { CleanTable, CleanId, cc } from '@/helpers';
+import { CleanTable, CleanId,  } from '@/helpers';
 import ImageUploadModal from '@/Application/Components/ImageUploadModal.vue';
 import InputPosition from '@/Application/Components/InputPosition.vue';
 
@@ -578,7 +578,7 @@ import ArtSelect from "@/Application/Components/Form/ArtSelect.vue";
 import InputFormText from "@/Application/Components/Form/InputFormText.vue";
 import InputFormDateTime from "@/Application/Components/Form/InputFormDateTime.vue";
 import InputFormDate from "@/Application/Components/Form/InputFormDate.vue";
-import InputFormTextArea from "@/Application/Components/Form/InputFormTextArea.vue";
+// import InputFormTextArea from "@/Application/Components/Form/InputFormTextArea.vue";
 import InputDangerButton from "@/Application/Components/Form/InputDangerButton.vue";
 import InputLoading from "@/Application/Components/Form/InputLoading.vue";
 import ErrorList from "@/Application/Components/Form/ErrorList.vue";
@@ -594,14 +594,14 @@ import InputSelectEnum from "@/Application/Components/Form/InputSelectEnum.vue";
 import InputFormPrice from "@/Application/Components/Form/InputFormPrice.vue";
 import InputTextarea from "@/Application/Components/Form/InputTextarea.vue";
 import Editor from "@/Application/Components/Form/InputHtml.vue";
-import InputError from "@/Application/Components/Form/InputError.vue";
+// import InputError from "@/Application/Components/Form/InputError.vue";
 
 import DialogModal from "@/Application/Components/DialogModal.vue";
 
 import { toastBus } from '@/utils/toastBus';
 import { reactive } from "vue";
 import PublicRadio from "@/Application/Components/Form/PublicRadio.vue";
-import Alert from "@/Application/Components/Content/Alert.vue";
+// import Alert from "@/Application/Components/Content/Alert.vue";
 import ImageJsonEditor from "@/Application/Admin/ImageJsonEditor.vue";
 
 
@@ -842,7 +842,7 @@ export default defineComponent({
     methods: {
         CleanTable,
         handleModalClose(fieldName) {
-    console.log('Modal close requested, but checking if we should close...');
+//     console.log('Modal close requested, but checking if we should close...');
 
     // Nur schließen wenn wirklich gewünscht, nicht nach Upload
     // Sie können hier eine Bedingung hinzufügen
@@ -990,8 +990,8 @@ export default defineComponent({
             try {
                 const response = await axios.get(`/api/getSlug/${this.xtable}/${this.xid}`);
                 return response.data.autoslug || "";
-            } catch (error) {
-                console.error("No Slug Found");
+            } catch (e) {
+                console.error("No Slug Found",e);
                 return "";
             }
         },
@@ -1079,7 +1079,7 @@ export default defineComponent({
         },
 
         updateFormData(value, fieldName) {
-            let formDatas = {};
+            // let formDatas = {};
             if (fieldName.includes("_id") || this.fieldtype == "select"){
                 this.formDatas[fieldName] = value;
             }
@@ -1105,16 +1105,16 @@ export default defineComponent({
             } else if (typeof input === 'object' && input !== null) {
                 let result = {};
                 for (let key in input) {
-                    if (input.hasOwnProperty(key)) {
-                        result[key] = this.stripslashes(input[key]);
-                    }
+                    if (Object.prototype.hasOwnProperty.call(input, key)) {
+                            result[key] = this.stripslashes(input[key]);
+                        }
                 }
                 return result;
             }
             return input;
         },
 
-        setFormField(field,name) {
+        setFormField(field) {
             if(field.name == "reading_time") {
                 this.formData['reading_time'] = this.readingTime;
             }
@@ -1163,8 +1163,8 @@ export default defineComponent({
         },
 
         getsel(name) {
-            var sortedOptions = this.sortedOptions ?? [];
-            let sdata = this.sdata ?? {};
+            // var sortedOptions = this.sortedOptions ?? [];
+            // let sdata = this.sdata ?? {};
             axios
                 .get(routes.getselroute(name))
                 .then((response) => {
@@ -1176,6 +1176,7 @@ export default defineComponent({
                     const output = [];
                     if (typeof input === 'object' && !Array.isArray(input)) {
                         input = Object.entries(input).map(([key, value]) => value);
+                        
                     }
 
                     input.sort((a, b) => Number(a.position) - Number(b.position));
@@ -1199,9 +1200,9 @@ export default defineComponent({
                     });
 
                     output.sort((a, b) => Number(a.id) - Number(b.id));
-                    const sortedObj = output.map(item => ({
-                        [item.id]: item.name
-                    }));
+                    // const sortedObj = output.map(item => ({
+                    //     [item.id]: item.name
+                    // }));
 
                     let obj = JSON.stringify(input, null, 2);
                     obj = obj
@@ -1339,7 +1340,7 @@ if (!editorRef) {
 }
 
 if (!isValid) {
-  console.log("Fehler: Feld ist leer");
+//   console.log("Fehler: Feld ist leer");
   return;
 }
   try {

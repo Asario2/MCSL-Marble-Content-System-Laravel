@@ -142,7 +142,7 @@ class CommentController extends Controller
                 $content
             )
         );
-        \Log::info("MAIL SENDED");
+//         \Log::info("MAIL SENDED");
         // return redirect(url()->previous() . '#comment_' . $request->postid)
         //     ->with('success', 'Kommentar erfolgreich gepostet!');
         $url = url()->previous() . "#comment_{$request->post_id}";
@@ -161,7 +161,7 @@ class CommentController extends Controller
     }
     public function sendmc(Request $request)
 {
-    \Log::info($request);
+//     \Log::info($request);
     $request->validate([
         'name' => 'required',
         'email' => 'required|email',
@@ -170,7 +170,7 @@ class CommentController extends Controller
         'captcha' => 'required|string',
         'accepted' => 'accepted',
     ]);
-    \Log::info([$_SESSION['captcha_text'], $request->captcha]);
+//     \Log::info([$_SESSION['captcha_text'], $request->captcha]);
 
     if($_SESSION['captcha_text'] !== $request->captcha  || empty($request->captcha) || empty($_SESSION['captcha_text']))
     {
@@ -248,7 +248,7 @@ class CommentController extends Controller
                 $content
             )
         );
-        \Log::info("MAIL SENDED");
+//         \Log::info("MAIL SENDED");
         // $MailHelper->SendMailer("parie@gmx.de","Neuer Kommentar auf www.asario.net","",'','','','newcomment',["name"=>$nick,"table"=>$table,"comment"=>$comment]);
 
 

@@ -276,7 +276,7 @@ confirmTwoFactorAuthentication() {
             this.two_factor_enabled  = "1";
             axios.post('/user/twofactor/enable')
             .then(() => {
-                console.log('two_factor_enabled updated in database');
+//                 console.log('two_factor_enabled updated in database');
             })
             .catch(err => {
                 console.error('Error updating two_factor_enabled:', err);
@@ -335,7 +335,7 @@ confirmTwoFactorAuthentication() {
             });
                 axios.post('/user/twofactor/disable')
     .then(() => {
-        console.log('two_factor_enabled updated in database');
+//         console.log('two_factor_enabled updated in database');
     })
     .catch(err => {
         console.error('Error updating two_factor_enabled:', err);

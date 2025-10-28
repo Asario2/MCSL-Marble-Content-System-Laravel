@@ -3,7 +3,6 @@
 namespace Illuminate\Http;
 
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Auth;
 
 trait FileHelpers
 {
@@ -46,7 +45,7 @@ trait FileHelpers
             $path = rtrim($path, '/').'/';
         }
 
-        $hash = $this->hashName ?: $this->hashName = md5(basename($path."_".Auth::id()));
+        $hash = $this->hashName ?: $this->hashName = Str::random(40);
 
         if ($extension = $this->guessExtension()) {
             $extension = '.'.$extension;

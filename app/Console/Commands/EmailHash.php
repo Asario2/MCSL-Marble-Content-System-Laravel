@@ -29,7 +29,7 @@ class EmailHash extends Command
 
             try {
                 $hash = hash('sha256', trim(decval($contact->Email)));
-                \Log::info("hash: ".$hash);
+//                 \Log::info("hash: ".$hash);
                 DB::table('oliver_rein.contacts')
                     ->where('id', $contact->id)
                     ->update(['email_hash' => $hash]);

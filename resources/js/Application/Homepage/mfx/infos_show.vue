@@ -97,7 +97,7 @@ export default defineComponent({
 
     const resp = await fetch('https://api.github.com/repos/Asario2/MCSL-based-on-Starter-Eleven/issues');
     const data = await resp.json();
-    console.log('GitHub Issues:', data);
+//     console.log('GitHub Issues:', data);
     this.todolist = data;
   } catch (error) {
     console.error('Fehler beim Laden der Issues:', error);

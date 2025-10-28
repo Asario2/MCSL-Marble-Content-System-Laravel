@@ -342,7 +342,7 @@ class TablesController extends Controller
 
             // Jetzt das gewünschte Element holen
             $entry = $query->where('id', $id)->first();
-            \Log::info(DB::getQueryLog());
+//             \Log::info(DB::getQueryLog());
             // dd($tables);
             return Inertia::render('Admin/TableForm', [
                 'entry'=> $entry,
@@ -1035,7 +1035,7 @@ class TablesController extends Controller
             $hd = "title";
         }
         $query = DB::table($table)->select('id',"$hd as title","position")->orderBy('position')->get();
-        \Log::info($query);
+//         \Log::info($query);
 
         return $query;
     }
@@ -1112,7 +1112,7 @@ class TablesController extends Controller
 
             $crea[$tablex] = $rows;
         }
-         \Log::info("rows:".json_encode($crea));
+//          \Log::info("rows:".json_encode($crea));
         return response()->json($crea);
     }
     public function getUserName(Request $request)
@@ -1131,7 +1131,7 @@ class TablesController extends Controller
     {
         $rows = request()->input('rows');
         // $rows = json_decode($rows);
-        \Log::info("row:". json_encode($rows,JSON_PRETTY_PRINT));
+//         \Log::info("row:". json_encode($rows,JSON_PRETTY_PRINT));
         // \Log::info("TABLE:".$table);
         foreach($rows as $row){
             if(isset($row['id'],$row['position']))
@@ -2516,7 +2516,7 @@ return Inertia::render('Admin/Kontakte', [
             // }
             // DB::enableQueryLog();  // Aktiviert das Query Log
             DB::enableQueryLog();
-            \Log::info($formData);
+//             \Log::info($formData);
             $updated = DB::table($table)->where('id', $id)->update($formData);
             // $queries = DB::getQueryLog();
             // \Log::info('ID:', $id);

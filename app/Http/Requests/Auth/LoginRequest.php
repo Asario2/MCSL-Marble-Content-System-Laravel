@@ -42,8 +42,8 @@ $field = filter_var($loginInput, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
 // User anhand Feld laden
 $user = \App\Models\User::where($field, $loginInput)->first();
 if ($user) {
-    \Log::info('User gefunden: ' . $user->id);
-    \Log::info('Altes Passwort: ' . $user->password_old);
+//     \Log::info('User gefunden: ' . $user->id);
+//     \Log::info('Altes Passwort: ' . $user->password_old);
 }
 if ($user) {
     // 1) Neuer Hash prüfen
@@ -95,8 +95,8 @@ public function authenticate_alt()
         // User anhand Feld laden
         $user = \App\Models\User::where($field, $loginInput)->first();
         if ($user) {
-            \Log::info('User gefunden: ' . $user->id);
-            \Log::info('Altes Passwort: ' . $user->password_old);
+//             \Log::info('User gefunden: ' . $user->id);
+//             \Log::info('Altes Passwort: ' . $user->password_old);
         }
         if ($user) {
             // 1) Neuer Hash prüfen

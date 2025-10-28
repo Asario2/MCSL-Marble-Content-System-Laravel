@@ -78,13 +78,13 @@ class MailController extends Controller
     function SendMail($title,$template,$email,$nick,$link,$html,$uhash='')
     {
         $nick = trim($nick);
-        \Log::info([$template,$email,$nick,$link]);
+//         \Log::info([$template,$email,$nick,$link]);
         if(empty($email)){
             return false;
         }
 
         $html = str_replace('%uhash%',@$uhash,$html);
-        \Log::info($uhash);
+//         \Log::info($uhash);
         // Mail::to($email)->send(new GeneralMail($title,$link,$nick,$html,$template));
         Mail::send([], [], function ($message) use ($email, $html, $title,$uhash) {
             $message->to($email)

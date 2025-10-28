@@ -57,7 +57,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $filtered = collect($input)->filter(function ($value, $key) use ($table) {
                 return Schema::hasColumn($table, $key);
             })->toArray();
-            \Log::info($input);
+//             \Log::info($input);
             $user->forceFill(array_merge($filtered, [
 
                 'updated_at' => now(),

@@ -41,7 +41,7 @@ class ImageUploadController extends Controller
         'hasFile' => $request->hasFile('image'),
         'Message' => $request->Message,
     ]);
-    \Log::info("IMA: ".$request->ulpath);
+//     \Log::info("IMA: ".$request->ulpath);
     if (!$request->hasFile('image')) {
         return response()->json(['error' => 'Keine Datei empfangen!'], 400);
     }
@@ -58,7 +58,7 @@ class ImageUploadController extends Controller
 
     $subdomain = SD();
     $Message = $request->Message == "1";
-    \Log::info("POST",$request->all());
+//     \Log::info("POST",$request->all());
     $path = $request->ulpath;
     if ($path === "undefined" || empty($path)) $path = '';
     $watermarkfile = $request->copyleft;

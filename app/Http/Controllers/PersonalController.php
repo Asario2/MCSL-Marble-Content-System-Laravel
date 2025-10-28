@@ -21,7 +21,7 @@ class PersonalController
     {
         $user = auth()->user(); // oder direkt injizieren, wenn Route z. B. /user/{user} nutzt
 
-        \Log::info("RA".json_encode($request->all()));
+//         \Log::info("RA".json_encode($request->all()));
         $dateString = $request->input('birthday'); // z.B. '31.12.2023'
 
         // \Log::info('Raw birthday input: ' . $dateString);
@@ -41,7 +41,7 @@ class PersonalController
             'xch_newsletter' => ['nullable', 'boolean'],
         ], [], [], 'updateProfileInformation');
 
-        \Log::info("✅ Empfangen:", $validated);
+//         \Log::info("✅ Empfangen:", $validated);
 
         $table = "users"; // ermittelt die Tabelle des Models
 

@@ -152,7 +152,7 @@ export default defineComponent({
             axios.get('/api/admin-tables')
                 .then(response => {
                 this.adminTables = response.data;
-                console.log(this.adminTables);
+                // console.log(this.adminTables);
                 })
                 .catch(error => {
                 console.error('Fehler beim Laden der Tabellen:', error);

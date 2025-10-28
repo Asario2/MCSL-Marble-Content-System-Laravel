@@ -50,7 +50,7 @@ export default {
         this.loadAllUsers();
         await loadAllRights();
         this.rightsReady = true;
-        console.log('EditButtons mounted - ID:', this.id, 'Table:', this.table);
+//         console.log('EditButtons mounted - ID:', this.id, 'Table:', this.table);
     },
     methods: {
         async loadAllUsers()
@@ -60,7 +60,7 @@ export default {
         },
         hasRight(right, table) {
             const result = hasRightSync(right, table);
-            console.log(`Right check - ${right} for ${table}:`, result);
+//             console.log(`Right check - ${right} for ${table}:`, result);
             return result;
         },
 
@@ -77,7 +77,7 @@ export default {
 
         async deletePost() {
             try {
-                console.log(`Deleting: /admin/tables/delete/${this.table}/${this.id}`);
+//                 console.log(`Deleting: /admin/tables/delete/${this.table}/${this.id}`);
 
                 const response = await axios.delete(`/admin/tables/delete/${this.table}/${this.id}`, {
                     params: {
@@ -85,7 +85,7 @@ export default {
                     }
                 });
 
-                console.log('Delete response:', response.data);
+//                 console.log('Delete response:', response.data);
                 toastBus.emit('toast', response.data);
 
                 // Seite neu laden

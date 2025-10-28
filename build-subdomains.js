@@ -1,4 +1,4 @@
-console.log('?? build-subdomains.js gestartet');
+// console.log('?? build-subdomains.js gestartet');
 
 // build-subdomains.js (ESM-kompatibel)
 import { exec } from 'child_process';
@@ -21,12 +21,12 @@ if (!existsSync('public/css/tailw')) {
 
 builds.forEach(({ config, out }) => {
   const cmd = `npx tailwindcss -c ${config} -o ${out}`;
-  console.log(`???  Building: ${out}`);
+//   console.log(`???  Building: ${out}`);
   exec(cmd, (err, stdout, stderr) => {
     if (err) {
       console.error(`? Fehler bei ${out}:\n`, stderr);
     } else {
-      console.log(`? Erfolgreich erstellt: ${out}`);
+//       console.log(`? Erfolgreich erstellt: ${out}`);
     }
   });
 });

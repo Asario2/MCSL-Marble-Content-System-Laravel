@@ -592,7 +592,7 @@ export const selectionHelper = {
     const sel = window.getSelection();
     if (sel && sel.rangeCount > 0) {
       this.savedRange = sel.getRangeAt(0).cloneRange();
-      console.log(this.savedRange);
+//       console.log(this.savedRange);
     }
   },
 
@@ -603,7 +603,7 @@ export const selectionHelper = {
       sel.addRange(this.savedRange);
     }
 	else{
-	console.log(this);
+// 	console.log(this);
 	}
   },
 };

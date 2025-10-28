@@ -106,7 +106,7 @@ export default defineComponent({
       try {
         const response = await axios.get('/api/spruch-des-monats'); // deine API-Route
         this.quotes = [response.data]; //  { text: "..." }
-        console.log(this.quotes);
+//         console.log(this.quotes);
       } catch (error) {
         console.error("Fehler beim Laden des Spruchs:", error);
       }

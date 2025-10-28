@@ -83,8 +83,8 @@
 
         },
         created() {
-        console.log('filters:', this.filters);
-        console.log('form.search:', this.form.search);
+//         console.log('filters:', this.filters);
+//         console.log('form.search:', this.form.search);
         },
 
         methods: {

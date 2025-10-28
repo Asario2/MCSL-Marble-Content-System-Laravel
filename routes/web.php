@@ -564,7 +564,10 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             ->name("admin.tables.show");
         Route::get('/tables/sort-data/{name}', [TablesController::class, 'getOptionz'])
             ->name("GetTableOpt");
-
+        Route::get('/tables/pwform', [GlobalController::class, 'PasswordForm'])
+            ->name("pw.form");
+        Route::post('/tables/pwprint', [GlobalController::class, 'PasswordPrint'])
+            ->name("pw.print");
         // Tables Edit table
         Route::get("/admin/tables/edit/{id}/{table}",[TablesController::class,"EditTables"])
             ->name("admin.tables.edit");

@@ -495,8 +495,8 @@
         localStorage.setItem('loading', state ? state.toString():'');
         },
         reopenCookieBanner() {
-            console.log("test");
-            console.log(window.LaravelCookieConsent);
+//             console.log("test");
+//             console.log(window.LaravelCookieConsent);
 
             if (window.LaravelCookieConsent && typeof window.LaravelCookieConsent.reset === 'function') {
             window.LaravelCookieConsent.show();

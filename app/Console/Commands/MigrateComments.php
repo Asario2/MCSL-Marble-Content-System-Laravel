@@ -181,7 +181,7 @@
     {
         // z. B. "15.05.2021 14:23:10"
        $dateStr = (int)$dateStr;
-        \Log::info("ds:".$dateStr);
+//         \Log::info("ds:".$dateStr);
         try {
             return date('Y-m-d H:i:s', $dateStr);
         } catch (\Exception $e) {

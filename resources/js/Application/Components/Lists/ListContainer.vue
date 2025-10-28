@@ -365,7 +365,7 @@ export default {
       if (payload.length === 0) return;
 
       await axios.post("/api/save-order/" + CleanTable(), { rows: payload });
-      console.log("Neue Reihenfolge gespeichert");
+//       console.log("Neue Reihenfolge gespeichert");
 
       // Originalpositionen aktualisieren
       this.rows.forEach(row => {
@@ -412,7 +412,7 @@ async pstate(){
 
         const response = await axios.get('/api/chkcom/');
         this.checkedStatus = response.data.success; // { [id]: true/false }
-        console.log("CS:" + JSON.stringify(this.checkedStatus,null,2));
+//         console.log("CS:" + JSON.stringify(this.checkedStatus,null,2));
         } catch (error) {
         console.error("Fehler beim Batch-Status laden:", error);
         }

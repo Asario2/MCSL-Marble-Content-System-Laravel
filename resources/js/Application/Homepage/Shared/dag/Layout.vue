@@ -229,7 +229,7 @@
     },
 
     mounted() {
-      console.log("mounted läuft");
+//       console.log("mounted läuft");
 
       // Den 'search' Parameter prüfen
       const urlParams = new URLSearchParams(window.location.search);

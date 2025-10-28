@@ -161,10 +161,10 @@
 
         // Debug-Methode um den aktuellen Zustand zu prüfen
         debugState() {
-            console.log('Internal Value:', this.internalValue);
-            console.log('Model Value:', this.modelValue);
-            console.log('XVal:', this.xval);
-            console.log('Default Value:', this.defaultValue);
+//             console.log('Internal Value:', this.internalValue);
+//             console.log('Model Value:', this.modelValue);
+//             console.log('XVal:', this.xval);
+//             console.log('Default Value:', this.defaultValue);
         }
         },
 
@@ -181,7 +181,7 @@
             this.actsel();
 
             // Debug: Prüfe den initialen Zustand
-            console.log('Select mounted - Value:', this.internalValue);
+//             console.log('Select mounted - Value:', this.internalValue);
         });
 
         },

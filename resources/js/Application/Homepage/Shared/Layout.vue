@@ -440,7 +440,7 @@
         // Axios Interceptor
         axios.interceptors.request.use((config) => {
           this.pendingRequests += 1;
-          console.log("⬆️ Request gestartet", this.pendingRequests);
+//           console.log("⬆️ Request gestartet", this.pendingRequests);
           this.setLoadingState(this.searchval);
           return config;
         });
@@ -448,13 +448,13 @@
         axios.interceptors.response.use(
           (response) => {
             this.pendingRequests -= 1;
-            console.log("⬇️ Response erhalten", this.pendingRequests);
+//             console.log("⬇️ Response erhalten", this.pendingRequests);
             this.checkLoadingState();
             return response;
           },
           (error) => {
             this.pendingRequests -= 1;
-            console.log("⚠️ Response Fehler", this.pendingRequests);
+//             console.log("⚠️ Response Fehler", this.pendingRequests);
             this.checkLoadingState();
             return Promise.reject(error);
           }
@@ -468,7 +468,7 @@
         }
         this.$nextTick(() => {
         if (window.LaravelCookieConsent) {
-            console.log("CookieConsent ready");
+//             console.log("CookieConsent ready");
         }
         });
 
@@ -479,7 +479,7 @@
         SD,
 
         setLoadingState(state) {
-          console.log("🔄 setLoadingState:", state);
+//           console.log("🔄 setLoadingState:", state);
           this.isLoading = state;
           localStorage.setItem("loading", state ? state.toString() : '');
         },
@@ -488,7 +488,7 @@
             const interval = setInterval(() => {
             if (window.LaravelCookieConsent) {
                 clearInterval(interval);
-                console.log("Consent ready");
+//                 console.log("Consent ready");
                 if (callback) callback();
             }
             }, 50);
@@ -518,7 +518,7 @@
           });
 
           if (this.pendingRequests === 0 && this.imagesLoaded) {
-            console.log("✅ Ladezustand beendet");
+//             console.log("✅ Ladezustand beendet");
             this.setLoadingState(false);
           }
         },
@@ -528,7 +528,7 @@
           const totalImages = images.length;
           let imagesLoadedCount = 0;
 
-          console.log("📸 Images gefunden:", totalImages);
+//           console.log("📸 Images gefunden:", totalImages);
 
           if (totalImages === 0) {
             this.imagesLoaded = true;
@@ -538,7 +538,7 @@
 
           const markImageDone = (src, type) => {
             imagesLoadedCount++;
-            console.log(`📸 Bild ${type}:`, src, `${imagesLoadedCount}/${totalImages}`);
+//             console.log(`📸 Bild ${type}:`, src, `${imagesLoadedCount}/${totalImages}`);
             if (imagesLoadedCount === totalImages) {
               this.imagesLoaded = true;
               this.checkLoadingState();

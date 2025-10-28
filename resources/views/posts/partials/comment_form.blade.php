@@ -97,13 +97,13 @@ $cids = $cids ?? [];
                 @php
                     foreach ($comments[$post->id] as $comment) {
                         if (in_array($comment->id, $_SESSION['comment_ids'])) {
-                            \Log::info('burned:' . $comment->id);
+//                             \Log::info('burned:' . $comment->id);
                             continue; // Überspringe den Kommentar
                         }
                         // Füge die ID des aktuellen Kommentars zur Session hinzu
-                        \Log::info('Session before: ' . json_encode($_SESSION['comment_ids']));
+//                         \Log::info('Session before: ' . json_encode($_SESSION['comment_ids']));
                         $_SESSION['comment_ids'][] = $comment->id;
-                        \Log::info('Session after: ' . json_encode($_SESSION['comment_ids']));
+//                         \Log::info('Session after: ' . json_encode($_SESSION['comment_ids']));
                         //\Log::info('cid fin:' . $comment->id);
                     @endphp
                         @include 'posts.partials.comment_box',['comments'=>$comments];

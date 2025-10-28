@@ -82,6 +82,6 @@ class ApplicationController extends Controller
   public static function blog_categories($blog)
   {
     $res = DB::table("blogs")->where("id",$blog->id)->leftJoin("blog_categories","blogs.blog_categories_id","=","blog_categories.id")->select("name")->first();
-  \Log::info("RES:".json_encode($res));
+//   \Log::info("RES:".json_encode($res));
   }
 }

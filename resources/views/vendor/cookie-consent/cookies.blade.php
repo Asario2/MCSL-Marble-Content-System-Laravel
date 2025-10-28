@@ -91,13 +91,13 @@
             return null;
         }
         document.addEventListener('DOMContentLoaded', () => {
-            console.log(JSON.stringify(document.cookie,null,2));
+//             console.log(JSON.stringify(document.cookie,null,2));
             // sollte jetzt `laravel_cookie_consent=...` anzeigen
 
         const cookie = document.cookie.split('; ').find(c => c.startsWith('laravel_cookie_consent='));
-        console.log(cookie);
+//         console.log(cookie);
         // sollte der JSON-ähnliche String se
-        console.log("Cookies:", document.cookie);
+//         console.log("Cookies:", document.cookie);
         });
     </script>
 

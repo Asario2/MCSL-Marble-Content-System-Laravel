@@ -110,7 +110,7 @@
       folder: {
         immediate: true,
         handler(newFolder) {
-          console.log('🔄 Folder changed:', newFolder);
+//           console.log('🔄 Folder changed:', newFolder);
           this.fetchImages();
         }
       }
@@ -168,21 +168,21 @@
 
       // TEST METHODE: JSON URL direkt testen
       async testJsonUrl() {
-        console.log('🧪 Testing JSON URL...');
+//         console.log('🧪 Testing JSON URL...');
         const testUrl = `${this.localFolder}/index.json`;
-        console.log('📡 Testing URL:', testUrl);
+//         console.log('📡 Testing URL:', testUrl);
 
         try {
           const response = await fetch(testUrl);
-          console.log('📊 Response status:', response.status);
-          console.log('📊 Response ok:', response.ok);
+//           console.log('📊 Response status:', response.status);
+//           console.log('📊 Response ok:', response.ok);
 
           if (response.ok) {
             const data = await response.json();
-            console.log('✅ JSON Data received:', data);
+//             console.log('✅ JSON Data received:', data);
             this.status = `✅ OK - ${data.length} images`;
           } else {
-            console.log('❌ Response not OK');
+//             console.log('❌ Response not OK');
             this.status = `❌ Error: ${response.status}`;
           }
         } catch (error) {
@@ -193,8 +193,8 @@
 
       // Bilder aus index.json laden
       async fetchImages() {
-        console.log('🚀 fetchImages() called');
-        console.log('📁 Folder:', this.localFolder);
+//         console.log('🚀 fetchImages() called');
+//         console.log('📁 Folder:', this.localFolder);
 
         this.status = 'Loading...';
 
@@ -202,22 +202,22 @@
           // Cache Busting
           const timestamp = new Date().getTime();
           const url = `${this.localFolder}/index.json?t=${timestamp}`;
-          console.log('📡 Fetching from:', url);
+//           console.log('📡 Fetching from:', url);
 
           const response = await axios.get(url);
-          console.log('📨 Response received:', response);
+//           console.log('📨 Response received:', response);
 
           if (Array.isArray(response.data)) {
             this.images = response.data;
-            console.log(`✅ SUCCESS: ${this.images.length} images loaded`);
+//             console.log(`✅ SUCCESS: ${this.images.length} images loaded`);
             this.status = `Loaded ${this.images.length} images`;
 
             // Debug: Log each image
             this.images.forEach((img, index) => {
-              console.log(`🖼️ ${index + 1}: ${img.filename} (pos: ${img.position})`);
+//               console.log(`🖼️ ${index + 1}: ${img.filename} (pos: ${img.position})`);
             });
           } else {
-            console.log('⚠️ Response is not an array:', response.data);
+//             console.log('⚠️ Response is not an array:', response.data);
             this.images = [];
             this.status = 'No array data';
           }
@@ -230,21 +230,21 @@
       },
 
       handleImageError(filename) {
-        console.log(`❌ Image failed to load: ${filename}`);
+//         console.log(`❌ Image failed to load: ${filename}`);
       },
 
       // Vom Parent aufrufbar
       refreshGallery() {
-        console.log('🔄 refreshGallery() called from parent');
+//         console.log('🔄 refreshGallery() called from parent');
         this.fetchImages();
         this.$emit('refresh-gallery');
       }
     },
     mounted() {
         // this.localFolder = this.JsonPath;
-        console.log('🎯 ImageJsonEditor MOUNTED');
-      console.log('📁 Initial folder:', this.localFolder);
-      console.log('📝 Column:', this.column);
+//         console.log('🎯 ImageJsonEditor MOUNTED');
+//       console.log('📁 Initial folder:', this.localFolder);
+//       console.log('📝 Column:', this.column);
 
 
 

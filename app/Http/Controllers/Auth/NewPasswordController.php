@@ -34,7 +34,7 @@ class NewPasswordController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        \Log::info(json_encode($request));
+//         \Log::info(json_encode($request));
         $request->validate([
             'token' => 'required',
             'email' => 'required|string',
@@ -53,11 +53,11 @@ class NewPasswordController extends Controller
                 ])->save();
 
                 event(new PasswordReset($user));
-                \Log::info("Password updated for user ID: {$user->id}");
+//                 \Log::info("Password updated for user ID: {$user->id}");
             }
         );
 
-        \Log::info("Password reset status: " . $status);
+//         \Log::info("Password reset status: " . $status);
 
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can

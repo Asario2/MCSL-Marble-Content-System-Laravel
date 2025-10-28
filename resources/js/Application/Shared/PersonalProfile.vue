@@ -296,7 +296,7 @@ async updateProfileInformation() {
     window.scrollTo(window.pageXOffset, window.pageYOffset);
     toastBus.emit('toast', response.data);
   } catch (error) {
-    console.log("Fehler", error.response?.data || error.message);
+//     console.log("Fehler", error.response?.data || error.message);
     if (error.response?.data?.errors) {
       this.form.errors = error.response.data.errors;
     }
@@ -321,21 +321,21 @@ async updateProfileInformation() {
 },
   },
   async mounted() {
-    console.log("form object:", this.form);
-    console.log("Birthday bei Submit:", this.form.birthday);
+//     console.log("form object:", this.form);
+//     console.log("Birthday bei Submit:", this.form.birthday);
   if (this.form.birthday) {
     this.inputBirthday = dayjs(this.form.birthday).format('DD.MM.YYYY');
   }
 
-    console.log("RAW birthday:", this.initialForm.birthday);
+//     console.log("RAW birthday:", this.initialForm.birthday);
     if (this.form.birthday) {
-      console.log("Formatted birthday:", this.initialForm.birthday);
+//       console.log("Formatted birthday:", this.initialForm.birthday);
     }
     this.isform = await GetColumns("users");
     },
     watch: {
           'form.xch_newsletter'(val) {
-    console.log("Newsletter:", val);
+//     console.log("Newsletter:", val);
   },
   initialForm: {
     handler(newVal) {

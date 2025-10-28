@@ -101,7 +101,7 @@ export default {
         },
     },
     mounted() {
-        console.log(this.breadcrumbs);
+//         console.log(this.breadcrumbs);
     },
     methods:{
         ucf(str) {

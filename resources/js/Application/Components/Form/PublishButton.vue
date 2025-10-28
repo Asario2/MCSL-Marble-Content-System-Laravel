@@ -48,7 +48,7 @@
           });
 
           this.isPublished = newStatus; // UI aktualisieren
-          console.log("Gespeichert:", response.data);
+//           console.log("Gespeichert:", response.data);
         } catch (error) {
           console.error("Fehler beim Speichern:", error.response?.data || error.message);
         } finally {

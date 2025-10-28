@@ -58,7 +58,7 @@
     methods: {
         toggle(e) {
   const val = e.target.checked ? 1 : 0;
-  console.log("Checkbox toggled →", val);
+//   console.log("Checkbox toggled →", val);
   this.internalValue = val;
 }
 

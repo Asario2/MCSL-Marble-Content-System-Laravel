@@ -48,7 +48,7 @@ class FortifyServiceProvider extends ServiceProvider
     }
     protected function loginPipeline(\Laravel\Fortify\Http\Requests\LoginRequest $request)
     {
-        \Log::info('✅ Custom Fortify loginPipeline wird benutzt!');
+//         \Log::info('✅ Custom Fortify loginPipeline wird benutzt!');
 
         return (new Pipeline(app()))->send($request)->through(array_filter([
             config('fortify.limiters.login') ? null : \Laravel\Fortify\Http\Middleware\EnsureLoginIsNotThrottled::class,

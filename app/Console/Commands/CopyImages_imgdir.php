@@ -63,7 +63,7 @@ class CopyImages_imgdir extends Command
         }
 
         $this->info("📦 Gesammelte Bildnamen: " . count($imageList));
-        \Log::info('imageList', $imageList);
+//         \Log::info('imageList', $imageList);
 
         // Suche in Quelldateisystem und kopiere gefundene Bilder
         foreach ($this->directories as $dir) {

@@ -204,7 +204,7 @@ if(!function_exists("renderText"))
                                 $this->orWhereRaw("LOWER(`$sval` . `name`) LIKE ?", ['%' . html_entity_decode(strtolower($filters['search'])) . '%']);
                             }
                         }
-                        \Log::info("LOWER(`$table` . `$whn`) LIKE ?", ['%' . html_entity_decode(strtolower($filters['search'])) . '%']);
+//                         \Log::info("LOWER(`$table` . `$whn`) LIKE ?", ['%' . html_entity_decode(strtolower($filters['search'])) . '%']);
                         if(!substr_count($whn,".") && Schema::hasColumn($table, $whn))
                         {
                             $this->orWhereRaw("LOWER(`$table` . `$whn`) LIKE ?", ['%' . html_entity_decode(strtolower($filters['search'])) . '%']);

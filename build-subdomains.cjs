@@ -25,7 +25,7 @@ configs.forEach(({ name, config }) => {
     if (error) {
       console.error(`? Fehler bei "${name}":`, stderr);
     } else {
-      console.log(`? Fertig: ${outFile}`);
+//       console.log(`? Fertig: ${outFile}`);
     }
   });
 });

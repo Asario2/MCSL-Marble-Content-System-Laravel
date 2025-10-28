@@ -27,7 +27,7 @@
         @endforeach
 
         {{-- @php
-                \Log::info('rid:' . $row->id);
+//                 \Log::info('rid:' . $row->id);
             @endphp --}}
 
 
