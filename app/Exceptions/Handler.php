@@ -34,4 +34,12 @@ class Handler extends ExceptionHandler
             return response()->view('errors.generic', [], 500);
         });
     }
+    protected function invalidJson($request, ValidationException $exception)
+    {
+        return response()->json([
+            'success' => false,
+            'message' => __('validation.failed'),
+            'errors' => $exception->errors(),
+        ], $exception->status);
+    }
 }

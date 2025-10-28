@@ -492,7 +492,7 @@
                             @click="submitForm"
 
                         >
-                            {{ItemName}} ändern
+                            {{ItemName}} Speichern
                         </input-button>
                     </smooth-scroll>
                     <smooth-scroll
@@ -1417,7 +1417,7 @@ if (!isValid) {
             this.loadingText = "Der Beitrag wird gelöscht!";
 
             this.$inertia.delete(
-                this.route("admin.table.delete", this.table.id),
+                this.route("admin.tables.delete", [CleanTable(),this.table.id]),
                 {
                     onSuccess: () => {
                         this.loading = false;

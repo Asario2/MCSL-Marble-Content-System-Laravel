@@ -578,6 +578,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/admin/email', [TablesController::class, 'emailmod'])->name('admin.mailcenter');
 
         Route::post('/email/preview', [TablesController::class, 'prev_newsl'])->name('admin.mailprev');
+        Route::post('/email/save', [MailController::class, 'saveMail'])->name('admin.mail.save');
+        Route::post('/email/signatur/save', [MailController::class, 'saveSignature'])->name('admin.email.signatur.save');
 
         Route::get('/email/send/', [MailController::class, 'send_newsletter'])->name('admin.mail.send');
         // Blogartikel Delete

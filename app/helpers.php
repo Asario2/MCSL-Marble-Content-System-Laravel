@@ -174,7 +174,7 @@ if(!function_exists("renderText"))
                 }
                 if(empty($table)){
                         // $table = "comments";
-                        dd($parts);
+                        // dd($parts);
                 }
                 // dd($parts,$_GET['table']);
 

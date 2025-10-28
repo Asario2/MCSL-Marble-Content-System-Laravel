@@ -733,11 +733,7 @@ class TablesController extends Controller
         if (!CheckZRights("SendMail")) {
             return redirect('/no-rights');
         }
-        // return response()->json($request->all());
 
-        // Daten prüfen
-        // return response()->json($request->all());
-        // dd($request->all());
         // Beispiel: Vorschau anzeigen
         $nick = explode(", ",$request->recipients)[0];
         $content = $request->mailbodyText;
@@ -2685,7 +2681,8 @@ return Inertia::render('Admin/Kontakte', [
         // Jetzt löschen
         $query->delete();
 
-        return response()->json(["status" => "success", "message" => "Eintrag erfolgreich gelöscht"]);
+        // return response()->json(["status" => "success", "message" => "Eintrag erfolgreich gelöscht"]);
+        return redirect("admin/tables/$table/show");
     }
 
 

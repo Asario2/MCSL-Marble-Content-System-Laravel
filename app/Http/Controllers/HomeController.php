@@ -388,7 +388,6 @@ return Inertia::render('Homepage/Pictures', [
     public function home_index_alt(){
         $sd = SD();
         if($sd == "ab"){
-            dd($sd);
             return $this->home_index();
         }
         else{

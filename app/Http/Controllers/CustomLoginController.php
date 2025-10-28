@@ -149,7 +149,7 @@ public function pw_recovery(Request $request)
         'current_password' => 'required|string',
         'new_password' => 'required|string|confirmed|min:8',
     ]);
-    dd($request);
+   
     $user = \App\Models\User::where('email', $request->email)->first();
 
     if (!$user) {

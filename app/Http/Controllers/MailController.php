@@ -148,7 +148,7 @@ class MailController extends Controller
     $signatur2 = $signatur.$this->subm_btn();
         $content_alt = $content.$signatur;
     $data = [$title,$link,$nick,$content,$template,$footer];
-    $html = html_entity_decode(html_entity_decode((View::file(resource_path('views/vendor/mail/html/preview.blade.php'), compact('title','link','nick','content','template','signatur2'))->render())));
+    $html = rumLaut(html_entity_decode((View::file(resource_path('views/vendor/mail/html/preview.blade.php'), compact('title','link','nick','content','template','signatur2'))->render())));
 
     $html2 = rumLaut(html_entity_decode(
         View::file(
@@ -169,7 +169,7 @@ class MailController extends Controller
     }
     function subm_btn()
     {
-        return "<br /><br /><a href='/email/send/'>E-mail Senden</a>";
+        return "<br /><br /><a class='button-primary' href='/email/send/'>E-mail Senden</a>";
     }
     function send_newsletter(){
         $i = 0;
@@ -300,4 +300,79 @@ class MailController extends Controller
     {
         return str_replace([" ","@","."],["_","_at_","_dot_"],$mail);
     }
+    public function saveMail(Request $request)
+    {
+        $validated = $request->validate([
+            'subject' => 'required|string|max:255',
+            'Body' => 'required|string',
+            "name" => 'required|string',
+            'signatur_id' => 'nullable|integer',
+        ]);
+
+        DB::table('newsletter')->insert([
+            'subject' => $validated['subject'],
+            'body' => $validated['Body'],
+            'name' => $validated['name'],
+            'signatur_id' => $validated['signatur_id'],
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('newsletter')->update([
+            'position' => DB::raw('position + 1')
+        ]);
+        return back()->with('success', 'E-Mail gespeichert.');
+    }
+
+    public function saveSignature(Request $request)
+{
+
+    $validated = $request->validate([
+        'signatur_id' => 'nullable|integer',
+        'signature_text' => 'required|string',
+        'signature_name' => 'nullable|string',
+    ]);
+
+    try {
+        if (!empty($validated['signatur_id']) && @$asd == "23131") {
+            // ✅ Bestehende Signatur aktualisieren
+            DB::table('signatur')
+                ->where('id', $validated['signatur_id'])
+                ->update([
+                    'sigtext' => $validated['signature_text'],
+                    'updated_at' => now(),
+                ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Signatur erfolgreich aktualisiert',
+                'id' => $validated['signatur_id']
+            ]);
+        } else {
+            // ✅ Neue Signatur speichern
+            $signatureId = DB::table('signatur')->insertGetId([
+                'name' => $validated['signature_name'] ?? 'Neue Signatur',
+                'sigtext' => $validated['signature_text'],
+                'position' => 0, // optional
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            DB::table('signatur')->update([
+            'position' => DB::raw('position + 1')
+        ]);
+            return response()->json([
+                'success' => true,
+                'message' => '✅ Signatur erfolgreich gespeichert',
+                'id' => $signatureId
+            ]);
+        }
+    } catch (\Exception $e) {
+        // ❌ Fehlerbehandlung
+        return response()->json([
+            'success' => false,
+            'message' => 'Fehler beim Speichern der Signatur: ' . $e->getMessage(),
+        ], 500);
+    }
+}
+
+
 }
