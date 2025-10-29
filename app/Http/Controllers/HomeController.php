@@ -42,7 +42,7 @@ class HomeController extends Controller
         return Inertia::render('Homepage/AiContent', ["data" => [$data]]); // <-- in Array umwandeln
     }
     public function home_dag(){
-        $text  = DB::table("texts")->where("type","dag_home")->select("text")->first();
+        $text  = DB::table("texts")->where("autoslug","dag_home")->select("text")->first();
         return Inertia::render('Homepage/dag/Home_dag', [
             'text' => $text ? $text->text : null, // sicheres Array
         ]);
@@ -576,7 +576,7 @@ return Inertia::render('Homepage/Pictures', [
     }
     public function no_rights()
     {
-        $text = DB::table("texts")->where("type", "no-rights")->select('headline', 'text')->first();
+        $text = DB::table("texts")->where("autoslug", "no-rights")->select('headline', 'text')->first();
         // \Log::info("TT:".json_encode($text));
 
         return Inertia::render('Homepage/No-Rights', [
@@ -767,7 +767,7 @@ public function imprint_dag()
         Session::flash('toast.info', $success);
         //
         $news = DB::table("news")->orderBy("id", "DESC")->paginate(10);
-        $text = DB::table("texts")->where("type","mfx_welcome")->select("headline","text")->first();
+        $text = DB::table("texts")->where("autoslug","mfx_welcome")->select("headline","text")->first();
         // dd($text);
 
 
@@ -787,8 +787,8 @@ public function imprint_dag()
         return $this->infos_show("43");
     }
     public function contacts(){
-        $text = DB::table("texts")->where("type", "ContactsHeader")->select('headline', 'text')->first();
-        $contacts = DB::table("texts")->where("type", "ContactsInfos")->select('headline', 'text')->first();
+        $text = DB::table("texts")->where("autoslug", "ContactsHeader")->select('headline', 'text')->first();
+        $contacts = DB::table("texts")->where("autoslug", "ContactsInfos")->select('headline', 'text')->first();
         // \Log::info("TT:".json_encode($text));
 
         return Inertia::render('Homepage/ab/contacts', [
@@ -797,8 +797,8 @@ public function imprint_dag()
         ]);
     }
     public function contacts_mfx(){
-        $text = DB::table("texts")->where("type", "ContactsHeader")->select('headline', 'text')->first();
-        $contacts = DB::table("texts")->where("type", "ContactsInfos")->select('headline', 'text')->first();
+        $text = DB::table("texts")->where("autoslug", "ContactsHeader")->select('headline', 'text')->first();
+        $contacts = DB::table("texts")->where("autoslug", "ContactsInfos")->select('headline', 'text')->first();
         // \Log::info("TT:".json_encode($text));
 
         return Inertia::render('Homepage/mfx/contacts', [
@@ -807,8 +807,8 @@ public function imprint_dag()
         ]);
     }
     public function dag_contacts(){
-        $text = DB::table("texts")->where("type", "ContactsHeader")->select('headline', 'text')->first();
-        $contacts = DB::table("texts")->where("type", "ContactsInfos")->select('headline', 'text')->first();
+        $text = DB::table("texts")->where("autoslug", "ContactsHeader")->select('headline', 'text')->first();
+        $contacts = DB::table("texts")->where("autoslug", "ContactsInfos")->select('headline', 'text')->first();
         // \Log::info("TT:".json_encode($text));
 
         return Inertia::render('Homepage/dag/contacts', [

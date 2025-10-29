@@ -56,14 +56,14 @@ class MailController extends Controller
         DB::table("newsletter_reci")->insert([
             "pub"=>0,
             "uhash"=> $uhash,
-            "email"=>$request->email,
+            "email"=>encval($request->email),
             "nick"=>$this->Quote($request->email),
             "title"=>$request->title,
             "prename"=>$request->firstname,
             "surname"=>$request->lastname,
         ]);
         $title = "Newsletter Anmeldung";
-        $link = "http://".request()->getHost()."/mail/subscribe/".$uhash."/".$request->email;
+        $link = "http://".request()->getHost()."/mail/subscribe/".$uhash."/".decval($request->email);
         $nick = trim($request->title." ".$request->firstname." ".$request->lastname) ?? "Liebe Leserin, lieber Leser,";
         $content_alt = '';
         $template = '';
@@ -82,7 +82,7 @@ class MailController extends Controller
         if(empty($email)){
             return false;
         }
-
+        $email = decval($email);
         $html = str_replace('%uhash%',@$uhash,$html);
 //         \Log::info($uhash);
         // Mail::to($email)->send(new GeneralMail($title,$link,$nick,$html,$template));
@@ -101,7 +101,7 @@ class MailController extends Controller
             ->first();
 
         if ($user && !empty($user->email)) {
-            return $user->email;
+            return decval($user->email);
         }
 
         // 2. Prüfe Contacts
@@ -111,7 +111,7 @@ class MailController extends Controller
             ->first();
 
         if ($contact && !empty($contact->email)) {
-            return $contact->email;
+            return decval($contact->email);
         }
 
         // 3. Prüfe Newsletter_Recei
@@ -121,7 +121,7 @@ class MailController extends Controller
             ->first();
 
         if ($newsletter && !empty($newsletter->email)) {
-            return $newsletter->email;
+            return decval($newsletter->email);
         }
 
         // Wenn nichts gefunden wurde
@@ -130,6 +130,7 @@ class MailController extends Controller
     public function UnSubscribe_Newsl($uhash)
     {
         $email = $this->getEmailByUhash($uhash);
+        $email = decval($email);
         if($email){
             $resul = DB::table("newsletter_blacklist")->updateOrInsert(["mail"=>$email,"created_at"=>now(),"pub"=>"1"]);
         }
@@ -207,7 +208,7 @@ class MailController extends Controller
         foreach ($ugroups as $regro)
         {
             $uhash = @$regro->uhash;
-            $email = @$regro->email;
+            $email = @decval($regro->email);
             $nick = @$regro->name;
             $sendm[] = $email;
             $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
@@ -216,14 +217,14 @@ class MailController extends Controller
         foreach($contacts as $con)
         {
             preg_match_all('/\(([^)]+)\)/', $con, $matches);
-            $email = implode("",$matches[1]);
+            $email = decval(implode("",$matches[1]));
 
             $nick = $email;
 
             $res_alt = DB::table('contacts')->where('email_hash', hash('sha256', $email))->select("uhash")->first();
 
             $uhash = $res_alt->uhash;
-
+            $email = decval($res_alt->email);
             if(!in_array($email,$sendm)){
                 $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
                 $i++;
@@ -241,7 +242,7 @@ class MailController extends Controller
             }
             // dd(session('reci'));
             $uhash = @$res->uhash;
-            $email = @$res->email;
+            $email = decval($res->email);
             $nick = @$res->name;
             if(!in_array($email,$sendm) && !empty($res)){
                 $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
@@ -257,7 +258,7 @@ class MailController extends Controller
             foreach($resi as $rep)
             {
                 $uhash = $rep->uhash;
-                $email = $rep->email;
+                $email = decval($rep->email);
                 $ni = $rep->surname." ".$rep->prename;
                 $nick = trim($ni) ?? $email;
                 $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);

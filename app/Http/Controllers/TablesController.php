@@ -757,7 +757,7 @@ class TablesController extends Controller
                 $res = DB::table("contacts")->where("name",$nick)->select("email","uhash","name")->first();
             }
             $uhash = @$res->uhash;
-            $email = @$res->email;
+            $email = @decval($res->email);
 
             $link[1] = "http://".request()->getHost()."/unsubscribe/%uhash%/".$email;
             $link[0] = "http://".request()->getHost();

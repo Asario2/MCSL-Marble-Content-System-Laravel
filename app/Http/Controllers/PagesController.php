@@ -46,7 +46,7 @@ class PagesController extends Controller
     }
     public function ai_ab()
     {
-        $data = DB::table("texts")->where("type","ai")->get();
+        $data = DB::table("texts")->where("autoslug","ai")->get();
         return view("ab.ai",compact('data'));
     }
     public function ab_sp()
@@ -211,17 +211,17 @@ $processedIds = session()->get('comment_ids', []);
     }
     public function hm_start()
     {
-        $data = DB::table("starts")->where("type","start")->get();
+        $data = DB::table("starts")->where("autoslug","start")->get();
         return view("hm.start",compact('data'));
     }
     public function bio_hm()
     {
-        $data = DB::table("starts")->where("type","bio")->get();
+        $data = DB::table("starts")->where("autoslug","bio")->get();
         return view("hm.bio",compact('data'));
     }
     public function music_hm()
     {
-        $data = DB::table("starts")->where("type","music")->get();
+        $data = DB::table("starts")->where("autoslug","music")->get();
         return view("hm.music",compact('data'));
     }
     public function kontakt_hm()
