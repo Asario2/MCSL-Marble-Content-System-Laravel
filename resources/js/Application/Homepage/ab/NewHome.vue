@@ -1,5 +1,12 @@
 <template>
 <Layout>
+<div
+  id="arrow"
+  class="absolute right-5 top-[calc(var(--nav-height,5.7rem)+0.5rem)] z-40 flex justify-center items-center cursor-pointer hover:scale-110 transition-transform duration-300"
+>
+  <JArrow />
+</div>
+
   <div itemscope itemtype="http://schema.org/Person">
     <img :src="'/images/_ab/web/about-me.jpg'" alt="Paul Rieser" /><br />
 
@@ -52,9 +59,10 @@
 
 <script>
 import Layout from "@/Application/Homepage/Shared/Layout.vue";
+import JArrow from "@/Application/Components/Icons/JArrow.vue";
 export default {
      name: 'NewHome',
-    components:{ Layout },
+    components:{ Layout,JArrow },
     methods: {
     redirect() {
         this.$inertia.visit('/blogs');
@@ -63,3 +71,10 @@ export default {
 
 };
 </script>
+<style>
+@media screen and (max-width: 1024px) {
+#arrow{
+    display:inline-block !important;
+}
+}
+</style>
