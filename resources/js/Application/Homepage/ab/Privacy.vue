@@ -1,4 +1,3 @@
-import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 <template>
     <Layout>
     <MetaHeader title="Datenschutzerklärung" />
