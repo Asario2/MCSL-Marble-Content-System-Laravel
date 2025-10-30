@@ -2,8 +2,15 @@
 <Layout>
   <div itemscope itemtype="http://schema.org/Person">
     <img :src="'/images/_ab/web/about-me.jpg'" alt="Paul Rieser" /><br />
-
-    Hi, ich bin <span itemprop="name">Paul Rieser</span>,
+   <h3>Willkommen auf Asarios Blog – wo Kunst, Fotografie und Webdesign verschmelzen.</h3>
+      
+    Dieser Ort ist meine kreative Spielwiese: eine Sammlung von Bildern, Ideen und Designkonzepten, die zeigen, wie unterschiedlich Schönheit entstehen kann.<br /><br />
+    
+    Als Künstler und Webdesigner liebe ich es, mit Licht, Farbe und Form zu arbeiten – egal, ob auf Leinwand, in der Kamera oder im Code. <br /><br />
+    
+    Nimm dir Zeit, durch meine Werke zu stöbern und die Kunst hinter den Pixeln zu entdecken<br /><br />
+      
+    Ich bin <span itemprop="name">Paul Rieser</span>,
     arbeite seit 1998 als <span itemprop="jobTitle">Webdesigner</span> und liebe es,
     spannende Projekte umzusetzen. Mein größtes Abenteuer bisher war
     <a href="https://www.asario.de" itemprop="url">www.asario.de</a> bei
