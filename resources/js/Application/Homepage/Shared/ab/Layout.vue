@@ -38,8 +38,10 @@
 
 
         <main :class="mode" id="app-layout-start">
+            
         <section class="relative bg-layout-sun-50 text-layout-sun-900 dark:bg-layout-night-50 dark:text-layout-night-900 transition-colors duration-1000"  style='z-index:50;'>
             <!-- Header -->
+
             <nav class="fixed top-0 left-0 right-0 z-30 bg-layout-sun-50 text-layout-sun-900 dark:bg-layout-night-50 dark:text-layout-night-900 border-b border-layout-sun-200 dark:border-layout-night-200"  style='z-index:50;'>
             <div class="container mx-auto max-w-6xl p-6 lg:flex lg:items-center lg:justify-between" style='z-index:50;'>
                 <div class="flex items-center justify-between">
@@ -577,7 +579,7 @@
         height:32px !important;
         object-fit: cover;
     }
-    
+
     .foot {
     position: relative;
     z-index: 100000;

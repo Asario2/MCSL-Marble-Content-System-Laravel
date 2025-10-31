@@ -126,3 +126,4 @@
 ![Version](https://img.shields.io/badge/version-3.30.1-orange) BUG - Titles on different Pages (#226)  
 ![Version](https://img.shields.io/badge/version-3.31.7-orange) Feature - Add Contacts to navigationcards (#227)  
 ![Version](https://img.shields.io/badge/version-3.32.9-orange) Feature - Add Email/Newsletter Center (#188)  
+![Version](https://img.shields.io/badge/version-3.33.2-orange) Feature - Dynamic arrow on mobile devices @ Home  (#222)  

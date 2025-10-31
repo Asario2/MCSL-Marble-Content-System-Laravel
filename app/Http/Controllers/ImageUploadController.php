@@ -145,7 +145,7 @@ class ImageUploadController extends Controller
 
             // Thumbnail quadratisch
             if ($size == 350) {
-                $img->cover($size2, $size2);
+                $img->scale($size2, $size2);
             } else {
                 $img->scale(width: $size2);
             }

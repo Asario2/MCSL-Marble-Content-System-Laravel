@@ -40,11 +40,16 @@
         <main :class="mode" id="app-layout-start">
         <section class="relative bg-layout-sun-50 text-layout-sun-900 dark:bg-layout-night-50 dark:text-layout-night-900 transition-colors duration-1000"  style='z-index:50;'>
             <!-- Header -->
-            <nav class="fixed top-0 left-0 right-0 z-30 bg-layout-sun-50 text-layout-sun-900 dark:bg-layout-night-50 dark:text-layout-night-900 border-b border-layout-sun-200 dark:border-layout-night-200"  style='z-index:50;'>
+             <nav class="fixed top-0 left-0 right-0 z-30 bg-layout-sun-50 text-layout-sun-900 dark:bg-layout-night-50 dark:text-layout-night-900 border-b border-layout-sun-200 dark:border-layout-night-200"  style='z-index:50;'>
             <div class="container mx-auto max-w-6xl p-6 lg:flex lg:items-center lg:justify-between" style='z-index:50;'>
                 <div class="flex items-center justify-between">
                 <brand-header :route-name="route('home.index')" :brand_1="$page.props.applications.brand_name_1" :brand_2="$page.props.applications.brand_name_2" :app-name="$page.props.applications.app_name"></brand-header>
-
+                    <div
+                    id="arrow2"     
+                    class="absolute top-7 z-40 flex justify-center items-center cursor-pointer hover:scale-110 transition-transform duration-300" style="right:4.2rem;display:none;"
+                    >
+                    <JrightArrow />
+                    </div>
                 <!-- Mobile menu button -->
                 <div class="flex lg:hidden">
                     <button v-on:click="toggleNavbar()" type="button" class="focus:outline-none text-primary-sun-1000 hover:text-primary-sun-800 focus:text-primary-sun-800 dark:text-primary-night-1000 dark:hover:text-primary-night-800 dark:focus:text-primary-night-800" aria-label="toggle menu">
@@ -358,6 +363,7 @@
     import ButtonChangeMode from "@/Application/Components/ButtonChangeMode.vue";
     import { SD,GetProfileImagePath } from "@/helpers";
     import NewsletterSubscribe from "@/Application/Components/Social/NewsletterSubscribe.vue";
+    import JrightArrow from "@/Application/Components/Icons/JrightArrow.vue";
 
 
 
@@ -369,6 +375,8 @@
         BrandHeader,
         LinkHeader,
         BrandFooter,
+
+        JrightArrow,
         LinkFooter,
         Toast,
         IconMenu,
@@ -596,6 +604,11 @@
     }
     A#em{
         color:yellow;
+    }
+    @media screen and (max-width: 1024px) {
+    #arrow2{
+        display:inline-block !important;
+    }
     }
     /* Deine Styles hier */
     </style>

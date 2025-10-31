@@ -193,7 +193,12 @@
       async uploadImage() {
         const file = this.selectedImages[this.column];
         if (!file) return;
-
+        const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
+        if(sizeInMB > 5)
+        {
+            alert("Bild zu Groß, Maximal 5 MB erlaubt");
+            return;
+        }
         this.uploading = true;
         this.progress = 0;
 

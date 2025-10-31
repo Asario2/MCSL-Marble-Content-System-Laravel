@@ -303,7 +303,7 @@
                     <button type="button" @click="openModal(field.name)">
                         <img
                             :src="getPreviewSrc(field)"
-                            class="max-w-[100px] object-contain"
+                            class="max-w-[160px] min-w-[160px] max-h-[90px] object-contain"
                             alt="Vorschau2"
                             :id="'com_'+field.name"
                         />
@@ -1176,7 +1176,7 @@ export default defineComponent({
                     const output = [];
                     if (typeof input === 'object' && !Array.isArray(input)) {
                         input = Object.entries(input).map(([key, value]) => value);
-                        
+
                     }
 
                     input.sort((a, b) => Number(a.position) - Number(b.position));
