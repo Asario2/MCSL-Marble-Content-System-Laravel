@@ -488,6 +488,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/api/created-at', [TablesController::class, 'getCreatedAt'])->name("created.at");
         Route::get("/api/GetCat/{table}/{id}", [TablesController::class, 'GetCats'])->name("GetCats");
         Route::post("/api/save-order/{table}", [TablesController::class, 'save_order'])->name("save-order");
+        // Route::get('/email/signatur/{id}', function ($id) {
+        //     return \App\Models\Signatur::select('id', 'name', 'sigtext')->findOrFail($id);
+        // });
         // Route::get("/api/created-at", [TablesController::class],'GetCreatedAt')->name("created.at");
         // Route::get("api/get-image-id/{table}/{id}",[TablesController::class,"GetImageId"])
         //     ->name("api-get-image-id");

@@ -3,13 +3,14 @@
     App::setLocale('de');
     setlocale(LC_ALL, 'deu_deu.1252');
     // GlobalController::SetDomain();
-    
+
     use App\Http\Controllers\DarkModeController;
     if (!session_id()) {
         session_start();
     }
     $subdomain = SD(); // z.B. "foo", "bar"
     $pagen = SD("pn");
+
     $favicon = "/images/_{$subdomain}/web/alogo.png";
     $ahost = $_SERVER['HTTP_HOST'];
     $_SESSION['comment_ids'] = [];
@@ -25,6 +26,7 @@
     window.subdomain_alt = "{{ $sd_alt }}";
     window.pagename = "{{ $pagen }}";
     window.ahost = "{{ $ahost }}";
+    window.app_name = "{{ $pagen }}"
     </script>
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">

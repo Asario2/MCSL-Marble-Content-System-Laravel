@@ -1,6 +1,8 @@
     <?php
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
+    ini_set('memory_limit', '-1');
+
     error_reporting(E_ALL);
     use App\Helpers;
     use Illuminate\Support\Facades\Auth;
@@ -16,12 +18,15 @@
         $favicon = "/images/favicon_default.png";
     }
     // $sd_alt = SD('ASd');
+
+//
+//Actual File for usage
+//
+
+
     ?>
     <!DOCTYPE html>
     <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
-
-
     <head>
         <meta charset="utf-8">
         <script>
@@ -36,9 +41,10 @@
                 window.subdomain_alt = "{{ $sd_alt }}";
                 window.pagename = "{{ $pagen }}";
                 window.ahost = "{{ $ahost }}";
+                window.app_name = "{{ $pagen }}";
                 </script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title inertia>{{ config('app.name', 'MCSL') }}</title>
+        <title inertia>{{ CleanTable(1) }}</title>
         <script src="/js/jquery-3.6.0.min.js"></script>
         <script src="/js/users.js"></script>
         <meta name="csrf-token" content="{{ csrf_token() }}">

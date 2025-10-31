@@ -16,6 +16,9 @@ export async function GetColumns(table) {
         return {};
     }
 }
+export async function getapp() {
+return window.app_name;
+}
 export function GetProfileImagePath(path){
 if(path.includes("https://ui-avatars.com/api/"))
 {

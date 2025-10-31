@@ -123,3 +123,6 @@
 ![Version](https://img.shields.io/badge/version-3.27.2-orange) Feature - Added success / not successed on mail submiting (#221)  
 ![Version](https://img.shields.io/badge/version-3.28.0-orange) Hotfix - decrypt emails from contacts (#225)  
 ![Version](https://img.shields.io/badge/version-3.29.2-orange) Feature -- Auto slug on Texts Table (#224)  
+![Version](https://img.shields.io/badge/version-3.30.1-orange) BUG - Titles on different Pages (#226)  
+![Version](https://img.shields.io/badge/version-3.31.7-orange) Feature - Add Contacts to navigationcards (#227)  
+![Version](https://img.shields.io/badge/version-3.32.9-orange) Feature - Add Email/Newsletter Center (#188)  

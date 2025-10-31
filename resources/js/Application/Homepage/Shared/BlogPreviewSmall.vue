@@ -10,7 +10,7 @@
                 <img
                     role="presentation"
                     :class="['object-cover w-full rounded h-44 bg-layout-sun-100 dark:bg-layout-night-100', blog.madewithai ? 'ai-image-corner' : '']"
-                    :src="`/images/_ab/blogs/image_path/thumbs/${blog.url}` || '/images/blogs/008.jpg'"
+                    :src="`/images/_ab/blogs/image_path/${blog.url}` || '/images/blogs/008.jpg'"
                     :alt="blog.name"
 
                     width="480"

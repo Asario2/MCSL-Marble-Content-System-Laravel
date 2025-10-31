@@ -51,7 +51,7 @@
 
     // Rechte laden und Inertia-App starten
     loadAllRights().then(() => {
-        const appName = import.meta.env.VITE_APP_NAME || "Starter Eleven";
+        const appName = window.app_name || "Starter Eleven";
 
         createInertiaApp({
             title: (title) => `${title} - ${appName}`,

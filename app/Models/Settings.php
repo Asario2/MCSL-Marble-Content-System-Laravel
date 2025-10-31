@@ -85,6 +85,7 @@
             "users" => 'name',
             "infos" => 'headline',
             "projects"=>"name",
+            "sprueche"=>"author",
             "users_rights" => 'name',
             "projects_sheets"=>"aufgabe",
             "camera"=>"name",
@@ -127,6 +128,7 @@
             "texts"=>["headline","text"],
             "news" =>['headline','message'],
             "privacy"=>["headline","message"],
+            "spruche"=>["author","text"],
             "people" =>['name',"abouttext",'realname','aufgaben','wohnort','website',"email"],
             "ratings"=>['table',"images.name"],
             "kontakt"=>["name","email","strasse","plz","tel"],
@@ -161,6 +163,7 @@
         "lostnfound"=>"message",
         "links"=>"url",
         "contacts"=>'Name',
+        "sprueche"=>"text",
     ];
     public static array $namealias = [
         "comments"=>"Kommentar",
@@ -168,7 +171,8 @@
         "projects_sheets"=>"Projekt",
         "lostnfound"=>"Überschrift",
         "contacts"=>"Gruppe",
-        "blog_authors"=>"Author"
+        "sprueche"=>"Author",
+        "blog_authors"=>"Author",
     ];
     public static array $descalias = [
         "comments"=>"Autor",
@@ -182,6 +186,7 @@
         "projects_sheets"=>"Aufgabe",
         "kontakt"=>"Email",
         "lostnfound"=>"Text",
+        "sprueche"=>"Text",
         "links"=>"URL",
         'contacts'=>"Name",
     ];

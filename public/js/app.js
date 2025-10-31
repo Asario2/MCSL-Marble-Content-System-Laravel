@@ -8,6 +8,7 @@ import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy";
 import { i18nVue } from "laravel-vue-i18n";
 import { route } from "ziggy-js";
+import { getapp} from "helpers";
 import { createPinia } from "pinia";  // <--- Pinia importieren
 
 // Schriftarten
@@ -26,7 +27,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { faPencilAlt, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 library.add(faPencilAlt, faTrashCan);
 
-const appName = import.meta.env.VITE_APP_NAME || "Starter Eleven";
+const appName = window.app_name	 || "Starter Eleven";
 
 // Rechte laden
 loadAllRights()

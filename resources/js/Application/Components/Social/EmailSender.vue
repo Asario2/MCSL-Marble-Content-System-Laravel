@@ -312,16 +312,36 @@ try {
       router.post("/email/preview", formData);
     },
 
-    updateMailbody(value) {
-      const selected = this.mailbodyOptions.find(mb => mb.id === value);
-      if (selected) {
+   updateMailbody(value) {
+    const selected = this.mailbodyOptions.find(mb => mb.id === value);
+
+    if (selected) {
         this.mailbodyText = selected.Body || "";
         this.subject = selected.subject || "";
-      } else {
+
+        // 🔹 automatisch passende Signatur wählen
+        if (selected.signatur_id) {
+        this.selectedSigId = selected.signatur_id;
+
+        // Signaturtext aus sig-Array holen
+        const foundSig = this.signaturOptions.find(s => s.id === selected.signatur_id);
+        if (foundSig) {
+            this.signatureText = foundSig.sigtext || "";
+        } else {
+            this.signatureText = "";
+        }
+        } else {
+        this.selectedSigId = null;
+        this.signatureText = "";
+        }
+    } else {
         this.mailbodyText = "";
         this.subject = "";
-      }
+        this.selectedSigId = null;
+        this.signatureText = "";
+    }
     },
+
 
     handleSelectRecipient(data) {
       const allNames = [...data.names];

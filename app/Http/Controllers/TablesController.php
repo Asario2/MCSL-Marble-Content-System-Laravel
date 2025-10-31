@@ -669,53 +669,77 @@ class TablesController extends Controller
             'users' => $users_img,
         ]);
     }
-    public function emailmod(){
-        if(!CheckZRights("SendMail")){
-            header("Location: /no-rigths");
-            exit;
-        }
-        $sigs = DB::table("signatur")->orderBy("position","ASC")->get();
-        $mb = DB::table("newsletter")->orderBy("position","ASC")->get();
-
-        if (CheckZRights("SendMailToAll")) {
-            // Alle User außer id = 0
-            $users = DB::table("users")
-                ->leftJoin('newsletter_blacklist', 'users.email', '=', 'newsletter_blacklist.mail')
-                ->where("xis_disabled", "0")
-                ->where("name", "!=", "Gast")
-                ->select("users.id", "name", "email","xch_newsletter","newsletter_blacklist.mail AS BM"   )
-                ->orderBy("name", "ASC")
-                ->get();
-        } else {
-            // Nur Newsletter-User
-            $users = DB::table('users')
-                ->leftJoin('newsletter_blacklist', 'users.email', '=', 'newsletter_blacklist.mail')
-                ->whereNull('newsletter_blacklist.mail') // ✅ Nur Nutzer, die NICHT in der Blacklist stehen
-                ->where('xch_newsletter','1')
-                ->where('xis_disabled', '0')
-                ->where('name', '!=', 'Gast')
-                ->select('users.id', 'users.name', 'users.email', 'users.xch_newsletter')
-                ->orderBy('users.name', 'ASC')
-                ->get();
-
-        }
-        $ugroups = DB::table("users_rights")->select("id","name")->get();
-        $contacts = DB::table("contacts")->where("Email","!=","")->select("id","Email","Name")->orderBy("Name","ASC")->get();
-        foreach($contacts as $key=>$val)
-        {
-                $data[] = [
-        "id" => $val->id,
-        "name" => $val->Name . " (" . decval($val->Email).")",
-    ];
-
-
-        }
-        return Inertia::render('Components/Social/EmailSender',["sig"=>$sigs,"usergroups"=>$ugroups,"user"=>$users,"contacts"=>$data,"mailbody"=>$mb,'breadcrumbs' => [
-
-                'Email/Newsletter' => route('admin.mailcenter'),
-
-            ],]);
+    public function emailmod()
+{
+    if (!CheckZRights("SendMail")) {
+        header("Location: /no-rigths");
+        exit;
     }
+
+    // 🔹 Signaturen holen
+    $sigs = DB::table("signatur")
+        ->orderBy("position", "ASC")
+        ->select("id", "name", "sigtext", "position")
+        ->get();
+
+    // 🔹 Mailbody / Newsletter holen – mit Signatur-ID
+    $mb = DB::table("newsletter")
+        ->orderBy("position", "ASC")
+        ->select("id", "name", "subject", "Body", "signatur_id", "position")
+        ->get();
+
+    // 🔹 Benutzer laden (abhängig vom Recht)
+    if (CheckZRights("SendMailToAll")) {
+        $users = DB::table("users")
+            ->leftJoin('newsletter_blacklist', 'users.email', '=', 'newsletter_blacklist.mail')
+            ->where("xis_disabled", "0")
+            ->where("name", "!=", "Gast")
+            ->select("users.id", "name", "email", "xch_newsletter", "newsletter_blacklist.mail AS BM")
+            ->orderBy("name", "ASC")
+            ->get();
+    } else {
+        $users = DB::table('users')
+            ->leftJoin('newsletter_blacklist', 'users.email', '=', 'newsletter_blacklist.mail')
+            ->whereNull('newsletter_blacklist.mail')
+            ->where('xch_newsletter', '1')
+            ->where('xis_disabled', '0')
+            ->where('name', '!=', 'Gast')
+            ->select('users.id', 'users.name', 'users.email', 'users.xch_newsletter')
+            ->orderBy('users.name', 'ASC')
+            ->get();
+    }
+
+    // 🔹 Gruppen
+    $ugroups = DB::table("users_rights")->select("id", "name")->get();
+
+    // 🔹 Kontakte
+    $contacts = DB::table("contacts")
+        ->where("Email", "!=", "")
+        ->select("id", "Email", "Name")
+        ->orderBy("Name", "ASC")
+        ->get();
+
+    $data = [];
+    foreach ($contacts as $val) {
+        $data[] = [
+            "id" => $val->id,
+            "name" => $val->Name . " (" . decval($val->Email) . ")",
+        ];
+    }
+
+    // 🔹 Rückgabe an Vue
+    return Inertia::render('Components/Social/EmailSender', [
+        "sig" => $sigs,
+        "usergroups" => $ugroups,
+        "user" => $users,
+        "contacts" => $data,
+        "mailbody" => $mb,
+        'breadcrumbs' => [
+            'Email/Newsletter' => route('admin.mailcenter'),
+        ],
+    ]);
+}
+
         function randomString64() {
         $chars = '-._0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         $length = strlen($chars);

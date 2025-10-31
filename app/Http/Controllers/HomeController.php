@@ -206,7 +206,7 @@ class HomeController extends Controller
     }
     public function home_images_search_cat(Request $request)
     {
-        // if($slug != "Alphabet")
+        //if($slug != "Alphabet")
         // {
         //     $ord[0] = "created_at";
         //     $ord[1] = "DESC";
@@ -291,10 +291,12 @@ return Inertia::render('Homepage/Pictures', [
     {
         if($slug != "Alphabet")
         {
+
             $ord[0] = "created_at";
             $ord[1] = "DESC";
         }
         else{
+
             $ord[0] = "position";
             $ord[1] = "ASC";
         }
@@ -312,7 +314,7 @@ return Inertia::render('Homepage/Pictures', [
                       ->orWhere("images.created_at", "like", "%{$search}%");
                 });
             })
-            ->orderByDesc("images.created_at")
+            ->orderBy($ord[0],$ord[1])
             ->paginate(20);
 
         // \Log::info("cr:".CheckRights(Auth::id(),"images","date"));
