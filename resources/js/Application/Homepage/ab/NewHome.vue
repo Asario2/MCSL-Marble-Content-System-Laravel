@@ -1,16 +1,40 @@
 <template>
 <Layout>
-<div
+     <MetaHeader title="Willkommen auf Asarios Blog" />
+<section class="bg-layout-sun-0 text-layout-sun-800 dark:bg-layout-night-0 dark:text-layout-night-800 p-4">
+  <div
   id="arrow"
   class="absolute right-5 top-[calc(var(--nav-height,5.7rem)+0.5rem)] z-40 flex justify-center items-center cursor-pointer hover:scale-110 transition-transform duration-300"
 >
   <JArrow />
 </div>
 
-  <div itemscope itemtype="http://schema.org/Person">
-    <img :src="'/images/_ab/web/about-me.jpg'" alt="Paul Rieser" /><br />
+<div class="block max-w-sm gap-3 p-5 lg:rounded gap-3 rounded mx-auto sm:max-w-full group hover:no-underline focus:no-underline bg-layout-sun-100 dark:bg-layout-night-100" itemscope itemtype="http://schema.org/Person">
+    <img :src="'/images/_ab/web/about-me.jpg'" alt="Paul Rieser" class="w-[calc(100%+4rem)] mx-auto" />
 
-    Hi, ich bin <span itemprop="name">Paul Rieser</span>,
+  <h3 itemprop="headline">
+    Willkommen auf Asarios Blog – wo Kunst, Fotografie und Webdesign verschmelzen.
+  </h3>
+
+  <p itemprop="description">
+    Dieser Ort ist meine kreative Spielwiese: eine Sammlung von Bildern, Ideen und
+    Designkonzepten, die zeigen, wie unterschiedlich Schönheit entstehen kann.
+  </p>
+
+  <p>
+    Als <span itemprop="jobTitle">Künstler</span> und
+    <span itemprop="jobTitle">Webdesigner</span> liebe ich es, mit
+    <span itemprop="knowsAbout">Licht</span>,
+    <span itemprop="knowsAbout">Farbe</span> und
+    <span itemprop="knowsAbout">Form</span> zu arbeiten – egal, ob auf Leinwand,
+    in der Kamera oder im Code.
+  </p>
+
+  <p>
+    Nimm dir Zeit, durch meine Werke zu stöbern und die
+    <span itemprop="knowsAbout">Kunst hinter den Pixeln</span> zu entdecken.
+  </p><br/><br />
+    Ich <span itemprop="name">Paul Rieser</span>,
     arbeite seit 1998 als <span itemprop="jobTitle">Webdesigner</span> und liebe es,
     spannende Projekte umzusetzen. Mein größtes Abenteuer bisher war
     <a href="https://www.asario.de" itemprop="url">www.asario.de</a> bei
@@ -52,8 +76,11 @@
       >
         Zu meinem Blog
       </button>
+
     </div>
-  </div>
+</div>
+</section>
+
 </Layout>
 </template>
 
