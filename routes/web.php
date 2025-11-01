@@ -630,7 +630,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     // ====================
     Route::middleware(['is_customer'])->group(function () {
         // Dashboard
-        Route::get('/customer/dashboard', [DashboardCustomerController::class, 'customer_index'])
+        Route::get('/home/dashboard', [DashboardCustomerController::class, 'customer_index'])
             ->name('customer.dashboard');
 
         });

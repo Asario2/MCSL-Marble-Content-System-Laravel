@@ -129,3 +129,4 @@
 ![Version](https://img.shields.io/badge/version-3.33.2-orange) Feature - Dynamic arrow on mobile devices @ Home  (#222)  
 ![Version](https://img.shields.io/badge/version-3.34.5-orange) Hotfix - Remove Bug in TableShow (#229)  
 ![Version](https://img.shields.io/badge/version-3.35.8-orange) Feature - Smilies on Comments (#145)  
+![Version](https://img.shields.io/badge/version-3.36.5-orange) Hotfix - evil bug in user handling (#231)  

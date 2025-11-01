@@ -75,7 +75,19 @@ class MailController extends Controller
     );
         $this->SendMail("Newsletter Anmeldung","emails.newslsub",$request->email,$request->title." ".$request->firstname." ".$request->lastname,"http://".request()->getHost()."/mail/subscribe/".$uhash."/".$request->email,$html,$uhash);
     }
-    function SendMail($title,$template,$email,$nick,$link,$html,$uhash='')
+
+function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
+    if(empty($email)) return false;
+
+    $html = str_replace('%uhash%', $uhash, $html);
+    $email = decval($email);
+    Mail::send([], [], function ($message) use ($email, $html, $title) {
+        $message->to($email)
+                ->subject($title)
+                ->html($html);
+    });
+}
+    function SendMail_old($title,$template,$email,$nick,$link,$html,$uhash='')
     {
         $nick = trim($nick);
 //         \Log::info([$template,$email,$nick,$link]);
@@ -273,6 +285,21 @@ class MailController extends Controller
 
        return Inertia::render("Components/Social/Emails_Sended",["i"=>$i]);
 
+    }
+    function SendReg(Request $request) {
+        $email = "parie@gmx.de";
+        $nick  = htmlspecialchars($request->name, ENT_QUOTES, 'UTF-8');
+        $link  = route('users.show', $request->id); // Beispiel-Link
+
+        $cont = '
+            <h2>Hallo Paule,</h2>
+            <p>Ein neuer Benutzer namens ' . $nick . ' hat sich auf ' . request()->getHost() . ' registriert.<br><br></p>
+            <p><a href="' . $link . '">Zum Profil</a></p>
+        ';
+
+        $uhash = "asd";
+
+        $this->SendMail("Neuer Nutzer auf " . SD(1), "send", $email, $nick, $link, $cont, $uhash);
     }
     function replink($con,$title,$email,$nick,$link=''){
         $l = '{{ $link }}';

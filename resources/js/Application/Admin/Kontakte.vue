@@ -1,10 +1,10 @@
 <template>
     <Layout>
       <div class="p-4 bg-gray-900 text-white min-h-screen">
-        <addbtn table="contacts" text="Neuer Kontakt"></addbtn>
+        <addbtn table="contacts" text="Neuer Kontakt" :safe="true"></addbtn>
         <!-- Prüfen ob Kontakte vorhanden sind -->
-<newbtn table="didyouknow">
-            </newbtn>
+<!-- <newbtn table="contacts"> -->
+            <!-- </newbtn> -->
             <div class="flex justify-between items-center">
                 <search-filter
                 v-if="searchFilter"
@@ -85,7 +85,7 @@
                       </td>
                       <td class="px-4 py-1 border-r border-black">{{ contact.Telefon || '-' }}</td>
                       <td class="px-4 py-1 border-black">{{ contact.Handy || '-' }}</td>
-                      <td class="px-4 py-1 border-black"><editbtns v-if="contact.us_poster == UID" table="contacts" :id="contact.id" :uid="contact.us_poster"></editbtns></td>
+                      <td class="px-4 py-1 border-black"><editbtns v-if="contact.us_poster == UID" table="contacts" :id="contact.id" :uid="contact.us_poster" :safe="false"></editbtns></td>
                     </tr>
 
                     <!-- Detail-Zeile -->

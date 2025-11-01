@@ -10,6 +10,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\IMULController;
 use App\Http\Controllers\GlobalController;
+use App\Http\Controllers\MailController;
 use App\Models\BlogPost;
 use App\Models\Neues;
 use App\Models\Comment;
@@ -37,6 +38,11 @@ class PagesController extends Controller
                 'subscribed_at' => now(),
             ]);
             DB::table("newsletter_blacklist")->where("mail",$request->mail)->delete();
+
+$adminEmail = "parie@gmx.de";  // oder deine IONOS-Mail
+    $admin = (object) ['email' => $adminEmail]; // Dummy-Notifiable
+    $admin->notify(new NewUserRegistered($user));
+
             return true;
         }
         else

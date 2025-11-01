@@ -1,5 +1,5 @@
 <template>
-<span v-if="hasRight('edit',table)">
+<span v-if="hasRight('edit',table) || (users_id && users_id == page.props.user.id)">
 <a :href="'/admin/tables/edit/'+ id+ '/' + table + ''" @click.stop><IconPencil class="sm-pencil cursor-pointer tw"></IconPencil></a>
 &nbsp;&nbsp;</span>
 <span v-if="hasRight('delete',table)">
@@ -9,7 +9,7 @@
 </span>
 
 </template>
-<script>    
+<script>
 import IconPencil from "@/Application/Components/Icons/Pencil.vue";
 import { toastBus } from '@/utils/toastBus';
 import IconTrash from "@/Application/Components/Icons/Trash.vue";
@@ -30,8 +30,12 @@ export default {
             default:0
         },
         Rdelete: {String, default: 0,},
-                id: { type: Number },
-                table:{type:String},
+        id: { type: Number },
+        table:{type:String},
+        users_id:{
+            type:[String,Number],
+            default:null,
+        }
 
     },
     data()

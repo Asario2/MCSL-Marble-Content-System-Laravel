@@ -11,7 +11,7 @@ class UserIsAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::user()->is_admin) {
+        if (!Auth::user()->is_admin && !Auth::user()->is_customer) {
             Auth::guard('web')->logout();
             return redirect(route('home.user_is_no_admin'));
         }

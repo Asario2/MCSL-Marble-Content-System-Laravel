@@ -1,5 +1,5 @@
 <template>
-    <span v-if="hasRight('add', table)">
+    <span v-if="hasRight('add', table) || safe">
         <Link :href="`/admin/tables/create/${table}`" class=" inline-flex items-center px-1 py-1.5 md:px-2 md:py-2 h-6 md:h-8 rounded-md font-medium text-xs tracking-widest disabled:opacity-25 transition cursor-pointer focus:ring focus:outline-none button_bg button_text_case_bg">
             <PlusCircle class="cursor-pointer " />&nbsp;<span class="tb">{{ text }}</span>
         </Link>
@@ -38,6 +38,11 @@ export default {
             type: String,
             default: "Erstellen",
         },
+        safe:{
+            type:Boolean,
+            default:false,
+        },
+        
 
     },
     data() {
@@ -59,6 +64,9 @@ export default {
             this.uid_orig = res.data.id;
         },
         hasRight(right, table) {
+            if(this.safe){
+                return true;
+            }
             const result = hasRightSync(right, table);
 //             console.log(`Right check - ${right} for ${table}:`, result);
             return result;
