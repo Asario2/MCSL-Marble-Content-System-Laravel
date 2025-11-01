@@ -35,9 +35,14 @@
                 <tr v-if="showComments === postId">
                     <td colspan="3" class="p-4 h-auto align-top" style="z-index:1000 !important;" :id="'commentBox_' + postId">
                         <div class="w300 zi relative border border-gray-300 p-4 rounded-lg shadow-sm bg-white dark:bg-gray-800">
-                            <button @click.stop.prevent="closeComments()" class=" top-2 right-2 text-red-500 text-xl font-bold">
+                            <button
+                                @click.stop.prevent="closeComments()"
+                                class="absolute top-4 right-5 text-gray-500 hover:text-gray-700 text-xl font-bold z-30"
+                                title="Kommentare schließen"
+                            >
                                 &times;
                             </button>
+                            <br />
                             <Comments :postId="postId" :showComments="showComments" />
                         </div>
                     </td>

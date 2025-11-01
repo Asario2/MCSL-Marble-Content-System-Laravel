@@ -34,6 +34,7 @@ class SettingsController extends Controller
             'descalias' => Settings::$descalias,
             "presetting"=> Settings::$presetting,
             "aftsetting"=> Settings::$aftsetting,
+            "thirdparty"=> Settings::$thirdparty,
 
         ]);
     }

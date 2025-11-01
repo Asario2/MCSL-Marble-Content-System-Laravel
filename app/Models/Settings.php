@@ -43,7 +43,7 @@
         public static array $big_thumb = ["users","blog_posts","images"];
         public static array $int_date_tables = ["didyouknow"];
         public static array $textfield = ["HTML"]; // Mdown / HTML
-
+        public static array $thirdparty = ["blog_authors"=>"Info"];
         public static function exclWhere(): array
         {
             return [
@@ -99,8 +99,10 @@
             "kontakt"=>"name",
             "lostnfound"=>"headline",
             "links"=>"headline",
-
-    ];
+            "categories"=>"name",
+            "types"=>"name",
+            "users_rights"=>"name",
+            ];
     public static array $searchable = [
         'ab' => ["images","blogs","didyouknow","shortpoems","users"],
         'mfx' => ['images',"people","projects"],
@@ -113,6 +115,7 @@
             "blog_authors" => ['name',"Info"],
             "blog_categories" => ['name',"summary"],
             "blog_images" => ['name'],
+            "types" => ['name,"name_en'],
             "images"=> ['name',"message"],
             "comments" => ['users.name','content',"email","admin_table.name"],
             "didyouknow" => ['headline',"answer"],
@@ -135,7 +138,8 @@
             "lostnfound"=>["headline","message"],
             "links"=>["headline","url","messsage"],
             "contacts"=>["Name","Gruppe"],
-
+            "categories"=>["name","name_en"],
+            "users_rights"=>["name","shortname"],
     ];
     public static array $otherField = [
         'admin_table'=> "description",
@@ -163,7 +167,10 @@
         "lostnfound"=>"message",
         "links"=>"url",
         "contacts"=>'Name',
+        "categories"=>'name_en',
         "sprueche"=>"text",
+        "types" => 'name_en',
+        "users_rights"=>"shortname"
     ];
     public static array $namealias = [
         "comments"=>"Kommentar",
@@ -173,6 +180,8 @@
         "contacts"=>"Gruppe",
         "sprueche"=>"Author",
         "blog_authors"=>"Author",
+        "categories"=>"Kategorie",
+        "users_rights"=>"Name",
     ];
     public static array $descalias = [
         "comments"=>"Autor",
@@ -182,6 +191,7 @@
         "shortpoems"=>"Autor",
         "didyouknow"=>"Autor",
         "texts"=>"Autor",
+        "categories"=>"Kategorie Englsich",
         "images"=>"Autor",
         "projects_sheets"=>"Aufgabe",
         "kontakt"=>"Email",
@@ -189,6 +199,7 @@
         "sprueche"=>"Text",
         "links"=>"URL",
         'contacts'=>"Name",
+        'users_rights'=>"Kurzname",
     ];
     public static array $underCals=[
     'comments' => "name",

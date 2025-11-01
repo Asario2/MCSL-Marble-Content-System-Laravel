@@ -28,11 +28,11 @@
     --tw-border-opacity: 1;
     border-color: rgb(243 244 246 / var(--tw-border-opacity, 1));
     }
-    a:link:hover,a:visited:hover,a:active:hover{
+    a.as:link:hover,a.as:visited:hover,a.as:active:hover{
     text-decoration: underline;
     color:#0ea5e9 !important;
 }
-a:link,a:visited,a:active{
+a.as:link,a.as:visited,a.as:active{
 
     color:#0ea5e9 !important;
 }

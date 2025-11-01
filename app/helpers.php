@@ -151,89 +151,93 @@ if(!function_exists("renderText"))
         use App\Models\Settings;
         use Illuminate\Support\Facades\Session;
         use Illuminate\Support\Facades\Schema;
-        if (!Builder::hasMacro('filterdefault')) {
-            Builder::macro('filterdefault', function ($filters) {
-                $path = request()->path(); // Gibt "home/show/images/search/Fasermaler"
-                $path = strtolower($path);
-                $parts = explode("/", $path);
+      if (!Builder::hasMacro('filterdefault')) {
+    Builder::macro('filterdefault', function ($filters) {
+        $path = request()->path();
+        $path = strtolower($path);
+        $parts = explode("/", $path);
 
-                foreach(gettables() as $ta)
-                {
-                    if(in_array($ta,$parts))
-                    {
-
-                        $table = $ta;
-                        $_GET['table'] = $ta;
-
-                    }
-                }
-                if(@$table == "pictures" || $table == "image_categories")
-                {
-                        $table = "images";
-                        $_GET['table'] = $table;
-                }
-                if(empty($table)){
-                        // $table = "comments";
-                        // dd($parts);
-                }
-                // dd($parts,$_GET['table']);
-
-                if (!empty($filters['search'])) {
-
-
-
-
-                    $whvals = @Settings::$searchFields[$table] ?? []; // Rufe `whvals` korrekt auf
-                    $subvals = @Settings::$searchFields[$table];
-                    foreach($subvals as $key=>$val)
-                    {
-                        if(substr_count($val,"."))
-                        {
-                            $whh[$table][$key] = explode(".",Settings::$searchFields[$table][$key])[0];
-                            $whvals[] = $whh[$table][$key];
-                        }
-                    }
-
-                    // dd($whvals);
-
-                    foreach ($whvals as $whn) {
-                        if(@is_array($whh[$table]))
-                        {
-                            foreach($whh[$table] as $skey=>$sval){
-
-                                $this->orWhereRaw("LOWER(`$sval` . `name`) LIKE ?", ['%' . html_entity_decode(strtolower($filters['search'])) . '%']);
-                            }
-                        }
-//                         \Log::info("LOWER(`$table` . `$whn`) LIKE ?", ['%' . html_entity_decode(strtolower($filters['search'])) . '%']);
-                        if(!substr_count($whn,".") && Schema::hasColumn($table, $whn))
-                        {
-                            $this->orWhereRaw("LOWER(`$table` . `$whn`) LIKE ?", ['%' . html_entity_decode(strtolower($filters['search'])) . '%']);
-                        }
-
-                        // dd($whn);
-
-                    }
-
-
-                    $columns = Schema::getColumnListing($table);
-                    if(in_array("created_at",$columns)){
-                        $this->orWhere("$table.created_at", 'like', '%'.$filters['search']. '%');
-                    }
-                    if(in_array("date_begin",$columns)){
-                        $this->orWhere("$table.date_begin", 'like', '%'.$filters['search']. '%');
-                    }
-                    // ID
-                    $this->orWhere("$table.id", 'like', '%'.$filters['search']. '%');
-
-                }
-                // \Log::info("GT:".$table);
-                $this->orWhere("{$table}.id","like",'%'.$filters['search'].'%');
-                // dd($this->toSql(), $this->getBindings());
-                // \Log::info("this:".json_encode($this,JSON_PRETTY_PRINT));
-                return $this;
-            });
+        foreach(gettables() as $ta) {
+            if(in_array($ta,$parts)) {
+                $table = $ta;
+                $_GET['table'] = $ta;
+            }
         }
 
+        if(@$table == "pictures" || $table == "image_categories") {
+            $table = "images";
+            $_GET['table'] = $table;
+        }
+
+        if (!empty($filters['search'])) {
+            $searchTerm = html_entity_decode(strtolower($filters['search']));
+
+            \Log::info("=== START FILTERDEBUG ===");
+            \Log::info("Searching in table: " . $table);
+            \Log::info("Search term: " . $filters['search']);
+
+            $whvals = @Settings::$searchFields[$table] ?? [];
+            $subvals = @Settings::$searchFields[$table];
+            $whh = [];
+
+            foreach($subvals as $key=>$val) {
+                if(substr_count($val,".")) {
+                    $whh[$table][$key] = explode(".",Settings::$searchFields[$table][$key])[0];
+                    $whvals[] = $whh[$table][$key];
+                }
+            }
+
+            \Log::info("Search fields: " . json_encode($whvals));
+
+            // Zuerst alle anderen Felder durchsuchen
+            foreach ($whvals as $whn) {
+                if(@is_array($whh[$table])) {
+                    foreach($whh[$table] as $skey=>$sval){
+                        $this->orWhereRaw("LOWER(`$sval`.`name`) LIKE ?", ['%' . $searchTerm . '%']);
+                        \Log::info("Added search for related table: $sval.name");
+                    }
+                }
+
+                if(!substr_count($whn,".") && Schema::hasColumn($table, $whn)) {
+                    $this->orWhereRaw("LOWER(`$table`.`$whn`) LIKE ?", ['%' . $searchTerm . '%']);
+                    \Log::info("Added search for column: $table.$whn");
+                }
+            }
+
+            $columns = Schema::getColumnListing($table);
+            \Log::info("Available columns: " . implode(', ', $columns));
+
+            // created_at Suche
+            if(in_array("created_at",$columns)){
+                \Log::info("CREATED_AT column exists - adding search conditions");
+
+                // Einfache LIKE-Suche
+                $this->orWhere("$table.created_at", 'like', '%'. $filters['search'] . '%');
+                \Log::info("Added simple LIKE for created_at: " . $filters['search']);
+
+                // Debug: SQL Query vor created_at
+                \Log::info("SQL before created_at: " . $this->toSql());
+                \Log::info("Bindings before created_at: " . json_encode($this->getBindings()));
+            }
+
+            if(in_array("date_begin",$columns)){
+                $this->orWhere("$table.date_begin", 'like', '%'. $filters['search'] . '%');
+                \Log::info("Added search for date_begin");
+            }
+
+            // ID als letztes hinzufügen
+            $this->orWhere("$table.id", 'like', '%'. $filters['search'] . '%');
+            \Log::info("Added search for ID");
+
+            // Debug: Finale SQL Query
+            \Log::info("Final SQL: " . $this->toSql());
+            \Log::info("Final Bindings: " . json_encode($this->getBindings()));
+            \Log::info("=== END FILTERDEBUG ===");
+        }
+
+        return $this;
+    });
+}
 if(!function_exists("gettables"))
 {
     function gettables()

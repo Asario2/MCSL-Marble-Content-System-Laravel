@@ -559,7 +559,7 @@ return Inertia::render('Homepage/Pictures', [
                   ->orWhere("images.pub", 2);
         })->when(request("search"), function ($query) use ($slug) {
             $query->where(function ($subquery) {
-                $subquery->filterdefault(['search' => request('search')]);
+                $subquery->filtertest(['search' => request('search')]);
             });
         })
         ->orderBy($ord[0], $ord[1])

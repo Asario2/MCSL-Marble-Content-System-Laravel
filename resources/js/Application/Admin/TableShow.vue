@@ -33,6 +33,7 @@
               <th v-if="table_head" class="np-dl-ht-normal">{{ table_head }}</th>
               <th class="np-dl-th-normal">{{ prename }}</th>
               <th class="np-dl-th-normal">{{ predesc }}</th>
+              <th v-if="tpart" class="np-dl-th-normal">{{ tpart }}</th>
               <th v-if="table == 'ratings'">{{ imagedesc }}</th>
               <th v-if="aftsetting" class="np-dl-ht-normal">{{ aftsetting }}</th>
               <th class="np-dl-th-normal" v-if="table === 'comments'">Check</th>
@@ -237,6 +238,7 @@
       datarows: { type: [Array, String], required: true, default: () => [] },
       itemName_des: { type: String, default: "" },
       formData: { type: String, default: "" },
+      thirdparty: String,
     },
     data() {
       return {
@@ -260,6 +262,12 @@
       };
     },
     computed: {
+        tpart(){
+            if(this.thirdparty){
+                return this.thirdparty[this.table];
+            }
+            return false;
+        },
       prename() {
         return this.namealias[this.table] ?? "Name";
       },

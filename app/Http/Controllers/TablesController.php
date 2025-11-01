@@ -494,180 +494,246 @@ class TablesController extends Controller
             //    \Log::info("item:".json_encode($formFields,JSON_PRETTY_PRINT));
             return response()->json($formFields);
     }
-    public function ShowTable(Request $request, $table_alt = null)
-    {
-        $table = $table_alt ?? 'images';
-        $path = strtolower($request->path());
-        $parts = explode("/", $path);
+public function ShowTable(Request $request, $table_alt = null)
+{
+    $table = $table_alt ?? 'images';
+    $path = strtolower($request->path());
+    $parts = explode("/", $path);
 
-        foreach (gettables() as $ta) {
-            if (in_array($ta, $parts)) {
-                $table = $ta;
-                $_GET['table'] = $ta;
+    foreach (gettables() as $ta) {
+        if (in_array($ta, $parts)) {
+            $table = $ta;
+            $_GET['table'] = $ta;
+        }
+    }
+
+    if (!$table || !Schema::hasTable($table)) {
+        abort(404, "Tabelle existiert nicht.");
+    }
+
+    if (!CheckRights(Auth::id(), $table, "view")) {
+        return redirect("/no-rights");
+    }
+
+    $columns = Schema::getColumnListing($table);
+    $joins = [];
+    $selects = ["{$table}.*"];
+
+    $headline = Settings::$headline[$table] ?? 'id';
+    $otherField = Settings::$otherField[$table] ?? null;
+
+    // Name alias
+    $selects[] = "{$table}.{$headline} AS name";
+
+    // Beschreibung oder User
+    if ($otherField != "users_id") {
+        $selects[] = "{$table}.{$otherField} AS description";
+    } elseif (in_array('users_id', $columns)) {
+        $joins['users'] = [
+            'from' => 'users.id',
+            'to'   => "{$table}.users_id",
+        ];
+        $selects[] = "users.name AS users";
+        $selects[] = "{$table}.users_id";
+    }
+
+    // JOINs für *_id-Felder
+    foreach ($columns as $col) {
+        if (Str::endsWith($col, '_id')) {
+            $baseName = Str::beforeLast($col, '_id');
+            $relatedTable = $baseName;
+
+            if (Schema::hasTable($relatedTable) && !isset($joins[$relatedTable])) {
+                $joins[$relatedTable] = [
+                    'from' => "{$relatedTable}.id",
+                    'to'   => "{$table}.{$col}",
+                ];
+                $selects[] = "{$relatedTable}.name AS {$baseName}";
             }
+
+            $selects[] = "{$table}.{$col}";
         }
+    }
 
-        if (!$table || !Schema::hasTable($table)) {
-            abort(404, "Tabelle existiert nicht.");
-        }
+    $query = DB::table($table)->select($selects);
 
-        if (!CheckRights(Auth::id(), $table, "view")) {
-            return redirect("/no-rights");
-        }
+    foreach ($joins as $relatedTable => $join) {
+        $query->leftJoin($relatedTable, $join['to'], '=', $join['from']);
+    }
 
-        $columns = Schema::getColumnListing($table);
-        $joins = [];
-        $selects = ["{$table}.*"];
+    // --- Suchfilter auf Name, Description, ID, created_at ---
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $searchLower = strtolower($search);
 
-        $headline = Settings::$headline[$table] ?? 'id';
-        $otherField = Settings::$otherField[$table] ?? null;
+        $query->where(function($q) use ($searchLower, $headline, $otherField, $table, $columns) {
+            // Name (Headline)
+            $q->whereRaw("LOWER({$table}.{$headline}) LIKE ?", ["%{$searchLower}%"]);
 
-        // Name alias
-        $selects[] = "{$table}.{$headline} AS name";
-
-        // Beschreibung oder User
-        if ($otherField != "users_id") {
-            $selects[] = "{$table}.{$otherField} AS description";
-        } elseif (in_array('users_id', $columns)) {
-            $joins['users'] = [
-                'from' => 'users.id',
-                'to'   => "{$table}.users_id",
-            ];
-            $selects[] = "users.name AS users";
-            $selects[] = "{$table}.users_id";
-        }
-
-        // JOINs für *_id-Felder
-        foreach ($columns as $col) {
-            if (Str::endsWith($col, '_id')) {
-                $baseName = Str::beforeLast($col, '_id');
-                $relatedTable = $baseName;
-
-                if (Schema::hasTable($relatedTable) && !isset($joins[$relatedTable])) {
-                    $joins[$relatedTable] = [
-                        'from' => "{$relatedTable}.id",
-                        'to'   => "{$table}.{$col}",
-                    ];
-                    $selects[] = "{$relatedTable}.name AS {$baseName}";
-                }
-
-                $selects[] = "{$table}.{$col}";
+            // Other Field
+            if ($otherField) {
+                $q->orWhereRaw("LOWER({$table}.{$otherField}) LIKE ?", ["%{$searchLower}%"]);
             }
-        }
 
-        $query = DB::table($table)->select($selects);
+            // ID
+            if (in_array('id', $columns)) {
+                $q->orWhere("{$table}.id", 'like', "%{$searchLower}%");
+            }
 
-        foreach ($joins as $relatedTable => $join) {
-            $query->leftJoin($relatedTable, $join['to'], '=', $join['from']);
-        }
+            // created_at durchsuchen (updated_at ignorieren)
+            if (in_array('created_at', $columns)) {
+                $q->orWhere("{$table}.created_at", 'like', "%{$searchLower}%");
+            }
+        });
+    }
 
-        // **Suchfilter nur auf Name + Description**
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function($q) use ($search, $headline, $otherField, $table) {
-                $searchLower = strtolower($search);
+    // whereNot für spezielle Tabellen
+    $xis = $table.".id";
+    $xisd = "-1";
+    if ($table == "users") {
+        $xis = "xis_disabled";
+        $xisd = "1";
+    }
+    $query->whereNot($xis, $xisd);
 
-                $q->whereRaw("LOWER({$table}.{$headline}) LIKE ?", ["%{$searchLower}%"]);
+    // Sortierung
+    if(Schema::hasColumn($table,"position")){
+        $ord = ["position","asc"];
+    } elseif (in_array($table, ["blogs", "didyouknow", "images", "comments", "shortpoems"])) {
+        $ord = ["created_at", "DESC"];
+    } elseif(in_array($table, ["admin_table", "image_categories", "camera","users"])) {
+        $ord = ["name","ASC"];
+    } elseif(in_array($table, ["news", "projects"])) {
+        $ord = ["created_at","DESC"];
+    } elseif($table == "privacy") {
+        $ord = ["created_at","ASC"];
+    } elseif($table == "texts") {
+        $ord = ["headline","ASC"];
+    } elseif($table == "contacts") {
+        $ord = ["Name","ASC"];
+    } else {
+        $ord = ["id", "DESC"];
+    }
 
-                if ($otherField && !in_array($otherField, ['id', 'created_at', 'updated_at'])) {
-                    $q->orWhereRaw("LOWER({$table}.{$otherField}) LIKE ?", ["%{$searchLower}%"]);
-                }
-            });
-        }
+    $orderColumn = $table.".".$ord[0];
+    $orderDirection = strtoupper($ord[1]) === 'DESC' ? 'DESC' : 'ASC';
+    $query->orderBy($orderColumn, $orderDirection);
+    $query = $this->applyExclWhere($table, $query);
 
-        // whereNot für spezielle Tabellen
-        $xis = $table.".id";
-        $xisd = "-1";
-        if ($table == "users") {
-            $xis = "xis_disabled";
-            $xisd = "1";
-        }
-        $query->whereNot($xis, $xisd);
+    // Pagination
+    $pag = 20;
+    $tables = $query->paginate($pag)->withQueryString();
 
-        // Sortierung
-        if(Schema::hasColumn($table,"position")){
-            $ord = ["position","asc"];
-        } elseif (in_array($table, ["blogs", "didyouknow", "images", "comments", "shortpoems"])) {
-            $ord = ["created_at", "DESC"];
-        } elseif(in_array($table, ["admin_table", "image_categories", "camera","users"])) {
-            $ord = ["name","ASC"];
-        } elseif(in_array($table, ["news", "projects"])) {
-            $ord = ["created_at","DESC"];
-        } elseif($table == "privacy") {
-            $ord = ["created_at","ASC"];
-        } elseif($table == "texts") {
-            $ord = ["headline","ASC"];
-        }
-        elseif($table == "contacts")
-        {
-            $ord = ["Name","ASC"];
-        }
-        else {
-            $ord = ["id", "DESC"];
-        }
-        // dd($ord);
-        $orderColumn = $table.".".$ord[0];
-        $orderDirection = strtoupper($ord[1]) === 'DESC' ? 'DESC' : 'ASC';
-        $query->orderBy($orderColumn, $orderDirection);
-        $query = $this->applyExclWhere($table, $query);
-
-        // Pagination
-        $pag = 20;
-        $tables = $query->paginate($pag)->withQueryString();
-
-        // Beschreibung kürzen
-        if ($otherField) {
-            $tables->getCollection()->transform(function ($item) use ($otherField) {
-                if (isset($item->$otherField)) {
-                    $item->description = html_entity_decode(KILLMD($item->$otherField, 18, 3));
-                }
-                return $item;
-            });
-        }
-
-        // Hauptname-Text decodieren
-        $tables->getCollection()->transform(function ($item) use ($table) {
-            $nameField = "{$table}_name";
-            if (isset($item->$nameField)) {
-                $item->$nameField = html_entity_decode($item->$nameField);
+    // Beschreibung kürzen
+    if ($otherField) {
+        $tables->getCollection()->transform(function ($item) use ($otherField) {
+            if (isset($item->$otherField)) {
+                $item->description = html_entity_decode(KILLMD($item->$otherField, 18, 3));
             }
             return $item;
         });
+    }
 
-        // Nutzerbilder laden
-        $result = $tables->items();
-        $userIds = collect($result)->pluck('users_id')->unique()->filter()->values();
-        $users_img = DB::table('users')
-            ->whereIn('id', $userIds)
-            ->select('id', 'profile_photo_path', 'name')
-            ->get()
-            ->keyBy('id')
-            ->map(function ($user) {
-                return [
-                    'img' => $user->profile_photo_path,
-                    'name' => $user->name,
-                ];
+    // Hauptname-Text decodieren
+    $tables->getCollection()->transform(function ($item) use ($table) {
+        $nameField = "{$table}_name";
+        if (isset($item->$nameField)) {
+            $item->$nameField = html_entity_decode($item->$nameField);
+        }
+        return $item;
+    });
+
+    // Nutzerbilder laden
+    $result = $tables->items();
+    $userIds = collect($result)->pluck('users_id')->unique()->filter()->values();
+    $users_img = DB::table('users')
+        ->whereIn('id', $userIds)
+        ->select('id', 'profile_photo_path', 'name')
+        ->get()
+        ->keyBy('id')
+        ->map(function ($user) {
+            return [
+                'img' => $user->profile_photo_path,
+                'name' => $user->name,
+            ];
+        });
+
+    return Inertia::render('Admin/TableShow', [
+        'filters' => array_filter($request->only(['search'])),
+        'searchValue' => $request->input('search'),
+        'breadcrumbs' => [
+            'Liste der Tabellen' => route('admin.tables.index'),
+            "Tabelle ".ucf($table) => null
+        ],
+        'datarows' => $result,
+        'rows' => $tables,
+        'table' => ucf($table),
+        'table_alt' => $table,
+        'ItemName' => 'Beiträge',
+        'itemName_des' => 'Beitrags',
+        'formData' => 'test',
+        'tablez' => ucf($table),
+        'table_q' => strtolower($table),
+        'namealias' => "{$table}_name",
+        'users' => $users_img,
+        "thirdparty" => Settings::$thirdparty,
+    ]);
+}
+
+
+    public function applyExclWhere($table, $query,$safe = false)
+    {
+        $this->safe = $safe;
+        $conditions = Settings::exclWhere();
+
+        if (!isset($conditions[$table])) {
+            return $query; // Keine Filter für diese Tabelle
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        // Prüfen, ob mindestens ein OR existiert
+        $hasOr = collect($conditions[$table])->contains(fn($c) => ($c['type'] ?? 'where') === 'orWhere');
+
+        if ($hasOr) {
+            // Gruppe für Klammern
+            $query->where(function ($q) use ($conditions, $table) {
+                foreach ($conditions[$table] as $cond) {
+                    $type  = $cond['type'] ?? 'where';
+                    $name  = $cond['name'];
+                    $value = $cond['value'];
+
+                    if ($type === 'where') {
+                        $q->where($name, $value);
+                    } elseif ($type === 'orWhere' && !$this->safe) {
+                        $q->orWhere($name, $value);
+                    }
+                }
             });
+        } else {
+            // Normale Reihenfolge ohne OR
+            foreach ($conditions[$table] as $cond) {
+                $type  = $cond['type'] ?? 'where';
+                $name  = $cond['name'];
+                $value = $cond['value'];
 
-        return Inertia::render('Admin/TableShow', [
-            'filters' => array_filter($request->only(['search'])),
-            'searchValue' => $request->input('search'),
-            'breadcrumbs' => [
-                'Liste der Tabellen' => route('admin.tables.index'),
-                "Tabelle ".ucf($table) => null
-            ],
-            'datarows' => $result,
-            'rows' => $tables,
-            'table' => ucf($table),
-            'table_alt' => $table,
-            'ItemName' => 'Beiträge',
-            'itemName_des' => 'Beitrags',
-            'formData' => 'test',
-            'tablez' => ucf($table),
-            'table_q' => strtolower($table),
-            'namealias' => "{$table}_name",
-            'users' => $users_img,
-        ]);
+                if ($type === 'where') {
+                    $query->where($name, $value);
+                } elseif ($type === 'orWhere' && !$this->safe) {
+                    $query->orWhere($name, $value);
+                }
+            }
+        }
+        return $query;
     }
     public function emailmod()
 {
@@ -803,61 +869,6 @@ class TablesController extends Controller
         DB::table("newsletter_reci")->where("email",$email)->where("uhash",$uhash)->update(["pub"=>"1","xis_checked"=>"1","subscribed_at"=>now()]);
         return Inertia::render("Components/Social/newsl_Subscribed");
     }
-    public function applyExclWhere($table, $query,$safe = false)
-    {
-        $this->safe = $safe;
-        $conditions = Settings::exclWhere();
-
-        if (!isset($conditions[$table])) {
-            return $query; // Keine Filter für diese Tabelle
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-        // Prüfen, ob mindestens ein OR existiert
-        $hasOr = collect($conditions[$table])->contains(fn($c) => ($c['type'] ?? 'where') === 'orWhere');
-
-        if ($hasOr) {
-            // Gruppe für Klammern
-            $query->where(function ($q) use ($conditions, $table) {
-                foreach ($conditions[$table] as $cond) {
-                    $type  = $cond['type'] ?? 'where';
-                    $name  = $cond['name'];
-                    $value = $cond['value'];
-
-                    if ($type === 'where') {
-                        $q->where($name, $value);
-                    } elseif ($type === 'orWhere' && !$this->safe) {
-                        $q->orWhere($name, $value);
-                    }
-                }
-            });
-        } else {
-            // Normale Reihenfolge ohne OR
-            foreach ($conditions[$table] as $cond) {
-                $type  = $cond['type'] ?? 'where';
-                $name  = $cond['name'];
-                $value = $cond['value'];
-
-                if ($type === 'where') {
-                    $query->where($name, $value);
-                } elseif ($type === 'orWhere' && !$this->safe) {
-                    $query->orWhere($name, $value);
-                }
-            }
-        }
-        return $query;
-    }
-
     public function ShowTable_old_def(Request $request, $table_alt = null)
     {
         $table = $table_alt ?? 'images';

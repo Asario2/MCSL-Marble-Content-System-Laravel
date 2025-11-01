@@ -131,8 +131,7 @@ class CommentController extends Controller
         $gnow = str_replace(array('["','"]'),'',$gnow);
         $cid = $comment->id;
         $nick = $user->nick_name;
-        $comment = $comment->content;
-        $content = $comment;
+        $content = $comment->content;
         // $MailHelper = NEW MailHelper();
         Mail::to('parie@gmx.de')->send(
             new CommentMail(
