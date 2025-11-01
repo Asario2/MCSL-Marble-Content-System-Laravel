@@ -632,7 +632,7 @@ return Inertia::render('Homepage/Pictures', [
     public function home_userlist()
     {
         $search = Request::input('search');   // ← korrekt für die Facade
-        $users = DB::table("users")->where("xis_disabled","0")->where("pub","1")
+        $users = DB::table("users")->where("pub","1")->where("xis_disabled","0")
         ->when($search, function ($query, $search) {
             return $query->where(function($q) use ($search) {
                 $q->where("users.name", "like", "%{$search}%")

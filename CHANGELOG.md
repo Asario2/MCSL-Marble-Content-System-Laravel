@@ -130,3 +130,4 @@
 ![Version](https://img.shields.io/badge/version-3.34.5-orange) Hotfix - Remove Bug in TableShow (#229)  
 ![Version](https://img.shields.io/badge/version-3.35.8-orange) Feature - Smilies on Comments (#145)  
 ![Version](https://img.shields.io/badge/version-3.36.5-orange) Hotfix - evil bug in user handling (#231)  
+![Version](https://img.shields.io/badge/version-3.37.9-orange) Feature - Register Mail (#230)  

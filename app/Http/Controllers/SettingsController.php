@@ -35,8 +35,9 @@ class SettingsController extends Controller
             "presetting"=> Settings::$presetting,
             "aftsetting"=> Settings::$aftsetting,
             "thirdparty"=> Settings::$thirdparty,
-
+            "userexcl"=> Settings::$userexcl,
         ]);
     }
 }
+
 

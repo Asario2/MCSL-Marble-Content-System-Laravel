@@ -44,6 +44,7 @@
         public static array $int_date_tables = ["didyouknow"];
         public static array $textfield = ["HTML"]; // Mdown / HTML
         public static array $thirdparty = ["blog_authors"=>"Info"];
+        public static array $userexcl = ["contacts"=>"/admin/Kontakte"];
         public static function exclWhere(): array
         {
             return [

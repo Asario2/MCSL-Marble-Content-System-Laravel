@@ -60,6 +60,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'new-password' => 'hashed',
             'last_login_at' => 'datetime',
             'is_admin' => 'boolean',
+             'pub' => 'boolean',
             'is_employee' => 'boolean',
             'is_customer' => 'boolean',
             'xch_newsletter' => 'boolean',

@@ -309,8 +309,10 @@ class TablesController extends Controller
         $breadcrumbs = collect($tablez)->mapWithKeys(function ($item) {
             //return [$item->title => route('admin.tables.show', $item->id)];
         });
+        if(CleanTable() !== 'contacts'){
+                $breadcrumbs = $breadcrumbs->put('Liste der Tabellen', route('admin.tables.index'));
+        }
 
-        $breadcrumbs = $breadcrumbs->put('Liste der Tabellen', route('admin.tables.index'));
         $breadcrumbs->put('Tabelle '.ucf($table), route('admin.tables.show',(["table"=>$table])));
         $breadcrumbs = $breadcrumbs->toArray();
         DB::enableQueryLog();
@@ -506,7 +508,9 @@ public function ShowTable(Request $request, $table_alt = null)
             $_GET['table'] = $ta;
         }
     }
-
+    if (array_key_exists($table, Settings::$userexcl)) {
+        return redirect(Settings::$userexcl[$table]);
+    }
     if (!$table || !Schema::hasTable($table)) {
         abort(404, "Tabelle existiert nicht.");
     }
@@ -2614,6 +2618,16 @@ return Inertia::render('Admin/Kontakte', [
         // \Log::info("res: ".json_encode($res));
         return response()->json($res);
     }
+    function CheckForExcl(Request $request,$table)
+    {
+        $uuid  = DB::table($table)->where("id",$request->id)->select("users_id");
+        if($uuid != Auth::id())
+        {
+            \Log::info([$uuid,Auth::id()]);
+            return false;
+        }
+        return true;
+    }
     function GetImageId($table,$id)
     {
         // DB::enableQueryLog();
@@ -2637,7 +2651,10 @@ return Inertia::render('Admin/Kontakte', [
         if (!Schema::hasTable($table)) {
             return redirect()->back()->withErrors(['error' => 'Tabelle existiert nicht']);
         }
-
+        if(array_key_exists($table,Settings::$userexcl) && !$this->CheckForExcl($request,$table))
+        {
+            return redirect("/no-rights");
+        }
         if (!CheckRights(Auth::id(), $table, "delete")) {
             \Log::warning("No rights to delete in table $table with UID " . Auth::id());
             return redirect()->back()->withErrors(['error' => 'Sie haben nicht die benötigten Rechte']);

@@ -21,6 +21,7 @@ class tablemodals extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'first_name',
         'name',
+        "pub",
         'birthday',
         'music',
         'interests',
@@ -59,6 +60,7 @@ class tablemodals extends Authenticatable implements MustVerifyEmail
             'is_admin' => 'boolean',
             'is_employee' => 'boolean',
             'is_customer' => 'boolean',
+            'pub'   => 'boolean'
         ];
     }
 

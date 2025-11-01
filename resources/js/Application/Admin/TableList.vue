@@ -1,7 +1,7 @@
 <template>
     <layout>
         <template #header>
-            <breadcrumb
+            <breadcrumb v-if="CleanTable() !== 'contacts'"
                 :application-name="$page.props.applications.app_admin_name"
                 :start-page="false"
                 current="Liste der Tabellen"
@@ -132,6 +132,7 @@ export default defineComponent({
     },
 
     methods: {
+        CleanTable,
         async checkRight(right, table) {
             const value = await GetRights(right, table);
             this.rightsData[`${right}_${table}`] = value;

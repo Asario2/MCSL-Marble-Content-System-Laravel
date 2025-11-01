@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Notifications\NewUserRegistered;
+use Illuminate\Support\Facades\Notification;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -42,7 +44,8 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-
+        Notification::route('mail', env('APP_MAINTAINER', 'parie@gmx.de'))
+        ->notify(new NewUserRegistered($user));
         event(new Registered($user));
 
         Auth::login($user);

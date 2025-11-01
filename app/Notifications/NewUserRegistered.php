@@ -3,15 +3,15 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
-class NewUserRegistered extends Notification
+class NewUserRegistered extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $user;  // der neue Benutzer
+    public $user;
 
     public function __construct($user)
     {
@@ -20,18 +20,19 @@ class NewUserRegistered extends Notification
 
     public function via($notifiable)
     {
-        return ['mail']; // nur per E-Mail
+        return ['mail'];
     }
 
     public function toMail($notifiable)
     {
-        $link = url("/users/{$this->user->id}");
-
         return (new MailMessage)
-            ->subject("Neuer Benutzer auf " . request()->getHost())
-            ->greeting("Hallo Paule,")
-            ->line("Ein neuer Benutzer namens {$this->user->name} hat sich auf " . request()->getHost() . " registriert.")
-            ->action('Zum Profil', $link)
-            ->line('Danke, dass du das System betreust!');
+            ->subject('Neuer Benutzer auf deiner Seite')
+            ->greeting('Hallo Admin,')
+            ->line('Ein neuer Benutzer hat sich registriert:')
+            ->line('Name: ' . $this->user->name)
+            ->line('E-Mail: ' . $this->user->email)
+            ->action('Zum Benutzer', url('/admin/users/' . $this->user->id))
+            ->line('Viele Grüße,')
+            ->line(config('app.name'));
     }
 }
