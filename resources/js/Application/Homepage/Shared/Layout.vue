@@ -19,24 +19,6 @@
         </template>
         </meta-header>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <main :class="mode" id="app-layout-start">
         <section class="relative bg-layout-sun-50 text-layout-sun-900 dark:bg-layout-night-50 dark:text-layout-night-900 transition-colors duration-1000"  style='z-index:50;'>
             <!-- Header -->
@@ -45,7 +27,7 @@
                 <div class="flex items-center justify-between">
                 <brand-header :route-name="route('home.index')" :brand_1="$page.props.applications.brand_name_1" :brand_2="$page.props.applications.brand_name_2" :app-name="$page.props.applications.app_name"></brand-header>
                     <div
-                    id="arrow2"     
+                    id="arrow2"
                     class="absolute top-7 z-40 flex justify-center items-center cursor-pointer hover:scale-110 transition-transform duration-300" style="right:4.2rem;display:none;"
                     >
                     <JrightArrow />
@@ -570,6 +552,7 @@
         changeMode() {
           this.mode = this.mode === "dark" ? "light" : "dark";
           localStorage.theme = this.mode;
+          this.isOpen_Menu = false;
         },
 
         logoutUser() {
