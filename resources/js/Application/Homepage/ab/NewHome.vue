@@ -1,6 +1,6 @@
     <template>
     <Layout>
-        <MetaHeader title="Willkommen auf Asarios Blog" />
+        <MetaHeader title="Willkommen auf Asarios Blog"></MetaHeader>
     <section class="bg-layout-sun-0 text-layout-sun-800 dark:bg-layout-night-0 dark:text-layout-night-800 p-4">
     <div
     id="arrow" style="display:none;"
@@ -38,7 +38,7 @@
         arbeite seit 1998 als <span itemprop="jobTitle">Webdesigner</span> und liebe es,
         spannende Projekte umzusetzen. Mein größtes Abenteuer bisher war
         <a class='as' href="https://www.asario.de" itemprop="url">www.asario.de</a> bei
-        <span itemprop="affiliation">MarbleFX</span>.<br><br />
+        <span itemprop="affiliation"><a href='https://www.marblefx.net'>MarbleFX</a></span>.<br><br />
 
         Neben dem Webdesign bin ich als <span itemprop="alternateName">Asario</span> auch
         künstlerisch unterwegs – Kunst, digitale Fotografie und Poesie gehören dazu.<br><br />
@@ -87,9 +87,10 @@
     <script>
     import Layout from "@/Application/Homepage/Shared/Layout.vue";
     import JArrow from "@/Application/Components/Icons/JArrow.vue";
+    import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
     export default {
         name: 'NewHome',
-        components:{ Layout,JArrow },
+        components:{ Layout,JArrow,MetaHeader },
         methods: {
         redirect() {
             this.$inertia.visit('/blogs');

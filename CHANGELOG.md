@@ -132,3 +132,4 @@
 ![Version](https://img.shields.io/badge/version-3.36.5-orange) Hotfix - evil bug in user handling (#231)  
 ![Version](https://img.shields.io/badge/version-3.37.9-orange) Feature - Register Mail (#230)  
 ![Version](https://img.shields.io/badge/version-3.38.7-orange) Feature - Close Navi on mobile devices if darkmode toggle is clicked (#127)  
+![Version](https://img.shields.io/badge/version-3.39.9-orange) Hotfix - Focus lost on html editor (#239)  
