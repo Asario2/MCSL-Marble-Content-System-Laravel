@@ -24,6 +24,15 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 
         }
     }
+    if(!function_exists("MCSL_GRAD"))
+    {
+        function MCSL_GRAD(){
+            return "<div style=\"background-color:#000;background-position:right;height:52px;background-repeat:no-repeat;background-image:url('https://www.marblefx.de/_images/mailheader/mcsl_grad.png');\">
+        <div style=\"float:left;position:relative;margin-top:0px;margin-left:0px;\">
+        <img src=\"https://www.marblefx.de/_images/mailheader/mcsl_mail_system2.png\" alt=\"MCS Mail System\" title=\"MCS Mail System\">
+        </div></div><br>";
+        }
+    }
     if (!function_exists('KILLMD')) {
     function KILLMD($text,$count='45') {
         // Entferne Markdown (z. B. durch reguläre Ausdrücke)

@@ -48,7 +48,7 @@ class TwoFactorController extends Controller
     {
         $user = $request->user();
         $user->enableTwoFactorAuthentication(); // Dies sollte die Methode aufrufen, die 2FA aktiviert.
-
+        $user->two_factor_enabled = "1";
         // Antwort mit dem QR-Code und weiteren Daten senden
         return response()->json(["qrCode"=>"test",
             'message' => 'Zwei-Faktor-Authentifizierung aktiviert',

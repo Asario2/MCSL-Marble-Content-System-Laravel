@@ -133,3 +133,4 @@
 ![Version](https://img.shields.io/badge/version-3.37.9-orange) Feature - Register Mail (#230)  
 ![Version](https://img.shields.io/badge/version-3.38.7-orange) Feature - Close Navi on mobile devices if darkmode toggle is clicked (#127)  
 ![Version](https://img.shields.io/badge/version-3.39.9-orange) Hotfix - Focus lost on html editor (#239)  
+![Version](https://img.shields.io/badge/version-3.40.4-orange) Feature - Add Mail for Birthdays/Ripdates (#240)  

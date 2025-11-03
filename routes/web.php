@@ -545,6 +545,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             ->name('admin.blog.update');
 
         Route::get('/api/getuname', [TablesController::class, 'getUserName']);
+        Route::get('/api/users_rights', [TablesController::class, 'getUserDevs']);
+
         // ====
         // Tables
         // ====

@@ -18,6 +18,8 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\MigrateComments::class,
         \App\Console\Commands\ApiRoutesCommand::class,
         \App\Console\Commands\FixImageJson::class,
+        \App\Console\Commands\CheckBirthdays::class,
+
 
 
     ];

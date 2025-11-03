@@ -151,6 +151,7 @@ class User extends Authenticatable implements MustVerifyEmail
         if (in_array($code, $codes, true)) {
             // Nach Verwendung entfernen
             $this->two_factor_recovery_codes = Crypt::encryptString(json_encode(array_values(array_diff($codes, [$code]))));
+            
             $this->save();
             return true;
         }

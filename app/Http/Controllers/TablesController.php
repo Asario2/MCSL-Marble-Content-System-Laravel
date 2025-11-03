@@ -2628,6 +2628,25 @@ return Inertia::render('Admin/Kontakte', [
         }
         return true;
     }
+    function getUserDevs()
+    {
+    $res = DB::table('users')
+        ->leftJoin('users_rights', 'users.users_rights_id', '=', 'users_rights.id')
+        ->select(
+            'users.id',
+            'users.name as name',
+            'users_rights.name as rights_name',
+            'users.users_rights_id',
+            'users.xis_disabled',
+            'users.profile_photo_path'
+        )
+        ->where('users.xis_disabled', 0)
+        ->where('users.pub', 1)
+        ->orderBy("users.name","ASC")
+        ->get();
+
+    return response()->json($res);
+    }
     function GetImageId($table,$id)
     {
         // DB::enableQueryLog();
