@@ -1656,6 +1656,63 @@ public function ShowTable(Request $request, $table_alt = null)
             $asdg = ["1"];
             return redirect()->route('tables.index',compact('table','asdg'))->with('success', 'Neuer Eintrag erfolgreich erstellt.');;
         }
+        function store_user_rights(Request $request)
+        {    //     if(!CheckZRights("UserRights"))
+        //     {
+        //         return false;
+        //     }
+        //     $data = $request->all();
+        //     foreach($data as $key=>$value){
+        //         \Log::info([$value]);
+        //     }
+        $entries = $request->all();
+
+        // Prüfen, ob es sich um ein Array handelt
+        if (!is_array($entries)) {
+            return response()->json(['error' => 'Invalid data format'], 400);
+        }
+
+        $updated = [];
+
+        foreach ($entries as $Ec) {
+            foreach($Ec as $entry){
+            // Prüfen, ob beide Felder vorhanden sind
+            if (isset($entry['id']) && isset($entry['users_rights_id'])) {
+
+                // User aktualisieren
+                User::where('id', $entry['id'])
+                    ->update(['users_rights_id' => $entry['users_rights_id'],"xis_disabled"=>@$entry["xis_disabled"]]);
+
+                $updated[] = [
+                    'user_id' => $entry['id'],
+                    'users_rights_id' => $entry['users_rights_id'],
+
+                ];
+            }
+            }
+        }
+
+        // Log-Eintrag für Debug-Zwecke
+        Log::info('User roles updated:', $updated);
+
+        return response()->json([
+            'message' => 'Benutzerrollen wurden gespeichert.',
+            'updated' => $updated,
+        ]);
+    }
+    public function saveUserDisabled(Request $request)
+    {
+        if(!CheckZRights("UserRights"))
+        {
+            return false;
+        }
+        $user = User::findOrFail($request->id);
+        $user->xis_disabled = $request->xis_disabled;
+        $user->save();
+
+        return response()->json(['message' => 'Status gespeichert']);
+    }
+
         /**
          *
          * Update Position -1 after insert/deleting
@@ -2640,7 +2697,7 @@ return Inertia::render('Admin/Kontakte', [
             'users.xis_disabled',
             'users.profile_photo_path'
         )
-        ->where('users.xis_disabled', 0)
+
         ->where('users.pub', 1)
         ->orderBy("users.name","ASC")
         ->get();
@@ -2943,7 +3000,7 @@ return response()->json($user);
     }
     public function GetAdmins($urid)
     {
-        $res = DB::table("users_rights")->select("id","name")->get();
+        $res = DB::table("users_rights")->select("id","name","position")->orderBy("position","ASC")->get();
         // \Log::info("res: ".json_encode($res));
         return $res;
     }

@@ -20,7 +20,8 @@
           type="submit"
           class="absolute right-2 bottom-2 font-medium rounded-lg text-sm px-4 py-2 cursor-pointer border-2 focus:ring focus:outline-none bg-primary-sun-500 text-primary-sun-100 hover:text-primary-sun-900 hover:bg-layout-sun-100 hover:border-primary-sun-600 focus:border-primary-sun-600 dark:bg-primary-night-500 dark:text-primary-night-100 dark:hover:text-primary-night-900 dark:hover:bg-layout-night-100 dark:hover:border-primary-night-600 dark:focus:border-primary-night-600"
           @click.prevent="$emit('reset')"
-        >
+
+          >
           Suche zurücksetzen
         </button>
       </div>

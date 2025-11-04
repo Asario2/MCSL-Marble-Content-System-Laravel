@@ -546,6 +546,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
         Route::get('/api/getuname', [TablesController::class, 'getUserName']);
         Route::get('/api/users_rights', [TablesController::class, 'getUserDevs']);
+        Route::post('/api/save-user-roles', [TablesController::class, 'store_user_rights']);
+        Route::post('//api/save-user-disabled', [TablesController::class, 'saveUserDisabled']);
+
 
         // ====
         // Tables

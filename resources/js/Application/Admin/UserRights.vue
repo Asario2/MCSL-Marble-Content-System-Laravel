@@ -104,20 +104,59 @@
       </div>
 
       <!-- Benutzer Tab -->
-     <!-- Benutzer Tab -->
+      <!-- Benutzer Tab -->
 <div v-if="activeTab === 'users'" class="p-4 bg-layout-sun-100 dark:bg-layout-night-100 rounded-lg shadow-sm">
+
+  <!-- Suchfeld -->
+  <div class="mb-4 flex justify-end items-center gap-2">
+  <search-filter
+                v-model="userSearch"
+                class="w-full"
+                ref="searchField"
+                @reset="reset"
+                placeholder="Benutzer Suchen"
+                />
+    <!-- <input
+    v-model="userSearch"
+    type="text"
+    placeholder="Benutzer suchen..."
+    class="block p-4 pl-10 w-full rounded-lg border text-sm text-layout-sun-900 bg-layout-sun-50 border-layout-sun-300 focus:ring-primary-sun-500 focus:border-primary-sun-500 dark:text-layout-night-900 dark:bg-layout-night-50 dark:border-layout-night-300 dark:focus:ring-primary-night-500 dark:focus:border-primary-night-500"
+    >
+
+  <button
+    @click="userSearch = ''"
+    class="absolute right-2 bottom-2 font-medium rounded-lg text-sm px-4 py-2 cursor-pointer border-2 focus:ring focus:outline-none bg-primary-sun-500 text-primary-sun-100 hover:text-primary-sun-900 hover:bg-layout-sun-100 hover:border-primary-sun-600 focus:border-primary-sun-600 dark:bg-primary-night-500 dark:text-primary-night-100 dark:hover:text-primary-night-900 dark:hover:bg-layout-night-100 dark:hover:border-primary-night-600 dark:focus:border-primary-night-600"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+    <span>Zurücksetzen</span>
+  </button> -->
+</div>
+
+
+  <!-- Tabelle -->
   <table class="w-full border-collapse text-sm md:text-base">
     <thead class="bg-layout-sun-300 dark:bg-layout-night-300 text-layout-sun-800 dark:text-layout-night-800">
       <tr>
         <th class="px-4 py-3 text-left">Profil</th>
         <th class="px-4 py-3 text-left">Benutzer</th>
         <th class="px-4 py-3 text-left">Rolle</th>
-        <th class="px-4 py-3 text-left">Ausgewählt</th>
+        <th class="px-4 py-3 text-left">
+          <button
+            @click="toggleDisabledSelection"
+            class="flex items-center gap-2 text-left hover:text-red-600 transition"
+          >
+            <ErrorSVG class="w-5 h-5" />
+            <span>Disabled</span>
+          </button>
+        </th>
       </tr>
     </thead>
+
     <tbody>
       <tr
-        v-for="u in activeUsers"
+        v-for="u in filteredUsers"
         :key="u.id"
         class="hover:bg-layout-sun-200 dark:hover:bg-layout-night-200 transition duration-200 border-b border-gray-200 dark:border-gray-700"
       >
@@ -129,74 +168,77 @@
             class="w-8 h-8 rounded-full object-cover"
             alt="Profilbild"
           />
-          <span v-else class="w-8 h-8 inline-block bg-gray-300 rounded-full"></span>
+          <img
+            v-else
+            :src="`/images/_ab/users/profile_photo_path/008.jpg`"
+            class="w-8 h-8 rounded-full object-cover"
+            alt="Profilbild"
+          />
         </td>
 
-        <!-- Nickname -->
+        <!-- Benutzername -->
         <td class="px-4 py-3">{{ u.name }}</td>
 
-        <!-- Rechte Auswahl -->
+        <!-- Rollen-Auswahl mit Icon links -->
         <td class="px-4 py-3">
-  <div class="relative w-48">
-    <button
-      @click="u.showDropdown = !u.showDropdown"
-      class="w-full border rounded px-2 py-1 flex items-center justify-between"
-    >
-      <img v-if="u.selectedRoleIcon" :src="u.selectedRoleIcon" class="w-4 h-4 mr-2" />
-      <span>{{ u.selectedRoleName || 'Wähle Rolle' }}</span>
-      <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-      </svg>
-    </button>
+          <div class="relative flex items-center" :ref="'dropdown' + u.id">
+            <!-- Icon links außerhalb -->
+            <img
+              :src="u.hoverIcon || u.selectedRoleIcon || '/images/icons/ugr/default.gif'"
+              alt="icon"
+              class="w-5 h-5 mr-2"
+            />
 
-    <ul v-if="u.showDropdown" class="absolute z-10 w-full border rounded bg-white dark:bg-gray-800 mt-1 max-h-40 overflow-auto">
-      <li
-        v-for="r in roles"
-        :key="r.id"
-        @click="selectRole(u, r)"
-        class="flex items-center px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-      >
-        <img :src="`/images/icons/ugr/${r.name}`" class="w-4 h-4 mr-2" />
-        <span>{{ r.name }}</span>
-      </li>
-    </ul>
-  </div>
+            <!-- Button -->
+            <button
+              @click.stop="toggleDropdown(u)"
+              class="border rounded px-3 py-1 w-full text-left dark:bg-gray-800 dark:border-gray-600 flex items-center justify-between"
+            >
+              <span>{{ u.selectedRoleName || 'Wähle Rolle' }}</span>
+              <svg class="w-4 h-4 ml-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
 
+            <!-- Dropdown -->
+            <div
+              v-if="u.showDropdown"
+              class="absolute left-0 mt-1 w-[calc(100%+2rem)] bg-white dark:bg-gray-900 border dark:border-gray-700 rounded shadow-md z-50"
+            >
+              <div
+                v-for="r in reversedRoles"
+                :key="r.id"
+                @mouseover="u.hoverIcon = '/images/icons/ugr/' + r.name + '.gif'"
+                @mouseleave="u.hoverIcon = u.selectedRoleIcon"
+                @click.stop="selectRoleForUser(u, r)"
+                class="px-3 py-2 flex items-center gap-2 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
+              >
+                <img :src="'/images/icons/ugr/' + r.name + '.gif'" class="w-5 h-5" />
+                <span>{{ r.name }}</span>
+              </div>
+            </div>
+          </div>
         </td>
 
         <!-- Checkbox -->
         <td class="px-4 py-3 text-left">
-          <input-checkbox v-model="selectedUsers[u.users_rights_id]" />
+          <input-checkbox v-model="selectedUsers[u.id]"  @change="toggleDisabled(u)"/>
+
         </td>
       </tr>
     </tbody>
   </table>
 
-  <!-- Buttons unter der Tabelle -->
+  <!-- Buttons -->
   <div class="flex items-center gap-3 mt-4">
     <button
-      @click="saveUserRights"
+      @click="saveAllUserRoles"
       class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded"
     >
-      Benutzerrechte speichern
-    </button>
-
-    <button
-      @click="selectAllVisible"
-      class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded"
-    >
-      Alle auswählen (sichtbar)
-    </button>
-
-    <button
-      @click="clearAllSelection"
-      class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded"
-    >
-      Auswahl löschen
+      Benutzerrollen speichern
     </button>
   </div>
 </div>
-
 
 
     </div>
@@ -210,10 +252,12 @@ import axios from "axios";
 import InputSelect from "@/Application/Components/Form/InputSelect.vue";
 import InputCheckbox from "@/Application/Components/Form/InputCheckbox.vue";
 import IconRight from "@/Application/Components/Icons/IconRight.vue";
+import ErrorSVG from "@/Application/Components/Icons/ErrorSVG.vue";
+import SearchFilter from "@/Application/Components/Lists/SearchFilter.vue";
 
 export default {
-  name: "RightsTable",
-  components: { InputSelect, InputCheckbox, IconRight },
+  name: "UserRights",
+  components: {ErrorSVG,SearchFilter, InputSelect, InputCheckbox, IconRight },
   props: {
     adminTables: { type: Array, default: () => [] },
     urid: [String, Number],
@@ -239,214 +283,291 @@ export default {
       users: [],
       selectedUsers: {},
       userSearch: '',
-      filteredUsers: [],
-       showDropdown: false,
-    selectedRoleId: null,
-    selectedRoleName: 'Wähle Rolle',
-    selectedRoleIcon: null,
-     // Array deiner Rollen
+      showDisabled: false,
     };
   },
   computed: {
-    activeUsers() {
-      return this.users.filter(u => Number(u.xis_disabled) === 0);
-    }
+ activeUsers() {
+    return this.users.filter(u => Number(u.xis_disabled) === 0);
+  },
+  disabledUsers() {
+    // Nur deaktivierte User
+    return this.users.filter(u => Number(u.xis_disabled) === 1);
+  },
+  reversedRoles() {
+    return [...this.roles].sort((a, b) => Number(b.position) - Number(a.position));
+
+  },
+  filteredUsers() {
+    return this.users
+      .filter(u => this.showDisabled ? Number(u.xis_disabled) === 1 : Number(u.xis_disabled) === 0)
+      .filter(u => u.name.toLowerCase().includes(this.userSearch.toLowerCase())); // optional: Suche
+  },
   },
   methods: {
-    selectRole(r) {
-    this.selectedRoleId = r.id;
-    this.selectedRoleName = r.name;
-    this.selectedRoleIcon = `/images/icons/ugr/${r.name}.gif`;
-    this.showDropdown = false;
+    toggleDisabled(u) {
+  // Der aktuelle Zustand der Checkbox (true = disabled)
+  const isChecked = this.selectedUsers[u.id];
+
+  // Passe das Feld am User an
+  u.xis_disabled = isChecked ? 1 : 0;
+
+  // Sofort in der DB speichern
+  axios.post('/api/save-user-disabled', {
+    id: u.id,
+    xis_disabled: u.xis_disabled
+  })
+  .then(res => {
+    toastBus.emit('toast', {
+      message: res.data?.message || (isChecked ? 'Benutzer deaktiviert' : 'Benutzer aktiviert'),
+      type: 'success'
+    });
+  })
+  .catch(err => {
+    console.error(err);
+    toastBus.emit('toast', {
+      message: 'Fehler beim Aktualisieren des Status!',
+      type: 'error'
+    });
+  });
+},
+      toggleDisabledSelection() {
+    this.showDisabled = !this.showDisabled;
+
+    if (this.showDisabled) {
+      // Alle deaktivierten User anchecken
+      this.users.forEach(u => {
+        if (Number(u.xis_disabled) === 1) {
+          this.selectedUsers[u.users_rights_id] = true;
+        }
+      });
+    } else {
+      // Optional: alle deaktivierten User wieder abchecken
+      this.users.forEach(u => {
+        if (Number(u.xis_disabled) === 1) {
+          this.selectedUsers[u.users_rights_id] = false;
+        }
+      });
+    }
   },
-    // safer tab select (we load users when switching to users tab)
+
+      toggleUserCheckbox(u) {
+    const roleId = u.users_rights_id;
+    const newState = !this.selectedUsers[roleId]; // aktueller Zustand invertieren
+
+    // Setzt alle User mit derselben Rolle auf denselben Wert
+    this.users.forEach(user => {
+      if(user.users_rights_id === roleId) {
+        this.$set(this.selectedUsers, roleId, newState);
+      }
+    });
+  },
+    reset() {
+    this.userSearch = ''; // v-model zurücksetzen
+  },
+    saveSelectedUserRoles() {
+  this.activeUsers.forEach(u => {
+    if(this.selectedUsers[u.users_rights_id]){
+      this.saveUserRole(u);
+    }
+  });
+},
+    saveUserRole(u) {
+        console.error("not Saved:" + u);
+        if (!u.selectedRoleId) {
+        toastBus.emit('toast', { message: 'Bitte eine Rolle auswählen!', type: 'error' });
+
+        return;
+        }
+
+        const payload = {
+        id: u.id,
+        users_rights_id: u.selectedRoleId,
+        xis_disabled:u.xis_disabled
+        };
+        console.log("Saved:" + payload);
+        axios.post('/api/save-user-role', payload)
+        .then(res => {
+            toastBus.emit('toast', { message: res.data?.message || 'Rolle gespeichert!', type: 'success' });
+            // Optional: Icon aktualisieren
+            u.selectedRoleIcon = `/images/icons/ugr/${u.selectedRoleName}.gif`;
+            u.hoverIcon = u.selectedRoleIcon;
+        })
+        .catch(err => {
+            console.error('Fehler beim Speichern der Rolle:', err);
+            toastBus.emit('toast', { message: 'Fehler beim Speichern!', type: 'error' });
+        });
+    },
+    // --- Tabs ---
     selectTab(tab) {
       this.activeTab = tab;
-      if (tab === 'users') {
-        this.loadUsers();
-      }
-      if (tab === 'functions') {
-        // ensure functions loaded for current selected role
-        this.loadFunctions(this.selected);
-      }
-      if (tab === 'tables') {
-        // ensure rights loaded for selected role
-        this.fetchRights(this.selected);
-      }
+      if(tab==='users') this.loadUsers();
+      if(tab==='functions') this.loadFunctions(this.selected);
+      if(tab==='tables') this.fetchRights(this.selected);
     },
-
     tabClass(tab) {
-      return [
-        'cursor-pointer px-4 py-2',
-        this.activeTab === tab ? 'border-b-2 border-blue-500 font-bold' : ''
-      ];
+      return ['cursor-pointer px-4 py-2', this.activeTab===tab ? 'border-b-2 border-blue-500 font-bold' : ''];
     },
 
     navigate() {
-      // called when role selection changes
       this.fetchRights(this.selected);
       this.loadFunctions(this.selected);
-      if (this.activeTab === 'users') this.loadUsers();
+      if(this.activeTab==='users') this.loadUsers();
     },
 
-    // --- Users ---
-    async loadUsers() {
-      try {
-        const res = await axios.get('/api/users_rights'); // adjust endpoint as needed
-        // Expect array of users with at least { users_rights_id, name, xis_disabled }
-        this.users = Array.isArray(res.data) ? res.data : [];
-        // initialize selectedUsers map (preserve existing values if present)
-        const newMap = {};
-        this.users.forEach(u => {
-          newMap[u.users_rights_id] = (this.selectedUsers[u.users_rights_id] === true);
-        });
-        this.selectedUsers = newMap;
-        // setup filtered list
-        this.applyUserFilter();
-      } catch (e) {
-        console.error('Fehler beim Laden der User:', e);
-        toastBus.emit('toast', { message: 'Fehler beim Laden der Benutzer', type: 'error' });
-      }
+    // --- Dropdown ---
+    toggleDropdown(u) {
+      this.users.forEach(user => { if(user!==u) user.showDropdown=false; });
+      u.showDropdown = !u.showDropdown;
     },
-
-    applyUserFilter() {
-      const q = this.userSearch.trim().toLowerCase();
-      if (!q) {
-        this.filteredUsers = this.activeUsers.slice();
-      } else {
-        this.filteredUsers = this.activeUsers.filter(u =>
-          (u.name || '').toLowerCase().includes(q) ||
-          String(u.users_rights_id).includes(q)
-        );
-      }
-    },
-
-    selectAllVisible() {
-      this.filteredUsers.forEach(u => {
-    this.selectedUsers[u.users_rights_id] = true;
-  });
-    },
-
-    clearAllSelection() {
-      Object.keys(this.selectedUsers).forEach(k => { this.selectedUsers[k] = false; });
-    },
-
-    saveUserRights() {
-      const payload = Object.keys(this.selectedUsers).filter(id => this.selectedUsers[id]);
-      axios.post('/api/save_user_rights', { users_rights_ids: payload })
-        .then(() => {
-          toastBus.emit('toast', { message: 'Benutzerrechte gespeichert!', type: 'success' });
-        })
-        .catch(e => {
-          console.error('Fehler beim Speichern:', e);
-          toastBus.emit('toast', { message: 'Speichern fehlgeschlagen!', type: 'error' });
-        });
-    },
-
-    // --- Rechteverwaltung (Tabellen/Funktionen) ---
-    async fetchRights(urid) {
-      try {
-        const response = await axios.get(`/admin/user-rights/get?urid=${urid}`);
-        this.userRights = response.data || {};
-        this.initializeRights();
-      } catch (e) {
-        console.error("Fehler beim Laden der Rechte:", e);
-      }
-    },
-
-    initializeRights() {
-      const fieldNames = Object.keys(this.rights);
-      for (const field of fieldNames) {
-        const binaryString = this.userRights[field] || "";
-        const padded = binaryString.padEnd(this.adminTables.length, "0");
-        for (let i = 0; i < this.adminTables.length; i++) {
-          this.rights[field][i] = padded[i] === "1";
-        }
-      }
-    },
-
-    saveRights() {
-      const payload = {};
-      for (const [key, value] of Object.entries(this.rights)) {
-        if (Array.isArray(value)) payload[key] = value.map(v => (v ? "1" : "0")).join("");
-      }
-      for (const [key, value] of Object.entries(this.lf2 || {})) payload[key] = value;
-
-      axios.post('/api/admin/user-rights/save?urid=' + this.selected, payload)
-        .then(res => toastBus.emit('toast', { message: res.data?.message || 'Gespeichert', type: 'success' }))
-        .catch(err => console.error('❌ Fehler beim Speichern:', err));
-    },
-
-    togglerow(index) {
-      const allEnabled = Object.keys(this.rights).every(field => this.rights[field][index]);
-      const newValue = !allEnabled;
-      for (const field in this.rights) this.rights[field][index] = newValue;
-    },
-
-    async loadFunctions(urid) {
-      try {
-        const response = await axios.get(`/admin/user-rights/get?urid=${urid}`);
-        Object.entries(response.data || {}).forEach(([key, value]) => {
-          if (key.includes("xkis_")) this.lf[key] = value;
-        });
-        this.localFunc = response.data || {};
-      } catch (e) {
-        console.error("Fehler beim Laden der Funktionen:", e);
-      }
-    },
-
-    stripXkis(key) {
-      return key.replace(/^xkis_/, '');
-    },
-
-    getLabel(key) {
-      let labels = this.settings?.exl?.[this.stripXkis(key)];
-      return labels || this.stripXkis(key);
-    },
-
-    ucf(str) {
-      return String(str).split("_").map(v => v.charAt(0).toUpperCase() + v.slice(1).toLowerCase()).join(" ");
-    },
-
-    ucf2(str) {
-      return this.settings.exl?.[str] ?? str;
-    },
+  selectRoleForUser(u, r) {
+    u.selectedRoleId = r.id;
+    u.selectedRoleName = r.name;
+    u.selectedRoleIcon = `/images/icons/ugr/${r.name}.gif`;
+    u.showDropdown = false;
+    u.hoverIcon = u.selectedRoleIcon; // Hover zurücksetzen
   },
+saveAllUserRoles() {
+  // Nur User sammeln, bei denen sich die Rolle geändert hat
+  const payload = this.users
+    .filter(u => u.selectedRoleId)
+    .map(u => ({
+      id: u.id,
+      users_rights_id: u.selectedRoleId
+    }));
 
-  async mounted() {
-    this.settings = await GetSettings();
-    // load initial data for default selection
-    if (this.selected) {
-      this.fetchRights(this.selected);
-      this.loadFunctions(this.selected);
-    } else {
-      this.fetchRights(this.urid || '');
-      this.loadFunctions(this.urid || '');
-    }
-  },
-
-  watch: {
-    // watch selected role and reload
-    selected(newVal) {
-      this.navigate(newVal);
-    },
-
-    localFunc: {
-      immediate: true,
-      deep: true,
-      handler(newVal) {
-        this.lf2 = {};
-        for (const key in newVal) {
-          if (key.includes("xkis_")) this.lf2[key] = newVal[key] === 1 ? 1 : 0;
-        }
-      }
-    }
+  if (payload.length === 0) {
+    toastBus.emit('toast', { message: 'Keine Rollen zum Speichern ausgewählt!', type: 'error' });
+    return;
   }
-};
+
+  axios.post('/api/save-user-roles', { users: payload })
+    .then(res => {
+      toastBus.emit('toast', { message: res.data?.message || 'Rollen gespeichert!', type: 'success' });
+      // Optional: Icons aktualisieren
+      this.users.forEach(u => {
+        const role = this.roles.find(r => r.id === u.selectedRoleId);
+        if(role) {
+          u.selectedRoleIcon = `/images/icons/ugr/${role.name}.gif`;
+          u.hoverIcon = u.selectedRoleIcon;
+        }
+      });
+    })
+    .catch(err => {
+      console.error(err);
+      toastBus.emit('toast', { message: 'Fehler beim Speichern!', type: 'error' });
+    });
+},
+    // --- User Actions ---
+    async loadUsers() {
+  try {
+    const res = await axios.get('/api/users_rights');
+    this.users = Array.isArray(res.data) ? res.data : [];
+    this.users.forEach(u => {
+    if (Number(u.xis_disabled) === 1) {
+        this.selectedUsers[u.id] = true; // disabled User automatisch anhaken
+    } else {
+        this.selectedUsers[u.id] = false;
+    }
+    });
+this.users.forEach(u => {
+  u.selectedRoleId = this.roles.find(r => r.id === u.users_rights_id)?.id || null;
+  u.selectedRoleName = this.roles.find(r => r.id === u.users_rights_id)?.name || '';
+  u.selectedRoleIcon = u.selectedRoleName ? `/images/icons/ugr/${u.selectedRoleName}.gif` : null;
+  u.showDropdown = false;
+  u.hoverIcon = u.selectedRoleIcon;
+
+  // Checkbox-Status anhand disabled
+  this.selectedUsers[u.id] = Number(u.xis_disabled) === 1;
+});
+  } catch(e) {
+    console.error(e);
+  }
+}
+,
+    selectAllVisible(){ this.activeUsers.forEach(u=>this.selectedUsers[u.users_rights_id]=true); },
+    clearAllSelection(){ Object.keys(this.selectedUsers).forEach(k=>this.selectedUsers[k]=false); },
+    saveUserRights(){
+      const payload = Object.keys(this.selectedUsers).filter(id=>this.selectedUsers[id]);
+      axios.post('/api/save_user_rights',{users_rights_ids:payload})
+        .then(()=>toastBus.emit('toast',{message:'Benutzerrechte gespeichert!',type:'success'}))
+        .catch(()=>toastBus.emit('toast',{message:'Speichern fehlgeschlagen!',type:'error'}));
+    },
+
+    // --- Rechteverwaltung Tabellen ---
+    async fetchRights(urid){
+      try{
+        const res=await axios.get(`/admin/user-rights/get?urid=${urid}`);
+        this.userRights = res.data||{};
+        this.initializeRights();
+      }catch(e){console.error(e);}
+    },
+    initializeRights(){
+      const fieldNames=Object.keys(this.rights);
+      for(const field of fieldNames){
+        const binary = this.userRights[field]||'';
+        const padded = binary.padEnd(this.adminTables.length,'0');
+        for(let i=0;i<this.adminTables.length;i++) this.rights[field][i]=padded[i]==='1';
+      }
+    },
+    togglerow(index){
+      const allEnabled=Object.keys(this.rights).every(f=>this.rights[f][index]);
+      for(const f in this.rights) this.rights[f][index]=!allEnabled;
+    },
+    saveRights(){
+      const payload={};
+      for(const [key,value] of Object.entries(this.rights)) payload[key]=value.map(v=>v?'1':'0').join('');
+      for(const [k,v] of Object.entries(this.lf2||{})) payload[k]=v;
+      axios.post('/api/admin/user-rights/save?urid='+this.selected,payload)
+        .then(r=>toastBus.emit('toast',{message:r.data?.message||'Gespeichert',type:'success'}))
+        .catch(e=>console.error(e));
+    },
+
+    // --- Funktionen ---
+    async loadFunctions(urid){
+      try{
+        const res=await axios.get(`/admin/user-rights/get?urid=${urid}`);
+        Object.entries(res.data||{}).forEach(([k,v])=>{if(k.includes('xkis_')) this.lf[k]=v;});
+        this.localFunc=res.data||{};
+      }catch(e){console.error(e);}
+    },
+
+  handleClickOutside(event) {
+    this.users.forEach(u => {
+      const el = this.$refs['dropdown' + u.id]?.[0];
+      if (u.showDropdown && (!el || !el.contains(event.target))) {
+        u.showDropdown = false;
+        u.hoverIcon = null;
+      }
+    });
+  },
+    stripXkis(k){ return k.replace(/^xkis_/,''); },
+    getLabel(k){ return this.settings.exl?.[this.stripXkis(k)]||this.stripXkis(k); },
+    ucf(str){ return String(str).split('_').map(s=>s.charAt(0).toUpperCase()+s.slice(1).toLowerCase()).join(' '); },
+    ucf2(str){ return this.settings.exl?.[str]??str; },
+  },
+  async mounted(){
+    this.settings = await GetSettings();
+    if(this.selected){ this.fetchRights(this.selected); this.loadFunctions(this.selected); }
+    else{ this.fetchRights(this.urid||''); this.loadFunctions(this.urid||''); }
+
+    // click outside dropdown
+    document.addEventListener('click', e=>{
+      this.users.forEach(u=>{
+        if(u.showDropdown && !e.target.closest('.relative.inline-block')) u.showDropdown=false;
+      });
+    });
+  },
+  watch:{
+    selected(newVal){ this.navigate(newVal); },
+    localFunc:{ immediate:true, deep:true, handler(newVal){
+      this.lf2={};
+      for(const k in newVal) if(k.includes('xkis_')) this.lf2[k]=newVal[k]===1?1:0;
+    }},
+  }
+}
 </script>
 
 <style>
-.wff {
-  min-width: 200px !important;
-}
+.wff { min-width: 200px !important; }
 </style>

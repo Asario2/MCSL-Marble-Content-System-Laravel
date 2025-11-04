@@ -34,7 +34,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'employee_id',
         'customer_id',
         'about',
-
+        "xis_disabled",
         'updated_at',
     ];
 
@@ -64,6 +64,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'is_employee' => 'boolean',
             'is_customer' => 'boolean',
             'xch_newsletter' => 'boolean',
+            'xis_disabled' => 'boolean',
         ];
     }
 
@@ -151,7 +152,7 @@ class User extends Authenticatable implements MustVerifyEmail
         if (in_array($code, $codes, true)) {
             // Nach Verwendung entfernen
             $this->two_factor_recovery_codes = Crypt::encryptString(json_encode(array_values(array_diff($codes, [$code]))));
-            
+
             $this->save();
             return true;
         }
