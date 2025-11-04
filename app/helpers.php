@@ -33,6 +33,68 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
         </div></div><br>";
         }
     }
+    if(!function_exists("DUMP_DB"))
+    {
+        function DUMP_DB()
+        {
+            return "<a href='dump://parameter1/parameter2'>Start Dump</a>";
+        }
+        if(!function_exists("Notify"))
+        {
+            function Notify()
+            {
+            $entries = DB::table('genxlo.notifications')
+                ->get()
+                ->map(function ($item) {
+                    return (array) $item;
+                })
+                ->toArray();
+                $xx = '';
+                foreach($entries as $entry)
+                {
+                    if(file_exists(public_path("/timespy/".$entry['timespy']))){
+                        $time = file_get_contents(public_path("/timespy/".$entry['timespy']));
+                    }
+                    $lh = false;
+                    if($entry['type'] == "localhost" && substr_count(request()->getHost(),"localhost"))
+                    {
+                        $lh = true;
+                    }
+                    elseif($entry['type'] == "online" && !substr_count(request()->getHost(),"localhost"))
+                    {
+                        $lh = true;
+                    }
+                    elseif($entry['type'] == "both")
+                    {
+                        $lh = true;
+                    }
+
+
+                    if((!$time || time() > $time) && $lh)
+                    {
+                    $xx .= "<div style='background-color:#CCC;color:#002;padding:5px;z-index:19999999'>";
+                    $xx .= "<h3 style='padding:2px;'>".$entry['name']."</h3>";
+                    $xx .= $entry['text']."<br />";
+                    if($entry['function_link'])
+                    {
+                        $tz  = $entry['function_link'];
+                        $xx .= $tz();
+                    }
+                    $xx .= "</div>";
+                    $time = false;
+                }
+
+
+                }
+                if($xx)
+                {
+                    echo "<br /><br /><br /><br />".$xx;
+                }
+
+            }
+        }
+    }
+
     if (!function_exists('KILLMD')) {
     function KILLMD($text,$count='45') {
         // Entferne Markdown (z. B. durch reguläre Ausdrücke)

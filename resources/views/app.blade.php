@@ -6,6 +6,7 @@
     error_reporting(E_ALL);
     use App\Helpers;
     use Illuminate\Support\Facades\Auth;
+    // use App\Helpers_otify;
     use App\Http\Controllers\GlobalController;
     $subdomain = SD(); // z.B. "foo", "bar"
     $pagen = SD("pn");
@@ -86,10 +87,14 @@
     </head>
 
     <body class="font-sans antialiased">
+        @php
+        Notify();
+        @endphp
         <input type="hidden" id="token" value="{{ csrf_token() }}">
 
         @routes
         @inertia
+
         <!-- https://github.com/whitecube/laravel-cookie-consent -->
         @cookieconsentview
         @cookieconsentscripts

@@ -135,3 +135,4 @@
 ![Version](https://img.shields.io/badge/version-3.43.9-orange) Hotfix - Focus lost on html editor (#239)  
 ![Version](https://img.shields.io/badge/version-3.44.4-orange) Feature - Add Mail for Birthdays/Ripdates (#240)  
 ![Version](https://img.shields.io/badge/version-3.45.2-orange) Feature - Add User Overview and Permissions (#220)  
+![Version](https://img.shields.io/badge/version-3.46.9-orange) Feature – Global Notification (#190)  
