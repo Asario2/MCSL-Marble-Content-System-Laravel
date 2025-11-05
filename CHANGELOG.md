@@ -136,3 +136,4 @@
 ![Version](https://img.shields.io/badge/version-3.44.4-orange) Feature - Add Mail for Birthdays/Ripdates (#240)  
 ![Version](https://img.shields.io/badge/version-3.45.2-orange) Feature - Add User Overview and Permissions (#220)  
 ![Version](https://img.shields.io/badge/version-3.46.9-orange) Feature – Global Notification (#190)  
+![Version](https://img.shields.io/badge/version-3.47.1-orange) Bug - QR Code scanning bug (#251)  

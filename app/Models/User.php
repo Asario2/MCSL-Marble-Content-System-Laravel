@@ -2,6 +2,12 @@
 
 namespace App\Models;
 
+use BaconQrCode\Renderer\Color\Rgb;
+use BaconQrCode\Renderer\RendererStyle\Fill;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Writer;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd; 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -72,7 +78,28 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return !is_null($this->two_factor_secret) && $this->two_factor_confirmed_at;
     }
+    public function twoFactorQrCodeSvg()
+    {
+        // Feste Farben erzwingen: Schwarz auf Weiß
+        $fill = Fill::uniformColor(
+            new Rgb(0, 0, 0),       // Vordergrund (schwarz)
+            new Rgb(255, 255, 255)  // Hintergrund (weiß)
+        );
 
+        $svg = (new Writer(
+            new ImageRenderer(
+                new RendererStyle(192, 0, null, null, $fill),
+                new SvgImageBackEnd
+            )
+        ))->writeString($this->twoFactorQrCodeUrl());
+
+        // Entfernt XML-Header und mögliche Farbanpassungen
+        return str_replace(
+            '<svg ',
+            '<svg style="color-scheme:none;" ',
+            trim(substr($svg, strpos($svg, "\n") + 1))
+        );
+    }
     public function getFullNameAttribute()
     {
         $name = $this->first_name;
