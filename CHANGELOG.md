@@ -119,7 +119,7 @@
 ![Version](https://img.shields.io/badge/version-3.23.2-orange) Remove Alt Tags on Smilies (#213)  
 ![Version](https://img.shields.io/badge/version-3.24.4-orange) Hotfix - Changed Umlaut character on newsletter (#214)  
 ![Version](https://img.shields.io/badge/version-3.25.3-orange) Hotfix -  Remove double buttons on tableform (#195)  
-![Version](https://img.shields.io/badge/version-3.26.3-orange) Hotfix change font-family on &lt;code&gt; (#210)  
+![Version](https://img.shields.io/badge/version-3.26.3-orange) Hotfix change font-family on <code>code</code> (#210)  
 ![Version](https://img.shields.io/badge/version-3.27.2-orange) Feature - Added success / not successed on mail submiting (#221)  
 ![Version](https://img.shields.io/badge/version-3.28.0-orange) Hotfix - decrypt emails from contacts (#225)  
 ![Version](https://img.shields.io/badge/version-3.29.2-orange) Feature -- Auto slug on Texts Table (#224)  
