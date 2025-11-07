@@ -22,7 +22,7 @@
                     >
                 </div>
                 <div
-                    class="font-title text-xs lg:text-sm leading-snug whitespace-nowrap tracking-wide tw"
+                    class="font-title text-xs lg:text-sm leading-snug whitespace-nowrap tracking-wide text-layout-sun-600 dark:text-layout-night-900"
                     v-if="appName"
                 >
                     <span v-html="appName"></span>

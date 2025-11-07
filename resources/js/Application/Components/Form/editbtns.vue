@@ -1,6 +1,6 @@
 <template>
 <span v-if="hasRight('edit',table) || (users_id && users_id == page.props.user.id)">
-<a :href="'/admin/tables/edit/'+ id+ '/' + table + ''" @click.stop><IconPencil class="sm-pencil cursor-pointer tw"></IconPencil></a>
+<a :href="'/admin/tables/edit/'+ id+ '/' + table + ''" @click.stop><IconPencil class="sm-pencil cursor-pointer text-layout-sun-600 dark:text-layout-night-900"></IconPencil></a>
 &nbsp;&nbsp;</span>
 <span v-if="hasRight('delete',table)">
 <form @submit.prevent="deletePost" style="display:inline">

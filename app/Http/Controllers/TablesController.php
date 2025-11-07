@@ -747,7 +747,7 @@ public function ShowTable(Request $request, $table_alt = null)
     }
     if(!Schema::hasTable("signatur") || !Schema::hasTable("newsletter") || !Schema::hasTable("newsletter_reci") || !Schema::hasTable("newsletter_blacklist"))
     {
-        header("Location: /no-rightsno");
+        header("Location: /no-rights");
         exit;
     }
     // 🔹 Signaturen holen

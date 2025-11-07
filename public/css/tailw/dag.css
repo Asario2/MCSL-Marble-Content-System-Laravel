@@ -4,25 +4,31 @@
 
 
 }
+
 .dark\:bg-layout-night-200t:is(.dark *){
     background-color: rgba(218, 83, 14,0.8) !important;
     border-radius:5px !important;
 
 
 }
+
 /* .dark\:bg-layout-night-100  :is(.dark *){
     background-color: rgb(218, 83, 14) !important;
-} */
+}
+
+*/
 /* .dark\:bg-layout-night-0 :is(.dark *){
     background-color: rgb(218, 83, 14) !important;
-} */
+}
+
+*/
 .dark .dark\:bg-layout-night-100 {
     background-color: rgb(218, 83, 14) !important;
   }
 
-  .dark .dark\:bg-layout-night-0 {
+.dark .dark\:bg-layout-night-0 {
     background-color: rgb(218, 83, 14) !important;
-  } 
+  }
 
 .dark\:bg-layout-night-2000:is(.dark *) {
     background-color: rgba(218, 83, 14,0.1) !important;
@@ -30,25 +36,30 @@
 
 
 }
+
 .dark\:border-layout-night-1050:is(.dark *){
     border-color:#000 !important;
     border-width:2px !important;
 
 }
+
 .dark\:bg-layout-night-2550:is(.dark *) {
     --tw-bg-opacity: 0.5;
     background-color: rgba(218 83 14 / var(--tw-bg-opacity));
     border-radius: 5px !important;
   }
+
 .dark\:bg-layout-night-3000:is(.dark *) {
     background-color: rgb(218, 83, 14) !important;
 }
+
 .dark\:bg-layout-night-50:is(.dark *) {
     background-image: url('/images/_dag/web/bg.jpg');
     background-attachment: fixed; /* <— macht den Hintergrund fixed */
 
 
 }
+
 .dark\:bg-layout-night-501:is(.dark *) {
     background-color: rgb(218, 83, 14) !important;
     background-image: none !important;
@@ -60,24 +71,29 @@ BODY.dark{
     background-attachment: fixed; /* <— macht den Hintergrund fixed */
 
 }
+
 DIV.rim{
     background-image: url('/images/_dag/web/bg.jpg');
     background-attachment: fixed; /* <— macht den Hintergrund fixed */
 
 }
+
 .dark\:border-layout-night-1050:is(.dark *){
     border-radius:5px !important;
 
 }
+
 .short{
     line-height:32px;
     margin-top:-10px !important;
     margin-bottom:-10px !important;
     padding-left: 5px !important;
 }
+
 .blackcan{
     font-family:blackchancery;
 }
+
 a:link, a:visited, a:active
 {
     font-size: 18px;
@@ -87,11 +103,13 @@ a:link, a:visited, a:active
     color: #7daeee;
     text-shadow: 1px 1px #333;
 }
+
 a:link:hover, a:visited:hover, a:active:hover
 {
     text-shadow: 1px 1px #555;
     color: #f19c00;
 }
+
 .ckoo{
     font-weight:bold;
      color:rgb(209 213 219) !important;

@@ -14,7 +14,7 @@
             <h2
                 class="ms-3 text-xl font-semibold text-layout-sun-900 dark:text-layout-night-900"
             >
-                <a :href="routeName" class="tw">{{ title }}</a>
+                <a :href="routeName" class="dark:text-layout-sun-600 dark:text-layout-night-900">{{ title }}</a>
             </h2>
         </div>
         <p
@@ -158,3 +158,8 @@ export default {
     },
 };
 </script>
+<style>
+A.text-layout-sun-600 dark:text-layout-night-900{
+    color:rgb(20,20,20) !important;
+}
+</style>

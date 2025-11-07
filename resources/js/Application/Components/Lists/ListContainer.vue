@@ -52,7 +52,7 @@
         </button>
       </td>
       <!-- Slot für normale Datenzellen -->
-      <slot name="datarow" :datarow="row" draggable="false"></slot>
+<slot name="datarow" :datarow="row" draggable="false"></slot>
       <!-- Created At -->
       <td v-if="row.created_at && hasRight('view', row.full_name)" class="np-dl-td-normal">
         {{ new Date(row.created_at).toLocaleString('de-DE', {

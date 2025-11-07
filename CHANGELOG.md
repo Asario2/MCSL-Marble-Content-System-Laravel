@@ -138,3 +138,4 @@
 ![Version](https://img.shields.io/badge/version-3.46.9-orange) Feature – Global Notification (#190)  
 ![Version](https://img.shields.io/badge/version-3.47.1-orange) Bug - QR Code scanning bug (#251)  
 ![Version](https://img.shields.io/badge/version-3.48.6-orange) Feature - Add responsive nav on admin (#223)  
+![Version](https://img.shields.io/badge/version-3.49.4-orange) Hotfix - Evil bug in text-colors on light mode (#253)  

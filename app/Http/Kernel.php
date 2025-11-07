@@ -4,6 +4,7 @@ namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use App\Http\Middleware\DetectTenant;
+use App\Http\Middleware\PhpIdsMiddleware;
 use App\Http\Models\Tentant;
 class Kernel extends HttpKernel
 {
@@ -13,6 +14,7 @@ class Kernel extends HttpKernel
      * These middleware are run during every request to your application.
      */
     protected $middleware = [
+        \App\Http\Middleware\PhpIdsMiddleware::class,
         \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
@@ -21,7 +23,7 @@ class Kernel extends HttpKernel
         \Illuminate\Http\Middleware\HandleCors::class,
         \App\Http\Middleware\CheckSubd::class,
         \App\Http\Middleware\IntrusionDetectionMiddleware::class,
-        \App\Http\Middleware\PhpIdsMiddleware::class,
+
     ];
 
     /**
@@ -62,7 +64,6 @@ class Kernel extends HttpKernel
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'phpids' => \App\Http\Middleware\PhpIdsMiddleware::class,
         'cookie.domain' => \App\Http\Middleware\SetCookieConsentDomain::class,
         'is_admin' => \App\Http\Middleware\IsAdmin::class,
 
@@ -70,6 +71,7 @@ class Kernel extends HttpKernel
     protected $middlewareAliases = [
         // ...
         'tenant' => \App\Http\Middleware\DetectTendant::class,
+        'phpids' => \App\Http\Middleware\PhpIdsMiddleware::class,
     ];
 
 }

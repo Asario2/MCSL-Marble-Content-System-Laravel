@@ -21,7 +21,6 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\CheckBirthdays::class,
 
 
-
     ];
 
     /**

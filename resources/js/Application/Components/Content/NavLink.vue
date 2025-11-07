@@ -6,7 +6,7 @@
             :class="classes"
             :target="target"
         >
-            <span class="tw">{{ label }}</span></a
+            <span class="text-layout-sun-600 dark:text-layout-night-900">{{ label }}</span></a
         >
     </div>
     <div v-else class="flex items-center">
@@ -51,3 +51,8 @@ export default {
     },
 };
 </script>
+<style>
+A.text-layout-sun-600 dark:text-layout-night-900{
+    color:rgb(20,20,20) !important;
+}
+</style>

@@ -76,4 +76,3 @@ class CleanDuplicateCss extends Command
         return Command::SUCCESS;
     }
 }
-        
