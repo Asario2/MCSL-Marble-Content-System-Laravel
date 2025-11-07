@@ -137,3 +137,4 @@
 ![Version](https://img.shields.io/badge/version-3.45.2-orange) Feature - Add User Overview and Permissions (#220)  
 ![Version](https://img.shields.io/badge/version-3.46.9-orange) Feature – Global Notification (#190)  
 ![Version](https://img.shields.io/badge/version-3.47.1-orange) Bug - QR Code scanning bug (#251)  
+![Version](https://img.shields.io/badge/version-3.48.6-orange) Feature - Add responsive nav on admin (#223)  
