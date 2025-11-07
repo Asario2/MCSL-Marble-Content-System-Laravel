@@ -745,7 +745,11 @@ public function ShowTable(Request $request, $table_alt = null)
         header("Location: /no-rigths");
         exit;
     }
-
+    if(!Schema::hasTable("signatur") || !Schema::hasTable("newsletter") || !Schema::hasTable("newsletter_reci") || !Schema::hasTable("newsletter_blacklist"))
+    {
+        header("Location: /no-rightsno");
+        exit;
+    }
     // 🔹 Signaturen holen
     $sigs = DB::table("signatur")
         ->orderBy("position", "ASC")
@@ -1152,7 +1156,7 @@ public function ShowTable(Request $request, $table_alt = null)
                 // created z. B. "2025-06-17 13:45:22"
                 // wir nehmen nur das Datum
                 // \Log::info($row->created);
-                $row->created = substr($row->created, 0, 10);
+                // $row->created = substr($row->created, 0, 10);
             }
 
             $crea[$tablex] = $rows;
@@ -2677,7 +2681,8 @@ return Inertia::render('Admin/Kontakte', [
     }
     function CheckForExcl(Request $request,$table)
     {
-        $uuid  = DB::table($table)->where("id",$request->id)->select("users_id");
+        $uuid = DB::table($table)->where("id", $request->id)->value("us_poster");
+
         if($uuid != Auth::id())
         {
             \Log::info([$uuid,Auth::id()]);

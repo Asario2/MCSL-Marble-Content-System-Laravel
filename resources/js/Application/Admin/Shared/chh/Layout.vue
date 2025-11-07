@@ -160,19 +160,7 @@
                                             Profil
                                         </dropdown-link>
 
-                                        <dropdown-link
-                                            v-if="
-                                                $page.props.jetstream
-                                                    .hasApiFeatures
-                                            "
-                                            :with-icon="false"
-                                            :with-route="true"
-                                            :route-name="
-                                                route('admin.api_tokens.index')
-                                            "
-                                        >
-                                            API-Token
-                                        </dropdown-link>
+
 
                                         <div
                                             class="my-2 border-t border-layout-sun-200 dark:border-layout-night-200"
@@ -298,15 +286,7 @@
                                 Profil
                             </ResponsiveNavLink>
 
-                            <ResponsiveNavLink
-                                v-if="$page.props.jetstream.hasApiFeatures"
-                                :href="route('admin.api_tokens.index')"
-                                :active="
-                                    route().current('admin.api_tokens.index')
-                                "
-                            >
-                                API-Token
-                            </ResponsiveNavLink>
+                          
 
                             <!-- Authentication -->
                             <form method="POST" @submit.prevent="logoutUser">

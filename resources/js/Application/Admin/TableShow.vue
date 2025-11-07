@@ -4,8 +4,10 @@
       <template #header>
         <breadcrumb :breadcrumbs="breadcrumbs" :current="tablet"></breadcrumb>
       </template>
+
       <!-- Table -->
       <section class="mt-8">
+
         <list-container
           :title="'Tabelle ' + tablez"
           :datarows="{ data: datarows }"
@@ -27,6 +29,7 @@
           <!-- Header-Spalten -->
           <template #header>
             <tr>
+              <th class="np-dl-th-normal" v-if="rows?.data[0]?.position > -1 && CleanTable() != ''">Drop</th>
               <th class="np-dl-th-normal">ID</th>
               <th class="np-dl-th-normal">Pub</th>
               <th v-if="cat_on_head" class="np-dl-ht-normal">{{ cat_on_head }}</th>
@@ -191,7 +194,7 @@
     </template>
   </div>
     </section>
-    </layout>
+</layout>
   </template>
 
   <script>

@@ -39,73 +39,53 @@
                     <thead class="np-dl-thead">
                         <slot name="header" />
                     </thead>
-                    <tbody v-if="numberOfRows > 0">
-                    <!-- Draggable rows -->
-                    <template v-for="(row, index) in rows" :key="'draggable-' + row.id">
-                        <tr v-if="row.position !== null && row.position !== undefined"
-                        :draggable="this.CleanTable() !== ''"
-                        @dragstart="this.CleanTable() !== '' && onDragStart($event, index)"
-                        @dragover.prevent="this.CleanTable() !== ''"
-                        @drop="this.CleanTable() !== '' && onDrop($event, index)"
-                        class="cursor-move hover:dark:bg-gray-800 hover:bg-gray-800">
+<tbody v-if="numberOfRows > 0">
+  <template v-for="(row, index) in rows" :key="row.id">
+    <tr class="hover:dark:bg-gray-800 hover:bg-gray-800" draggable="false">
+   <!-- Drag Button Spalte: nur diese Zelle draggable -->
+      <td class="np-dl-td-edit text-center cursor-move" v-if="row.position > -1 && CleanTable() != ''">
+        <button class="drag-handle-btn" :draggable="true"
+          @dragstart="onDragStart($event, index)"
+          @dragover.prevent
+          @drop="onDrop($event, index)">
+          <icon-plus-circle class="w-6 h-6" />
+        </button>
+      </td>
+      <!-- Slot für normale Datenzellen -->
+      <slot name="datarow" :datarow="row" draggable="false"></slot>
+      <!-- Created At -->
+      <td v-if="row.created_at && hasRight('view', row.full_name)" class="np-dl-td-normal">
+        {{ new Date(row.created_at).toLocaleString('de-DE', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit', second: '2-digit'
+        }) }}
+      </td>
+      <td v-else-if="hasRight('view', row.full_name)" class="np-dl-td-edit"></td>
 
-                        <slot name="datarow" :datarow="row" />
+      <!-- Edit Button -->
+      <td v-if="hasRight('edit', row.full_name) && hasRight('view', row.full_name) && tableClean"
+          class="np-dl-td-edit"
+          @click.prevent="editDataRow(row['id'])">
+        <icon-pencil class="w-6 h-6" v-tippy />
+        <tippy>{{ editDescription }}</tippy>
+      </td>
+      <td v-else-if="hasRight('view', row.full_name)" class="np-dl-td-edit"></td>
 
-                        <td v-if="row.created_at && hasRight('view', row.full_name)" class="np-dl-td-normal">
-                               {{ new Date(row.created_at).toLocaleString('de-DE', {
-                            day: '2-digit', month: '2-digit', year: 'numeric',
-                            hour: '2-digit', minute: '2-digit', second: '2-digit'
-                        }) }}
-                        </td>
+      <!-- Delete Button -->
+      <td v-if="hasRight('delete', row.full_name) && hasRight('view', row.full_name && tableClean)"
+          class="np-dl-td-edit"
+          @click="deleteDataRow(row['id'])">
+        <icon-trash class="w-6 h-6" v-tippy />
+        <tippy>{{ deleteDescription }}</tippy>
+      </td>
+      <td v-else-if="hasRight('view', row.full_name)" class="np-dl-td-edit"></td>
 
-                            <td v-else-if="hasRight('view',row.full_name)"
-                            class="np-dl-td-edit"></td>
-                            <td v-if="hasRight('edit', row.full_name) && hasRight('view', row.full_name) && tableClean"
-                                class="np-dl-td-edit"
-                                @click.prevent="editDataRow(row['id'])">
-                                <icon-pencil class="w-6 h-6" v-tippy />
-                                <tippy>{{ editDescription }}</tippy>
-                            </td>
-                            <td v-if="hasRight('delete', row.full_name) && hasRight('view', row.full_name && tableClean)"
-                                class="np-dl-td-edit"
-                                @click="deleteDataRow(row['id'])">
-                                <icon-trash class="w-6 h-6" v-tippy />
-                                <tippy>{{ deleteDescription }}</tippy>
-                            </td>
-                            <td v-else-if="hasRight('view',row.full_name)"
-                            class="np-dl-td-edit"></td>
-                        </tr>
-                        </template>
-                        <template v-for="(row, index) in rows" :key="'normal-' + row.id">
-                        <tr v-if="row.position === null || row.position === undefined"
-                            class="hover:dark:bg-gray-800 hover:bg-gray-800">
-                        <slot name="datarow" :datarow="row" />
-                        <td v-if="row.created_at && hasRight('view', row.full_name)" class="np-dl-td-normal">
-                            {{ new Date(row.created_at).toLocaleString('de-DE', {
-                                day: '2-digit', month: '2-digit', year: 'numeric',
-                                hour: '2-digit', minute: '2-digit', second: '2-digit'
-                            }) }}
-                        </td>
 
-                            <td v-if="hasRight('edit', row.full_name) && hasRight('view', row.full_name) && tableClean"
-                                class="np-dl-td-edit"
-                                @click.prevent="editDataRow(row['id'])">
-                                <icon-pencil class="w-6 h-6" v-tippy />
-                                <tippy>{{ editDescription }}</tippy>
-                            </td>
-                            <td v-else-if="hasRight('view',row.full_name)"
-                            class="np-dl-td-edit"></td>
-                            <td v-if="hasRight('delete', row.full_name) && hasRight('view', row.full_name && tableClean)"
-                                class="np-dl-td-edit"
-                                @click="deleteDataRow(row['id'])">
-                                <icon-trash class="w-6 h-6" v-tippy />
-                                <tippy>{{ deleteDescription }}</tippy>
-                            </td>
-                            <td v-else-if="hasRight('view',row.full_name)"
-                            class="np-dl-td-edit"></td>
-                        </tr>
-                        </template>
-                    </tbody>
+
+    </tr>
+  </template>
+</tbody>
+
                 </table>
 
                 <!-- Pagination -->
@@ -130,11 +110,11 @@ import IconPlusCircle from "@/Application/Components/Icons/PlusCircle.vue";
 import IconPencil from "@/Application/Components/Icons/Pencil.vue";
 import IconTrash from "@/Application/Components/Icons/Trash.vue";
 import Alert from "@/Application/Components/Content/Alert.vue";
-import { GetRights,CleanTable,CleanId } from '@/helpers';
+import { GetRights,CleanTable } from '@/helpers';
 import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
-import { hasRight } from "@/utils/rights";
+// import { hasRight } from "@/utils/rights";
 import { Inertia } from '@inertiajs/inertia'
 //import { safeInertiaGet,safeInertiaVisit } from '@/utils/inertia';
 
@@ -152,7 +132,6 @@ export default {
         IconPencil,
         IconTrash,
         Alert,
-        CleanTable,
     },
     props: {
         items: {},
@@ -222,7 +201,7 @@ export default {
             dragIndex: null,
             draggedIndex: null,
             checkedStatus: {}, // z. B. { 100: true, 101: false }
-            rows: [...this.datarows.data],
+            rows: Array.isArray(this.datarows?.data) ? [...this.datarows.data] : [],
             currentPage: 1,
             perPage: 20,
             seaRoute:'',
@@ -238,7 +217,7 @@ export default {
     computed: {
         drg(){
             if(CleanTable()){
-                alert("CLT");
+                // alert("CLT");
                 return true;
             }
             return false;
@@ -325,8 +304,8 @@ export default {
     onDragStart(event, index) {
     if (!this.rows[index]) return;
     event.dataTransfer.effectAllowed = "move";
-    event.dataTransfer.setData("text/plain", index ? index.toString() : '');
-  },
+    event.dataTransfer.setData("text/plain", index.toString());
+    },
 
   onDrop(event, dropIndex) {
     const dragIndex = parseInt(event.dataTransfer.getData("text/plain"));

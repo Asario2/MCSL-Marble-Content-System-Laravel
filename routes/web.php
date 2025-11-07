@@ -699,6 +699,10 @@ Route::get('/tables/sort-enumis/{table}/{name}', [TablesController::class, 'getO
         // include __DIR__."/auth.php";
         // Auth::routes();
         Route::get("/",[HomeController::class,"home_index"])->name("home.index");
+        Route::get("/news", function() {
+            return redirect("/");
+        });
+
         Route::get('/ri', [HomeController::class, 'home_rindex'])->name('home.rindex');
         Route::fallback(function () {
             return Inertia::render('Homepage/NoPageFound_'.SD());

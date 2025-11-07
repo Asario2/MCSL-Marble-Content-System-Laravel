@@ -10,7 +10,7 @@
         // Definiere hier deine Konstanten oder statischen Variablen
         public static array $excl_cols = ['updated_at', 'published_at','remember_token','email_verified_at','google2fa_secret','is_two_factor_authenticated','two_factor_authenticated',
                         'two_factor_enabled',"password_old",'reserved_at','uhash','available_at','is_two_factor_enabled','temp_google2fa_secret','new_email','email_change_token','email_verification_token','two_factor_token',"author_name","users_rights_id","chg_date","xico_doms",'xkis_IsFeed','xis_mailed','users_rights_id','two_factor_secret','two_factor_recovery_codes','two_factor_confirmed_at','two_factor_enabled','remember_token',
-                        'email_hash',
+                        'email_hash','hasyear',"hasryear",
                     ];
         public static array $excl_heads = ["date_begin"];
         public static array $excl_disabled = ['id'];
@@ -69,7 +69,7 @@
 
         public static array $impath = ["users"=>'profile_photo_path','default'=>"image_path"];
 
-        public static array $dom = ["ab"=>'ab.marblefx.net','mfx'=>"www.marblefx.net",'dag'=>"www.monikadargies.de",'chh'=>"www.ra-c-henning.de",'mjs'=>"mjs.marblefx.net"];
+        public static array $dom = ["ab"=>'www.asario.de','mfx'=>"www.marblefx.net",'dag'=>"www.monikadargies.de",'chh'=>"www.ra-c-henning.de",'mjs'=>"mjs.marblefx.net"];
 
         public static array $headline =
         [

@@ -259,12 +259,14 @@
 
     // Signatur speichern
     async saveSignature() {
-        if(document.getElementById("EmailSignatur")?.value?.trim() === '' || !this.selectedSigId)
-        {
-            alert("Bitte Signatur ausfüllen");
-            return;
-        }
+        // if(document.getElementById("EmailSignatur")?.value?.trim() === '' || !this.selectedSigId)
+        // {
+        //     alert("Bitte Signatur ausfüllen");
+        //     return;
+        // }
       let sname = null;
+
+
 
   // Nur fragen, wenn keine bestehende Signatur vorhanden ist
   if (!this.signatur_id) {
@@ -272,11 +274,24 @@
     if (!sname) return; // Abbrechen, wenn nichts eingegeben wurde
   }
 try {
-  const res = await axios.post('/email/signatur/save', {
-    signatur_id: this.selectedSigId,
-    signature_text: this.signatureText,
-    signature_name: sname,
-  });
+
+let text = this.signatureText;
+const el = document.getElementById("signatur");
+if (el && el.innerHTML.trim() !== '') text = el.innerHTML;
+
+if (!text || text.trim() === '') {
+  alert("Bitte Signatur ausfüllen");
+  return;
+}
+let text2 = document.getElementById("EmailSignatur").innerHTML;
+alert(text2);
+
+
+const res = await axios.post('/email/signatur/save', {
+  signatur_id: this.selectedSigId,
+  signature_text: text2,
+  signature_name: sname,
+});
 
   alert(res.data.message);
 } catch (err) {

@@ -25,7 +25,7 @@
              <nav class="fixed top-0 left-0 right-0 z-30 bg-layout-sun-50 text-layout-sun-900 dark:bg-layout-night-50 dark:text-layout-night-900 border-b border-layout-sun-200 dark:border-layout-night-200"  style='z-index:50;'>
             <div class="container mx-auto max-w-6xl p-6 lg:flex lg:items-center lg:justify-between" style='z-index:50;'>
                 <div class="flex items-center justify-between">
-                <brand-header :route-name="route('home.index')" :brand_1="$page.props.applications.brand_name_1" :brand_2="$page.props.applications.brand_name_2" :app-name="$page.props.applications.app_name"></brand-header>
+                <brand-header :route-name="route('home.blog.index')" :brand_1="$page.props.applications.brand_name_1" :brand_2="$page.props.applications.brand_name_2" :app-name="$page.props.applications.app_name"></brand-header>
                     <div
                     id="arrow2"
                     class="absolute top-7 z-40 flex justify-center items-center cursor-pointer hover:scale-110 transition-transform duration-300" style="right:4.2rem;display:none;"
@@ -179,20 +179,6 @@
 
                                             Kontakte
                                             </dropdown-link>
-                                            <dropdown-link
-                                                v-if="
-                                                    !$page.props.jetstream
-                                                        .hasApiFeatures
-                                                "
-                                                :with-icon="false"
-                                                :with-route="true"
-                                                :route-name="
-                                                    route('admin.api_tokens.index')
-                                                "
-                                            >
-                                                API-Token
-                                            </dropdown-link>
-
                                             <div
                                                 class="my-2 border-t border-layout-sun-200 dark:border-layout-night-200"
                                             />

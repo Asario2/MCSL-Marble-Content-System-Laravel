@@ -17,6 +17,8 @@ vendor/
 *.bat
 *.sh
 *.yml
+**/phpmyadmin/**
+**/new_phpmyadmin/**
 /public/_assets/**
 /public/build/**
 # Ausnahme: bestimmte Datei tracken
@@ -38,6 +40,7 @@ yarn-error.log
 /.vscode
 .vite/**
 /node_modules/
+ifo.php
 handbook/
 storage/**
 public/build

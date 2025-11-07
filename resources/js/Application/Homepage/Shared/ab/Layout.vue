@@ -38,7 +38,7 @@
 
 
         <main :class="mode" id="app-layout-start">
-            
+
         <section class="relative bg-layout-sun-50 text-layout-sun-900 dark:bg-layout-night-50 dark:text-layout-night-900 transition-colors duration-1000"  style='z-index:50;'>
             <!-- Header -->
 
@@ -193,19 +193,7 @@
                                                 Profil
                                             </dropdown-link>
 
-                                            <dropdown-link
-                                                v-if="
-                                                    !$page.props.jetstream
-                                                        .hasApiFeatures
-                                                "
-                                                :with-icon="false"
-                                                :with-route="true"
-                                                :route-name="
-                                                    route('admin.api_tokens.index')
-                                                "
-                                            >
-                                                API-Token
-                                            </dropdown-link>
+
 
                                             <div
                                                 class="my-2 border-t border-layout-sun-200 dark:border-layout-night-200"

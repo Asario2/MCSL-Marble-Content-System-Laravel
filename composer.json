@@ -7,6 +7,8 @@
         "ReinkingConsulting"
     ],
     "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "php": "^8.2",
         "arnoson/kirby-vite": "^5.4",
@@ -29,6 +31,7 @@
         "league/commonmark": "^2.7",
         "nextqs/bacon-qr-code": "^2.0",
         "orbitale/imagemagick-php": "^3.3",
+        "phpids/phpids": "dev-master",
         "qsfx/bacon-qr-code": "^1.0",
         "rap2hpoutre/laravel-log-viewer": "^2.4",
         "reinink/remember-query-strings": "^0.1.2",
@@ -49,12 +52,11 @@
         "mockery/mockery": "^1.6",
         "phpunit/phpunit": "^10.5",
         "spatie/laravel-ignition": "^2.4"
-        
     },
     "autoload": {
         "psr-4": {
             "App\\": "app/",
-            "App\\Helper\\":"App/Helper/",
+            "App\\Helper\\": "app/Helper/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
@@ -90,6 +92,12 @@
             "dont-discover": []
         }
     },
+    "repositories": {
+        "phpids": {
+            "type": "vcs",
+            "url": "https://github.com/asario2/phpids.git"
+        }
+    },
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
@@ -101,7 +109,5 @@
             "typo3/class-alias-loader": false,
             "typo3/cms-composer-installers": false
         }
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true
+    }
 }

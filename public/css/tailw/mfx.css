@@ -1,7 +1,9 @@
 .dark\:text-layout-night-1050:is(.dark *){
     color:#ffa200 !important;
 }
-
+.dark\:bg-layout-night-0:is(.dark *){
+    color:#000 !important;
+}
 .dark\:border-layout-night-1050:is(.dark *){
     border-color:#ffa200 !important;
     border-width: 2px !important;
