@@ -45,7 +45,12 @@
                font-semibold px-2.5 py-0.5 rounded-lg whitespace-nowrap ml-4"
       >
         {{ blog.category_name }}
-      </div>
+        </div>
+
+        <span v-if="blog.xis_anzeige" class="mt-[-5px] ml-[-72px]">
+            <br /><br />
+                            <img :src="'/images/_ab/web/anzeige.png'" alt="Anzeige"/>
+                        </span>
     </div>
 
             <!-- Datum und Autor -->

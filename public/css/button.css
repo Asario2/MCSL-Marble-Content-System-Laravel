@@ -1,6 +1,6 @@
 @layer utilities {
     .button_normal {
-        @apply inline-flex items-center flex-nowrap cursor-pointer rounded-md px-2 py-1.5 border border-transparent text-sm leading-4 font-medium transition bg-transparent text-layout-sun-800 hover:bg-layout-sun-200 hover:text-layout-sun-950 outline-none focus:bg-transparent dark:bg-transparent dark:text-layout-night-800 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-950 dark:outline-none dark:focus:bg-transparent;
+        @apply inline-flex items-center flex-nowrap cursor-pointer rounded-md px-2 py-1.5 border border-transparent text-sm leading-4 font-medium transition bg-transparent text-layout-sun-800 hover:bg-layout-sun-200 hover:text-layout-sun-950 outline-none focus:bg-transparent dark:bg-transparent dark:text-layout-night-800 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-950 dark:outline-none dark:focus:bg-transparent
     }
 
     .button_menu {
@@ -8,7 +8,7 @@
     }
 
     .footer_link {
-        @apply inline-flex gap-x-2 py-0.5 px-2 rounded-lg text-layout-sun-600 hover:text-layout-sun-800 hover:bg-layout-sun-200 focus:outline-none focus:ring-1 focus:ring-layout-sun-600 dark:text-layout-night-600 dark:hover:text-layout-night-800 dark:hover:bg-layout-night-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-layout-night-600;
+        @apply inline-flex gap-x-2 py-0.5 px-2 rounded-lg text-layout-sun-600 hover:text-layout-sun-800 hover:bg-layout-sun-200 focus:outline-none focus:ring-1 focus:ring-layout-sun-600 dark:text-layout-night-600 dark:hover:text-layout-night-800 dark:hover:bg-layout-night-300 dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-layout-night-600
     }
 
     .button_icon {
@@ -20,7 +20,7 @@
     }
 
     .button_border {
-        @apply border border-primary-sun-300 dark:border-primary-night-300;
+        @apply border border-primary-sun-300 dark:border-primary-night-300
     }
 
     .button_bg {
@@ -32,7 +32,7 @@
     }
 
     .button_text_case_bg {
-        @apply text-primary-sun-0 hover:text-primary-sun-0 dark:text-primary-night-0 dark:hover:text-primary-night-0;
+        @apply text-primary-sun-0 hover:text-primary-sun-0 dark:text-primary-night-0 dark:hover:text-primary-night-0
     }
 
     .button_danger_bg {
@@ -40,11 +40,11 @@
     }
 
     .button_danger_border {
-        @apply border border-red-300 dark:border-red-700;
+        @apply border border-red-300 dark:border-red-700
     }
 
     .button_danger_text_case_bg {
-        @apply text-primary-sun-0 hover:text-primary-sun-0 dark:text-primary-night-0 dark:hover:text-primary-night-0;
+        @apply text-primary-sun-0 hover:text-primary-sun-0 dark:text-primary-night-0 dark:hover:text-primary-night-0
     }
 
     .button_danger_text_case_border {
@@ -56,6 +56,8 @@
     }
 
     .button_white_text_case_bg {
-        @apply text-primary-sun-800 hover:text-primary-sun-800 dark:text-primary-night-800 dark:hover:text-primary-night-800;
+        @apply text-primary-sun-800 hover:text-primary-sun-800 dark:text-primary-night-800 dark:hover:text-primary-night-800
     }
+
+
 }

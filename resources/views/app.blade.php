@@ -60,17 +60,16 @@
 
 
 
-
-
-
+        @routes
+            @vite(['resources/css/app.css', 'resources/js/app.js'])
         <!-- Shariff JavaScript (über CDN) -->
         <link href="/css/tailw/extra.css?time={{time()}}" rel="stylesheet">
         <link href="/css/tailw/{{$sd_alt}}.css?time={{time()}}" rel="stylesheet">
         {{-- <script src="/js/shariff.min.js"></script> --}}
         <link rel="stylesheet" href="/Shariff/shariff.complete.css">
         <script src="/Shariff/shariff.min.js"></script>
-        @routes
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+
         <link href="/css/app.css?time={{time()}}" rel="stylesheet">
         {{-- <link href="/css/vite_app.css?time={{time()}}" rel="stylesheet"> --}}
 

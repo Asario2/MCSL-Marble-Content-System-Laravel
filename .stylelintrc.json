@@ -1,0 +1,11 @@
+{
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-tailwindcss"
+  ],
+  "rules": {
+    "indentation": 4,
+    "color-hex-case": "lower",
+    "no-empty-source": null
+  }
+}

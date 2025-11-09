@@ -1,0 +1,70 @@
+import defaultTheme from "tailwindcss/defaultTheme";
+import forms from "@tailwindcss/forms";
+import typography from "@tailwindcss/typography";
+
+/** @type {import('tailwindcss').Config} */
+export default {
+    darkMode: "class",
+
+    content: [
+        "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php",
+        "./vendor/laravel/jetstream/**/*.blade.php",
+        "./storage/framework/views/*.php",
+        "./resources/views/**/*.blade.php",
+        "./resources/js/**/*.vue",
+    ],
+
+    theme: {
+        extend: {
+            colors: {
+                "layout-sun-50": "#ffffff",
+                "layout-sun-100": "#fdfff9",
+                "layout-sun-200": "#fafff3",
+                "layout-sun-300": "#f8ffed",
+                "layout-sun-400": "#f5ffe7",
+                "layout-sun-500": "#e6f1d7",
+                "layout-sun-600": "#cbd6bc",
+                "layout-sun-700": "#b0baa1",
+                "layout-sun-800": "#959f86",
+                "layout-sun-900": "#7a846c",
+                "layout-night-900": "#7a846c",
+                "layout-night-800": "#959f86",
+                "layout-night-700": "#b0baa1",
+                "layout-night-600": "#cbd6bc",
+                "layout-night-500": "#e6f1d7",
+                "layout-night-400": "#f5ffe7",
+                "layout-night-300": "#f8ffed",
+                "layout-night-200": "#fafff3",
+                "layout-night-100": "#fdfff9",
+                "layout-night-50": "#ffffff",
+                "primary-sun-50": "#ffffff",
+                "primary-sun-100": "#fdfff9",
+                "primary-sun-200": "#fafff3",
+                "primary-sun-300": "#f8ffed",
+                "primary-sun-400": "#f5ffe7",
+                "primary-sun-500": "#e6f1d7",
+                "primary-sun-600": "#cbd6bc",
+                "primary-sun-700": "#b0baa1",
+                "primary-sun-800": "#959f86",
+                "primary-sun-900": "#7a846c",
+                "primary-night-900": "#7a846c",
+                "primary-night-800": "#959f86",
+                "primary-night-700": "#b0baa1",
+                "primary-night-600": "#cbd6bc",
+                "primary-night-500": "#e6f1d7",
+                "primary-night-400": "#f5ffe7",
+                "primary-night-300": "#f8ffed",
+                "primary-night-200": "#fafff3",
+                "primary-night-100": "#fdfff9",
+                "primary-night-50": "#ffffff",
+            },
+            fontFamily: {
+                sans: ["Open Sans", ...defaultTheme.fontFamily.sans],
+                logo: ["Open Sans", ...defaultTheme.fontFamily.sans],
+                title: ["Ubuntu", ...defaultTheme.fontFamily.sans],
+            },
+        },
+    },
+
+    plugins: [forms, typography],
+};

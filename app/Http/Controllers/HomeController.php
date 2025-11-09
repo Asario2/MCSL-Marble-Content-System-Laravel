@@ -145,6 +145,7 @@ class HomeController extends Controller
             'blogs.title as name',
             'blogs.autoslug as autoslug',
             'blogs.summary as summary',
+            'blogs.xis_anzeige as xis_anzeige',
             'blogs.reading_time as reading_time',
             'blog_authors.name as author_name',
             'blogs.image_path as url',

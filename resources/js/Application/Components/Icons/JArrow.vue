@@ -2,7 +2,9 @@
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
-    class="w-8 h-8 text-green-600 animate-bounce-up-fade"
+    class="w-8 h-8 text-green-600"
+    :class="{ 'animate-bounce-up-fade': true }"
+    :style="{ animationIterationCount: iterationCount }"
     fill="none"
     stroke="currentColor"
     stroke-width="2.5"
@@ -13,6 +15,21 @@
     <path d="M5 12l7-7 7 7" />
   </svg>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      iterationCount: 6, // default für "/"
+    };
+  },
+  mounted() {
+    if (window.location.pathname !== '/') {
+      this.iterationCount = 1; // nur 1 Wiederholung, wenn nicht die Startseite
+    }
+  },
+};
+</script>
 
 <style scoped>
 @keyframes bounce-up-fade {
@@ -38,7 +55,6 @@
 }
 
 .animate-bounce-up-fade {
-  animation: bounce-up-fade 1.2s ease-in-out 0s 6 forwards;
-  /* ↑ Dauer, Timing, Startverzögerung, Wiederholungen, behält Endzustand */
+  animation: bounce-up-fade 1.2s ease-in-out forwards;
 }
 </style>

@@ -1,5 +1,4 @@
 @layer utilities {
-
     .button_normal {
         @apply inline-flex items-center flex-nowrap cursor-pointer rounded-md px-2 py-1.5 border border-transparent text-sm leading-4 font-medium transition bg-transparent text-layout-sun-800 hover:bg-layout-sun-200 hover:text-layout-sun-950 outline-none focus:bg-transparent dark:bg-transparent dark:text-layout-night-800 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-950 dark:outline-none dark:focus:bg-transparent
     }

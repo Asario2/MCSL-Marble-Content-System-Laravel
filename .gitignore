@@ -2,7 +2,7 @@ _work/*
 
 /.phpunit.cache
 /node_modules
-
+**/connnfi/**
 /storage/*.key
 /storage/debugbar/**
 README.md

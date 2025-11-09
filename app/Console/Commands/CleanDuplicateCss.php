@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Symfony\Component\Finder\SplFileInfo;
 
 class CleanDuplicateCss extends Command
 {
@@ -32,15 +33,21 @@ class CleanDuplicateCss extends Command
         }
 
         $duplicates = [];
+        /** @var SplFileInfo[] $files */
         $files = File::files($cssDir);
 
         foreach ($files as $file) {
             $filename = $file->getFilename();
 
-            $this->info("Processing: " . $filename);
-            $content = File::get($file->getPathname());
+            // ⛔ Nur .css-Dateien verarbeiten
+            if (pathinfo($filename, PATHINFO_EXTENSION) !== 'css') {
+                $this->line("Skipping non-CSS file: {$filename}");
+                continue;
+            }
 
-            // Blöcke mit Regex erfassen
+            $this->info("Processing: " . $filename);
+
+            $content = File::get($file->getPathname());
             preg_match_all('/[^{]+\{[^}]+\}/s', $content, $matches);
 
             $uniqueBlocks = [];
@@ -48,7 +55,6 @@ class CleanDuplicateCss extends Command
                 $trimmedBlock = trim($block);
 
                 if (isset($seenBlocks[$trimmedBlock])) {
-                    // schon gesehen (in extra.css oder anderer Datei) → als Duplikat markieren
                     if ($filename !== 'extra.css') {
                         $duplicates[] = $trimmedBlock;
                     }

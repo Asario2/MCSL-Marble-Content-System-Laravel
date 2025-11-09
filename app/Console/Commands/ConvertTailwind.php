@@ -7,24 +7,10 @@ use Illuminate\Support\Facades\File;
 
 class ConvertTailwind extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'app:convert-tailwind {input} {output}';
+    protected $description = 'Übernimmt vorhandene Farbwerte (inkl. sun/night) aus einer JSON in eine Tailwind-Konfiguration.';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Konvertiert eine einfache Tailwind color config in eine Dark/Light-Color-Konfiguration';
-
-    /**
-     * Execute the console command.
-     */
-     public function handle()
+    public function handle()
     {
         $inputFile = $this->argument('input');
         $outputFile = $this->argument('output');
@@ -35,40 +21,21 @@ class ConvertTailwind extends Command
         }
 
         $content = File::get($inputFile);
-
-        // Entfernt module.exports, Kommentare, usw.
-        $content = preg_replace('/module\.exports\s*=\s*/', '', $content);
-        $content = preg_replace('/\/\*.*?\*\//s', '', $content);
-        $content = preg_replace('/\/\/.*$/m', '', $content);
-
-        // JS -> JSON kompatibel machen
-        $content = str_replace("'", '"', $content);
-        $content = preg_replace('/,\s*([}\]])/', '$1', $content); // letzte Kommata entfernen
-
-        // Versuch, JS-Objekt in PHP-Array zu decodieren
         $json = json_decode($content, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->error("Ungültiges JSON in {$inputFile}: " . json_last_error_msg());
+            return 1;
+        }
 
         if (!isset($json['theme']['extend']['colors'])) {
             $this->error("Keine gültige Farbstruktur in {$inputFile} gefunden.");
             return 1;
         }
 
-        $baseColors = $json['theme']['extend']['colors'];
-        $sunNightColors = [];
+        $colors = $json['theme']['extend']['colors'];
 
-        foreach ($baseColors as $name => $variants) {
-            foreach ($variants as $key => $value) {
-                // Key als String sichern
-                $sunNightColors["{$name}-sun-{$key}"] = $value;
-            }
-
-            $reversed = array_reverse($variants, true);
-            foreach ($reversed as $key => $value) {
-                $sunNightColors["{$name}-night-{$key}"] = $value;
-            }
-        }
-
-        // ESM Output
+        // === Tailwind Config Grundgerüst ===
         $output = <<<EOT
 import defaultTheme from "tailwindcss/defaultTheme";
 import forms from "@tailwindcss/forms";
@@ -91,11 +58,33 @@ export default {
             colors: {
 EOT;
 
-       foreach ($sunNightColors as $key => $value) {
-    // numerische Keys oder gemischte Keys als Strings schreiben
-    $output .= "\n                \"{$key}\": \"{$value}\",";
-}
+        // === Farben ausgeben ===
+        foreach ($colors as $group => $data) {
+            $output .= "\n                \"{$group}\": {";
+            foreach ($data as $subgroup => $values) {
+                // Prüfen, ob das ein Array von Shades ist (sun/night)
+                if (is_array($values) && isset($values['50'])) {
+                    // einfache Struktur, z. B. "layout": { "50": "#fff", ... }
+                    foreach ($values as $shade => $hex) {
+                        $output .= "\n                    \"{$shade}\": \"{$hex}\",";
+                    }
+                } elseif (is_array($values)) {
+                    // verschachtelte Struktur (sun/night)
+                    foreach ($values as $mode => $shades) {
+                        $output .= "\n                    \"{$mode}\": {";
+                        foreach ($shades as $shade => $hex) {
+                            $output .= "\n                        \"{$shade}\": \"{$hex}\",";
+                        }
+                        $output = rtrim($output, ','); // letztes Komma entfernen
+                        $output .= "\n                    },";
+                    }
+                }
+            }
+            $output = rtrim($output, ',');
+            $output .= "\n                },";
+        }
 
+        // === Restlicher Output ===
         $output .= <<<EOT
 
             },
@@ -112,10 +101,8 @@ EOT;
 EOT;
 
         File::put($outputFile, $output);
-        $this->info("Tailwind-Konfiguration erfolgreich konvertiert → {$outputFile}");
+        $this->info("Tailwind-Konfiguration erfolgreich erstellt → {$outputFile}");
 
         return 0;
     }
 }
-
-

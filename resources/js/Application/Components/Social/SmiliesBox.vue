@@ -47,6 +47,8 @@
           ":roll:": "rolleyes",
           ":(": "sad",
           "^^": "twisted",
+           ":ying:": "ying",
+         ':pirat:':"pirat",
         }
       };
     },

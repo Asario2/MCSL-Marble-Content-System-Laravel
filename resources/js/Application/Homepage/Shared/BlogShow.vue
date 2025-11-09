@@ -33,16 +33,21 @@
             >
 
                 <div class="space-y-2" style="z-index:100 !important;">
-                    <div
-                        v-if="blog.blog_category.name"
-                        class="flex justify-end items-start z-20"
-                    >
+
+                    <div v-if="blog.blog_category.name" class="flex flex-col items-end z-20">
+                        <!-- Kategorie-Name -->
                         <div
                             class="title2 text-sm min-w-fit min-h-fit bg-primary-sun-500 text-primary-sun-800 dark:bg-primary-night-500 dark:text-primary-night-800 font-semibold px-2.5 py-0.5 rounded-lg whitespace-nowrap"
                         >
                             {{ blog.blog_category.name }}
                         </div>
+
+                        <!-- Anzeige-Icon unter der Kategorie -->
+                        <span v-if="blog.xis_anzeige" class="mt-[-10px]">
+                            <img :src="'/images/_ab/web/anzeige.png'" alt="Anzeige"/>
+                        </span>
                     </div>
+
                     <div class="bg-layout-sun-100 w-full dark:bg-layout-night-100 p-4 title" style="min-width:300px;">
                     <h1 class="pb-12 block w-full text-[2.78em]">
                             {{ blog.title }}

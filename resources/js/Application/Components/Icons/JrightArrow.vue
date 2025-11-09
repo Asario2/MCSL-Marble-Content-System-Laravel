@@ -3,6 +3,8 @@
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     class="w-8 h-8 text-green-600 animate-bounce-right-fade"
+    :class="{ 'animate-bounce-up-fade': true }"
+    :style="{ animationIterationCount: iterationCount }"
     fill="none"
     stroke="currentColor"
     stroke-width="2.5"
@@ -14,8 +16,26 @@
   </svg>
 </template>
 
+
+
+<script>
+export default {
+  data() {
+    return {
+      iterationCount: 6, // default für "/"
+    };
+  },
+  mounted() {
+    if (window.location.pathname !== '/') {
+      this.iterationCount = 1; // nur 1 Wiederholung, wenn nicht die Startseite
+    }
+  },
+};
+</script>
+
 <style scoped>
-@keyframes bounce-right-fade {
+@keyframes bounce-up-fade {
+
   0%,
   100% {
     transform: translateX(0);
@@ -39,8 +59,7 @@
   }
 }
 
-.animate-bounce-right-fade {
-  animation: bounce-right-fade 1.2s ease-in-out 0s 6 forwards;
-  /* Dauer: 1.2s, 6 Wiederholungen, behält letzten Zustand */
+.animate-bounce-up-fade {
+  animation: bounce-up-fade 1.2s ease-in-out forwards;
 }
 </style>

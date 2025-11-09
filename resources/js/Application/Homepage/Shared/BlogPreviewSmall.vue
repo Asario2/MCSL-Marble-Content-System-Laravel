@@ -35,10 +35,14 @@
                 v-if="blog.category_name"
                 class="text-sm min-w-fit min-h-fit bg-primary-sun-500 text-primary-sun-900
                         dark:bg-primary-night-500 dark:text-primary-night-900
-                        font-semibold px-2.5 py-0.5 rounded-lg whitespace-nowrap ml-4 mt-3"
+                        font-semibold px-2.5 py-0.5 rounded-lg whitespace-nowrap ml-4 mt-3 mr-4"
                 >
                 {{ blog.category_name }}
                 </div>
+                <span v-if="blog.xis_anzeige" class="mt-[5px] ml-[-72px]">
+            <br /><br />
+                            <img :src="'/images/_ab/web/anzeige.png'" alt="Anzeige" class="minw-[70px]"/>
+                        </span>
             </div>
 
                 <div class="flex justify-between items-center">
