@@ -33,7 +33,7 @@
         "stylelint-config-tailwindcss": "^1.0.0",
         "tailwind-dark-aware": "^0.3.1",
         "tailwindcss": "^4.1.17",
-        "vite": "^7.1.12",
+        "vite": "^7.2.2",
         "vue": "^3.5.24"
     },
     "overrides": {
