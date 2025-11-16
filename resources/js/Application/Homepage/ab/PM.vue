@@ -33,7 +33,7 @@
 
           <input
             type="text"
-            v-model="searchQuery"
+            v-model="searchInbox"
             placeholder="Suchen..."
             class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-700 dark:text-white mb-4"
           />
@@ -127,7 +127,7 @@
 
           <input
             type="text"
-            v-model="searchQuery"
+            v-model="searchOutbox"
             placeholder="Suchen..."
             class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-700 dark:text-white mb-4"
           />
@@ -410,6 +410,8 @@ export default {
       selectedMessage: null,
       UID: window?.Laravel?.userId || null,
       to_id: null,
+      searchInbox: '',
+      searchOutbox: '',
       // Checkbox States - als Objekte für persistente Speicherung nach ID
       selectAllInbox: 0,
       selectAllOutbox: 0,
@@ -421,9 +423,12 @@ export default {
   computed: {
     // Inbox
     filteredInbox() {
-      if (!this.searchQuery) return this.inboxArr;
-      const q = this.searchQuery.toLowerCase();
-      return this.inboxArr.filter(msg => msg.user.toLowerCase().includes(q) || msg.subject.toLowerCase().includes(q));
+    if (!this.searchInbox) return this.inboxArr;
+    const q = this.searchInbox.toLowerCase();
+    return this.inboxArr.filter(msg =>
+        msg.user.toLowerCase().includes(q) ||
+        msg.subject.toLowerCase().includes(q)
+    );
     },
     paginatedInbox() {
       const start = (this.currentPageInbox - 1) * this.perPage;
@@ -440,9 +445,12 @@ export default {
 
     // Outbox
     filteredOutbox() {
-      if (!this.searchQuery) return this.outboxArr;
-      const q = this.searchQuery.toLowerCase();
-      return this.outboxArr.filter(msg => msg.user.toLowerCase().includes(q) || msg.subject.toLowerCase().includes(q));
+    if (!this.searchOutbox) return this.outboxArr;
+    const q = this.searchOutbox.toLowerCase();
+    return this.outboxArr.filter(msg =>
+        msg.user.toLowerCase().includes(q) ||
+        msg.subject.toLowerCase().includes(q)
+    );
     },
     paginatedOutbox() {
       const start = (this.currentPageOutbox - 1) * this.perPage;
@@ -666,7 +674,11 @@ mounted() {
 
 watch: {
   // Bereits vorhandene watcher
-  tab() { this.resetPage(); },
+  tab() {
+    this.searchInbox = '';
+    this.searchOutbox = '';
+    this.resetPage();
+  },
   searchQuery() { this.resetPage(); },
 
 form: {
