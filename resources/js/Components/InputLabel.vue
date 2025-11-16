@@ -10,3 +10,4 @@ defineProps({
         <span v-else><slot ></span>
     </label>
 </template>
+

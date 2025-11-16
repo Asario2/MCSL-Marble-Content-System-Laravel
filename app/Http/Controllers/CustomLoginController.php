@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Contracts\LoginResponse;
 use Laravel\Fortify\Contracts\TwoFactorLoginResponse;
 use App\Support\PasswordHash;
+use App\Http\Controllers\UserConfigController;
 use Inertia\Inertia;
 
 class CustomLoginController extends Controller
@@ -64,6 +65,7 @@ class CustomLoginController extends Controller
 
         // Kein 2FA → direkt einloggen
         Auth::login($user, $remember);
+        UserConfigController::updateConfig(Auth::id());
         return app(LoginResponse::class);
     }
     public function enableTwoFactor(Request $request)
@@ -149,7 +151,7 @@ public function pw_recovery(Request $request)
         'current_password' => 'required|string',
         'new_password' => 'required|string|confirmed|min:8',
     ]);
-   
+
     $user = \App\Models\User::where('email', $request->email)->first();
 
     if (!$user) {

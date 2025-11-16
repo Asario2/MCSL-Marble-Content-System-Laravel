@@ -51,3 +51,4 @@
   color: #d1d5db; /* Graue Farbe für leere Sterne */
 }
 </style>
+

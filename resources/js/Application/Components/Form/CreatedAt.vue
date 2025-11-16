@@ -7,8 +7,8 @@
   </template>
 
 <script>
-import axios from 'axios'
-
+import axios from 'axios';
+import {CleanTable} from "@/helpers";
 /* --------  Modulweiter Cache  -------- */
 let creaCache    = null   // fertige Daten
 let fetchPromise = null   // laufender Request
@@ -33,9 +33,10 @@ export default {
 
     /* Pfadlogik */
     tablePath () {
-      const tbl = this.table
-      if (tbl === 'images') return 'home/search_cat/pictures'
-      if (tbl !== 'blogs')  return `home/${tbl}`
+      const tbl = this.table;
+       if (!tbl) return '';
+      if (tbl === 'images') return 'home/search_cat/pictures';
+      if (tbl !== 'blogs')  return `home/${tbl}`;
       return tbl
     }
   },
@@ -50,6 +51,7 @@ export default {
   },
 
   methods: {
+    CleanTable,
     async fetchCreatedAt () {
       // 1) Cache vorhanden → direkt verwenden
       if (creaCache) {
@@ -105,5 +107,6 @@ export default {
   }
 }
 </script>
+
 
 

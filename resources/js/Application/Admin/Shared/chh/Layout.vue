@@ -75,7 +75,7 @@
                                             <img
                                                 class="h-8 w-8 rounded-full object-cover"
                                                 :src="
-                                                GetProfileImagePath($page.props.auth.user.profile_photo_url)""
+                                                GetProfileImagePath($page.props.auth.user.profile_photo_url)"
                                                 :alt="
                                                     $page.props.userdata
                                                         .full_name
@@ -286,7 +286,7 @@
                                 Profil
                             </ResponsiveNavLink>
 
-                          
+
 
                             <!-- Authentication -->
                             <form method="POST" @submit.prevent="logoutUser">
@@ -433,4 +433,5 @@ export default {
     },
 };
 </script>
+
 

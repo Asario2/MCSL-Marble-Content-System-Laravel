@@ -62,13 +62,14 @@
 </template>
 <script>
 import { defineComponent } from "vue";
+import axios from "axios";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import Layout from "@/Application/Homepage/Shared/mfx/Layout.vue";
-import { selectionHelper, GetSettings,rumLaut } from "@/helpers";
+import { rumLaut } from "@/helpers";
 import PageContent from "@/Application/Components/Content/PageContent.vue";
 import PageTitle from "@/Application/Components/Content/PageTitle.vue";
-import PageParagraph from "@/Application/Components/Content/PageParagraph.vue";
-import emailview from "@/Application/Components/Form/email.vue";
+// import PageParagraph from "@/Application/Components/Content/PageParagraph.vue";
+// import emailview from "@/Application/Components/Form/email.vue";
 import editbtns from "@/Application/Components/Form/editbtns.vue";
 
 export default defineComponent({
@@ -78,8 +79,8 @@ export default defineComponent({
         Layout,
         PageContent,
         PageTitle,
-        PageParagraph,
-        emailview,
+        // PageParagraph,
+        // emailview,
         editbtns, MetaHeader},
     props:{
         news:[Array,Object],
@@ -142,15 +143,16 @@ export default defineComponent({
 });
 </script>
 <style>
-.input {
+/* /*.input {
   @apply w-full px-4 py-2 border rounded-md dark:bg-zinc-800 dark:text-white;
 }
 
 .btn {
   @apply px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50;
-}
+}*/ */
 IMG.no_bord{
     border-top-right-radius:0 !important;
     border-bottom-right-radius:0 !important;
 }
 </style>
+

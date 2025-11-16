@@ -18,3 +18,4 @@ export default {
     name: "ArrowLongRight",
 };
 </script>
+

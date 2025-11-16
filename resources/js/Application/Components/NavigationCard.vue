@@ -18,7 +18,7 @@
             </h2>
         </div>
         <p
-            class="px-2 mt-4 text-layout-sun-700 dark:text-layout-night-700 text-sm leading-relaxed h-16"
+            class="px-2 mt-4 text-layout-sun-700 dark:text-layout-night-700 text-sm leading-relaxed h-5"
         >
             <slot name="description" />
         </p>
@@ -163,3 +163,4 @@ A.text-layout-sun-600 dark:text-layout-night-900{
     color:rgb(20,20,20) !important;
 }
 </style>
+

@@ -58,3 +58,4 @@ export default {
   animation: bounce-up-fade 1.2s ease-in-out forwards;
 }
 </style>
+

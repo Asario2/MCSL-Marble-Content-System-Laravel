@@ -302,3 +302,4 @@ const deleteApiToken = () => {
         </ConfirmationModal>
     </div>
 </template>
+

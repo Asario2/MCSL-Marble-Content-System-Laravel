@@ -61,6 +61,17 @@
                   Hochladen
                 </button>
               </div>
+              <div v-show="activeTab === 'gallery' && is_imgdir">
+            <ImageJsonEditor
+              :folder="path"
+              :column="column"
+              @jsonUpdated="onJsonUpdated"
+              @imageUploaded="refreshGallery"
+              @refresh-gallery="$emit('refresh-preview')"
+              ref="editor2"
+              @close="closeModal"
+            />
+          </div>
             </form>
 
         </div>
@@ -93,7 +104,7 @@
     name: 'ImageUploadModal',
     components: { CopyLeftSelect, ImageJsonEditor },
     props: {
-      is_imgdir: { type: String,Array,Object,Boolean, default: false },
+      is_imgdir: { type: [String,Array,Object,Boolean, Number], default: false },
       isModalOpen: { type: Boolean, default: false },
       column: String,
       domain: String,
@@ -269,3 +280,4 @@
     transition: all 0.3s ease;
   }
   </style>
+

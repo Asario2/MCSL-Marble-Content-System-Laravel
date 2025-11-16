@@ -2,24 +2,25 @@
     <Layout>
         <MetaHeader :title="'Benutzer - ' + users?.name" />
         <back-btn url="/home/users" r="r">Benutzerliste</back-btn>
-        <div id="teaser-img2" class="block max-w-sm gap-3 mx-auto mh_65 sm:max-w-full focus:no-underline lg:grid lg:grid-cols-12 bg-layout-sun-100 dark:bg-layout-night-100 overfl" style="z-index:0;margin-bottom:-0px;" :class="{ 'disable-link': isCommentActive }"
+        <div id="teaser-img2" v-if="users" class="block max-w-sm gap-3 mx-auto mh_65 sm:max-w-full focus:no-underline lg:grid lg:grid-cols-12 bg-layout-sun-100 dark:bg-layout-night-100 overfl" style="z-index:0;margin-bottom:-0px;" :class="{ 'disable-link': isCommentActive }"
     >
         <!-- Das Bild des Blog-Posts -->
         <div class="blog-container mh_65 lg:col-span-4 bg-layout-sun-100 dark:bg-layout-night-100" style="">
 
        <img
-        :src="users.profile_photo_path != null ?  '/images/_'+ SD() + '/users/profile_photo_path/' + users.profile_photo_path.replace('/images/','') : '/images/profile-photos/008.jpg'"
-        :alt="users.name"
+        :src="users?.profile_photo_path != null ?  '/images/_'+ SD() + '/users/profile_photo_path/' + users?.profile_photo_path.replace('/images/','') : '/images/profile-photos/008.jpg'"
+        :alt="users?.name"
         width="480"
         height="360"
         style="max-height:380px;"
-        :class="['object-cover w-full rounded lg:col-span-4 object-cover rounded bg-layout-sun-100 dark:bg-layout-night-100', users.madewithai ? 'ai-image-corner' : '']"
+        :class="['object-cover w-full rounded lg:col-span-4 object-cover rounded bg-layout-sun-100 dark:bg-layout-night-100', users?.madewithai ? 'ai-image-corner' : '']"
 
         />
 
 
         <div class="relative">
-<AiButton></AiButton>
+<AiButton :xis_enabled="users?.madewithai"> </AiButton>
+
 
 
     </div>
@@ -31,37 +32,37 @@
             <h2
                 class="text-xl font-semibold sm:text-2xl font-title"
             >
-                {{ users.name }}&nbsp;&nbsp;<editbtns :id="users.id" table="users" />
+                {{ users?.name }}&nbsp;&nbsp;<editbtns :id="users?.id" table="users" />
             </h2>
             <table class="table-auto text-left">
             <tbody>
                 <tr>
                 <th class="pr-4">Vorname:</th>
-                <td>{{ users.first_name }}</td>
+                <td>{{ users?.first_name }}</td>
                 </tr>
                 <tr>
                 <th class="pr-4">Registriert seit:</th>
-                <td>{{ formatDate(users.created_at) }}</td>
+                <td>{{ formatDate(users?.created_at) }}</td>
                 </tr>
                 <tr>
                 <th class="pr-4">Alter:</th>
-                <td>{{ get_age(users.birthday) }}</td>
+                <td>{{ get_age(users?.birthday) }}</td>
                 </tr>
                 <tr>
                 <th class="pr-4">Musik:</th>
-                <td>{{ users.music }}</td>
+                <td>{{ users?.music }}</td>
                 </tr>
                 <tr>
                 <th class="pr-4">Interessen:</th>
-                <td>{{ users.interests }}</td>
+                <td>{{ users?.interests }}</td>
                 </tr>
                 <tr>
                 <th class="pr-4">Beschäftigung:</th>
-                <td>{{ users.occupation }}</td>
+                <td>{{ users?.occupation }}</td>
                 </tr>
                 <th class="pr-4">Facebook:</th>
                 <td>
-                    <a v-if="users.fbd" :href="'https://facebook.com/profile.php?id=' + users.fbd" target="_blank">
+                    <a v-if="users?.fbd" :href="'https://facebook.com/profile.php?id=' + users?.fbd" target="_blank">
                     Zu Faceboook</a>
                     <p v-else>keine Angabe</p>
                 </td>
@@ -73,15 +74,18 @@
 
 
             <!-- Lesezeit anzeigen -->
-            <socialButtons :postId="users.id" :empty="true" :nostars="true" />
+            <socialButtons :postId="users?.id" :empty="true" :nostars="true" />
         </div>
 
     </div>
     <br />
     <br />
-    <div v-if="users.about" class="pb-6 bg-layout-sun-100 dark:bg-layout-night-100 p-4">
-    <h1><b>Über {{users.name}}</b></h1>
-    <div v-html="users.about"></div>
+    <div v-if="users?.about" class="pb-6 bg-layout-sun-100 dark:bg-layout-night-100 p-4">
+    <h1><b>Über {{users?.name}}</b></h1>
+    <div v-html="users?.about"></div>
+    </div>
+    <div v-if="!users">
+        Konnte den Benutzer nicht finden
     </div>
 </Layout>
 </template>
@@ -183,3 +187,4 @@ export default {
 }
 /* Hier kannst du zusätzliche Anpassungen vornehmen, falls nötig */
 </style>
+

@@ -1,11 +1,15 @@
 <?php
 
 use Inertia\Inertia;
+
+use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CustomLoginController;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\PMController;
+use App\Http\Controllers\UserConfigController;
 use App\Http\Controllers\BlogPostController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\DarkModeController;
@@ -66,6 +70,7 @@ if(SD() == "mfx"){
 
         Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+        Route::get('/userx/update-config/{id}', [UserConfigController::class, 'updateConfig'])->name('usconfi');
         Route::get("/api/user/rights",[RightsController::class,"GetRights_all"])->name("GetRights_all");
         Route::post('/api/contact/send',[CommentController::class,"sendmc"]);
         Route::get('/allroutes', function () {
@@ -348,18 +353,18 @@ Route::get('/api/GetLastAct', function (){
 
     return response($_SERVER['HTTP_REFERER']);
 });
-Route::get('/GetAuth', function () {
-    if (Auth::check()) {
-        // \Log::info("✅ Eingeloggt, User-ID: " . Auth::id());
-        return response()->json("true");
-    }
+// Route::get('/GetAuth', function () {
+//     if (Auth::check()) {
+//         // \Log::info("✅ Eingeloggt, User-ID: " . Auth::id());
+//         return response()->json("true");
+//     }
 
-    // \Log::i  nfo("🚨 Nicht eingeloggt");
-    return response()->json("false");
-})->name("GetAuth");
-Route::get("/GETUserID", function (){
-    return response()->json(Auth::id());
-});
+//     // \Log::i  nfo("🚨 Nicht eingeloggt");
+//     return response()->json("false");
+// })->name("GetAuth");
+// Route::get("/GETUserID", function (){
+//     return response()->json(Auth::id());
+// });
 Route::get('/get-total-rating/{table}', [RatingController::class, 'getTotalRating']);
 
 Route::get("/admin/user-rights/get",[TablesController::class,'GetURights'])->name("admin.users_rights.get");
@@ -488,6 +493,15 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/api/created-at', [TablesController::class, 'getCreatedAt'])->name("created.at");
         Route::get("/api/GetCat/{table}/{id}", [TablesController::class, 'GetCats'])->name("GetCats");
         Route::post("/api/save-order/{table}", [TablesController::class, 'save_order'])->name("save-order");
+        Route::get("/pm/index", [PMController::class, 'pm_index'])->name("pm.index");
+        Route::post("/pm/save", [PMController::class, 'store'])->name("pm.save");
+        Route::post("/admin/pm/check/{id}",[PMController::class,"update"])
+            ->name("admin.pm.check");
+        Route::post('/admin/pm/mark', [PmController::class, 'update_more'])->name('admin.pm.mark');
+        Route::delete("/admin/pm/delete/{table}/{id}",[PMController::class,"destroy"])
+            ->name("admin.pm.delete");
+        Route::post("/admin/pm/delmore/",[PMController::class,"destroy_more"])
+            ->name("admin.pm.delmore");
         // Route::get('/email/signatur/{id}', function ($id) {
         //     return \App\Models\Signatur::select('id', 'name', 'sigtext')->findOrFail($id);
         // });
@@ -500,6 +514,17 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             return response()->json([
                 'id' => $user->id,
                 'name' => $user->name,
+            ]);
+        });
+
+        Route::put("/admin/UsConf/save/",[TablesController::class,"us_config_save"])
+            ->name("admin.usconf.save");
+
+        Route::get('/api/GetUsConf', function () {
+        $form = DB::table("users_config")->where("users_id",Auth::id())->get();
+            return response()->json([
+                'form' => $form,
+
             ]);
         });
 

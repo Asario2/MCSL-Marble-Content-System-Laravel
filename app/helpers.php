@@ -2,6 +2,7 @@
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
 use App\Http\Controllers\EncryptController;
+use App\Http\Controllers\OldEncController;
 use Illuminate\Support\Facades\File;
 use League\CommonMark\CommonMarkConverter;
 use League\CommonMark\Environment\Environment;
@@ -33,6 +34,46 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
         </div></div><br>";
         }
     }
+    if(!function_exists("decval_old"))
+    {
+        function decval_old($data)
+        {
+
+{
+    if(!$data)
+    {
+        return;
+    }
+    $data = strip_tags($data);
+    $data = trim($data);
+    $enc = NEW OldEncController();
+    if($enc->decryptString($enc->decryptString($enc->decryptString($enc->decryptString($data)))) !== false)
+    {
+    return $enc->decryptString($enc->decryptString($enc->decryptString($enc->decryptString($data))));
+    }
+
+    if($enc->decryptString($enc->decryptString($enc->decryptString($data))   ) !== false)
+    {
+    return $enc->decryptString($enc->decryptString($enc->decryptString($data)));
+    }
+
+    if($enc->decryptString($enc->decryptString($data)) !== false)
+    {
+        return $enc->decryptString($enc->decryptString($data));
+    }
+    if($enc->decryptString($data) !== false)
+    {
+        return $enc->decryptString($data);
+    }
+    if($enc->decryptString($data) !== false)
+    {
+        return $enc->decryptString($data);
+    }
+    return $data;
+
+        }
+    }
+}
     if(!function_exists("DUMP_DB"))
     {
         function DUMP_DB()

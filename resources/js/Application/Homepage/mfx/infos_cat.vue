@@ -128,13 +128,13 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-.input {
+/*.input {
   @apply w-full px-4 py-2 border rounded-md dark:bg-zinc-800 dark:text-white;
 }
 
 .btn {
   @apply px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50;
-}
+}*/
 .nor_border{
     border-top-right-radius:0;
     border-bottom-right-radius:0;
@@ -148,3 +148,4 @@ line-height:1.3rem !important;
 font-size: 1.0rem !important;
 }
 </style>
+

@@ -59,7 +59,12 @@
         </div>
 
         <div>
-            <smileys v-if="!nosmilies" :editor="name"></smileys>
+            <smileys
+                v-if="!nosmilies"
+                :editor="name"
+                :name="name"
+                @insert-smiley="handleSmileyInsert"
+            ></smileys>
         </div>
 
         <div v-if="hasError && required" class="text-red-500 text-sm mt-1">
@@ -70,7 +75,8 @@
         <div class="mb-4 p-4 bg-layout-sun-0 dark:bg-layout-night-0 rounded-lg edit0R editor">
             <div
                 ref="editor"
-                :id="name"
+                :id="'editor_' + name"
+                :name="'editor_' + name"
                 contenteditable="true"
                 dir="ltr"
                 class="editor rounded p-3 min-h-[150px] max-h-[350px] focus:outline-none"
@@ -121,7 +127,16 @@ import { Tippy } from 'tippy.vue';
 
 export default {
     name: "EditorRad",
-    components: { IconPictures, IconCode, IconHyperLink, ImageUploadModal, IconList, IconOrdList, smileys, Tippy },
+    components: {
+        IconPictures,
+        IconCode,
+        IconHyperLink,
+        ImageUploadModal,
+        IconList,
+        IconOrdList,
+        smileys,
+        Tippy
+    },
     props: {
         imageId: [String, Number],
         modelValue: [String, Number],
@@ -154,11 +169,31 @@ export default {
             tippy('[data-tippy-content]', { placement: 'right', animation: 'scale' });
         });
         this.updateValue();
+        let editorEl = null;
+        if (typeof this.editor === "string") {
+            editorEl = document.getElementById(this.editor);
+        } else if (this.editor instanceof HTMLElement) {
+            editorEl = this.editor;
+        }
+        if (!editorEl) return;
+
+        const saveRange = () => {
+            const sel = window.getSelection();
+            if (sel.rangeCount > 0) {
+            editorEl.__savedRange = sel.getRangeAt(0).cloneRange();
+            }
+        };
+
+        editorEl.addEventListener('keyup', saveRange);
+        editorEl.addEventListener('mouseup', saveRange);
+        editorEl.addEventListener('focus', saveRange);
     },
     computed: {
         content: {
             get() { return this.modelValue; },
-            set(value) { this.$emit("update:modelValue", nl2br(rumLaut(value)).replace('%5B', '[').replace('%5D', ']')); }
+            set(value) {
+                this.$emit("update:modelValue", nl2br(rumLaut(value)).replace('%5B', '[').replace('%5D', ']'));
+            }
         }
     },
     watch: {
@@ -175,7 +210,22 @@ export default {
     },
     methods: {
         onFocus() { this.isFocused = true; },
-        onBlur() { this.isFocused = false; },
+        onBlur() {
+            this.isFocused = false;
+            this.validate();
+        },
+
+
+    validate() {
+    const el = this.$el?.querySelector?.('[contenteditable]');
+    const text = (el?.innerText || el?.textContent || '').replace(/\s+/g, '').trim();
+    if (this.required && text.length === 0) {
+      console.warn('Editor ist leer');
+      return false;
+    }
+    return true;
+  },
+
         handleKeyDown(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 document.execCommand('insertParagraph', false, null);
@@ -185,38 +235,46 @@ export default {
             }
             if (['Tab', 'Backspace', 'Delete'].includes(e.key)) this.saveSelection();
         },
-        handleKeyUp(e) { this.isComposing = !(e.key === 'Process'); },
+
+        handleKeyUp(e) {
+            this.isComposing = !(e.key === 'Process');
+        },
+
         onInput() {
             if (this.isComposing) return;
-            requestAnimationFrame(() => { this.updateValue(); this.saveSelection(); });
+            requestAnimationFrame(() => {
+                this.updateValue();
+                this.saveSelection();
+                this.validate();
+            });
         },
+
         saveSelection() {
             const sel = window.getSelection();
             if (sel.rangeCount > 0) {
-                const range = sel.getRangeAt(0);
-                const editor = this.$refs.editor;
-                if (editor.contains(range.commonAncestorContainer)) {
-                    this.savedSelection = {
-                        startContainer: range.startContainer,
-                        startOffset: range.startOffset,
-                        endContainer: range.endContainer,
-                        endOffset: range.endOffset
-                    };
-                }
+                // Range korrekt klonen
+                this.savedSelection = sel.getRangeAt(0).cloneRange();
+                console.log('Selection saved:', this.savedSelection.toString());
             }
         },
-        restoreSelection() {
-            if (!this.savedSelection) { this.setCursorToEnd(); return; }
-            try {
-                const range = document.createRange();
-                range.setStart(this.savedSelection.startContainer, this.savedSelection.startOffset);
-                range.setEnd(this.savedSelection.endContainer, this.savedSelection.endOffset);
-                const sel = window.getSelection();
-                sel.removeAllRanges();
-                sel.addRange(range);
-                this.$refs.editor.focus();
-            } catch { this.setCursorToEnd(); }
-        },
+
+      restoreSelection() {
+    if (!this.savedSelection) {
+        this.setCursorToEnd();
+        return;
+    }
+    try {
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(this.savedSelection);
+        this.$refs.editor.focus();
+        console.log('Selection restored:', this.savedSelection.toString());
+    } catch (e) {
+        console.error('Error restoring selection:', e);
+        this.setCursorToEnd();
+    }
+},
+
         setCursorToEnd() {
             const editor = this.$refs.editor;
             if (!editor) return;
@@ -228,78 +286,242 @@ export default {
             sel.removeAllRanges();
             sel.addRange(range);
         },
+
         updateValue() {
             const editor = this.$refs.editor;
             if (!editor) return;
-            let html = editor.innerHTML.trim().replace(/[\u202A-\u202E\u200E\u200F\u061C]/g, '');
+            let html = editor?.innerHTML?.trim().replace(/[\u202A-\u202E\u200E\u200F\u061C]/g, '');
             html = nl2br(rumLaut(this.decodeBrackets(html)));
             this.$emit('update:modelValue', html);
             const altInput = document.getElementById(this.name + "_alt");
             if (altInput) altInput.value = html;
         },
-        decodeBrackets(str) { return str ? str.replace(/%5B/g, "[").replace(/%5D/g, "]") : ""; },
-        getLabel(name) { return this.settings?.exl?.[name] ?? name; },
+
+        decodeBrackets(str) {
+            return str ? str.replace(/%5B/g, "[").replace(/%5D/g, "]") : "";
+        },
+
+        getLabel(name) {
+            return this.settings?.exl?.[name] ?? name;
+        },
+
+        // Smiley-Handling - KORRIGIERTE VERSION
+        handleSmileyInsert(smiley) {
+            this.saveSelection();
+            this.restoreSelection();
+
+            const editorId = 'editor_' + this.name;
+            const editor = document.getElementById(editorId);
+            alert(editor);
+            if (!editor) return;
+
+            // Editor fokussieren
+            editor.focus();
+
+            const sel = window.getSelection();
+            if (!sel || sel.rangeCount === 0) {
+                // Keine Selektion - Smiley am Ende einfügen
+                this.insertAtEnd(smiley);
+                return;
+            }
+
+            const range = sel.getRangeAt(0);
+
+            // Prüfen ob die Selektion innerhalb des Editors ist
+            if (!editor.contains(range.commonAncestorContainer)) {
+                this.insertAtEnd(smiley);
+                return;
+            }
+
+            // Text an der aktuellen Position einfügen
+            range.deleteContents();
+            const textNode = document.createTextNode(smiley);
+            range.insertNode(textNode);
+
+            // Cursor nach dem eingefügten Smiley setzen
+            range.setStartAfter(textNode);
+            range.setEndAfter(textNode);
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            this.updateValue();
+        },
+
+        insertAtEnd(text) {
+            const editor = this.$refs.editor;
+            if (!editor) return;
+
+            const textNode = document.createTextNode(text);
+            editor.appendChild(textNode);
+
+            const range = document.createRange();
+            range.selectNodeContents(editor);
+            range.collapse(false);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+
+            this.updateValue();
+        },
 
         toggleFormat(format) {
-            this.saveSelection();
-            requestAnimationFrame(() => {
-                this.restoreSelection();
-                const sel = window.getSelection();
-                if (!sel || sel.rangeCount === 0) return;
-                const range = sel.getRangeAt(0);
-                const selectedText = range.toString();
-                const parent = range.commonAncestorContainer.nodeType === 3 ? range.commonAncestorContainer.parentNode : range.commonAncestorContainer;
+        this.saveSelection();
+        requestAnimationFrame(() => {
+            this.restoreSelection();
+            const sel = window.getSelection();
+            if (!sel || sel.rangeCount === 0) return;
+            const range = sel.getRangeAt(0);
 
-                if (/^h[1-6]$/.test(format)) {
-                    if (parent.nodeName.toLowerCase() === format) {
-                        const p = document.createElement('p');
-                        p.innerHTML = parent.innerHTML;
-                        parent.replaceWith(p);
-                    } else {
-                        const h = document.createElement(format);
+            const selectedText = range.toString();
+            const isTextSelected = !range.collapsed && selectedText.trim().length > 0;
+
+            const parent = range.commonAncestorContainer.nodeType === 3 ? range.commonAncestorContainer.parentNode : range.commonAncestorContainer;
+
+            if (/^h[1-6]$/.test(format)) {
+                console.log('Selected Text:', selectedText);
+                console.log('Is text selected:', isTextSelected);
+                console.log('Range collapsed:', range.collapsed);
+
+                if (parent.nodeName.toLowerCase() === format) {
+                    // Gleiche Überschrift - zurück zu Paragraph
+                    const p = document.createElement('p');
+                    p.innerHTML = parent.innerHTML;
+                    parent.parentNode.replaceChild(p, parent);
+
+                    const newRange = document.createRange();
+                    newRange.selectNodeContents(p);
+                    newRange.collapse(false);
+                    sel.removeAllRanges();
+                    sel.addRange(newRange);
+                } else {
+                    const h = document.createElement(format);
+
+                    if (isTextSelected) {
+                        // TEXT AUSGEWÄHLT - Überschrift mit Text erstellen
+                        console.log('Creating heading with selected text:', selectedText);
                         h.textContent = selectedText;
                         range.deleteContents();
                         range.insertNode(h);
+
                         const newRange = document.createRange();
-                        newRange.setStartAfter(h); newRange.collapse(true);
-                        sel.removeAllRanges(); sel.addRange(newRange);
+                        newRange.selectNodeContents(h);
+                        newRange.collapse(false);
+                        sel.removeAllRanges();
+                        sel.addRange(newRange);
+                    } else if (parent.nodeName.toLowerCase().match(/^h[1-6]$/)) {
+                        // Bereits eine Überschrift - ändern
+                        const newHeading = document.createElement(format);
+                        newHeading.innerHTML = parent.innerHTML;
+                        parent.parentNode.replaceChild(newHeading, parent);
+
+                        const newRange = document.createRange();
+                        newRange.selectNodeContents(newHeading);
+                        newRange.collapse(false);
+                        sel.removeAllRanges();
+                        sel.addRange(newRange);
+                    } else {
+                        // KEIN TEXT AUSGEWÄHLT - Intelligente Lösung:
+                        // Versuche den aktuellen Absatz/Text um den Cursor zu finden
+
+                        // Finde das umgebende Element (p, div, oder das Editor-Element selbst)
+                        let contextElement = parent;
+                        while (contextElement &&
+                            !['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(contextElement.nodeName) &&
+                            contextElement !== this.$refs.editor) {
+                            contextElement = contextElement.parentNode;
+                        }
+
+                        if (contextElement && contextElement !== this.$refs.editor && contextElement.textContent.trim()) {
+                            // Verwende den gesamten Text des umgebenden Elements
+                            const elementText = contextElement.textContent.trim();
+                            console.log('Using surrounding element text:', elementText);
+
+                            h.textContent = elementText;
+                            contextElement.parentNode.replaceChild(h, contextElement);
+
+                            // Cursor in die Überschrift setzen
+                            const newRange = document.createRange();
+                            newRange.selectNodeContents(h);
+                            newRange.collapse(false);
+                            sel.removeAllRanges();
+                            sel.addRange(newRange);
+                        } else {
+                            // Fallback: Platzhalter einfügen
+                            console.log('No text found, inserting placeholder');
+                            h.textContent = 'Überschrift';
+                            range.insertNode(h);
+
+                            // Cursor für Bearbeitung positionieren
+                            const newRange = document.createRange();
+                            newRange.setStart(h.firstChild || h, 0);
+                            newRange.collapse(true);
+                            sel.removeAllRanges();
+                            sel.addRange(newRange);
+                        }
                     }
-                    this.updateValue();
-                    return;
                 }
+                this.updateValue();
+                return;
+            }
 
-                if (format === 'email') {
-                    const email = prompt("E-Mail-Adresse eingeben:");
-                    if (!email) return;
-                    const a = document.createElement("a");
-                    a.href = `mailto:${email}`;
-                    a.textContent = selectedText || email;
-                    range.deleteContents();
-                    range.insertNode(a);
-                    const newRange = document.createRange(); newRange.setStartAfter(a); newRange.collapse(true);
-                    sel.removeAllRanges(); sel.addRange(newRange);
-                    this.updateValue();
-                    return;
-                }
+            // Alles andere bleibt UNVERÄNDERT:
+            if (format === 'email') {
+                const email = prompt("E-Mail-Adresse eingeben:");
+                if (!email) return;
+                const a = document.createElement("a");
+                a.href = `mailto:${email}`;
+                a.textContent = selectedText || email;
+                range.deleteContents();
+                range.insertNode(a);
+                const newRange = document.createRange(); newRange.setStartAfter(a); newRange.collapse(true);
+                sel.removeAllRanges(); sel.addRange(newRange);
+                this.updateValue();
+                return;
+            }
 
-                if (format === 'link') {
-                    const url = prompt("URL eingeben:", "https://");
-                    if (!url) return;
-                    const a = document.createElement("a");
-                    a.href = url; a.target = "_blank"; a.rel = "noopener noreferrer";
-                    a.textContent = selectedText || url;
-                    range.deleteContents();
-                    range.insertNode(a);
-                    const newRange = document.createRange(); newRange.setStartAfter(a); newRange.collapse(true);
-                    sel.removeAllRanges(); sel.addRange(newRange);
-                    this.updateValue();
-                }
+            if (format === 'link') {
+                const url = prompt("URL eingeben:", "https://");
+                if (!url) return;
+                const a = document.createElement("a");
+                a.href = url; a.target = "_blank"; a.rel = "noopener noreferrer";
+                a.textContent = selectedText || url;
+                range.deleteContents();
+                range.insertNode(a);
+                const newRange = document.createRange(); newRange.setStartAfter(a); newRange.collapse(true);
+                sel.removeAllRanges(); sel.addRange(newRange);
+                this.updateValue();
+            }
+        });
+    },
+
+        toggleBold() {
+            this.saveSelection();
+            document.execCommand("bold");
+            this.$nextTick(() => {
+                this.restoreSelection();
+                this.updateValue();
             });
         },
 
-        toggleBold() { this.saveSelection(); document.execCommand("bold"); this.$nextTick(() => { this.restoreSelection(); this.updateValue(); }); },
-        toggleItalic() { this.saveSelection(); document.execCommand("italic"); this.$nextTick(() => { this.restoreSelection(); this.updateValue(); }); },
-        toggleHeading(level) { this.toggleFormat("h" + level); },
+        toggleItalic() {
+            this.saveSelection();
+            document.execCommand("italic");
+            this.$nextTick(() => {
+                this.restoreSelection();
+                this.updateValue();
+            });
+        },
+
+        toggleHeading(level) {
+            this.toggleFormat("h" + level);
+        },
+//         restoreSelection() {
+//     const sel = window.getSelection();
+//     sel.removeAllRanges();
+//     if (this.savedSelection) {
+//       sel.addRange(this.savedSelection);
+//     }
+// },
         toggleCode() {
             this.saveSelection();
             requestAnimationFrame(() => {
@@ -314,18 +536,31 @@ export default {
                     const before = parent.textContent.substring(0, range.startOffset);
                     const after = parent.textContent.substring(range.endOffset);
                     const newFragment = document.createDocumentFragment();
-                    if (before) { const beforeNode = document.createElement("code"); beforeNode.textContent = before; newFragment.appendChild(beforeNode); }
+                    if (before) {
+                        const beforeNode = document.createElement("code");
+                        beforeNode.textContent = before;
+                        newFragment.appendChild(beforeNode);
+                    }
                     newFragment.appendChild(document.createTextNode(selectedText));
-                    if (after) { const afterNode = document.createElement("code"); afterNode.textContent = after; newFragment.appendChild(afterNode); }
+                    if (after) {
+                        const afterNode = document.createElement("code");
+                        afterNode.textContent = after;
+                        newFragment.appendChild(afterNode);
+                    }
                     parent.replaceWith(newFragment);
-                    this.updateValue(); return;
+                    this.updateValue();
+                    return;
                 }
                 if (range.collapsed) return;
                 const code = document.createElement("code");
                 code.textContent = range.toString();
-                range.deleteContents(); range.insertNode(code);
-                const newRange = document.createRange(); newRange.setStartAfter(code); newRange.collapse(true);
-                sel.removeAllRanges(); sel.addRange(newRange);
+                range.deleteContents();
+                range.insertNode(code);
+                const newRange = document.createRange();
+                newRange.setStartAfter(code);
+                newRange.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(newRange);
                 this.updateValue();
             });
         },
@@ -334,62 +569,180 @@ export default {
             this.saveSelection();
             const hr = document.createElement("hr");
             const range = this.getSelection();
-            if (range) { range.collapse(false); range.insertNode(hr); } else { this.$refs.editor.appendChild(hr); }
-            this.updateValue(); this.restoreSelection();
+            if (range) {
+                range.collapse(false);
+                range.insertNode(hr);
+            } else {
+                this.$refs.editor.appendChild(hr);
+            }
+            this.updateValue();
+            this.restoreSelection();
         },
 
         toggleList(type) {
             this.saveSelection();
             const cmd = type === "ul" ? "insertUnorderedList" : "insertOrderedList";
             document.execCommand(cmd);
-            this.$nextTick(() => { this.restoreSelection(); this.updateValue(); });
-        },
-
-        openModal_alt2() { this.saveSelection(); this.isModalOpen = true; this.modals[this.name] = true; },
-        closeModal() { this.isModalOpen = false; this.modals[this.name] = false; },
-
-        insertImageIntoEditor(imageUrl) {
-            const editor = this.$refs.editor; if (!editor) return;
-            const img = document.createElement("img"); img.src = imageUrl; img.alt = "Bild";
-            const br = document.createElement("br");
             this.$nextTick(() => {
-                let range; const selection = window.getSelection();
-                if (this.savedSelection) {
-                    try { range = document.createRange(); range.setStart(this.savedSelection.startContainer, this.savedSelection.startOffset); range.setEnd(this.savedSelection.endContainer, this.savedSelection.endOffset); }
-                    catch { range = document.createRange(); range.selectNodeContents(editor); range.collapse(false); }
-                } else { range = document.createRange(); range.selectNodeContents(editor); range.collapse(false); }
-                selection.removeAllRanges(); selection.addRange(range);
-                range.insertNode(br); range.insertNode(img);
-                const newRange = document.createRange(); newRange.setStartAfter(img); newRange.collapse(true);
-                selection.removeAllRanges(); selection.addRange(newRange);
-                editor.focus(); this.updateValue(); this.savedSelection = null;
+                this.restoreSelection();
+                this.updateValue();
             });
         },
 
-        handleImageUpload(imageUrl) { this.insertImageIntoEditor(imageUrl); },
-        insertImage(imageUrl) { this.insertImageIntoEditor(imageUrl); },
+        openModal_alt2() {
+            this.saveSelection();
+            this.isModalOpen = true;
+            this.modals[this.name] = true;
+        },
+
+        closeModal() {
+            this.isModalOpen = false;
+            this.modals[this.name] = false;
+        },
+
+        insertImageIntoEditor(imageUrl) {
+            const editor = this.$refs.editor;
+            if (!editor) return;
+            const img = document.createElement("img");
+            img.src = imageUrl;
+            img.alt = "Bild";
+            const br = document.createElement("br");
+            this.$nextTick(() => {
+                let range;
+                const selection = window.getSelection();
+                if (this.savedSelection) {
+                    try {
+                        range = document.createRange();
+                        range.setStart(this.savedSelection.startContainer, this.savedSelection.startOffset);
+                        range.setEnd(this.savedSelection.endContainer, this.savedSelection.endOffset);
+                    }
+                    catch {
+                        range = document.createRange();
+                        range.selectNodeContents(editor);
+                        range.collapse(false);
+                    }
+                } else {
+                    range = document.createRange();
+                    range.selectNodeContents(editor);
+                    range.collapse(false);
+                }
+                selection.removeAllRanges();
+                selection.addRange(range);
+                range.insertNode(br);
+                range.insertNode(img);
+                const newRange = document.createRange();
+                newRange.setStartAfter(img);
+                newRange.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(newRange);
+                editor.focus();
+                this.updateValue();
+                this.savedSelection = null;
+            });
+        },
+
+        handleImageUpload(imageUrl) {
+            this.insertImageIntoEditor(imageUrl);
+        },
+
+        insertImage(imageUrl) {
+            this.insertImageIntoEditor(imageUrl);
+        },
+
         getSelection() {
-            const sel = window.getSelection(); return sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
+            const sel = window.getSelection();
+            return sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
         }
     }
 };
 </script>
 
 <style>
-/* Dein bestehendes CSS bleibt unverändert */
-.edit0R { max-width: 1177px; overflow: auto; height: auto; }
-.editor h1{ font-weight:800; font-size:2.25em; margin-top:0; margin-bottom:.8888889em; line-height:1.1111111; }
-.editor h2{ font-size:1.875rem; font-weight:600; margin-top:1rem; margin-bottom:.5rem; }
-.editor h3{ font-size:1.5rem; font-weight:600; margin-top:.75rem; margin-bottom:.25rem; }
-.editor h4{ font-weight:600; font-size:1.25rem; }
-.editor h5{ font-weight:600; font-size:1.1rem; }
-.editor h6{ font-weight:500; font-size:1.05rem; }
-.icon-btn{ padding:.4rem .6rem; border-radius:9999px; transition:background .2s; cursor:pointer; margin-right:.25rem; background:transparent; }
-.icon-btn:hover{ background-color: var(--tw-bg-opacity); }
-.editor a:link,a:visited,a:active{ text-decoration:underline; color:#a7dff5 !important; }
-.editor OL LI{ list-style-type: decimal; }
-.editor-error-message{ color:#a00; }
-.editor{ white-space:pre-wrap !important; word-wrap:break-word !important; }
-.editor code{ background-color:#ccc !important; padding:4px; font-family:'Courier New', Courier, monospace; }
-.editor P{ margin-top:1.2em; margin-bottom:1.2em; }
+.edit0R {
+    max-width: 1177px;
+    overflow: auto;
+    height: auto;
+}
+
+.editor h1{
+    font-weight:800;
+    font-size:2.25em;
+    margin-top:0;
+    margin-bottom:.8888889em;
+    line-height:1.1111111;
+}
+
+.editor h2{
+    font-size:1.875rem;
+    font-weight:600;
+    margin-top:1rem;
+    margin-bottom:.5rem;
+}
+
+.editor h3{
+    font-size:1.5rem;
+    font-weight:600;
+    margin-top:.75rem;
+    margin-bottom:.25rem;
+}
+
+.editor h4{
+    font-weight:600;
+    font-size:1.25rem;
+}
+
+.editor h5{
+    font-weight:600;
+    font-size:1.1rem;
+}
+
+.editor h6{
+    font-weight:500;
+    font-size:1.05rem;
+}
+
+.icon-btn{
+    padding:.4rem .6rem;
+    border-radius:9999px;
+    transition:background .2s;
+    cursor:pointer;
+    margin-right:.25rem;
+    background:transparent;
+}
+
+.icon-btn:hover{
+    background-color: var(--tw-bg-opacity);
+}
+
+.editor a:link,
+.editor a:visited,
+.editor a:active{
+    text-decoration:underline;
+    color:#a7dff5 !important;
+}
+
+.editor OL LI{
+    list-style-type: decimal;
+}
+
+.editor-error-message{
+    color:#a00;
+}
+
+.editor{
+    white-space:pre-wrap !important;
+    word-wrap:break-word !important;
+}
+
+.editor code{
+    background-color:#ccc !important;
+    padding:4px;
+    font-family:'Courier New', Courier, monospace;
+}
+
+.editor P{
+    margin-top:1.2em;
+    margin-bottom:1.2em;
+}
 </style>
+

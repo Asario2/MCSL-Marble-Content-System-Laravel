@@ -41,7 +41,7 @@ class CheckBirthdays extends Command
                 // ====================
                 // 🔹 GEBURTSTAG
                 // ====================
-                if (!$ripdate && $hasyear < $currentYear) {
+                if ($hasyear < $currentYear) {
                     if (!preg_match('/(\d{1,2})\.(\d{1,2})\.(\d{4})/', $geburtstag, $matches)) continue;
 
                     $tag   = str_pad($matches[1], 2, '0', STR_PAD_LEFT);
@@ -54,7 +54,7 @@ class CheckBirthdays extends Command
                         $age = $birthdayDate->age;
 
                         $this->info("🎉 {$vorname} {$nachname} hat heute Geburtstag! ({$age} Jahre)");
-
+                        DB::table("asarios_BLog.contacts")->where("id",$id)->update(["hasyear"=>encval(date("Y"))]);
                         $grad = MCSL_GRAD(); // Header-HTML
 
                         $text = <<<EOT

@@ -43,7 +43,7 @@ export default {
     // Pause 30 Sekunden
     timeline.to({}, { duration: 30 });
 
-    // Scroll zurück nach links
+    // Scroll zurï¿½ck nach links
     timeline.to(bg, {
       x: '0%',
       duration: 20,
@@ -55,3 +55,4 @@ export default {
   },
 };
 </script>
+

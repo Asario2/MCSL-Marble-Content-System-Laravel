@@ -72,3 +72,4 @@ const verificationLinkSent = computed(
         </form>
     </AuthenticationCard>
 </template>
+

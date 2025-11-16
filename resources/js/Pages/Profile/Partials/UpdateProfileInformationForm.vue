@@ -74,7 +74,7 @@ const clearPhotoFileInput = () => {
     }
 };
 </script>
-<img src="" alt="Asario" class="rounded-full h-20 w-20 object-cover"></img>
+
 <template>
     <FormSection @submitted="updateProfileInformation">
         <template #title> Profile Information </template>
@@ -211,3 +211,4 @@ const clearPhotoFileInput = () => {
         </template>
     </FormSection>
 </template>
+

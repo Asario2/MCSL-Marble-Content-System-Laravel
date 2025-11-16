@@ -17,3 +17,4 @@ export default {
     name: "LinkedIn.svg",
 };
 </script>
+

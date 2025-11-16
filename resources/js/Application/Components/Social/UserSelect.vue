@@ -133,23 +133,27 @@
         },
 
     toggleNewsletterSelect(checked) {
-    this.newsletterSelected = checked;
-    console.log("mr" + this.modulRights);
-    const newsletterIds = this.users
-        .filter(u => u.xch_newsletter || this.modulRights['SendMailToAll'])
-        .map(u => u.id);
+  this.newsletterSelected = checked;
 
-    if (checked) {
-        // IDs hinzufügen, keine Duplikate
-        this.selectedIds = Array.from(new Set([...this.selectedIds, ...newsletterIds]));
-    } else {
-        // Newsletter-IDs entfernen
-        this.selectedIds = this.selectedIds.filter(id => !newsletterIds.includes(id));
-    }
+  // Nur Benutzer, die Newsletter aktiviert haben
+  const newsletterIds = this.users
+    .filter(u => u.xch_newsletter == '1' || u.xch_newsletter === 1)
+    .map(u => u.id);
 
-    sessionStorage.setItem('selectedUsers', JSON.stringify(this.selectedIds));
-    this.emitSelection();
-    },
+  if (checked) {
+    // Newsletter-Empfänger hinzufügen, keine Duplikate
+    this.selectedIds = Array.from(new Set([...this.selectedIds, ...newsletterIds]));
+  } else {
+    // Newsletter-Empfänger entfernen
+    this.selectedIds = this.selectedIds.filter(id => !newsletterIds.includes(id));
+  }
+
+  // Auswahl im SessionStorage sichern
+  sessionStorage.setItem('selectedUsers', JSON.stringify(this.selectedIds));
+
+  // An Parent-Komponente melden
+  this.emitSelection();
+},
 
     toggleUser(id, checked) {
         const current = [...this.selectedIds];
@@ -209,3 +213,4 @@ emitSelection() {
     },
     };
     </script>
+

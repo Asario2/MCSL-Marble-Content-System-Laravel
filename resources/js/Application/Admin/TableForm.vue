@@ -857,7 +857,7 @@ export default defineComponent({
             const ppa = `/images/_${window.subdomain}/images/${field.name}/${field.value}/index.json`;
 
             if(ppa.includes("undefined/")){
-                this.previewHtml = '<img src="/images/icons/upl.jpg" alt="Jetzt Bild Hochladen" width="200" title="Jetzt Bild Hochladen" style="float: left; margin-right: 12px;">';
+                this.previewHtml = '<img src="/images/icons/upl.png" alt="Jetzt Bild Hochladen" width="122" title="Jetzt Bild Hochladen" style="float: left; margin-right: 12px;">';
                 return;
             }
 
@@ -1308,39 +1308,33 @@ export default defineComponent({
         },
 
         async submitForm() {
+
        const editorRef = this.$refs.editor;
 
 let isValid = true;
 
 if (!editorRef) {
-  // kein Ref gefunden — falls das nicht möglich sein soll, dann als invalid behandeln
-  console.warn('Kein Editor-Ref gefunden (this.$refs.editor ist undefined).');
-  // isValid = false; // optional
+  console.error('Kein Editor-Ref gefunden');
 } else if (Array.isArray(editorRef)) {
-  // mehrere Editor-Refs (z.B. v-for) -> alle prüfen
-  isValid = editorRef.every(ref => {
-    if (ref && typeof ref.validate === 'function') {
-      return ref.validate();
-    }
-    // Falls ein einzelner ref kein validate hat, gehe davon aus, dass er gültig ist
-    // oder setze hier false, wenn das ein Fehler ist:
-    console.warn('Ein Editor-Ref hat keine validate()-Methode:', ref);
-    return true;
-  });
+  isValid = editorRef.every(ref => ref && typeof ref.validate === 'function' ? ref.validate() : true);
 } else if (typeof editorRef.validate === 'function') {
-  // Normalfall: einzelne Komponente
   isValid = editorRef.validate();
 } else {
-  // Ref existiert, aber bietet keine validate()-Methode (z.B. DOM node)
-  console.warn('this.$refs.editor hat keine validate()-Methode:', editorRef);
-  // Optional: versuche eine DOM-basierte Prüfung:
-  const el = (editorRef.$el) ? editorRef.$el : editorRef;
-  const text = (el?.innerText || el?.textContent || '').replace(/\s+/g, '').trim();
+   console.log('this.$refs.editor hat keine validate()-Methode:', editorRef);
+  // Suche nach contenteditable, textarea oder input
+  const el = editorRef.$el?.querySelector?.('[contenteditable], textarea, input')
+    || editorRef.$el
+    || editorRef;
+
+  const text = (el?.innerText || el?.textContent || el?.value || '')
+    .replace(/\s+/g, '')
+    .trim();
+
+  console.log('Editor-Inhalt erkannt:', text);
   isValid = text.length > 0;
 }
-
 if (!isValid) {
-//   console.log("Fehler: Feld ist leer");
+  console.log("Fehler: Feld ist leer");
   return;
 }
   try {
@@ -1605,3 +1599,4 @@ select,datetime-local   {
     display:inline !important;
 }
 </style>
+

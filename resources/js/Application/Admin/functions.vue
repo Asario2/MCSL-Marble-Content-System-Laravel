@@ -29,7 +29,7 @@
   </template>
 
   <script>
-  import InputCheckbox from "@/Application/Components/Form/InputCheckbox.vue";
+    import InputCheckbox from "@/Application/Components/Form/InputCheckbox.vue";
 
   export default {
     name: "Functions",
@@ -92,3 +92,4 @@
     },
   };
   </script>
+

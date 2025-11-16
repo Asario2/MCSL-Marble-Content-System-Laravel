@@ -56,7 +56,7 @@ import PageContent from "@/Application/Components/Content/PageContent.vue";
 import PageTitle from "@/Application/Components/Content/PageTitle.vue";
 import PageParagraph from "@/Application/Components/Content/PageParagraph.vue";
 import emailview from "@/Application/Components/Form/email.vue";
-
+import axios from "axios";
 export default defineComponent({
     name: "Homepage_Home",
 
@@ -118,6 +118,4 @@ export default defineComponent({
   },
 });
 </script>
-<style scoped>
 
-</style>

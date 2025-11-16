@@ -198,3 +198,4 @@ img {
 
 /* Hier kannst du zusätzliche Anpassungen vornehmen, falls nötig */
 </style>
+

@@ -97,6 +97,7 @@ public function authenticate_alt()
         if ($user) {
 //             \Log::info('User gefunden: ' . $user->id);
 //             \Log::info('Altes Passwort: ' . $user->password_old);
+
         }
         if ($user) {
             // 1) Neuer Hash prüfen

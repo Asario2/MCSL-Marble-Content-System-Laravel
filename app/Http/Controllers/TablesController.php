@@ -871,6 +871,10 @@ public function ShowTable(Request $request, $table_alt = null)
 
 
         }
+        public function us_config_save(Request $request){
+            \Log::info($request->All());
+            DB::table("users_config")->where("users_id",Auth::id())->update($request->only(['xch_newsletter', 'xis_pmtoautomail',"cnt_numrows"]));
+        }
     public function newsletter_save($uhash,$email)
     {
         DB::table("newsletter_blacklist")->where("mail",$email)->delete();
@@ -1183,7 +1187,7 @@ public function ShowTable(Request $request, $table_alt = null)
 //         \Log::info("row:". json_encode($rows,JSON_PRETTY_PRINT));
         // \Log::info("TABLE:".$table);
         foreach($rows as $row){
-            if(isset($row['id'],$row['position']))
+            if(isset($row['id'],$row['position']) && $table)
             {
             DB::table($table) ->where('id', $row['id'])
             ->update(['position' => $row['position']]);
@@ -3012,9 +3016,19 @@ return response()->json($user);
     // Funktion zum Löschen eines Eintrags
     public function destroy($table, $id)
     {
+        if(!CheckRights(Auth::id(),$table,"delete")){
+            header("Location: /no-rights");
+            exit;
+        }
         if (!Schema::hasTable($table)) {
             return redirect()->back()->withErrors(['error' => 'Tabelle existiert nicht6']);
         }
+
+        $img = DB::table($table)->where('id', $id)->first();
+        if (!$img) {
+            return response()->json(['status' => 'error', 'message' => 'Datensatz nicht gefunden'], 404);
+        }
+
         if($table == "admin_table")
         {
             $order = DB::table($table)->where('id',$id)->select('id','position')->first();
@@ -3063,9 +3077,10 @@ return response()->json($user);
          {
             $im = $img->image_path;
             // vde(getcwd()."/images/$table/".$im);
-            @unlink(getcwd()."/images/$table/".$im);
-            @unlink(getcwd()."/images/$table/big/".$im);
-            @unlink(getcwd()."/images/$table/thumbs/".$im);
+            @unlink(getcwd()."/images/_".SD()."/$table/image_path/".$im);
+            @unlink(getcwd()."/images/_".SD()."/$table/image_path/big/".$im);
+            @unlink(getcwd()."/images/_".SD()."/$table/image_path/thumbs/".$im);
+
          }
 
         DB::table($table)->where('id', $id)->delete();
@@ -3077,6 +3092,12 @@ return response()->json($user);
                      ->with('success', 'Eintrag erfolgreich gelöscht');
     }
 
-        return redirect()->route('tables.index', ['table' => $table, 'adm_tab' => @$_SESSION['adm_tab']])->with('success', 'Eintrag erfolgreich gelöscht.');
+     return response()->json([
+        'status' => 'success',
+        'message' => 'Eintrag erfolgreich gelöscht',
+        'table' => $table,
+        'id' => $id
+    ]);
+
     }
 }

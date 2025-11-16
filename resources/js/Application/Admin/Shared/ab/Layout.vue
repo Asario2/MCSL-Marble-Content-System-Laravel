@@ -159,6 +159,15 @@
                                         >
                                             Profil
                                         </dropdown-link>
+                                             <dropdown-link v-if="GetRights('delete','private_messages')"
+                                                :with-icon="false"
+                                                :with-route="true"
+                                                :route-name="
+                                                    route('pm.index')
+                                                ">
+
+                                            Private Nachrichten
+                                            </dropdown-link>
                                         <dropdown-link
                                                 :with-icon="false"
                                                 :with-route="true"
@@ -293,7 +302,7 @@
                                 Profil
                             </ResponsiveNavLink>
 
-                       
+
                             <!-- Authentication -->
                             <form method="POST" @submit.prevent="logoutUser">
 
@@ -358,7 +367,7 @@ import { toastBus } from '@/utils/toastBus';
 import Loader from "@/Application/Components/Loader.vue";
 import Dropdown from "@/Application/Components/Content/Dropdown.vue";
 import DropdownLink from "@/Application/Components/Content/DropdownLink.vue";
-import { SD,GetProfileImagePath } from "@/helpers";
+import { SD,GetProfileImagePath,GetRights } from "@/helpers";
 import NavLink from "@/Application/Components/Content/NavLink.vue";
 import ResponsiveNavLink from "@/Application/Components/Content/ResponsiveNavLink.vue";
 import { throttle } from 'lodash';
@@ -406,6 +415,7 @@ export default {
     methods: {
         SD,
         GetProfileImagePath,
+        GetRights,
         async getServer() {
             try {
                 const response = await axios.get('/api/GetLastAct');
@@ -439,4 +449,5 @@ export default {
     },
 };
 </script>
+
 

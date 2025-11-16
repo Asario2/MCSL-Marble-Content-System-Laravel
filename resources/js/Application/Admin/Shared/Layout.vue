@@ -159,7 +159,16 @@
                                         >
                                             Profil
                                         </dropdown-link>
-                                        <dropdown-link
+                                          <dropdown-link v-if="modulRights?.PrivateMessages"
+                                                :with-icon="false"
+                                                :with-route="true"
+                                                :route-name="
+                                                    route('pm.index')
+                                                ">
+
+                                            Private Nachrichten
+                                            </dropdown-link>
+                                        <dropdown-link  v-if="modulRights?.Contacts"
                                                 :with-icon="false"
                                                 :with-route="true"
                                                 :route-name="
@@ -358,7 +367,7 @@ import { toastBus } from '@/utils/toastBus';
 import Loader from "@/Application/Components/Loader.vue";
 import Dropdown from "@/Application/Components/Content/Dropdown.vue";
 import DropdownLink from "@/Application/Components/Content/DropdownLink.vue";
-import { SD,GetProfileImagePath } from "@/helpers";
+import { SD,GetProfileImagePath,loadRights } from "@/helpers";
 import NavLink from "@/Application/Components/Content/NavLink.vue";
 import ResponsiveNavLink from "@/Application/Components/Content/ResponsiveNavLink.vue";
 import { router } from '@inertiajs/vue3';
@@ -392,10 +401,14 @@ export default {
             mode: "dark",
             isOpen: false,   // ✅ jetzt im data statt props
             year: new Date().getFullYear(),
+            modulRights: null,
+            rightsData: {},
+            rightsReady: false,
         };
     },
 
-    mounted() {
+    async mounted() {
+        this.modulRights = await loadRights();
         let shouldReload = localStorage.getItem('reload_dashboard');
         if (shouldReload) {
             localStorage.removeItem('reload_dashboard');
@@ -451,4 +464,5 @@ export default {
     },
 };
 </script>
+
 

@@ -20,6 +20,9 @@ export async function getapp() {
 return window.app_name;
 }
 export function GetProfileImagePath(path){
+    if(!path){
+        path = "008.jpg";
+    }
 if(path.includes("https://ui-avatars.com/api/"))
 {
 return path;
@@ -104,13 +107,15 @@ export function replaceSmilies(text) {
       ":bankrob:": "bankrob",
       ":jesus:": "jesus",
       ":cyborg:": "cyborg",
-      ":pirat:": "pirat",
+
       ":blade:": "blade",
       ":drugs:": "drugs",
       ":ying:": "ying",
       ":skull:": "skull",
       ":bomb:": "bomb",
       ":kiss:": "kiss",
+      ':ugly:':'ugly',
+      ":catch:": "catch",
       ":holy:": "holy"
     };
 
@@ -344,7 +349,7 @@ export function CleanTable() {
             i--; // Reduziere den Index
         }
     }
-segments = segments.join('').replace(/[\[\]']/g, '');
+segments = segments.join('').replace(/[[\]']/g, '');
 
     // Die bereinigte URL (optional)
 
@@ -442,7 +447,7 @@ export function CleanTable_alt() {
             return "images";
         }
     }
-segments = segments.join('').replace(/[\[\]']/g, '');
+segments = segments.join('').replace(/[[\]']/g, '');
 
     // Die bereinigte URL (optional)
     return segments;
@@ -458,10 +463,11 @@ export async function Authy(){
         return true;
     });
 }
-import {route} from 'ziggy-js';
+
 
 export async function GetAuth()
 {
+    return;
     try {
         const response = await fetch('/GETUserID');
         const data = await response.json();

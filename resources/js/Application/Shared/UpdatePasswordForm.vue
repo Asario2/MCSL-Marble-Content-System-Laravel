@@ -116,11 +116,11 @@ export default {
 
     methods: {
         updatePassword() {
-            this.form.put(route("user-password.update"), {
-                errorBag: "updatePassword",
-                preserveScroll: true,
-                onSuccess: () => this.form.reset(),
-                onError: () => {
+                this.form.put(route("user-password.update"), {
+                    errorBag: "updatePassword",
+                    preserveScroll: true,
+                    onSuccess: () => this.form.reset(),
+                    onError: () => {
                     if (this.form.errors.password) {
                         this.form.reset("password", "password_confirmation");
                         this.$refs.passwordInput.focus();
@@ -135,3 +135,4 @@ export default {
     },
 };
 </script>
+

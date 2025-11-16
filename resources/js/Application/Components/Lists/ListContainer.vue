@@ -494,3 +494,4 @@ tr.dragging {
   background-color: #d1e7fd;
 }
 </style>
+

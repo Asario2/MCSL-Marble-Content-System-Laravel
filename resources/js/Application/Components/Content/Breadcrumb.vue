@@ -105,15 +105,19 @@ export default {
     },
     methods:{
         ucf(str) {
+            if (!str || typeof str !== "string") {
+                return "";
+            }
+
             // Teilt den String an den Unterstrichen
             const arr = str.split("_");
 
             // Wandelt jedes Element des Arrays um, falls es mehr als ein Wort gibt
             const na = arr.map(
-                (val) => val.charAt(0).toUpperCase() + val.slice(1),
+                (val) => val.charAt(0).toUpperCase() + val.slice(1)
             );
 
-            // Setzt die W�rter mit einem Leerzeichen zusammen
+            // Setzt die Wörter mit einem Leerzeichen zusammen
             return na.join(" ");
         },
     },
@@ -135,3 +139,4 @@ export default {
     },
 };
 </script>
+

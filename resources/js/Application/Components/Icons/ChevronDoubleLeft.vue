@@ -19,3 +19,4 @@ export default {
     name: "ChevronDoubleLeft",
 };
 </script>
+

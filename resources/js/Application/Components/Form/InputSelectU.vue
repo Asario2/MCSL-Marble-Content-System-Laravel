@@ -1,5 +1,6 @@
 <template>
-    <div>
+<label :for="name">Benutzer</label>
+<div>
       <select
         v-bind="$attrs"
         class="w-fully wf_2 wff p-2.5 text-sm rounded-lg block border border-layout-sun-300 text-layout-sun-900 bg-layout-sun-50 placeholder-layout-sun-400 focus:ring-primary-sun-500 focus:border-primary-sun-500 dark:border-layout-night-300 dark:text-layout-night-900 dark:bg-layout-night-50 dark:placeholder-layout-night-400 dark:focus:ring-primary-night-500 dark:focus:border-primary-night-500"
@@ -27,6 +28,8 @@
 
   import axios from "axios";
 
+
+
   export default {
     name: "Contents_Form_InputSelect",
     emits: ["update:modelValue", "input-change"],
@@ -38,7 +41,10 @@
       xname: { type: String, default: "select-field" },
       required: { type: [Boolean, String], default: false },
       options: { type: [Array, Object], default: null },
-      disabled:  { type: Boolean, default: false }
+      disabled:  { type: Boolean, default: false },
+      owner: {type:[String,Number],
+        default:null,
+      }
 
     },
 
@@ -46,7 +52,7 @@
       return {
         internalValue: this.modelValue ?? "",
         fetchedOptions: [],
-        currentUserId: window?.Laravel?.userId || null,
+        UID: window?.Laravel?.userId || null,
       };
     },
 
@@ -56,36 +62,35 @@
         },
       optionsList() {
         let opts = [];
-
         if (Array.isArray(this.options)) {
-          // console.log(`[${this.name}] Props-Optionen erkannt:`, this.options);
-          opts = this.options;
+        opts = this.options;
         } else if (Array.isArray(this.fetchedOptions)) {
-          // console.log(`[${this.name}] FetchedOptions als Array:`, this.fetchedOptions);
-          opts = this.fetchedOptions;
+        opts = this.fetchedOptions;
         } else if (typeof this.fetchedOptions === "object") {
-          console.warn(`[${this.name}] FetchedOptions ist Objekt – versuche in Array umzuwandeln`, this.fetchedOptions);
-
-          // Objekt → Array umwandeln
-          opts = Object.entries(this.fetchedOptions).map(([key, value]) => {
+        opts = Object.entries(this.fetchedOptions).map(([key, value]) => {
             if (typeof value === "object" && "id" in value && "name" in value) {
-              return value;
+            return value;
             }
             return { id: key, name: value };
-          });
-
-          // console.log(`[${this.name}] Umgewandelte Objekt-Optionen:`, opts);
+        });
         }
 
-        return opts.map(opt => {
-          if (typeof opt === "object" && "id" in opt && "name" in opt) {
+        // Normalisiere die Objekte
+        opts = opts.map(opt => {
+        if (typeof opt === "object" && "id" in opt && "name" in opt) {
             return opt;
-          }
-          return { id: opt.id || opt[0], name: opt.name || opt[1] };
+        }
+        return { id: opt.id || opt[0], name: opt.name || opt[1] };
         });
-      },
-    },
 
+        // 👇 Hier filtern wir alle außer dem Owner heraus
+       if (this.owner) {
+        opts = opts.filter(o => String(o.id) !== String(this.owner));
+        }
+
+        return opts;
+    },
+    },
     watch: {
       modelValue(newVal) {
         this.internalValue = newVal;
@@ -125,18 +130,20 @@
     },
 
     mounted() {
-        const isCreatePage = window.location.pathname.includes("create");
+
+       const isCreatePage = window.location.pathname.includes("create");
 
 if (isCreatePage && !this.internalValue && this.currentUserId) {
   this.internalValue = this.currentUserId;
 }
 
-if (!(Array.isArray(this.options) && this.options.length < 1)) {
-  this.getOptions();
-} else {
-  // console.log(`[${this.name}] Lokale Optionen vorhanden`);
-   }
-}
+if (!Array.isArray(this.options) || this.options.length === 0) {
+    console.log(`[${this.name}] Keine Props-Optionen – hole aus API`);
+    this.getOptions();
+  } else {
+    console.log(`[${this.name}] Lokale Optionen erkannt:`, this.options);
+  }
+    }
   };
   </script>
 <style scoped>
@@ -145,3 +152,4 @@ if (!(Array.isArray(this.options) && this.options.length < 1)) {
     max-width:94%;
 }
 </style>
+

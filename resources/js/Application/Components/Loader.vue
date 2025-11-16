@@ -12,7 +12,7 @@
 
   <script>
   import throttle from 'lodash/throttle';
-
+  import axios from "axios";
   export default {
     name: 'Loader',
 
@@ -133,3 +133,4 @@
     }
   };
   </script>
+

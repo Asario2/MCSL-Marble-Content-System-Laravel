@@ -122,13 +122,13 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-.input {
+/*.input {
   @apply w-full px-4 py-2 border rounded-md dark:bg-zinc-800 dark:text-white;
 }
 
 .btn {
   @apply px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50;
-}
+}*/
 P{
     background-color:rgba(0,0,0,0) !important;
 }
@@ -138,3 +138,4 @@ P{
     margin-bottom:-10px !important;
 }
 </style>
+

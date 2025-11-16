@@ -1,4 +1,4 @@
-<template>
+    <template>
     <layout :header-url="$page.props.saas_url + '/'">
     <MetaHeader :title="'Infos: ' + data.headline" />
         <p v-if="!data">Kein Eintrag zu dieser ID vorhanden</p>
@@ -277,12 +277,4 @@ export default defineComponent({
     },
 });
 </script>
-<style scoped>
-.input {
-  @apply w-full px-4 py-2 border rounded-md dark:bg-zinc-800 dark:text-white;
-}
 
-.btn {
-  @apply px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50;
-}
-</style>

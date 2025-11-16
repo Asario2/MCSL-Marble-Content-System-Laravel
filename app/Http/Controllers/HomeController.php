@@ -782,7 +782,7 @@ public function imprint_dag()
         return Inertia::render('Homepage/mfx/people',compact('data'));
     }
     public function infos_index(){
-        $data = DB::table("infos")->where("pub","1")->select("id","headline","summary","img_thumb")->orderBy("position","DESC")->get();
+        $data = DB::table("infos")->where("pub","1")->select("id","headline","summary","img_thumb")->orderBy("position","ASC")->get();
         return Inertia::render('Homepage/mfx/infos_cat',compact('data'));
     }
     public function infos_privacy()
@@ -881,8 +881,14 @@ public function imprint_dag()
     }
     public function home_usershow($nick,$id='')
     {
-        $users = DB::table("users")->where("name",$nick)->where("pub","1")->where("xis_disabled","0")->select("users.*", "users.xis_aiImage as madewithai")->first();
+        if($id == "4")
+        {
+        $users = DB::table("users")->where("id",$id)->select("users.*", "users.xis_aiImage as madewithai")->first();
+        }
+        else{
+            $users = DB::table("users")->where("name",$nick)->where("pub","1")->where("xis_disabled","0")->select("users.*", "users.xis_aiImage as madewithai")->first();
 //         \Log::info("HU:".json_encode($users,JSON_PRETTY_PRINT));
+        }
         return Inertia::render('Homepage/Usershow', [
             'users' => $users, // statt 'data'
         ]);

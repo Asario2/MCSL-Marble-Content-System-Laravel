@@ -184,7 +184,15 @@
                                             >
                                                 Dein Konto
                                             </div>
+                                                <dropdown-link v-if="modulRights?.PrivateMessages"
+                                                :with-icon="false"
+                                                :with-route="true"
+                                                :route-name="
+                                                    route('pm.index')
+                                                ">
 
+                                            Private Nachrichten
+                                            </dropdown-link>
                                             <dropdown-link
                                                 :with-icon="false"
                                                 :with-route="true"
@@ -574,3 +582,4 @@
     }
     /* Deine Styles hier */
     </style>
+

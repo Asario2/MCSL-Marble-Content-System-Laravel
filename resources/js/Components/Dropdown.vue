@@ -80,3 +80,4 @@ const alignmentClasses = computed(() => {
         </transition>
     </div>
 </template>
+

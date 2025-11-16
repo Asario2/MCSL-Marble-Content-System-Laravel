@@ -22,10 +22,10 @@
     },
     {
         "position": 4,
-        "filename": "9ba5853ef8301dc213da2110a221d050.jpg",
-        "label": "Iceland",
-        "width": 1400,
-        "height": 1400
+        "filename": "f6d98a70710fe1883fe0f8d8e9db295c.png",
+        "label": "X",
+        "width": 500,
+        "height": 500
     },
     {
         "position": 5,
@@ -33,5 +33,12 @@
         "label": "MCSL Logo Old",
         "width": 1205,
         "height": 688
+    },
+    {
+        "position": 6,
+        "filename": "9ba5853ef8301dc213da2110a221d050.jpg",
+        "label": "Iceland",
+        "width": 1400,
+        "height": 1400
     }
 ]

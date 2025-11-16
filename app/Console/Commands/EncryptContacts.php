@@ -14,15 +14,14 @@ class EncryptContacts extends Command
     {
         $decrypt = $this->option('decrypt');
 
-        $rows = DB::table('ene_kontakte')->get();
+        $rows = DB::table('private_messages_text')->get();
         $this->info("Gefundene Datensätze: " . $rows->count());
 
         foreach ($rows as $row) {
             $update = [];
 
             foreach ([
-                'Vorname', 'Nachname', 'Email', 'Telefon',
-                'Handy', 'Strasse', 'Plz', 'Geburtsdatum', 'Kommentar'
+                'message',
             ] as $field) {
                 if ($decrypt) {
                     $update[$field] = decval($row->$field);
@@ -31,7 +30,7 @@ class EncryptContacts extends Command
                 }
             }
 
-            DB::table('ene_kontakte')->where('id', $row->id)->update($update);
+            DB::table('private_messages_text')->where('id', $row->id)->update($update);
         }
 
         $this->info($decrypt ? "Alle Kontakte entschlüsselt." : "Alle Kontakte verschlüsselt.");

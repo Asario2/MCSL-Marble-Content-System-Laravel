@@ -1,15 +1,22 @@
 <template>
-<span v-if="hasRight('edit',table) || (users_id && users_id == page.props.user.id)">
+<span v-if="(hasRight('edit',table) && !noedit)|| (users_id && users_id == page.props.user.id)">
 <a :href="'/admin/tables/edit/'+ id+ '/' + table + ''" @click.stop><IconPencil class="sm-pencil cursor-pointer text-layout-sun-600 dark:text-layout-night-900"></IconPencil></a>
 &nbsp;&nbsp;</span>
+{{ hasRight('delete',table) }}
 <span v-if="hasRight('delete',table)">
 <form @submit.prevent="deletePost" style="display:inline">
-    <button @click.stop type="submit" onclick="return confirm('Sind Sie sicher, dass Sie diesen Blogbeitrag löschen möchten?');"><IconTrash class="sm-pencil cursor-pointer"></IconTrash></button>
+  <button
+    @click.stop.prevent="confirmDelete"
+    type="button"
+  >
+    <IconTrash class="sm-pencil cursor-pointer" />
+  </button>
 </form>
 </span>
 
 </template>
 <script>
+import axios from "axios";
 import IconPencil from "@/Application/Components/Icons/Pencil.vue";
 import { toastBus } from '@/utils/toastBus';
 import IconTrash from "@/Application/Components/Icons/Trash.vue";
@@ -20,8 +27,6 @@ export default {
     components: {
         IconTrash,
         IconPencil,
-        CleanTable,
-        CleanId,
         toastBus,
     },
     props: {
@@ -35,8 +40,11 @@ export default {
         users_id:{
             type:[String,Number],
             default:null,
-        }
-
+        },
+        noedit:{
+            default:false,
+        },
+        pm:Boolean,
     },
     data()
     {
@@ -62,6 +70,12 @@ export default {
     this.rightsReady = true;
     },
     methods: {
+        async confirmDelete() {
+    if (!confirm("Sind Sie sicher, dass Sie diesen Eintrag löschen möchten?")) {
+      return;
+    }
+    await this.deletePost();
+  },
         hasRight(right, table) {
       return hasRightSync(right, table); // jetzt synchron & ohne await
     },
@@ -86,26 +100,25 @@ export default {
 //   },
 
     async deletePost() {
-        try {
-            if(!hasRight("delete",this.table))
-            {
-                 alert("Sie haben nicht die benötigten Rechet zum löschen des Datensatzes");
-                 return "";
-            }
-            // console.log(`aad: admin/tables/delete/${this.table}/${this.id}`);
-            // DELETE-Anfrage mit Parametern in der URL
-            const response = await axios.delete(`/admin/tables/delete/${this.table}/${this.id}`, {
-                params: {
-                    edit: "blogposts.index",
-                }
-            });
-            // console.log(response.data);
-            toastBus.emit('toast', response.data); // ← erwartet { status: "...", message: "..." }
-            this.$inertia.reload();
-            // Optional: Seite neu laden oder Liste aktualisieren
-        } catch (error) {
-            console.error("Fehler beim Löschen:", error);
+    try {
+        if (!hasRight("delete", this.table)) {
+        alert("Sie haben nicht die benötigten Rechte zum Löschen des Datensatzes");
+        return;
         }
+         this.tabl = "tables";
+        if(this.pm){
+             this.tabl = "pm";
+        }
+        console.log(`DELETE: /admin/${this.tabl}/delete/${this.table}/${this.id}`);
+        const response = await axios.delete(`/admin/${this.tabl}/delete/${this.table}/${this.id}`, {
+        params: { edit: "blogposts.index" }
+        });
+        console.log("Response:", response.data);
+        toastBus.emit('toast', response.data);
+        this.$inertia.reload();
+    } catch (error) {
+        console.error("Fehler beim Löschen:", error.response?.data || error);
+    }
     },
 
 },
@@ -118,3 +131,4 @@ export default {
     display:inline;
 }
 </style>
+

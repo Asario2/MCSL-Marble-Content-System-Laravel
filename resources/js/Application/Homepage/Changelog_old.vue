@@ -90,7 +90,7 @@ export default defineComponent({
         Alert,
         AiButton,
         Markdown,
-        MetaHeader,
+        MetaHeader
     },
     data() {
     return {
@@ -157,4 +157,5 @@ export default defineComponent({
   },
 });
 </script>
+
 

@@ -59,6 +59,7 @@
         {{-- <script type="modul" src="/js/vite_app.js"></script> --}}
 
 
+         
 
         @routes
             @vite(['resources/css/app.css', 'resources/js/app.js'])

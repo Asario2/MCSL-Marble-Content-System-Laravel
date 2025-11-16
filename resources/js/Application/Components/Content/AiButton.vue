@@ -1,5 +1,5 @@
 <template>
-    <div :class="['ai-button', big ? 'big' : 'small', bigger ? 'bigger' : '']" @click.stop>
+    <div v-if="xis_enabled" :class="['ai-button', big ? 'big' : 'small', bigger ? 'bigger' : '']" @click.stop>
         <a :href="AiRoute">
             <img :key="localDma" :src="'/images/icons/ai-' + (localDma || 'dark') + '.png'"
                  alt="Made with AI"
@@ -18,6 +18,10 @@ export default {
         bigger: Boolean,
         dma: String,
         nohome: Boolean,
+        xis_enabled:{
+            type:[Boolean,Number],
+            default:true,
+        },
     },
     computed: {
         localDma() {
@@ -70,3 +74,4 @@ right:128px !important;
 width:64px;
 }
 </style>
+

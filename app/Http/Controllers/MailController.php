@@ -237,7 +237,7 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
 
             $uhash = $res_alt->uhash;
             $email = decval($res_alt->email);
-            if(!in_array($email,$sendm)){
+            if(!in_array($email,$sendm) && !empty($email)){
                 $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
                 $i++;
                 $sendm[] = $email;
@@ -254,9 +254,9 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
             }
             // dd(session('reci'));
             $uhash = @$res->uhash;
-            $email = decval($res->email);
+            $email = decval(@$res->email);
             $nick = @$res->name;
-            if(!in_array($email,$sendm) && !empty($res)){
+            if(!in_array($email,$sendm) && !empty($res) && !empty($email)){
                 $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
                 $i++;
                 $sendm[] = $email;
