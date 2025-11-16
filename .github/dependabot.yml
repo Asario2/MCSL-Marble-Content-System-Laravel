@@ -17,7 +17,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"             # Wo die package.json liegt
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     open-pull-requests-limit: 10
     labels:
       - "dependencies"
