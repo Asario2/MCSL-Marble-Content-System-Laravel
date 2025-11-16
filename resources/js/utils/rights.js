@@ -1,37 +1,48 @@
+
 // utils/rights.js
 let userRights = {};
 let adminTablePositions = {};
 let rightsReady = false;
 let isAuthenticated = false;
 
-import { CleanTable, GetAuth } from '@/helpers';
+import { CleanTable,GetBatchRights } from '@/helpers';
 
 /**
  * Einmaliger Ladevorgang aller Rechte und Tabellenpositionen
  */
-let rightsPromise = null;
+
+
+import axios from "axios";
+
+let rightsStore = {};     // Cache für alle Rechte
+let rightsLoaded = false; // Status ob schon geladen
 
 export async function loadAllRights() {
-  if (rightsPromise) return rightsPromise;
+    if (rightsLoaded) return;
 
-  rightsPromise = (async () => {
-    const [rightsRes, tablesRes] = await Promise.all([
-      axios.get('/api/user/rights'),
-      axios.get('/api/admin_table_positions'),
-    ]);
+    try {
+        //const response = await axios.get("/admin/rights/all");
+        rightsStore = response.data;        // z. B. { "view_users":1, "edit_users":1 }
+        rightsLoaded = true;
+        console.log("ALLE Rechte geladen:", rightsStore);
+    } catch (e) {
+        console.error("Fehler beim Laden der Rechte:", e);
+    }
+}
 
-    userRights = rightsRes.data[1];
-    adminTablePositions = tablesRes.data[1].reduce((acc, item) => {
-      acc[item.name] = item.position;
-      return acc;
-    }, {});
+export function hasRightSync(right, table) {
+    const key = `${right}_${table}`;
 
-    isAuthenticated = await GetAuth();
-    rightsReady = true;
-    return true;
-  })();
+    // if (!rightsLoaded) {
+    //     console.warn("hasRightSync aufgerufen BEVOR Rechte geladen!");
+    //     return false;
+    // }
+console.log(GetBatchRights(table, right));
+    return GetBatchRights(table, right);
+}
 
-  return rightsPromise;
+export function isRightsReady() {
+    return rightsLoaded;
 }
 
 /**
@@ -62,39 +73,3 @@ export function hasRight(right, table) {
 //   console.log(`🔍 hasRight(${right}, ${table}) = ${result}`);
   return result;
 }
-export function hasRightSync(right, table) {
-  if (!isAuthenticated) {
-    // console.warn("⚠️ User ist nicht authentifiziert");
-    return false;
-  }
-
-  if (!rightsReady) {
-    // console.warn("⚠️ Rechte sind noch nicht bereit");
-    return false;
-  }
-
-  table = table ?? CleanTable();
-  const rightKey = `${right}_table`;
-  const rightsString = userRights?.[rightKey];
-  const position = adminTablePositions[table];
-
-  if (typeof rightsString !== 'string') {
-    // console.error(`❌ Rechte-String für '${rightKey}' nicht gefunden`);
-    return false;
-  }
-
-  if (typeof position !== 'number' && typeof position !== "string") {
-    // console.error(`❌ Position für Tabelle '${table}' nicht gefunden`);
-    return false;
-  }
-
-  const result = rightsString.charAt(position) === '1';
-//   console.log(`🔍 ${rightKey} @${table} = ${result}`);
-  return result;
-}
-
-
-export function isRightsReady() {
-  return rightsReady;
-}
-

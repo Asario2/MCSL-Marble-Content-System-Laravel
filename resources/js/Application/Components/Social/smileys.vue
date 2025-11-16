@@ -35,7 +35,7 @@ export default {
         ":lol:": "lol",
         ":x": "mad",
         ":P": "razz",
-        ":mrgreen": "mrgreen",
+        ":mrgreen:": "mrgreen",
         ":arrow:": "arrow",
         ":cry:": "cry",
         ":evil:": "evil",
@@ -53,7 +53,7 @@ export default {
         ':ugly:': 'ugly',
         ':catch:': "catch",
         ":holy:": 'holy',
-        
+
       }
     };
   },

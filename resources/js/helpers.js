@@ -72,11 +72,7 @@ export async function loadRightsOnce() {
 }
 
 
-const cache = {
-  tables: null,
-  rights: null,
-  ready: false,
-};
+
 export function replaceSmilies(text) {
     const smilies = {
       ";)": "wink",
@@ -154,12 +150,110 @@ export async function initRights() {
 
 //   return str.charAt(t.position) === '1' ? 1 : 0;
 // }
- export async function GetRights(right,table)
- {
-    const res = axios.get('/api/user/rights/des/' + table + "/" + right);
-    const res2 = res.data;
-    return res2;
- }
+const cache = {
+  tables: null,
+  rights: null,
+  ready: false,
+  batchRights: null, // NEU: Cache für Batch-Rechte
+};
+
+// NEU: Sammelabruf für Rechte
+export async function GetBatchRights(tables, rightType = 'view') {
+  // Prüfe ob bereits im Cache
+  const cacheKey = `${rightType}_${tables.sort().join('_')}`;
+  if (cache.batchRights && cache.batchRights[cacheKey]) {
+    return cache.batchRights[cacheKey];
+  }
+
+  try {
+    // OPTIMIERT: Ein einzelner API-Call für alle Tabellen
+    const response = await axios.post('/api/user/batch-rights', {
+      tables: tables,
+      right_type: rightType
+    });
+
+    // Cache initialisieren falls nicht vorhanden
+    if (!cache.batchRights) {
+      cache.batchRights = {};
+    }
+
+    cache.batchRights[cacheKey] = response.data;
+    return response.data;
+
+  } catch (error) {
+    console.error('Fehler beim Batch-Rechte-Abruf:', error);
+
+    // Fallback: Für alle Tabellen 0 zurückgeben
+    const fallbackRights = {};
+    tables.forEach(table => {
+      fallbackRights[table] = 0;
+    });
+
+    if (!cache.batchRights) {
+      cache.batchRights = {};
+    }
+    cache.batchRights[cacheKey] = fallbackRights;
+    return fallbackRights;
+  }
+}
+
+// OPTIMIERT: Existierende GetRights Funktion mit Cache
+export async function GetRights(right, table) {
+  // Cache prüfen
+  const cacheKey = `${right}_${table}`;
+  if (cache.batchRights && cache.batchRights[cacheKey] !== undefined) {
+    return cache.batchRights[cacheKey];
+  }
+
+  try {
+    const response = await axios.get(`/api/user/rights/des/${table}/${right}`);
+    const result = response.data;
+
+    // In Cache speichern
+    if (!cache.batchRights) {
+      cache.batchRights = {};
+    }
+    cache.batchRights[cacheKey] = result;
+
+    return result;
+  } catch (error) {
+    console.error(`Fehler beim Abrufen der Rechte für ${table}:`, error);
+    return 0;
+  }
+}
+
+// ALTERNATIVE: Falls Backend keinen Batch-Endpoint hat
+export async function GetRightsParallel(tables, rightType = 'view') {
+  try {
+    // OPTIMIERT: Parallele Requests mit Promise.all
+    const rightsPromises = tables.map(table =>
+      GetRights(rightType, table).catch(error => {
+        console.error(`Fehler für Tabelle ${table}:`, error);
+        return 0;
+      })
+    );
+
+    const rightsResults = await Promise.all(rightsPromises);
+
+    // Erstelle Objekt mit Tabellenname -> Recht
+    const rightsMap = {};
+    tables.forEach((table, index) => {
+      rightsMap[table] = rightsResults[index];
+    });
+
+    return rightsMap;
+
+  } catch (error) {
+    console.error('Fehler in GetRightsParallel:', error);
+
+    const fallbackRights = {};
+    tables.forEach(table => {
+      fallbackRights[table] = 0;
+    });
+    return fallbackRights;
+  }
+}
+
 // export async function GetRights(rightType, tableName) {
 //   await loadRightsOnce();
 //   if(!GetAuth()){

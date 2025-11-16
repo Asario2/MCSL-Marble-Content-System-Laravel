@@ -1205,6 +1205,23 @@ public function ShowTable(Request $request, $table_alt = null)
             return stripcslashes($data); // Standardmäßige Anwendung von stripslashes auf den Wert
         }
     }
+    function GetBatchRights(Request $request){
+
+   $tables = $request->input('tables', []);
+    $rightType = $request->input('right_type', 'view');
+
+    $rights = [];
+
+    foreach ($tables as $table) {
+        // Deine bestehende Recht-Prüf-Logik hier
+        $hasRight = CheckRights(Auth::id(), $table, $rightType);
+
+        $rights[$table] = $hasRight ? 1 : 0;
+    }
+
+    return response()->json($rights);
+  }
+
     public function ListTables(Request $request,$table_alt='')
     {
         $table = $table_alt;
@@ -1229,7 +1246,7 @@ public function ShowTable(Request $request, $table_alt = null)
                 $table->name = ucf($table->name);
                 return $table;
             });
-        // \Log::info('tab:'.json_encode($tables, JSON_PRETTY_PRINT));
+        \Log::info('tab:'.json_encode($tables, JSON_PRETTY_PRINT));
         return Inertia::render('Admin/TableList', [
             'filters' => Request()->all('search'),
             'datarows' => $tables,

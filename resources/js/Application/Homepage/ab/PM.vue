@@ -113,7 +113,7 @@
             <button
               v-for="page in inboxTotalPages"
               :key="page"
-              @click="changePage(page)"
+              @click="currentPageInbox = page"
               :class="['px-3 py-1 rounded', currentPageInbox === page ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300']"
             >
               {{ page }}
@@ -193,7 +193,7 @@
             <button
               v-for="page in outboxTotalPages"
               :key="page"
-              @click="changePage(page)"
+              @click="currentPageOutbox = page"
               :class="['px-3 py-1 rounded', currentPageOutbox === page ? 'bg-blue-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300']"
             >
               {{ page }}
@@ -208,8 +208,20 @@
           <div class="p-6 bg-layout-sun-100 dark:bg-layout-night-100 rounded-xl flex flex-col md:flex-row gap-6">
             <!-- Linker Bereich: Nachricht -->
             <div class="flex-1 max-w-[70%]">
-              <p v-if="selectedMessage.public == '1' && selectedMessage.UID !='4'" @click="answer(selectedMessage)" class="cursor-pointer font-bold text-[#58aaf8] hover:text-[#7cc0ff] transition"> ➡️ Antworten</p>
-              <p v-if="selectedMessage.public == '2'" @click="rewrite(selectedMessage)" class="cursor-pointer font-bold text-[#58aaf8] hover:text-[#7cc0ff] transition">➡️ Neue Nachricht an {{ selectedMessage.user }}</p>
+              <!-- KORRIGIERT: Vereinfachte Bedingungen für Antworten -->
+              <p
+                @click="answer(selectedMessage)"
+                class="cursor-pointer font-bold text-[#58aaf8] hover:text-[#7cc0ff] transition mb-2"
+              >
+                ➡️ Antworten
+              </p>
+              <p
+                @click="rewrite(selectedMessage)"
+                class="cursor-pointer font-bold text-[#58aaf8] hover:text-[#7cc0ff] transition mb-2"
+              >
+                ➡️ Neue Nachricht an {{ selectedMessage.user }}
+              </p>
+
               <p><strong>Von:</strong> {{ selectedMessage.user }}</p>
               <p><strong>Betreff:</strong> {{ selectedMessage.subject }}</p>
               <p><strong>Datum:</strong> {{ formatDate(selectedMessage.created_at) }}</p>
@@ -219,7 +231,8 @@
 
             <!-- Rechter Bereich: Benutzerinfos -->
             <div class="w-full md:w-64 flex-shrink-0 bg-gray-100 dark:bg-gray-800 p-4 rounded-xl text-center">
-              <a :href="'/home/users/show/' + selectedMessage.user + '/' + selectedMessage.users_id"><img :src="GetProfileImagePath(selectedMessage.avatar || 'default.jpg')" class="mx-auto w-24 h-24 rounded-full object-cover mb-2" />
+              <a :href="'/home/users/show/' + selectedMessage.user + '/' + selectedMessage.users_id">
+                <img :src="GetProfileImagePath(selectedMessage.avatar || 'default.jpg')" class="mx-auto w-24 h-24 rounded-full object-cover mb-2" />
               </a>
               <h4 class="font-semibold mb-1">Über {{ selectedMessage.user }}</h4>
               <p>Vorname: {{ selectedMessage.first_name }}</p>
@@ -233,25 +246,42 @@
         <!-- Neue Nachricht -->
         <div v-else-if="tab === 'new'" class="mt-[-20px] pb-3">
           <h2 class="text-2xl font-semibold m-3 pt-5">✉️ Neue Nachricht</h2>
-          <InputSelectU width="100%"
-           @input-change="updateFormData"
-                        id="to_id"
-                        v-model="to_id"
-                        :owner="UID"
-                        name="users_id"
-                        xname="to_id"
-                        :required="true"
-                    />
-            <InputFormText v-model="subject" label="Betreff" id="subject" name="subject" :required="true">
-                <template #label>Betreff</template>
-            </InputFormText>
+          <InputSelectU
+            width="100%"
+            @input-change="updateFormData"
+            id="to_id"
+            v-model="to_id"
+            :owner="UID"
+            name="users_id"
+            xname="to_id"
+            :required="true"
+          />
+          <InputFormText
+            v-model="subject"
+            label="Betreff"
+            id="subject"
+            name="subject"
+            :required="true"
+          >
+            <template #label>Betreff</template>
+          </InputFormText>
 
           <InputHtml
-            v-model="message"
+            :modelValue="message"
+            @update:modelValue="message = $event"
             class="w-full border dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900 dark:text-gray-200"
             placeholder="Schreibe eine Nachricht..."
             rows="4"
+            name="message"
           ></InputHtml>
+
+          <div class="mt-4 p-4 bg-yellow-100 dark:bg-yellow-900 rounded-lg">
+            <p class="font-bold">Debug-Info:</p>
+            <p>To ID: {{ to_id }}</p>
+            <p>Subject: {{ subject }}</p>
+            <p>Message Length: {{ message.length }}</p>
+          </div>
+
           <button
             class="mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
             @click="sendMessage"
@@ -261,101 +291,16 @@
         </div>
 
         <!-- Einstellungen -->
-<div v-else-if="tab === 'settings'" class="mt-[-20px] pb-3">
-  <h2 class="text-2xl font-semibold m-3 pt-5">⚙️ Einstellungen</h2>
-
-  <div class="py-3 border-b border-gray-200 dark:border-gray-700">
-
-
-
-    <!-- Immer 4 Radios in einer Zeile -->
-<!--     <div class="tw-row">
-      <label class="tw-col cursor-pointer">
-        <input
-          type="radio"
-          name="xch_newsletter"
-          value="0"
-          v-model="form[0].xch_newsletter"
-          class="w-5 h-5 rounded-full border cursor-pointer
-    bg-primary-sun-50 text-primary-sun-500 border-primary-sun-300
-    focus:ring-3 focus:ring-primary-sun-300 ring-offset-primary-sun-800
-    checked:bg-primary-sun-500 cursor-pointer
-    dark:bg-primary-night-50 dark:text-primary-night-500
-    dark:border-primary-night-300 dark:focus:ring-primary-night-300
-    dark:ring-offset-primary-night-800 dark:checked:bg-primary-night-500"
-        />
-        <span>Nein</span>
-      </label>
-
-      <label class="tw-col cursor-pointer">
-        <input
-          type="radio"
-          name="xch_newsletter"
-          value="to_mail"
-          v-model="form[0].xch_newsletter"
-          class="w-5 h-5 rounded-full border cursor-pointer
-    bg-primary-sun-50 text-primary-sun-500 border-primary-sun-300
-    focus:ring-3 focus:ring-primary-sun-300 ring-offset-primary-sun-800
-    checked:bg-primary-sun-500
-    dark:bg-primary-night-50 dark:text-primary-night-500
-    dark:border-primary-night-300 dark:focus:ring-primary-night-300
-    dark:ring-offset-primary-night-800 dark:checked:bg-primary-night-500"
-        />
-        <span>Per Email</span>
-      </label>
-
-      <label class="tw-col cursor-pointer">
-        <input
-          type="radio"
-          name="xch_newsletter"
-          value="to_pm"
-          v-model="form[0].xch_newsletter"
-          class="w-5 h-5 rounded-full border cursor-pointer
-    bg-primary-sun-50 text-primary-sun-500 border-primary-sun-300
-    focus:ring-3 focus:ring-primary-sun-300 ring-offset-primary-sun-800
-    checked:bg-primary-sun-500
-    dark:bg-primary-night-50 dark:text-primary-night-500
-    dark:border-primary-night-300 dark:focus:ring-primary-night-300
-    dark:ring-offset-primary-night-800 dark:checked:bg-primary-night-500"
-        />
-        <span>Per Privater Nachricht</span>
-      </label>
-
-      <label class="tw-col cursor-pointer">
-        <input
-          type="radio"
-          name="xch_newsletter"
-          value="to_pm_and_mail"
-          v-model="form[0].xch_newsletter"
-          class="w-5 h-5 rounded-full border cursor-pointer
-            bg-primary-sun-50 text-primary-sun-500 border-primary-sun-300
-            focus:ring-3 focus:ring-primary-sun-300 ring-offset-primary-sun-800
-            checked:bg-primary-sun-500 checked:ring-white
-            dark:bg-primary-night-50 dark:text-primary-night-500
-            dark:border-primary-night-300
-            dark:ring-offset-primary-night-800 dark:checked:bg-primary-night-500 dark:checked:ring-white"
-        />
-        <span>Per Email & Private Nachricht</span>
-      </label>
-      </div>-->
-      <!-- <RadioSet
-  name="newsletter"
-  :options="[
-    { label: 'Nein', value: '0' },
-    { label: 'Per Mail', value: 'to_mail' },
-    { label: 'Per Privater Nachricht', value: 'to_pm' },
-    { label: 'Per Mail & Private Nachrichten', value: 'to_pm_and_mail' },
-  ]"
-  v-model="form[0].xch_newsletter"
-/> -->
-      <MessageSettings :nohead="true">, siehe auch <a href='/admin/profile'>Profil</a></MessageSettings>
-    </div>
-    </div>
+        <div v-else-if="tab === 'settings'" class="mt-[-20px] pb-3">
+          <h2 class="text-2xl font-semibold m-3 pt-5">⚙️ Einstellungen</h2>
+          <div class="py-3 border-b border-gray-200 dark:border-gray-700">
+            <MessageSettings :nohead="true">, siehe auch <a href='/admin/profile'>Profil</a></MessageSettings>
+          </div>
+        </div>
       </div>
     </div>
   </Layout>
 </template>
-
 
 <script>
 import Layout from "@/Application/Admin/Shared/Layout.vue";
@@ -363,9 +308,8 @@ import editbtns from '@/Application/Components/Form/editbtns.vue';
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import MessageSettings from "@/Application/Shared/MessageSettings.vue";
-import { SD, GetProfileImagePath,rumLaut,nl2br } from "@/helpers";
+import { SD, GetProfileImagePath,rumLaut,nl2br, GetSettings } from "@/helpers";
 import InputSelectU from "@/Application/Components/Form/InputSelectU.vue";
-// import RadioSet from "@/Application/Components/Form/RadioSet.vue";
 import InputHtml from "@/Application/Components/Form/InputHtml.vue";
 import InputCheckbox from "@/Application/Components/Form/InputCheckbox.vue";
 import axios from "axios";
@@ -382,7 +326,6 @@ export default {
     InputSelectU,
     InputFormText,
     InputCheckbox,
-    // RadioSet,
     MessageSettings,
   },
 
@@ -397,6 +340,8 @@ export default {
     return {
       tab: "inbox",
       message: "",
+      subject: "",
+      to_id: null,
       tabs: [
         { id: "inbox", label: "Inbox", icon: "📥" },
         { id: "outbox", label: "Outbox", icon: "📤" },
@@ -409,26 +354,23 @@ export default {
       currentPageOutbox: 1,
       selectedMessage: null,
       UID: window?.Laravel?.userId || null,
-      to_id: null,
       searchInbox: '',
       searchOutbox: '',
-      // Checkbox States - als Objekte für persistente Speicherung nach ID
       selectAllInbox: 0,
       selectAllOutbox: 0,
       selectedInbox: {},
       selectedOutbox: {},
-      };
+    };
   },
 
   computed: {
-    // Inbox
     filteredInbox() {
-    if (!this.searchInbox) return this.inboxArr;
-    const q = this.searchInbox.toLowerCase();
-    return this.inboxArr.filter(msg =>
+      if (!this.searchInbox) return this.inboxArr;
+      const q = this.searchInbox.toLowerCase();
+      return this.inboxArr.filter(msg =>
         msg.user.toLowerCase().includes(q) ||
         msg.subject.toLowerCase().includes(q)
-    );
+      );
     },
     paginatedInbox() {
       const start = (this.currentPageInbox - 1) * this.perPage;
@@ -438,19 +380,18 @@ export default {
       return Math.ceil(this.filteredInbox.length / this.perPage) || 1;
     },
     selectedInboxIds() {
-    return Object.keys(this.selectedInbox)
+      return Object.keys(this.selectedInbox)
         .filter(id => this.selectedInbox[id])
         .map(id => parseInt(id));
     },
 
-    // Outbox
     filteredOutbox() {
-    if (!this.searchOutbox) return this.outboxArr;
-    const q = this.searchOutbox.toLowerCase();
-    return this.outboxArr.filter(msg =>
+      if (!this.searchOutbox) return this.outboxArr;
+      const q = this.searchOutbox.toLowerCase();
+      return this.outboxArr.filter(msg =>
         msg.user.toLowerCase().includes(q) ||
         msg.subject.toLowerCase().includes(q)
-    );
+      );
     },
     paginatedOutbox() {
       const start = (this.currentPageOutbox - 1) * this.perPage;
@@ -465,52 +406,38 @@ export default {
         .map(id => parseInt(id));
     },
   },
-mounted() {
-  console.log('INBOX ARR:', this.inboxArr);
-  console.log('SELECTED INBOX:', this.selectedInbox);
-},
+
+  async mounted() {
+     const settings = await GetSettings();
+  },
 
   methods: {
     SD,
     rumLaut,
     nl2br,
     GetProfileImagePath,
+    GetSettings,
+
     setSelected(box, id, val) {
-    if (box === 'inbox') {
-        this.selectedInbox[id] = val;   // einfach direkt zuweisen
-    } else if (box === 'outbox') {
-        this.selectedOutbox[id] = val;  // direkt zuweisen
-    }
+      if (box === 'inbox') {
+        this.selectedInbox[id] = val;
+      } else if (box === 'outbox') {
+        this.selectedOutbox[id] = val;
+      }
     },
-    // Checkbox Methods
+
     toggleSelectAll(tab, value) {
-  if (tab === 'inbox') {
-    this.selectAllInbox = value;
-    this.paginatedInbox.forEach(msg => {
-      this.selectedInbox[msg.id] = value ? 1 : 0;
-    });
-  } else if (tab === 'outbox') {
-    this.selectAllOutbox = value;
-    this.paginatedOutbox.forEach(msg => {
-      this.selectedOutbox[msg.id] = value ? 1 : 0;
-    });
-  }
-},
-
-    toggleSelectOne(tab, id) {
-    if (tab === 'inbox') {
-        if (this.selectedInbox[id] === undefined) this.selectedInbox[id] = 0; // 👈 Sicherstellen, dass Key existiert
-        this.selectedInbox[id] = this.selectedInbox[id] ? 0 : 1;
-
-        const allSelected = this.paginatedInbox.every(msg => this.selectedInbox[msg.id] === 1);
-        this.selectAllInbox = allSelected ? 1 : 0;
-    } else if (tab === 'outbox') {
-        if (this.selectedOutbox[id] === undefined) this.selectedOutbox[id] = 0;
-        this.selectedOutbox[id] = this.selectedOutbox[id] ? 0 : 1;
-
-        const allSelected = this.paginatedOutbox.every(msg => this.selectedOutbox[msg.id] === 1);
-        this.selectAllOutbox = allSelected ? 1 : 0;
-    }
+      if (tab === 'inbox') {
+        this.selectAllInbox = value;
+        this.paginatedInbox.forEach(msg => {
+          this.selectedInbox[msg.id] = value ? 1 : 0;
+        });
+      } else if (tab === 'outbox') {
+        this.selectAllOutbox = value;
+        this.paginatedOutbox.forEach(msg => {
+          this.selectedOutbox[msg.id] = value ? 1 : 0;
+        });
+      }
     },
 
     markAsRead() {
@@ -521,7 +448,6 @@ mounted() {
 
       axios.post(route('admin.pm.mark'), { ids: this.selectedInboxIds.join(',') })
         .then(() => {
-          // Zurücksetzen der Auswahl
           this.selectedInboxIds.forEach(id => {
             this.selectedInbox[id] = 0;
           });
@@ -535,37 +461,34 @@ mounted() {
     },
 
     deleteMessages(tab) {
-    const ids = tab === 'inbox'
+      const ids = tab === 'inbox'
         ? this.selectedInboxIds
         : this.selectedOutboxIds;
 
-    if (ids.length === 0) {
+      if (ids.length === 0) {
         alert('Keine Nachrichten ausgewählt.');
         return;
-    }
+      }
 
-    if (!confirm(`Sind Sie sicher, dass Sie ${ids.length} Nachricht(en) löschen möchten?`)) return;
+      if (!confirm(`Sind Sie sicher, dass Sie ${ids.length} Nachricht(en) löschen möchten?`)) return;
 
-    // IDs als String zusammenfassen
-    const idsStr = ids.join(',');
+      const idsStr = ids.join(',');
 
-    axios.post(route('admin.pm.delmore'), { ids: idsStr })
+      axios.post(route('admin.pm.delmore'), { ids: idsStr })
         .then(() => {
-        // Auswahl zurücksetzen
-        if (tab === 'inbox') {
+          if (tab === 'inbox') {
             ids.forEach(id => { this.selectedInbox[id] = 0; });
             this.selectAllInbox = 0;
-        } else {
+          } else {
             ids.forEach(id => { this.selectedOutbox[id] = 0; });
             this.selectAllOutbox = 0;
-        }
+          }
 
-        // Inertia neu laden
-        this.$inertia.reload({ only: ['inboxArr', 'outboxArr'] });
+          this.$inertia.reload({ only: ['inboxArr', 'outboxArr'] });
         })
         .catch(err => {
-        console.error('Fehler beim Löschen:', err);
-        alert('Fehler beim Löschen der Nachrichten.');
+          console.error('Fehler beim Löschen:', err);
+          alert('Fehler beim Löschen der Nachrichten.');
         });
     },
 
@@ -585,77 +508,134 @@ mounted() {
         .catch(err => console.error(err));
     },
 
-    changePage(page) {
-      if (this.tab === "inbox") this.currentPageInbox = page;
-      else if (this.tab === "outbox") this.currentPageOutbox = page;
+    resetPage() {
+      if (this.tab === "inbox") {
+        this.currentPageInbox = 1;
+        this.selectAllInbox = 0;
+      } else if (this.tab === "outbox") {
+        this.currentPageOutbox = 1;
+        this.selectAllOutbox = 0;
+      }
     },
 
-    resetPage() {
-  if (this.tab === "inbox") {
-    this.currentPageInbox = 1;
-    this.selectAllInbox = 0;
-  } else if (this.tab === "outbox") {
-    this.currentPageOutbox = 1;
-    this.selectAllOutbox = 0;
-  }
-},
     answer(msg) {
-      if (!msg) return;
+      console.log('Answer function called with message:', msg);
+
+      if (!msg) {
+        console.error('No message provided for answer');
+        return;
+      }
+
+      // Zur "Neue Nachricht" Tab wechseln
       this.tab = "new";
-      this.to_id = msg.users_id || msg.user_id || null;
-      const subj = msg.subject || msg.title || "";
+
+      // Empfänger-ID setzen - verschiedene mögliche Felder prüfen
+      this.to_id = msg.users_id || msg.user_id || msg.from_id || msg.UID;
+      console.log('Set to_id:', this.to_id, 'from message fields:', {
+        users_id: msg.users_id,
+        user_id: msg.user_id,
+        from_id: msg.from_id,
+        UID: msg.UID
+      });
+
+      // Betreff vorbereiten
+      const subj = msg.subject || "";
       this.subject = subj.startsWith("Re:") ? subj : "Re: " + subj;
-      const originalMessage = msg.message || msg.body || "";
-      const quoted = originalMessage.split("\n").map(line => `> ${line}`).join("\n") || "> ";
-      this.message = `<blockquote>${quoted}</blockquote>\n\n`;
+      console.log('Set subject:', this.subject);
+
+      // Nachricht vorbereiten
+      let original = msg.message || "";
+      console.log('Original message:', original);
+
+      // HTML zu Text konvertieren (vereinfacht)
+      if (original.includes('<') || original.includes('>')) {
+        // Einfache HTML-Bereinigung
+        original = original
+          .replace(/<br\s*\/?>/gi, "\n")
+          .replace(/<\/p>/gi, "\n\n")
+          .replace(/<[^>]*>/g, "")
+          .trim();
+      }
+
+      console.log('Cleaned message:', original);
+
+      // Zitat erstellen
+      const quoted = original
+        .split("\n")
+        .filter(line => line.trim()) // Leere Zeilen entfernen
+        .map(line => `> ${line.trim()}`)
+        .join("\n");
+
+      this.message = `<blockquote>${quoted}</blockquote><br><br>`;
+      console.log('Final message set');
+
+      // Kurze Verzögerung für UI-Update
       this.$nextTick(() => {
-        const textarea = this.$el.querySelector("textarea");
-        if (textarea) textarea.focus();
+        console.log('UI updated, ready for input');
       });
     },
 
     rewrite(msg) {
+      console.log('Rewrite function called with message:', msg);
+
       if (!msg) return;
       this.tab = "new";
-      this.to_id = msg.to_id || msg.users_id || null;
+      this.to_id = msg.users_id || msg.user_id || msg.from_id || msg.UID;
       this.subject = "";
       this.message = "";
-      this.$nextTick(() => {
-        const textarea = this.$el.querySelector("textarea");
-        if (textarea) textarea.focus();
-      });
+
+      console.log('Rewrite completed:', { to_id: this.to_id });
     },
 
     sendMessage() {
+      console.log('Sending message:', {
+        to_id: this.to_id,
+        subject: this.subject,
+        message: document.getElementById("editor_message").innerHTML,
+        message_length: this.message.length
+      });
+
       if (!this.message.trim()) {
         alert("Bitte gib eine Nachricht ein.");
         return;
       }
+
+      if (!this.to_id) {
+        alert("Bitte wählen Sie einen Empfänger aus.");
+        return;
+      }
+
+      if (!this.subject.trim()) {
+        alert("Bitte geben Sie einen Betreff ein.");
+        return;
+      }
+
       axios.post(route('pm.save'), {
-            message: this.message,
-            to_id: this.to_id,
-            subject: this.subject,
-        })
-        .then(response => {
-            console.log('Gespeichert:', response.data);
-            this.message = "";
-            this.subject = '';
-            this.to_id = null;
-            this.tab = "outbox";
-            this.$inertia.reload();
-        })
-        .catch(error => {
-            console.error('Fehler beim Speichern:', error);
-        });
+        message: document.getElementById("editor_message").innerHTML,
+        to_id: this.to_id,
+        subject: this.subject,
+      })
+      .then(response => {
+        console.log('Gespeichert:', response.data);
+        this.message = "";
+        this.subject = '';
+        this.to_id = null;
+        this.tab = "outbox";
+        this.$inertia.reload();
+      })
+      .catch(error => {
+        console.error('Fehler beim Speichern:', error);
+        alert('Fehler beim Senden der Nachricht: ' + error.message);
+      });
     },
 
     ShowMessage(msg) {
+      console.log('ShowMessage called with:', msg);
       this.selectedMessage = msg;
-      console.log('SELECTED MESSAGE:', msg);
 
       const exists = this.tabs.find(t => t.id === "read");
       if (!exists) {
-          this.tabs.unshift({ id: "read", label: "Nachricht lesen", icon: "📖" });
+        this.tabs.unshift({ id: "read", label: "Nachricht lesen", icon: "📖" });
       }
 
       this.tab = "read";
@@ -669,29 +649,30 @@ mounted() {
 
     updateFormData(value) {
       this.to_id = value;
+      console.log('Form data updated - to_id:', value);
     },
   },
 
-watch: {
-  // Bereits vorhandene watcher
-  tab() {
-    this.searchInbox = '';
-    this.searchOutbox = '';
-    this.resetPage();
-  },
-  searchQuery() { this.resetPage(); },
-
-form: {
-    handler(newVal) {
-      if (newVal && newVal[0] && newVal[0].cnt_numrows) {
-        this.perPage = parseInt(newVal[0].cnt_numrows);
-        this.resetPage();
-      }
+  watch: {
+    tab(newTab) {
+      console.log('Tab changed to:', newTab);
+      this.searchInbox = '';
+      this.searchOutbox = '';
+      this.resetPage();
     },
-    deep: true,
-    immediate: true
+    searchQuery() { this.resetPage(); },
+
+    form: {
+      handler(newVal) {
+        if (newVal && newVal[0] && newVal[0].cnt_numrows) {
+          this.perPage = parseInt(newVal[0].cnt_numrows);
+          this.resetPage();
+        }
+      },
+      deep: true,
+      immediate: true
+    }
   }
-}
 };
 </script>
 
@@ -708,4 +689,3 @@ form: {
     @apply flex items-center justify-center gap-2;
 }
 </style>
-

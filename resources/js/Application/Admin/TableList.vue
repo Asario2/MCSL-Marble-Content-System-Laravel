@@ -1,53 +1,50 @@
 <template>
-    <layout>
+  <layout>
+    <template #header>
+      <breadcrumb v-if="CleanTable() !== 'contacts'"
+                  :application-name="$page.props.applications.app_admin_name"
+                  :start-page="false"
+                  current="Liste der Tabellen"
+      />
+    </template>
+
+    <section class="mt-8">
+      <list-container
+        title="Liste der Tabellen"
+        :datarows="rows"
+        route-index="admin.tables.index"
+        :filters="filters"
+        :search-filter="true"
+        :edit-on="false"
+        route-edit="admin.tables.edit"
+        :create-on="false"
+        :route-create="routeCreate"
+        :delete-on="false"
+        route-delete="admin.tables.destroy"
+      >
+
         <template #header>
-            <breadcrumb v-if="CleanTable() !== 'contacts'"
-                :application-name="$page.props.applications.app_admin_name"
-                :start-page="false"
-                current="Liste der Tabellen"
-            />
+          <tr>
+            <th class="np-dl-th-normal">Tabellenname</th>
+            <th class="np-dl-th-normal">Beschreibung</th>
+          </tr>
         </template>
-        <section class="mt-8">
-            <list-container
-                title="Liste der Tabellen"
-                :datarows="rows"
-                route-index="admin.tables.index"
-                :filters="filters"
-                :search-filter="true"
-                search-text="Gesucht werden alle Tabellen, die den Suchbegriff im Titel bzw. der Zusammenfassung haben"
-                :edit-on="false"
-                route-edit="admin.tables.edit"
-                :create-on="false"
-                :route-create="routeCreate"
-                :delete-on="false"
-                route-delete="admin.tables.destroy"
-            >
 
-                <template #header>
-                    <tr>
-                        <th class="np-dl-th-normal">Tabellenname</th>
-                        <th class="np-dl-th-normal">Beschreibung</th>
-                        <th class="np-dl-th-normal"><pre>{{ data     }}</pre></th>
-                    </tr>
-                </template>
-
-                <template #datarow="data" >
-
-                        <td class="np-dl-td-normal" v-if="canView(data.datarow.full_name)">
-                            <a
-                                :href="route('admin.tables.show', data.datarow.full_name)"
-                                class="text-blue-600 dark:text-blue-600 hover:underline"
-                            >
-                                <span v-html="data.datarow.name"></span>
-                            </a>
-                        </td>
-                        <td class="np-dl-td-normal" v-if="canView(data.datarow.full_name)">
-                            <span v-html="data.datarow.description"></span>
-                        </td>
-                    </template>
-            </list-container>
-        </section>
-    </layout>
+        <!-- Tabellen Zeilen -->
+        <template #datarow="data">
+          <td class="np-dl-td-normal">
+            <a :href="route('admin.tables.show', data.datarow.full_name)"
+               class="text-blue-600 dark:text-blue-600 hover:underline">
+              {{ data.datarow.name }}
+            </a>
+          </td>
+          <td class="np-dl-td-normal">
+            {{ data.datarow.description }}
+          </td>
+        </template>
+      </list-container>
+    </section>
+  </layout>
 </template>
 
 <script>
@@ -55,98 +52,55 @@ import { defineComponent } from "vue";
 import Layout from "@/Application/Admin/Shared/Layout.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 import ListContainer from "@/Application/Components/Lists/ListContainer.vue";
-import { CleanTable } from '@/helpers';
-import {route} from 'ziggy-js';
+import { CleanTable, GetBatchRights, GetRightsParallel } from '@/helpers'; // NEU: Import der Batch-Funktionen
+import { route } from 'ziggy-js';
 
-// import { toastBus } from '@/utils/toastBus';
-// import { data } from "jquery";
-import { GetRights } from '@/helpers';
 export default defineComponent({
-    name: "Admin_TableList",
+  name: "Admin_TableList",
 
-    components: {
-        Layout,
-        Breadcrumb,
-        ListContainer,
-        // toastBus,
+  components: {
+    Layout,
+    Breadcrumb,
+    ListContainer,
+  },
+
+  props: {
+    rows: {
+      type: Object,
+      required: true,
+      default: () => ({ data: [] }),
     },
+  },
 
-    props: {
-        rows: {
-            type: Array,
-            required: true,
-            default: () => [],
-        },
-        datarows: {
-            type: [Array, String],
-            required: true,
-            default: () => [],
-        },
+  data() {
+    return {
+      filteredRows: [],
+      filters: {},
+      isLoading: true,
+    };
+  },
+
+  computed: {
+    routeCreate() {
+      const table = CleanTable();
+      return route('admin.tables.create', table);
     },
+  },
 
-    data() {
-        return {
-            rightsData: {},
-            rightsReady: false,
-        };
-    },
+  async mounted() {
 
-    computed: {
-        routeCreate() {
-            const table = CleanTable(); // oder aus props holen?
-            return route('admin.tables.create', table);
-        },
-        isRightsReady() {
-            return this.$isRightsReady;
-        },
-        hasRight() {
-            return this.$hasRight; // Zugriff auf globale Methode
-            },
-    },
 
-    async mounted() {
 
-        const params = new URLSearchParams(window.location.search);
-        const search = params.get("search");
 
-            // Wenn search gesetzt ist, verstecke das Loading-Div
-            if (search && search.trim() !== "") {
-        this.isLoading = false
-        this.loading = false
-        } else {
-        this.isLoading = false  // Loader auch deaktivieren wenn kein search
-        }
+    this.isLoading = false;
 
-        // Dummy-Wartefunktion (wenn benötigt)
-        // const waitUntilReady = () =>
-        //     new Promise((resolve) => {
-        //         const check = () => {
-        //             if (window.isRightsReady && window.isRightsReady()) {
-        //                 resolve();
-        //             } else {
-        //                 setTimeout(check, 50);
-        //             }
-        //         };
-        //         check();
-        //     });
-    },
+  },
 
-    methods: {
-        CleanTable,
-        async checkRight(right, table) {
-            const value = await GetRights(right, table);
-            this.rightsData[`${right}_${table}`] = value;
-        },
-        async hasRightLocal(right, table) {
-            if (!this.rightsData[`${right}_${table}`] && table) {
-                await this.checkRight(right, table);
-            }
-            return this.rightsData[`${right}_${table}`] === 1;
-        },
-        canView(table) {
-            return this.$hasRight('view', table); // Globale Methode
-        },
-    },
+  methods: {
+    CleanTable,
+    route,
+
+
+  },
 });
 </script>
-

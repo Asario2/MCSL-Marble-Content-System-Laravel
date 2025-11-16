@@ -7,7 +7,7 @@
                     <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                         <div>{{ title }}</div>
                         <div>
-                            <button-group v-if="hasRight('add',tablex)">
+                            <button-group v-if="GetRights('add',tablex)">
                                 <input-icon-hyperlink v-if="createOn" :href="routeCreate" display_type="table">
                                     <template #icon >
                                         <icon-plus-circle class="button_icon" />
@@ -22,7 +22,6 @@
 
                 <!-- Fehleranzeige -->
                 <error-list :errors="errors" />
-
                 <!-- Suchfeld -->
                 <div v-if="searchFilter" class="mb-4">
                     <div class="my-6 flex justify-between items-center">
@@ -54,31 +53,28 @@
       <!-- Slot für normale Datenzellen -->
 <slot name="datarow" :datarow="row" draggable="false"></slot>
       <!-- Created At -->
-      <td v-if="row.created_at && hasRight('view', row.full_name)" class="np-dl-td-normal">
+      <td v-if="row.created_at " class="np-dl-td-normal">
         {{ new Date(row.created_at).toLocaleString('de-DE', {
             day: '2-digit', month: '2-digit', year: 'numeric',
             hour: '2-digit', minute: '2-digit', second: '2-digit'
         }) }}
       </td>
-      <td v-else-if="hasRight('view', row.full_name)" class="np-dl-td-edit"></td>
+      <!-- <td v-else-if="hasRight('view', row.full_name)" class="np-dl-td-edit"></td> -->
 
       <!-- Edit Button -->
-      <td v-if="hasRight('edit', row.full_name) && hasRight('view', row.full_name) && tableClean"
-          class="np-dl-td-edit"
-          @click.prevent="editDataRow(row['id'])">
-        <icon-pencil class="w-6 h-6" v-tippy />
-        <tippy>{{ editDescription }}</tippy>
+      <td class="np-dl-td-edit" v-if="CleanTable() != ''">
+<editbtns :table="CleanTable()" :id="row.id"></editbtns>
       </td>
-      <td v-else-if="hasRight('view', row.full_name)" class="np-dl-td-edit"></td>
+      <!-- <td v-else-if="hasRight('view', row.full_name)" class="np-dl-td-edit"></td>
 
-      <!-- Delete Button -->
+      //Delete Button
       <td v-if="hasRight('delete', row.full_name) && hasRight('view', row.full_name && tableClean)"
           class="np-dl-td-edit"
           @click="deleteDataRow(row['id'])">
         <icon-trash class="w-6 h-6" v-tippy />
         <tippy>{{ deleteDescription }}</tippy>
-      </td>
-      <td v-else-if="hasRight('view', row.full_name)" class="np-dl-td-edit"></td>
+      </td> -->
+      <!-- <td v-if="hasRight('view', row.full_name)" class="np-dl-td-edit"></td> -->
 
 
 
@@ -110,7 +106,8 @@ import IconPlusCircle from "@/Application/Components/Icons/PlusCircle.vue";
 import IconPencil from "@/Application/Components/Icons/Pencil.vue";
 import IconTrash from "@/Application/Components/Icons/Trash.vue";
 import Alert from "@/Application/Components/Content/Alert.vue";
-import { GetRights,CleanTable } from '@/helpers';
+import { GetRights,CleanTable,CleanId } from '@/helpers';
+import editbtns from "@/Application/Components/Form/editbtns.vue";
 import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
@@ -129,7 +126,7 @@ export default {
         InputIconHyperlink,
         ErrorList,
         IconPlusCircle,
-        IconPencil,
+        editbtns,
         IconTrash,
         Alert,
     },
@@ -162,9 +159,10 @@ export default {
 
     },
     async mounted() {
-  if (!this.datarow?.full_name) {
-    this.datarow.full_name = CleanTable();
-  }
+    const rows = Array.isArray(this.datarows) ? this.datarows : this.datarows.data;
+  rows.forEach(row => {
+
+  });
   const params = new URLSearchParams(window.location.search);
     const search = params.get("search");
 
@@ -232,12 +230,7 @@ export default {
                 return 0;
             }
         },
-        isRightsReady() {
-            return this.$isRightsReady;
-        },
-        hasRight() {
-      return this.$hasRight; // Zugriff auf globale Methode
-    },
+
     tableClean(){
         return CleanTable();
     }
@@ -292,6 +285,8 @@ export default {
     },
     methods: {
         CleanTable,
+        GetRights,
+        CleanId,
         initRows() {
       this.currentPage = this.datarows.current_page || 1
       this.perPage = this.datarows.per_page || 20
@@ -437,18 +432,7 @@ async pstate(){
             this.form = mapValues(this.form, () => null);
             this.$emit("list-container-search-reset");
         },
-        async hasRight(right, table) {
-            if (!this.rightsData[`${right}_${table}`] && table) {
-                await this.checkRight(right, table);
 
-            }
-            return this.rightsData[`${right}_${table}`] === 1;
-        },
-        async checkRight(right, table) {
-            const value = await GetRights(right, table);
-            this.rightsData[`${right}_${table}`] = value;
-
-        },
         deleteDataRow(id) {
             this.table = CleanTable();
             this.table = this.table ? this.table : "admin_table";

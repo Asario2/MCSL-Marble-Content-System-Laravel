@@ -70,7 +70,7 @@ if(SD() == "mfx"){
 
         Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
-        Route::get('/userx/update-config/{id}', [UserConfigController::class, 'updateConfig'])->name('usconfi');
+
         Route::get("/api/user/rights",[RightsController::class,"GetRights_all"])->name("GetRights_all");
         Route::post('/api/contact/send',[CommentController::class,"sendmc"]);
         Route::get('/allroutes', function () {
@@ -487,6 +487,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 ### ============== API ISADMIN QI ================ ###
 
         Route::get('/api/admin-tables', [TablesController::class, 'GetDBTables'])->name("get.db.tables");
+        Route::get('/userx/update-config/{id}', [UserConfigController::class, 'updateConfig'])->name('usconfi');
+        Route::post('/api/user/batch-rights', [TablesController::class, 'GetBatchRights'])->name("get.bash.rights");
         Route::get('/api/chkcom/{id?}', [CommentController::class, 'checkComment'])->name("comments.check");
         Route::get('/api/contacts', [TablesController::class, 'api_contacts'])->name("admin.contacts");
         Route::post("/personal_update", [PersonalController::class, 'update'])->name("personal.update");
