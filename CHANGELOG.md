@@ -139,3 +139,4 @@
 ![Version](https://img.shields.io/badge/version-3.67.1-orange) Bug - QR Code scanning bug (#251)  
 ![Version](https://img.shields.io/badge/version-3.68.6-orange) Feature - Add responsive nav on admin (#223)  
 ![Version](https://img.shields.io/badge/version-3.69.4-orange) Hotfix - Evil bug in text-colors on light mode (#253)  
+![Version](https://img.shields.io/badge/version-3.85.6-orange) Feature - Private Messages for Asarios Blog (#255)  
