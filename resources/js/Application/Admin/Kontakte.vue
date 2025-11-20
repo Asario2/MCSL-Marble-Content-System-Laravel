@@ -65,6 +65,7 @@
                       <td class="px-2 py-1 border-r border-black text-center circle">
                         <img
                           :src="`/images/icons/Con_Groups/${contact.Gruppe}.gif`"
+                          :title="contact.Gruppe"
                           :alt="contact.Gruppe"
                           class="w-5 h-5 mx-auto"
                           @error="handleImageError"
@@ -90,10 +91,14 @@
 
                     <!-- Detail-Zeile -->
                     <tr v-if="isExpanded(contact.id)" :key="contact.id + '-details'">
-                      <td colspan="8" class="px-4 py-2 bg-gray-800 text-gray-200 whitespace-pre-line">
-                        {{ contact.Kommentar ? contact.Kommentar + "\n" : "" }}
-                        {{ contact.Adresse ? contact.Adresse + "\n" : "" }}
-                        {{ contact.Geburtsdatum ? "Geburtstag: " + contact.Geburtsdatum : "" }}
+                      <td colspan="9" class="px-4 py-2 bg-gray-800 text-gray-200">
+                        <span v-html="`
+                            ${contact.Kommentar ? contact.Kommentar + '<br />' : ''}
+                            ${contact.Adresse ? contact.Adresse + '<br />' : ''}
+                            ${contact.Geburtsdatum ? 'Geburtstag: ' + contact.Geburtsdatum + '<br />' : ''}
+                            ${contact.ripdate ? 'Todestag: ' + contact.ripdate : ''}
+                            `
+                        "></span>
                       </td>
                     </tr>
                   </template>
@@ -157,51 +162,85 @@ export default {
       expandedRows: [],
       searchTimeout: null,
       isLoading: false,
-      loading: false
+      loading: false,
+    //   kontakteGrouped: {},  // nicht null oder undefined
+
     }
   },
   watch: {
-    'form.search': {
-      handler: throttle(function (newSearch) {
-        const query = pickBy({ search: newSearch });
-        this.$inertia.get(
-          this.route("admin.kontakte"),
-          query,
-          {
-            preserveState: true,
-            replace: true,
-          }
-        );
-      }, 300),
-      immediate: false,
-    },
+    // 'form.search': {
+    //   handler: throttle(function (newSearch) {
+    //     const query = pickBy({ search: newSearch });
+    //     this.$inertia.get(
+    //       this.route("admin.kontakte"),
+    //       query,
+    //       {
+    //         preserveState: true,
+    //         replace: true,
+    //       }
+    //     );
+    //   }, 300),
+    //   immediate: false,
+    // },
   },
   computed: {
     hasContacts() {
       return Array.isArray(this.contacts) && this.contacts.length > 0;
     },
-    groupedContacts() {
-      if (!Array.isArray(this.contacts) || this.contacts.length === 0) {
-        return {};
-      }
-      const grouped = {};
-      this.contacts.forEach(contact => {
-        if (contact && contact.Name) {
-          const firstLetter = contact.Name.charAt(0).toUpperCase();
-          if (!grouped[firstLetter]) grouped[firstLetter] = [];
-          grouped[firstLetter].push(contact);
-        }
-      });
-      return grouped;
-    },
-    UID(){
+   filteredContacts() {
+    if (!this.form.search) return this.contacts;
+
+    const s = this.form.search.toLowerCase();
+
+    return this.contacts.filter(c => {
+      return (
+        (c.Name && c.Name.toLowerCase().includes(s)) ||
+        (c.Vorname && c.Vorname.toLowerCase().includes(s)) ||
+        (c.Nachname && c.Nachname.toLowerCase().includes(s)) ||
+        (c.Email && c.Email.toLowerCase().includes(s)) ||
+        (c.Adresse && c.Adresse.toLowerCase().includes(s)) ||
+        (c.Kommentar && c.Kommentar.toLowerCase().includes(s)) ||
+        (c.Telefon && c.Telefon.toLowerCase().includes(s)) ||
+        (c.Geburtsdatum && c.Geburtsdatum.toLowerCase().includes(s)) ||
+        (c.ripdate && c.ripdate.toLowerCase().includes(s)) ||
+        (c.Gruppe && c.Gruppe.toLowerCase().includes(s)) ||
+        (c.Handy && c.Handy.toLowerCase().includes(s))
+      );
+    });
+  },
+
+  groupedContacts() {
+    const grouped = {};
+
+    this.filteredContacts.forEach(contact => {
+      const firstLetter = contact.Name?.charAt(0).toUpperCase() ?? "#";
+
+      if (!grouped[firstLetter]) grouped[firstLetter] = [];
+      grouped[firstLetter].push(contact);
+    });
+
+    return grouped;
+  },
+  UID(){
       return window.authid;
     },
-    sortedLetters() {
-      return Object.keys(this.groupedContacts).sort();
-    }
+  sortedLetters() {
+if (!this.groupedContacts || typeof this.groupedContacts !== "object") {
+    return [];
+  }
+
+  return Object.keys(this.groupedContacts).sort();
+}
   },
   methods: {
+//       contactDetails(contact) {
+//     return `
+//       ${contact.Kommentar ? contact.Kommentar + "<br>" : ""}
+//       ${contact.Adresse ? contact.Adresse + "<br>" : ""}
+//       ${contact.Geburtsdatum ? "Geburtstag: " + contact.Geburtsdatum + "<br>" : ""}
+//       ${contact.ripdate ? "Todestag: " + contact.ripdate : ""}
+//     `;
+//   },
     reset() {
       this.form.search = "";
     },

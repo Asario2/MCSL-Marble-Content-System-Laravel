@@ -49,12 +49,17 @@ export default {
         return {
             rightsData: {},
             rightsReady: false,
+            rights: {
+             add: null,
+
+        },
         }
     },
     async mounted() {
         this.loadAllUsers();
         await loadAllRights();
         this.rightsReady = true;
+        this.rights.add = await CheckTRights("add", this.table);
 //         console.log('EditButtons mounted - ID:', this.id, 'Table:', this.table);
     },
     methods: {

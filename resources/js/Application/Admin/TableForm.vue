@@ -559,7 +559,7 @@ import emitter from "@/eventBus";
 import { GetSettings } from "@/helpers";
 import axios from "axios";
 
-import { CleanTable, CleanId,  } from '@/helpers';
+import { CleanTable, CleanId, CheckTRights } from '@/helpers';
 import ImageUploadModal from '@/Application/Components/ImageUploadModal.vue';
 import InputPosition from '@/Application/Components/InputPosition.vue';
 
@@ -770,7 +770,7 @@ export default defineComponent({
             return path.includes("create");
         },
 
-        
+
         previewgal(){
             return "<img src='/images/icons/gal.jpg' />";
         },

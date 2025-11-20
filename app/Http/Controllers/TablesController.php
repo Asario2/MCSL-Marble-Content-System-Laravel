@@ -2518,7 +2518,10 @@ return Inertia::render('Admin/Kontakte', [
                 \Log::warning("Benutzer mit ID 1 nicht gefunden oder insertedPosition ist null.");
             }
         }
-        $this->UP_POSI($table,'',$orig_posi);
+        if(@$orig_posi){
+            $this->UP_POSI($table,'',@$orig_posi);
+        }
+
         if (CheckZRights("UserRights") && $table == "admin_table") {
             return response()->json(["status" => "success", "message" => "Gespeichert, Bitte <a href='/admin/User_Rights'>Benutzerrechte</a> aktualisieren"]);
         }
@@ -2840,7 +2843,7 @@ return Inertia::render('Admin/Kontakte', [
                 $table->dropColumn('position_alt');
             });
         }
-        else{
+        elseif(Schema::hasColumn($table,"postion")){
         $query = DB::table($table)->where('id', $id);
         $q2 = $query->get();
         // Exklusionsbedingungen anwenden

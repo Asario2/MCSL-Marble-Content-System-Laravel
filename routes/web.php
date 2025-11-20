@@ -363,9 +363,9 @@ Route::get('/api/GetLastAct', function (){
 //     // \Log::i  nfo("🚨 Nicht eingeloggt");
 //     return response()->json("false");
 // })->name("GetAuth");
-// Route::get("/GETUserID", function (){
-//     return response()->json(Auth::id());
-// });
+ Route::get("/GETUserID", function (){
+     return response()->json(Auth::id());
+});
 Route::get('/get-total-rating/{table}', [RatingController::class, 'getTotalRating']);
 
 Route::get("/admin/user-rights/get",[TablesController::class,'GetURights'])->name("admin.users_rights.get");

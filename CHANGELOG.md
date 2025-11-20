@@ -143,3 +143,4 @@
 ![Version](https://img.shields.io/badge/version-3.86.3-orange) Hotfix - Fixed evil bug in tablelist (#282)  
 ![Version](https://img.shields.io/badge/version-3.87.2-orange) Hotfix - Errors in positioning of entries (#285)  
 ![Version](https://img.shields.io/badge/version-3.88.2-orange) Bug - have to fix right management functions (#287)  
+![Version](https://img.shields.io/badge/version-3.89.3-orange) Hotfix - Search on Contacts (#288)  
