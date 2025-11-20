@@ -209,13 +209,13 @@
             <!-- Linker Bereich: Nachricht -->
             <div class="flex-1 max-w-[70%]">
               <!-- KORRIGIERT: Vereinfachte Bedingungen für Antworten -->
-              <p
+              <p v-if="selectedMessage.public=='1' && selectedMessage.users_id != '4'"
                 @click="answer(selectedMessage)"
                 class="cursor-pointer font-bold text-[#58aaf8] hover:text-[#7cc0ff] transition mb-2"
               >
                 ➡️ Antworten
               </p>
-              <p
+              <p v-if="selectedMessage.public == '2' && selectedMessage.users_id != '4'"
                 @click="rewrite(selectedMessage)"
                 class="cursor-pointer font-bold text-[#58aaf8] hover:text-[#7cc0ff] transition mb-2"
               >
@@ -594,7 +594,7 @@ export default {
         message: document.getElementById("editor_message").innerHTML,
         message_length: this.message.length
       });
-
+      this.message = document.getElementById("editor_message").innerHTML;
       if (!this.message.trim()) {
         alert("Bitte gib eine Nachricht ein.");
         return;

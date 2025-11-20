@@ -1,5 +1,5 @@
 <template>
-    <span v-if="hasRight('add', table) || safe">
+    <span v-if="rights.add == 1 || safe">
         <Link :href="`/admin/tables/create/${table}`" class=" inline-flex items-center px-1 py-1.5 md:px-2 md:py-2 h-6 md:h-8 rounded-md font-medium text-xs tracking-widest disabled:opacity-25 transition cursor-pointer focus:ring focus:outline-none button_bg button_text_case_bg">
             <PlusCircle class="cursor-pointer " />&nbsp;<span class="tb">{{ text }}</span>
         </Link>
@@ -12,7 +12,7 @@ import PlusCircle from "@/Application/Components/Icons/PlusCircle.vue";
 import { Link } from "@inertiajs/vue3";
 import { toastBus } from '@/utils/toastBus';
 import { hasRight, loadAllRights, isRightsReady, hasRightSync } from '@/utils/rights';
-import { CleanTable, CleanId } from '@/helpers';
+import { CleanTable, CleanId, CheckTRights} from '@/helpers';
 import axios from 'axios'; // WICHTIG: axios importieren
 
 export default {
@@ -42,7 +42,7 @@ export default {
             type:Boolean,
             default:false,
         },
-        
+
 
     },
     data() {
@@ -68,7 +68,7 @@ export default {
                 return true;
             }
             const result = hasRightSync(right, table);
-//             console.log(`Right check - ${right} for ${table}:`, result);
+            console.log(`Right check - ${right} for ${table}:`, result);
             return result;
         },
 
@@ -93,7 +93,7 @@ export default {
                     }
                 });
 
-//                 console.log('Delete response:', response.data);
+                console.log('Delete response:', response.data);
                 toastBus.emit('toast', response.data);
 
                 // Seite neu laden

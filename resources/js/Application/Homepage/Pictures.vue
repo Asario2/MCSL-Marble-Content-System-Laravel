@@ -1,7 +1,11 @@
 <template>
     <Layout>
         <MetaHeader :title="'Bilder - ' + ocont?.slug || 'Suchergebnisse'" />
-        <back-btn url="/home/pictures" r="r">Übersicht</back-btn>
+        <div class="flex items-center justify-between px-4 py-3">
+    <back-btn url="/home/pictures" r="r">Übersicht</back-btn>
+
+    <newbtn table="images"></newbtn>
+</div>
         <div @click="handleBodyClick">
         <div v-if="ocont?.id" class="p-4 bg-layout-sun-200 dark:bg-layout-night-200">
 
@@ -16,9 +20,7 @@
     <div>
 
 
-        <newbtn table="images">
 
-        </newbtn>
 
 
                         </div>
@@ -88,24 +90,11 @@
         <b>Format:</b> {{ item?.Format }}
         </div>
         <averageRating :postId="item?.id" :av="parseFloat(ratings['original'][item?.id]?.average) || 0" :tot="ratings['original'][item?.id]?.total || 0"/>
-        <!-- <span v-if="hasRight('delete', 'images') || hasRight('edit', 'images') " class="flex space-x-2">
-        Edit Icon
-        <span v-if="hasRight('edit', 'images') "
-                class="inl"
-                @click.prevent="editDataRow(item?.id)">
-            <icon-pencil class="w-6 h-6 cursor-pointer" v-tippy />
-            <tippy>{{ editDescription }}</tippy>
-        </span>
 
-        <span v-if="hasRight('delete', 'images') "
-                class="inl"
-                @click="deleteDataRow(item?.id)">
-            <icon-trash class="w-6 h-6 cursor-pointer" v-tippy />
-            <tippy>{{ deleteDescription }}</tippy>
-        </span>
-        </span> -->
         <editbtns :id="item?.id" table="images" />
+
         <div class="text-xs text-layout-sun-600 dark:text-layout-night-600">
+
         <display-date :value="item?.created_at" :time-on="false" />
 
     </div>
@@ -331,7 +320,7 @@ export default {
     }
     else{
         this.isLoading = true;
-    }   
+    }
     this.lightbox.init();
   },
   beforeUnmount() {

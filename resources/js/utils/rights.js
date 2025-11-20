@@ -22,7 +22,7 @@ export async function loadAllRights() {
 
     try {
         //const response = await axios.get("/admin/rights/all");
-        rightsStore = response.data;        // z. B. { "view_users":1, "edit_users":1 }
+        // rightsStore = response.data;        // z. B. { "view_users":1, "edit_users":1 }
         rightsLoaded = true;
         console.log("ALLE Rechte geladen:", rightsStore);
     } catch (e) {
@@ -37,7 +37,7 @@ export function hasRightSync(right, table) {
     //     console.warn("hasRightSync aufgerufen BEVOR Rechte geladen!");
     //     return false;
     // }
-console.log(GetBatchRights(table, right));
+// console.log(GetBatchRights(table, right));
     return GetBatchRights(table, right);
 }
 

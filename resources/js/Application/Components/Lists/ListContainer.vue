@@ -7,7 +7,7 @@
                     <div class="flex flex-col md:flex-row items-center justify-between gap-4">
                         <div>{{ title }}</div>
                         <div>
-                            <button-group v-if="GetRights('add',tablex)">
+                            <!-- <button-group v-if="rights.add == 1">
                                 <input-icon-hyperlink v-if="createOn" :href="routeCreate" display_type="table">
                                     <template #icon >
                                         <icon-plus-circle class="button_icon" />
@@ -15,7 +15,8 @@
                                     </template>
                                 </input-icon-hyperlink>
                                 <slot name="button" />
-                            </button-group>
+                            </button-group> -->
+                            <newbtn :table="CleanTable() ?? 'admin_table'"></newbtn>
                         </div>
                     </div>
                 </div>
@@ -53,7 +54,7 @@
       <!-- Slot für normale Datenzellen -->
 <slot name="datarow" :datarow="row" draggable="false"></slot>
       <!-- Created At -->
-      <td v-if="row.created_at " class="np-dl-td-normal">
+      <td v-if="row.created_at" class="np-dl-td-normal">
         {{ new Date(row.created_at).toLocaleString('de-DE', {
             day: '2-digit', month: '2-digit', year: 'numeric',
             hour: '2-digit', minute: '2-digit', second: '2-digit'
@@ -106,8 +107,9 @@ import IconPlusCircle from "@/Application/Components/Icons/PlusCircle.vue";
 import IconPencil from "@/Application/Components/Icons/Pencil.vue";
 import IconTrash from "@/Application/Components/Icons/Trash.vue";
 import Alert from "@/Application/Components/Content/Alert.vue";
-import { GetRights,CleanTable,CleanId } from '@/helpers';
+import { GetRights,CleanTable,CheckTRights,CleanId } from '@/helpers';
 import editbtns from "@/Application/Components/Form/editbtns.vue";
+import newbtn from "@/Application/Components/Form/newbtn.vue";
 import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
@@ -127,7 +129,7 @@ export default {
         ErrorList,
         IconPlusCircle,
         editbtns,
-        IconTrash,
+        newbtn,
         Alert,
     },
     props: {
@@ -159,6 +161,9 @@ export default {
 
     },
     async mounted() {
+        this.rights.edit = await CheckTRights("edit", this.table);
+        this.rights.add = await CheckTRights("add", this.table);
+        this.rights.delete = await CheckTRights("delete", this.table);
     const rows = Array.isArray(this.datarows) ? this.datarows : this.datarows.data;
   rows.forEach(row => {
 
@@ -204,6 +209,11 @@ export default {
             perPage: 20,
             seaRoute:'',
             tab:'',
+            rights: {
+            edit: null,
+            delete: null,
+            view:null,
+        },
 
         };
     },

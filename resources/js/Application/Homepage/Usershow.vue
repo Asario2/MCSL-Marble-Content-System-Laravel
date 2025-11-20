@@ -66,6 +66,10 @@
                     Zu Faceboook</a>
                     <p v-else>keine Angabe</p>
                 </td>
+                <tr>
+                <th class="pr-4">Letzter Login:</th>
+                <td>{{ formatDate(users?.last_login_at) }}</td>
+                </tr>
                 </tbody>
             </table>
 

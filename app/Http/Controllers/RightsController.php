@@ -71,7 +71,7 @@ public function GetRights($table,$right){
     if(!Auth::check())
     {
         //return response()->json(0);
-        $userId = 1;
+        $userId = 0;
     }
     // Stelle sicher, dass der Benutzer eingeloggt ist
     else{
@@ -80,12 +80,30 @@ public function GetRights($table,$right){
     $rightfe = DB::table("users")
     ->where("users.id", $userId)
     ->leftJoin("users_rights", "users.users_rights_id", "=", "users_rights.id")
-    ->select("users_rights.".$right."_table")
+    ->select("users_rights.".$right."_table as posi")
     ->first();
-    return response()->json(["userRights",$rightfe]);
+    $pos = DB::table("admin_table")->where("name",$table)->value("position");
+
+    $rf = @$rightfe->posi[($pos)] ?? 0;
+    \Log::info("R:".$right."POSS:".$pos."V:".$rf);
+    return response()->json($rf);
 }
+public function allTableRights($right)
+{
+    // Beispiel: $right = "view_table"
+    $bin = auth()->user()->rights->$right; // z.B. "1011"
 
+    // Hole alle Tabellen aus admin_tables
+    $tables = \DB::table('admin_table')->orderBy("name","ASC")->pluck('name')->toArray();
 
+    $array = [];
+
+    foreach ($tables as $i => $name) {
+        $array[$name] = substr($bin, $i, 1) ?: "0";
+    }
+
+    return $array;
+}
 public function GetRights_old()
 {
     // Angenommen, der eingeloggte User hat eine `users_rights_id` oder ähnliches

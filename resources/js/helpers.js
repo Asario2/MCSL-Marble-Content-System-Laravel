@@ -150,6 +150,7 @@ export async function initRights() {
 
 //   return str.charAt(t.position) === '1' ? 1 : 0;
 // }
+
 const cache = {
   tables: null,
   rights: null,
@@ -160,6 +161,7 @@ const cache = {
 // NEU: Sammelabruf für Rechte
 export async function GetBatchRights(tables, rightType = 'view') {
   // Prüfe ob bereits im Cache
+//   return;
   const cacheKey = `${rightType}_${tables.sort().join('_')}`;
   if (cache.batchRights && cache.batchRights[cacheKey]) {
     return cache.batchRights[cacheKey];
@@ -168,7 +170,7 @@ export async function GetBatchRights(tables, rightType = 'view') {
   try {
     // OPTIMIERT: Ein einzelner API-Call für alle Tabellen
     const response = await axios.post('/api/user/batch-rights', {
-      tables: tables,
+      table: tables,
       right_type: rightType
     });
 
@@ -208,7 +210,7 @@ export async function GetRights(right, table) {
   try {
     const response = await axios.get(`/api/user/rights/des/${table}/${right}`);
     const result = response.data;
-
+    console.log("result:" + result);
     // In Cache speichern
     if (!cache.batchRights) {
       cache.batchRights = {};
@@ -221,6 +223,46 @@ export async function GetRights(right, table) {
     return 0;
   }
 }
+import { cachen } from './cache';
+
+// Zwischenspeicher für laufende Requests
+if (!cachen.pending) cachen.pending = {};
+
+export async function CheckTRights(right, table) {
+  const cacheKey = `${right}_${table}`;
+
+  // 1. Cache vorhanden? -> OK
+  if (cachen.batchRights[cacheKey] !== undefined) {
+    return cachen.batchRights[cacheKey];
+  }
+
+  // 2. Läuft gerade ein Request für dieselbe Sache?
+  if (cachen.pending[cacheKey]) {
+    return cachen.pending[cacheKey];
+  }
+
+  // 3. Neuen Request starten
+  const request = axios.get(`/api/user/rights/des/${table}/${right}`)
+    .then(({ data }) => {
+      cachen.batchRights[cacheKey] = data; // Cache setzen
+      delete cachen.pending[cacheKey];
+    //   console.log("data" + data);    // Pending entfernen
+      return data;
+    })
+    .catch(err => {
+      delete cachen.pending[cacheKey];
+      console.error(err);
+      return 0;
+    });
+
+  // Als "pending" speichern
+  cachen.pending[cacheKey] = request;
+
+  // Ergebnis zurückgeben
+  return request;
+}
+
+
 
 // ALTERNATIVE: Falls Backend keinen Batch-Endpoint hat
 export async function GetRightsParallel(tables, rightType = 'view') {
@@ -561,7 +603,7 @@ export async function Authy(){
 
 export async function GetAuth()
 {
-    return;
+
     try {
         const response = await fetch('/GETUserID');
         const data = await response.json();
@@ -734,7 +776,3 @@ export function stripTags(text, allowed = []) {
     allow.includes(tag.toLowerCase()) ? match : ''
   );
 }
-
-// In der Browser-Konsole ausführen:
-console.log('Inertia props:', window?.$inertia?.page?.props)
-console.log('Route params:', window?.route?.params)

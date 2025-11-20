@@ -64,7 +64,7 @@
     import Layout from "@/Application/Homepage/Shared/Layout.vue";
     import he from 'he';
     import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
-    import { GetRights } from "@/helpers";
+    // import { GetRights } from "@/helpers";
     import mapValues from "lodash/mapValues";
     import newbtn from "@/Application/Components/Form/newbtn.vue";
 

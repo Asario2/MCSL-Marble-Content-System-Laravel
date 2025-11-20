@@ -1207,17 +1207,17 @@ public function ShowTable(Request $request, $table_alt = null)
     }
     function GetBatchRights(Request $request){
 
-   $tables = $request->input('tables', []);
+   $table = $request->input('table', []);
     $rightType = $request->input('right_type', 'view');
 
     $rights = [];
 
-    foreach ($tables as $table) {
+
         // Deine bestehende Recht-Prüf-Logik hier
         $hasRight = CheckRights(Auth::id(), $table, $rightType);
 
         $rights[$table] = $hasRight ? 1 : 0;
-    }
+
 
     return response()->json($rights);
   }
@@ -1658,7 +1658,7 @@ public function ShowTable(Request $request, $table_alt = null)
             // $exists = DB::table($table)->where($hcode, $request->$hcode)->first();
 
             // $oneSecondAgo = Carbon::now()->subSecond(2);
-            $this->UP_POSI($table);
+
             if(@$data['date_begin'])
             {
                 $data['date_begin'] = strtotime($data['date_begin']);
@@ -1743,22 +1743,29 @@ public function ShowTable(Request $request, $table_alt = null)
          * Update Position -1 after insert/deleting
          *
          */
-        public function UP_POSI($table,$destroy='')
+        public function UP_POSI($table,$destroy='',$nn='')
         {
             $columns = Schema::getColumnListing($table);
             if(in_array("position",$columns))
             {
-                if($destroy)
+                if($destroy && !$nn)
                 {
                     DB::table($table)
-                        ->where("position", ">", 0)  // Condition: only update rows where position > 0
+                        ->where("position", ">", $destroy)  // Condition: only update rows where position > 0
                         ->update(['position' => DB::raw('position - 1')]);
                 }
-                else
+                elseif(!$nn)
                 {
                     DB::table($table)
                         ->where("position", ">", -1)  // Condition: only update rows where position > 0
                         ->update(['position' => DB::raw('position - 1')]);
+                }
+                elseif($nn){
+                    \Log::info("posi:".$nn);
+                     DB::table($table)
+                         ->where("position", ">=", $nn)  // Condition: only update rows where position > 0
+                         ->update(['position' => DB::raw('position + 1')]);
+                    DB::table($table)->where("position","-1")->update(["position"=>$nn]);
                 }
             }
 
@@ -2411,7 +2418,9 @@ return Inertia::render('Admin/Kontakte', [
         }
         if (Schema::hasColumn($table, 'position'))
         {
+            $orig_posi = $formData['position'];
             $formData['position'] = -1;
+
         }
         foreach($columns as $key=>$val)
         {
@@ -2509,7 +2518,7 @@ return Inertia::render('Admin/Kontakte', [
                 \Log::warning("Benutzer mit ID 1 nicht gefunden oder insertedPosition ist null.");
             }
         }
-
+        $this->UP_POSI($table,'',$orig_posi);
         if (CheckZRights("UserRights") && $table == "admin_table") {
             return response()->json(["status" => "success", "message" => "Gespeichert, Bitte <a href='/admin/User_Rights'>Benutzerrechte</a> aktualisieren"]);
         }
@@ -2817,7 +2826,7 @@ return Inertia::render('Admin/Kontakte', [
             $sorted = DB::table('admin_table')->where('id', '!=', $id)->orderBy('name')->get();
             foreach ($sorted as $i => $row) {
                 DB::table('admin_table')->where('id', $row->id)->update([
-                    'position_alt' => $i,
+                    'position_alt' => ($i+1),
                 ]);
             }
 
@@ -2831,15 +2840,26 @@ return Inertia::render('Admin/Kontakte', [
                 $table->dropColumn('position_alt');
             });
         }
+        else{
+        $query = DB::table($table)->where('id', $id);
+        $q2 = $query->get();
+        // Exklusionsbedingungen anwenden
+        $query = $this->applyExclWhere($table, $query);
+        $q3 = json_decode($q2, true);
+        \Log::info(json_encode($q3[0]['position'], JSON_PRETTY_PRINT));
+
+        $this->UP_POSI($table,$q3[0]['position']);
+        }
 
         // 7. Datensatz löschen
         $query = DB::table($table)->where('id', $id);
-
+        $q2 = $query->get();
         // Exklusionsbedingungen anwenden
         $query = $this->applyExclWhere($table, $query);
 
         // Jetzt löschen
         $query->delete();
+
 
         return response()->json(["status" => "success", "message" => "Eintrag erfolgreich gelöscht"]);
         return redirect("admin/tables/$table/show");

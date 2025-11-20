@@ -716,7 +716,13 @@ export default defineComponent({
             isModalOpen: false,
             ulpath: '',
             GalOpen:false,
-
+            rights: {
+                    add:null,
+                    view:null,
+                    pub:null,
+                    edit: null,
+                    delete: null,
+                },
             previewHtml: '',
             table: reactive({ id: "1" }),
             formDatas: {},
@@ -764,12 +770,7 @@ export default defineComponent({
             return path.includes("create");
         },
 
-        isRightsReady() {
-            return this.$isRightsReady;
-        },
-        hasRight() {
-            return this.$hasRight;
-        },
+        
         previewgal(){
             return "<img src='/images/icons/gal.jpg' />";
         },
@@ -1407,11 +1408,11 @@ if (!isValid) {
     },
     async deleteTable() {
         try {
-            // if(!hasRight("delete",this.table))
-            // {
-            //      alert("Sie haben nicht die benötigten Rechet zum löschen des Datensatzes");
-            //      return "";
-            // }
+            if(this.rights.delete != "1")
+            {
+                 alert("Sie haben nicht die benötigten Rechet zum löschen des Datensatzes");
+                 return "";
+            }
             // console.log(`aad: admin/tables/delete/${this.table}/${this.id}`);
             // DELETE-Anfrage mit Parametern in der URL
             const response = await axios.delete(`/admin/tables/delete/${CleanTable()}/${CleanId()}`, {
@@ -1533,8 +1534,6 @@ if (!isValid) {
     async mounted() {
 
         if(!this.ffo || this.ffo.length < 3 || this.ffo === "undefined"){
-            alert(this.ffo);
-
             this.$inertia.visit('/no-rights');
             return;
 
@@ -1545,7 +1544,10 @@ if (!isValid) {
     emitter.on('refresh-preview', () => {
         this.getPreviewImagez();
     });
-
+    this.rights.edit = await CheckTRights("edit", this.table);
+    this.rights.delete = await CheckTRights("delete", this.table);
+    this.rights.view = await CheckTRights("view", this.table);
+    this.rights.add = await CheckTRights("add", this.table);
     await this.getPreviewImagez();
     await this.fetchEntries(); // await hinzufügen
 

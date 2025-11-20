@@ -141,3 +141,5 @@
 ![Version](https://img.shields.io/badge/version-3.69.4-orange) Hotfix - Evil bug in text-colors on light mode (#253)  
 ![Version](https://img.shields.io/badge/version-3.85.6-orange) Feature - Private Messages for Asarios Blog (#255)  
 ![Version](https://img.shields.io/badge/version-3.86.3-orange) Hotfix - Fixed evil bug in tablelist (#282)  
+![Version](https://img.shields.io/badge/version-3.87.2-orange) Hotfix - Errors in positioning of entries (#285)  
+![Version](https://img.shields.io/badge/version-3.88.2-orange) Bug - have to fix right management functions (#287)  

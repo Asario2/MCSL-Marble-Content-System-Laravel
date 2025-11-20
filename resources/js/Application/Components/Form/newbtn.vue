@@ -1,8 +1,8 @@
 <template>
-  <span v-if="hasRight('add', table)" class="tb">
+  <span v-if="rights.add == 1" class="tb">
     <button-group>
       <input-icon-hyperlink
-        v-if="hasRight('add', table)"
+
         :href="'/admin/tables/create/' + table"
         display_type="table"
         @click.stop
@@ -28,7 +28,7 @@
     import { toastBus } from '@/utils/toastBus';
     import IconTrash from "@/Application/Components/Icons/Trash.vue";
     import { hasRight,loadAllRights,isRightsReady,hasRightSync } from '@/utils/rights';
-    import { CleanTable, CleanId } from '@/helpers';
+    import { CleanTable, CleanId,CheckTRights } from '@/helpers';
     export default {
         name: "newbtn",
         components: {
@@ -44,7 +44,7 @@
             },
             Rdelete: {String, default: 0,},
                     id: { type: Number },
-                    table:{type:String},
+            table:{type:String},
 
         },
         data()
@@ -52,29 +52,19 @@
             return {
             rightsData: {}, // Hier speichern wir die Rechte für den User
         rightsReady: false,
-            }
-        },
-        computed:{
-            darkMode(){
-                this.darkMode = localStorage.getItem("theme");
-            },
-            isRightsReady() {
-        return this.$isRightsReady; // Zugriff auf globale Methode
-        },
-        hasRight() {
-        return this.$hasRight; // Zugriff auf globale Methode
-        },
+             rights: {
+             add: null,
 
         },
+        table_alt:CleanTable(),
+            }
+        },
         async mounted() {
-            await loadAllRights();
-        this.rightsReady = true;
+            this.rights.add = await CheckTRights("add", this.table_alt);
+            console.log("RES:" + this.table_alt);
         },
         methods: {
-            hasRight(right, table) {
-        return hasRightSync(right, table); // jetzt synchron & ohne await
-        },
-        //     hasRight(right, table) {
+              //     hasRight(right, table) {
         //   return hasRight(right, table);
         //     },
     //         async hasRight(right, table) {

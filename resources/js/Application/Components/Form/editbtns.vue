@@ -1,12 +1,12 @@
 <template>
-  <span v-if="(hasRight('edit', table) && !noedit) || (users_id && users_id == page.props.user.id)">
+  <span v-if="(rights.edit == 1 && !noedit) || (users_id && users_id == page.props.user.id)">
     <a :href="'/admin/tables/edit/' + id + '/' + table" @click.stop>
       <IconPencil class="sm-pencil cursor-pointer text-layout-sun-600 dark:text-layout-night-900" />
     </a>
     &nbsp;&nbsp;
   </span>
 
-  <span v-if="hasRight('delete', table)">
+  <span v-if="rights.delete == 1">
     <form @submit.prevent="deletePost" style="display:inline">
       <button @click.stop.prevent="confirmDelete" type="button">
         <IconTrash class="sm-pencil cursor-pointer" />
@@ -22,7 +22,8 @@ import IconTrash from "@/Application/Components/Icons/Trash.vue";
 import { toastBus } from '@/utils/toastBus';
 
 // 🔥 Optimiertes Rechtssystem
-import { hasRightSync, loadAllRights } from '@/utils/rights';
+// import { hasRightSync, loadAllRights } from '@/utils/rights';
+import { CheckTRights } from "@/helpers";
 
 export default {
     name: "editbtns",
@@ -37,13 +38,24 @@ export default {
         users_id: [String, Number]
     },
 
-    async mounted() {
+data() {
+    return {
+        rights: {
+            edit: null,
+            delete: null,
+        }
+    };
+},
 
-    },
+async mounted() {
+    this.rights.edit = await CheckTRights("edit", this.table);
+    this.rights.delete = await CheckTRights("delete", this.table);
+},
+
 
     methods: {
         hasRight(right, table) {
-            return hasRightSync(right, table);
+            return CheckTRights(right, table);
         },
 
         async confirmDelete() {

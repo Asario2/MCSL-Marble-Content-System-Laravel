@@ -341,6 +341,7 @@ Route::get('/mail-test', function () {
 
 Route::get("/api/user/rights/des/{table}/{right}",[RightsController::class,"GetRights"])->name("GetRights");
 
+Route::get("/api/user/rights/des-all/{right}",[RightsController::class,"allTableRights"])->name("allRights");
 
 
 

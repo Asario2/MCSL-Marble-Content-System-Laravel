@@ -159,7 +159,7 @@
                                         >
                                             Profil
                                         </dropdown-link>
-                                             <dropdown-link v-if="GetRights('delete','private_messages')"
+                                             <dropdown-link v-if="rights.delete == 1"
                                                 :with-icon="false"
                                                 :with-route="true"
                                                 :route-name="
@@ -367,7 +367,7 @@ import { toastBus } from '@/utils/toastBus';
 import Loader from "@/Application/Components/Loader.vue";
 import Dropdown from "@/Application/Components/Content/Dropdown.vue";
 import DropdownLink from "@/Application/Components/Content/DropdownLink.vue";
-import { SD,GetProfileImagePath,GetRights } from "@/helpers";
+import { SD,GetProfileImagePath,CheckTRights,GetRights } from "@/helpers";
 import NavLink from "@/Application/Components/Content/NavLink.vue";
 import ResponsiveNavLink from "@/Application/Components/Content/ResponsiveNavLink.vue";
 import { throttle } from 'lodash';
@@ -401,10 +401,16 @@ export default {
             mode: "dark",
             isOpen: false,   // ✅ jetzt im data statt props
             year: new Date().getFullYear(),
+            rights: {
+            edit: null,
+            delete: null,
+        }
         };
     },
 
     mounted() {
+        this.rights.edit = await CheckTRights("edit", 'private_messages');
+    this.rights.delete = await CheckTRights("delete", 'private_messages');
         let shouldReload = localStorage.getItem('reload_dashboard');
         if (shouldReload) {
             localStorage.removeItem('reload_dashboard');

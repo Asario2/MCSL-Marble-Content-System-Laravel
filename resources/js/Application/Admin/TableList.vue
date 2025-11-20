@@ -31,14 +31,15 @@
         </template>
 
         <!-- Tabellen Zeilen -->
-        <template #datarow="data">
-          <td class="np-dl-td-normal">
+        <template #datarow="data" >
+          <td class="np-dl-td-normal" v-if="rights.view[data.datarow.full_name] == '1'">
             <a :href="route('admin.tables.show', data.datarow.full_name)"
                class="text-blue-600 dark:text-blue-600 hover:underline">
               {{ data.datarow.name }}
             </a>
           </td>
-          <td class="np-dl-td-normal">
+
+          <td class="np-dl-td-normal" v-if="rights.view[data.datarow.full_name] == '1'">
             {{ data.datarow.description }}
           </td>
         </template>
@@ -52,9 +53,10 @@ import { defineComponent } from "vue";
 import Layout from "@/Application/Admin/Shared/Layout.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 import ListContainer from "@/Application/Components/Lists/ListContainer.vue";
-import { CleanTable, GetBatchRights, GetRightsParallel } from '@/helpers'; // NEU: Import der Batch-Funktionen
+import { CleanTable,CheckTRights } from '@/helpers'; // NEU: Import der Batch-Funktionen
+import { hasRightSync } from '@/utils/rights';
 import { route } from 'ziggy-js';
-
+import axios from "axios";
 export default defineComponent({
   name: "Admin_TableList",
 
@@ -77,6 +79,10 @@ export default defineComponent({
       filteredRows: [],
       filters: {},
       isLoading: true,
+        rights: {
+            view: {},
+
+        }
     };
   },
 
@@ -89,18 +95,29 @@ export default defineComponent({
 
   async mounted() {
 
+     this.rights.view = await this.getAllRights("view_table");
+
+
+  this.isLoading = false
 
 
 
-    this.isLoading = false;
+
 
   },
 
   methods: {
     CleanTable,
     route,
-
-
+    CheckTRights,
+hasRight(right, table) {
+            return hasRightSync(right, table);
+        },
+    async getAllRights(right) {
+        const response = await axios.get(`/api/user/rights/des-all/${right}`);
+        console.log("RD" + response.data);
+        return response.data;
+    }
   },
 });
 </script>
