@@ -246,7 +246,7 @@ export async function CheckTRights(right, table) {
     .then(({ data }) => {
       cachen.batchRights[cacheKey] = data; // Cache setzen
       delete cachen.pending[cacheKey];
-    //   console.log("data" + data);    // Pending entfernen
+      console.log("data" + data);    // Pending entfernen
       return data;
     })
     .catch(err => {

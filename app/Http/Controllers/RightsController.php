@@ -68,24 +68,26 @@ class RightsController extends Controller
     return response()->json(intval($rightString[$tableid]));
 }
 public function GetRights($table,$right){
-    if(!Auth::check())
-    {
-        //return response()->json(0);
-        $userId = 0;
-    }
-    // Stelle sicher, dass der Benutzer eingeloggt ist
-    else{
-        $userId = Auth::id();
-    }
-    $rightfe = DB::table("users")
+    if (!Auth::check()) {
+    $userId = 0;
+} else {
+    $userId = Auth::id();
+}
+
+$rightfe = DB::table("users")
     ->where("users.id", $userId)
     ->leftJoin("users_rights", "users.users_rights_id", "=", "users_rights.id")
     ->select("users_rights.".$right."_table as posi")
     ->first();
-    $pos = DB::table("admin_table")->where("name",$table)->value("position");
 
-    $rf = @$rightfe->posi[($pos)] ?? 0;
-    \Log::info("R:".$right."POSS:".$pos."V:".$rf);
+$pos = DB::table("admin_table")
+    ->where("name", $table)
+    ->value("position");
+
+// RICHTIG: Position nutzen!
+$rf = substr($rightfe->posi, $pos, 1);
+
+\Log::info("R:".$right."POSS:".$pos."V:".$rf);
     return response()->json($rf);
 }
 public function allTableRights($right)

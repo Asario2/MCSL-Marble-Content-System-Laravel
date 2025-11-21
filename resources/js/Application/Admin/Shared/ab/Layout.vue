@@ -408,7 +408,7 @@ export default {
         };
     },
 
-    mounted() {
+async mounted() {
         this.rights.edit = await CheckTRights("edit", 'private_messages');
     this.rights.delete = await CheckTRights("delete", 'private_messages');
         let shouldReload = localStorage.getItem('reload_dashboard');

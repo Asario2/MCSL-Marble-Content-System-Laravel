@@ -1,5 +1,7 @@
 <template>
-  <span v-if="(rights.edit == 1 && !noedit) || (users_id && users_id == page.props.user.id)">
+    <div class="whitespace-nowrap">
+
+      <span v-if="(rights.edit == 1 && !noedit) || (users_id && users_id == page.props.user.id && CleanTable() == 'contacts')">
     <a :href="'/admin/tables/edit/' + id + '/' + table" @click.stop>
       <IconPencil class="sm-pencil cursor-pointer text-layout-sun-600 dark:text-layout-night-900" />
     </a>
@@ -13,6 +15,7 @@
       </button>
     </form>
   </span>
+  </div>
 </template>
 
 <script>
@@ -50,6 +53,7 @@ data() {
 async mounted() {
     this.rights.edit = await CheckTRights("edit", this.table);
     this.rights.delete = await CheckTRights("delete", this.table);
+
 },
 
 

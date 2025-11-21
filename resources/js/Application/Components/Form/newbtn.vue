@@ -1,5 +1,5 @@
 <template>
-  <span v-if="rights.add == 1" class="tb">
+  <span v-if="rights?.add == 1" class="tb">
     <button-group>
       <input-icon-hyperlink
 

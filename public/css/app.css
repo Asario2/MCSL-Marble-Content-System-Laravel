@@ -13,6 +13,19 @@
 [x-cloak] {
     display: none;
 }
+@font-face {
+    font-family: 'Arial';
+    src: url('./webfonts/ArialMT.eot');
+    src: url('./webfonts/ArialMT.eot?#iefix') format('embedded-opentype'),
+        url('./webfonts/ArialMT.woff2') format('woff2'),
+        url('./webfonts/ArialMT.woff') format('woff'),
+        url('./webfonts/ArialMT.ttf') format('truetype'),
+        url('./webfonts/ArialMT.svg#./webfonts/ArialMT') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 
 ul {
     display: block;

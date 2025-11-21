@@ -1,7 +1,10 @@
 <template>
 <h1 v-if="!nohead" class="2xl">Kontakt</h1>
 <form @submit.prevent="submitForm"
-class="block p-4 pl-4 w-full rounded-lg border text-sm text-layout-sun-900 bg-layout-sun-50 border-layout-sun-300 focus:ring-primary-sun-500 focus:border-primary-sun-500 dark:text-layout-night-900 dark:bg-layout-night-50 dark:border-layout-night-300 dark:focus:ring-primary-night-500 dark:focus:border-primary-night-500">
+class="block p-4 pl-4 w-full rounded-lg border text-sm text-layout-sun-900
+bg-layout-sun-50 border-layout-sun-600 focus:ring-primary-sun-500 focus:border-primary-sun-500
+ dark:text-layout-night-900 dark:bg-layout-night-50 dark:border-layout-night-1050
+  dark:focus:ring-primary-night-500 dark:focus:border-primary-night-500">
 
 <div>
     <label class="block font-semibold mb-1 text-layout-sun-1000 dark:text-layout-night-1000">Name</label>
