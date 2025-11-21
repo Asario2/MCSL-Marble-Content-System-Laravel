@@ -1,3 +1,4 @@
+![Changelog Header](https://www.asario.de/_images/mailheader/changelog.jpg)
 ![Version](https://img.shields.io/badge/version-2.05.0-orange) Admin Panel not working (#1)  
 ![Version](https://img.shields.io/badge/version-2.06.0-orange) The second problem no update of values on submit (#2)  
 ![Version](https://img.shields.io/badge/version-2.07.6-orange) Image Upload in Admin Center for all needed Tables (#3)  
