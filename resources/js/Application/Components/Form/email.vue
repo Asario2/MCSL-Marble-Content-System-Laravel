@@ -49,7 +49,7 @@ bg-layout-sun-50 border-layout-sun-600 focus:ring-primary-sun-500 focus:border-p
 
 <div>
     <button type="submit"
-            class="btn"
+            class="button-primary"
             :disabled="!form.accepted">
         Absenden
     </button>
@@ -131,12 +131,23 @@ export default defineComponent({
 });
 </script>
 <style scoped>
-/*.input {
-  @apply w-full px-4 py-2 border rounded-md dark:bg-zinc-800 dark:text-white;
-}
-
-.btn {
-  @apply px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50;
-}*/
+.button-primary{
+        background-color:#222;
+        padding:5px 7px !important;
+        border-radius:6px;
+        border:2px solid #ff9600;
+        line-height:20px;
+        cursor:pointer;
+        font-size:20px;
+        color:#ff9600;
+        font-family:Tahoma;
+        margin:3px;
+        text-decoration:none;
+    }.button-primary:hover,a.button-primary:visited:hover{
+    background-color:#ff9600 !important;
+    color:#222 !important;
+    border:2px solid #ff9600 !important;
+    padding:5px 7px !important;
+    }
 </style>
 

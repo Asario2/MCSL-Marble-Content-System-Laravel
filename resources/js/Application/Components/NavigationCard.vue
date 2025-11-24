@@ -53,8 +53,8 @@ import IconArrowLongRight from "@/Application/Components/Icons/ArrowLongRight.vu
 import IconBook from "@/Application/Components/Icons/Book.vue";
 import IconNews from "@/Application/Components/Icons/iconNews.vue";
 import IconContacts from "@/Application/Components/Icons/IconContacts.vue";
+import IconChart from "@/Application/Components/Icons/IconChart.vue";
 import IconLost from "@/Application/Components/Icons/IconLost.vue";
-
 import IconProjects from "@/Application/Components/Icons/IconProjects.vue";
 import IconProjectsSheets from "@/Application/Components/Icons/IconProjectsSheets.vue";
 import IconStar from "@/Application/Components/Icons/IconStar.vue";
@@ -86,6 +86,7 @@ export default {
         IconLogs,
         IconDidyou,
         IconStory,
+        IconChart,
         IconHyperlink,
         IconComment_bl,
         IconNews,
@@ -147,6 +148,7 @@ export default {
                 IconNews,
                 IconTexts,
                 IconContacts,
+                IconChart,
                 IconHyperlink,
                 IconLost,
                 IconStar,

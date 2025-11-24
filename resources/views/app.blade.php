@@ -59,7 +59,12 @@
         {{-- <script type="modul" src="/js/vite_app.js"></script> --}}
 
 
-         
+        <img src="{{ route('countpixel', [
+            'url' => urlencode(request()->fullUrl()),
+            'route' => Route::currentRouteName() ?? 'unknown'
+        ]) }}"
+            alt="" width="1" height="1" style="display:none;">
+
 
         @routes
             @vite(['resources/css/app.css', 'resources/js/app.js'])

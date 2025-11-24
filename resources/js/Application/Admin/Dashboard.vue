@@ -70,7 +70,22 @@
                     Email / Newsletter
                 </template>
             </navigation-card>
+            <!-- Statistics -->
+            <navigation-card v-if="modulRights?.Statistics"
+                class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
+                title="Statistiken"
+                linkName="Statsitiken Anzeigen"
+                target="_self"
+                :routeName="route('stats')"
+                :withIcon="true"
+                icon="IconChart"
+            >
+                <template #description>
+                    Statistiken
+                </template>
+            </navigation-card>
             <!-- laravel.log -->
+
             <navigation-card v-if="modulRights?.LogViewer"
                 class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
                 title="Log"

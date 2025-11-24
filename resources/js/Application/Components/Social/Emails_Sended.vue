@@ -1,5 +1,6 @@
 <template>
   <Layout>
+    <MetaHeader title="Emails Gesendet" />
     <div class="flex flex-col items-center justify-center h-screen space-y-4 mt-[-80px]" v-if="i > 0">
       <VerifySVG></VerifySVG>
       <div class="text-center text-lg font-semibold">
@@ -26,11 +27,13 @@
 import VerifySVG from "@/Application/Components/Icons/verify.vue";
 import ErrorSVG from "@/Application/Components/Icons/ErrorSVG.vue";
 import Layout from "@/Application/Homepage/Shared/Layout.vue";
+import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 export default {
 components:{
     VerifySVG,
     ErrorSVG,
     Layout,
+    MetaHeader,
 },
 props:{
     i:[String,Number],

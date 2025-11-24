@@ -54,6 +54,7 @@ use Whitecube\LaravelCookieConsent\CookiesManager;
 use Whitecube\LaravelCookieConsent\Http\Controllers\AcceptAllController;
 use Whitecube\LaravelCookieConsent\Http\Controllers\AcceptEssentialsController;
 use Whitecube\LaravelCookieConsent\Http\Controllers\ConfigureController;
+use App\Http\Controllers\CountPixelController;
 
 GlobalController::SetDomain();
 
@@ -67,19 +68,22 @@ if(SD() == "mfx"){
 }
 // Route::middleware(['checksubd:ab,asario'])->group(function () {
     // Route::middleware('checksubd:ab,asario')->group(function () {
+        Route::get('/countpixel', [CountPixelController::class, 'track'])->name('countpixel');
 
         Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
 
         Route::get("/api/user/rights",[RightsController::class,"GetRights_all"])->name("GetRights_all");
         Route::post('/api/contact/send',[CommentController::class,"sendmc"]);
-        Route::get('/allroutes', function () {
-            $routes = collect(Route::getRoutes())
-                ->filter(fn($route) => in_array('GET', $route->methods()) && !str_contains($route->uri(), '{'))
-                ->map(fn($route) => url($route->uri()));
+        Route::get('/api/pageviews', [CountPixelController::class, 'stats']);
 
-            return response()->view('allroutes', ['routes' => $routes]);
-        });
+        // Route::get('/allroutes', function () {
+        //     $routes = collect(Route::getRoutes())
+        //         ->filter(fn($route) => in_array('GET', $route->methods()) && !str_contains($route->uri(), '{'))
+        //         ->map(fn($route) => url($route->uri()));
+
+        //     return response()->view('allroutes', ['routes' => $routes]);
+        // });
         Route::get('/impressum', [HomeController::class, 'imprint_dag'])->name('home.imprint.dag');
 //
 // DAGIE
@@ -489,6 +493,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
         Route::get('/api/admin-tables', [TablesController::class, 'GetDBTables'])->name("get.db.tables");
         Route::get('/userx/update-config/{id}', [UserConfigController::class, 'updateConfig'])->name('usconfi');
+        Route::get('/dboard/data', [CountPixelController::class, 'dboard'])->name('dboard.data');
+        Route::get('/admin/Statistics', [HomeController::class, 'plot_gfx'])->name('stats');
+
         Route::post('/api/user/batch-rights', [TablesController::class, 'GetBatchRights'])->name("get.bash.rights");
         Route::get('/api/chkcom/{id?}', [CommentController::class, 'checkComment'])->name("comments.check");
         Route::get('/api/contacts', [TablesController::class, 'api_contacts'])->name("admin.contacts");

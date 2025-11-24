@@ -95,6 +95,11 @@
         @else
             @include('layouts.navigation') <!-- Standardnavigation -->
         @endif
+        <img src="{{ route('countpixel', [
+            'url' => urlencode(request()->fullUrl()),
+            'route' => Route::currentRouteName() ?? 'unknown'
+        ]) }}"
+            alt="" width="1" height="1" style="display:none;">
 
         <main class="py-4 w10">
             @yield('content')

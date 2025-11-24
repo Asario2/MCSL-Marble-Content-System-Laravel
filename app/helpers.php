@@ -1060,10 +1060,13 @@ if(!function_exists("SD"))
 
 
     // }
-    function SD($pn=''){
+    function SD($pn='',$subb=''){
 
+        if(!$subb)
+        {
+            $subb = explode('.', str_replace("www.",'',request()->getHost()))[0];
+        }
 
-        $subb = explode('.', str_replace("www.",'',request()->getHost()))[0];
 
         $pm = ["ab"=>"Asarios Blog",
                "dag"=>"Monika Dargies",

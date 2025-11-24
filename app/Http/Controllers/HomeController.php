@@ -763,6 +763,9 @@ public function imprint_dag()
     public function home_ri(){
         return Inertia::render("Homepage/ri");
     }
+    public function plot_gfx(){
+        return Inertia::render('Homepage/Stats');
+    }
     public function home_mfx()
     {
         //

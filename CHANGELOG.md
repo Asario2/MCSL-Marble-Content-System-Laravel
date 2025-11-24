@@ -145,3 +145,4 @@
 ![Version](https://img.shields.io/badge/version-3.87.2-orange) Hotfix - Errors in positioning of entries (#285)  
 ![Version](https://img.shields.io/badge/version-3.88.2-orange) Bug - have to fix right management functions (#287)  
 ![Version](https://img.shields.io/badge/version-3.89.3-orange) Hotfix - Search on Contacts (#288)  
+![Version](https://img.shields.io/badge/version-3.90.8-orange) Feature - Countpixel.php for counting  visits on all pages (#284)  
