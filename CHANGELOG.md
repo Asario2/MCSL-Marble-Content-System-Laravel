@@ -146,3 +146,7 @@
 ![Version](https://img.shields.io/badge/version-3.88.2-orange) Bug - have to fix right management functions (#287)  
 ![Version](https://img.shields.io/badge/version-3.89.3-orange) Hotfix - Search on Contacts (#288)  
 ![Version](https://img.shields.io/badge/version-3.90.8-orange) Feature - Countpixel.php for counting  visits on all pages (#284)  
+![Version](https://img.shields.io/badge/version-3.91.2-orange) Hotfix - Photoswipe now working properly (#292)  
+![Version](https://img.shields.io/badge/version-3.92.9-orange) Hotfix - Changed check of PM Setttings in user profile (#290)  
+![Version](https://img.shields.io/badge/version-3.93.5-orange) Feature - Choosed another Cookie Consent Script (#291)  
+![Version](https://img.shields.io/badge/version-3.94.7-orange) Hotfix - fixed pagination on TableShow (#293)  

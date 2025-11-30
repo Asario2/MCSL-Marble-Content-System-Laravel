@@ -17,6 +17,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': path.resolve(__dirname, 'resources/js'),
+			'photoswipe': path.resolve(__dirname, 'node_modules/photoswipe'), //asd
         },
     },
     define: {
@@ -29,6 +30,6 @@ export default defineConfig({
         },
     },
     build: {
-        sourcemap: true, // ?? aktiviert Source Maps für Debugging
+        sourcemap: true, // aktiviert Source Maps für Debugging
     },
 });

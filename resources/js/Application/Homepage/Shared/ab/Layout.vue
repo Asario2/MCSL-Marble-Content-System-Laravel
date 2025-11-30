@@ -273,9 +273,11 @@
                         <link-footer name="Kontakt" :route-name="route('home.contacts')"></link-footer>
                         </li>
                         <li>
+                                <a class="showHideToggleCookiePreferencesModal">Cookie Einstellungen</a>
+<!--
                             <LinkFooter @click="reopenCookieBanner">
                             <b>Cookie-Einstellungen</b>
-                            </LinkFooter>
+                            </LinkFooter> -->
 
                         </li>
                     </ul>
@@ -493,12 +495,21 @@
         localStorage.setItem('loading', state ? state.toString():'');
         },
         reopenCookieBanner() {
-//             console.log("test");
+        console.log("test");
 //             console.log(window.LaravelCookieConsent);
 
-            if (window.LaravelCookieConsent && typeof window.LaravelCookieConsent.reset === 'function') {
-            window.LaravelCookieConsent.show();
+         setTimeout(() => {
+            if (window.LaravelCookieConsent && typeof window.LaravelCookieConsent.show === 'function') {
+            window.LaravelCookieConsent.reset();
+            alert("yes");
+                window.LaravelCookieConsent.show();
+
             }
+            else{
+                alert("no_function");
+
+            }
+        }, 50);
         },
         checkLoadingState() {
         if (this.pendingRequests === 0 && this.imagesLoaded) {

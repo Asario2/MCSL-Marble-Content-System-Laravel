@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class CheckImageSupport extends Command
+class checkimagemagick extends Command
 {
     protected $signature = 'images:check-support';
     protected $description = 'Check available image processing support';

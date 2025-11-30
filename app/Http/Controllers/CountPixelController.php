@@ -19,6 +19,7 @@ class CountPixelController extends Controller
     ];
 
     protected $excludeURLs = [
+        '*.php*',
         '*.js*',
         '*.css*',
         '*.png*',
@@ -32,6 +33,10 @@ class CountPixelController extends Controller
 
     public function track(Request $request)
     {
+        if(!substr_count($_COOKIE['mcsl_preferences'],'"analytics":true'))
+        {
+                return $this->pixelResponse();
+        }
         try {
 
             $host = $request->getHost();
@@ -109,7 +114,6 @@ class CountPixelController extends Controller
             PageView::create([
                 'dom'        => SD(),
                 'url'        => $rawUrl,
-                'referrer'   => $this->SH($request->headers->get('referer')),
                 'ip'         => $ip,
                 'visited_at' => now(),
             ]);

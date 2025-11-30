@@ -126,10 +126,10 @@
                   <div class="text-center md:text-left">
                     <h3 class="text-sm font-semibold leading-6 px-2">Webseite</h3>
                     <ul role="list" class="mt-6 space-y-4 list-none">
-                      <li><link-footer name="Impressum" :route-name="route('home.imprint.mfx')" /></li>
+                      <li><link-footer name="Impressum" :route-name="route('home.imprint.gen')" /></li>
                       <li><link-footer name="Datenschutzerklärung" :route-name="route('home.privacy')" /></li>
                       <li><link-footer name="Kontakt" :route-name="route('home.contacts.dag')" /></li>
-                      <li><link-footer @click="reopenCookieBanner">Cookie-Einstellungen</link-footer></li>
+                      <li><a class="showHideToggleCookiePreferencesModal">Cookie Einstellungen</a>         </li>
                     </ul>
                   </div>
 

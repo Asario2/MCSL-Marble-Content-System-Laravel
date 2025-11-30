@@ -84,9 +84,8 @@
 </tbody>
 
                 </table>
-
                 <!-- Pagination -->
-                <pagination :links="datarows.links" v-if="numberOfRows > 0" />
+                <pagination :links="pag.links" v-if="numberOfRows > 0" />
                 <div v-else class="np-dl-td-no-entries">
                     <alert type="info">{{ noEntries }}</alert>
                 </div>
@@ -134,6 +133,7 @@ export default {
     },
     props: {
         items: {},
+        pag:[Object,Array],
         withinAccordion: { type: Boolean, default: false },
         title: { type: String, required: false },
         rowId: { type: String, default: "id" },
@@ -205,6 +205,7 @@ export default {
             draggedIndex: null,
             checkedStatus: {}, // z. B. { 100: true, 101: false }
             rows: Array.isArray(this.datarows?.data) ? [...this.datarows.data] : [],
+            rows_alt: Array.isArray(this.datarows.links) ? [...this.datarows.links] : [],
             currentPage: 1,
             perPage: 20,
             seaRoute:'',

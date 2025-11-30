@@ -69,7 +69,7 @@ class RightsController extends Controller
 }
 public function GetRights($table,$right){
     if (!Auth::check()) {
-    $userId = 0;
+return false;
 } else {
     $userId = Auth::id();
 }
@@ -85,8 +85,10 @@ $pos = DB::table("admin_table")
     ->value("position");
 
 // RICHTIG: Position nutzen!
-$rf = substr($rightfe->posi, $pos, 1);
-
+$rf = substr(@$rightfe->posi, ($pos-1), 1);
+if(!$pos){
+$rf = "0";
+}
 \Log::info("R:".$right."POSS:".$pos."V:".$rf);
     return response()->json($rf);
 }

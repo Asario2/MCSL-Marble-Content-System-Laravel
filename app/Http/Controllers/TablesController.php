@@ -508,9 +508,11 @@ public function ShowTable(Request $request, $table_alt = null)
             $_GET['table'] = $ta;
         }
     }
+
     if (array_key_exists($table, Settings::$userexcl)) {
         return redirect(Settings::$userexcl[$table]);
     }
+
     if (!$table || !Schema::hasTable($table)) {
         abort(404, "Tabelle existiert nicht.");
     }
@@ -565,26 +567,22 @@ public function ShowTable(Request $request, $table_alt = null)
         $query->leftJoin($relatedTable, $join['to'], '=', $join['from']);
     }
 
-    // --- Suchfilter auf Name, Description, ID, created_at ---
+    // Suchfilter auf Name, Description, ID, created_at
     if ($request->filled('search')) {
         $search = $request->input('search');
         $searchLower = strtolower($search);
 
         $query->where(function($q) use ($searchLower, $headline, $otherField, $table, $columns) {
-            // Name (Headline)
             $q->whereRaw("LOWER({$table}.{$headline}) LIKE ?", ["%{$searchLower}%"]);
 
-            // Other Field
             if ($otherField) {
                 $q->orWhereRaw("LOWER({$table}.{$otherField}) LIKE ?", ["%{$searchLower}%"]);
             }
 
-            // ID
             if (in_array('id', $columns)) {
                 $q->orWhere("{$table}.id", 'like', "%{$searchLower}%");
             }
 
-            // created_at durchsuchen (updated_at ignorieren)
             if (in_array('created_at', $columns)) {
                 $q->orWhere("{$table}.created_at", 'like', "%{$searchLower}%");
             }
@@ -662,6 +660,25 @@ public function ShowTable(Request $request, $table_alt = null)
             ];
         });
 
+    // Pagination explizit für Inertia inkl. Links
+    $pagination = [
+        'current_page' => $tables->currentPage(),
+        'last_page'    => $tables->lastPage(),
+        'per_page'     => $tables->perPage(),
+        'total'        => $tables->total(),
+        'from'         => $tables->firstItem(),
+        'to'           => $tables->lastItem(),
+        'data'         => $tables->items(),
+        'links'        => collect($tables->linkCollection())->map(function ($link) {
+            return [
+                'url'    => $link['url'],
+                'label'  => $link['label'],
+                'active' => $link['active'],
+            ];
+        }),
+    ];
+    // $pagination = $tables->toArray();
+
     return Inertia::render('Admin/TableShow', [
         'filters' => array_filter($request->only(['search'])),
         'searchValue' => $request->input('search'),
@@ -669,8 +686,9 @@ public function ShowTable(Request $request, $table_alt = null)
             'Liste der Tabellen' => route('admin.tables.index'),
             "Tabelle ".ucf($table) => null
         ],
-        'datarows' => $result,
-        'rows' => $tables,
+        'rows' => $pagination,
+        "pag"=>$pagination,         // kompletter Paginator inkl. Links
+        'datarows' => $tables->items(), // nur die Items
         'table' => ucf($table),
         'table_alt' => $table,
         'ItemName' => 'Beiträge',
@@ -683,6 +701,9 @@ public function ShowTable(Request $request, $table_alt = null)
         "thirdparty" => Settings::$thirdparty,
     ]);
 }
+
+
+
 
 
     public function applyExclWhere($table, $query,$safe = false)

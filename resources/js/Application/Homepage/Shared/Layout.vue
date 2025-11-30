@@ -255,7 +255,9 @@
                         <link-footer name="Datenschutzerklärung" :route-name="route('home.privacy')"></link-footer>
                         </li>
                         <li>
-                            <link-footer @click="reopenCookieBanner"><b>Cookie-Einstellungen</b></link-footer>
+                            <!-- <link-footer @click="reopenCookieBanner"><b>Cookie-Einstellungen</b></link-footer> -->
+                                                    <a class="showHideToggleCookiePreferencesModal">Cookie Einstellungen</a>
+
                         </li>
                         <li>
                             <link-footer name="Kontakt" :route-name="route('home.contacts')"></link-footer>
@@ -489,11 +491,34 @@
             });
 
         },
+        methods: {
+    // ... andere Methoden
         reopenCookieBanner() {
-        if (window.LaravelCookieConsent && typeof window.LaravelCookieConsent.reset === 'function') {
-          window.LaravelCookieConsent.reset();
-        }
-      },
+            console.log("reopenCookieBanner aufgerufen");
+
+            // Prüft alle 50ms, ob CookieConsent verfügbar ist
+            const interval = setInterval(() => {
+                if (window.LaravelCookieConsent) {
+                    clearInterval(interval); // Stoppt die Schleife, sobald verfügbar
+
+                    // Reset nur, wenn Funktion existiert
+                    if (typeof window.LaravelCookieConsent.reset === 'function') {
+                        window.LaravelCookieConsent.reset();
+                    }
+
+                    // Banner anzeigen, nur wenn show() existiert
+                    if (typeof window.LaravelCookieConsent.show === 'function') {
+                        window.LaravelCookieConsent.show();
+                        console.log("Cookie-Banner angezeigt");
+                    } else {
+                        console.error("window.LaravelCookieConsent.show() nicht gefunden");
+                    }
+                }
+            }, 50);
+        },
+    },
+
+
 
         checkLoadingState() {
           console.log("🔍 checkLoadingState()", {
@@ -578,7 +603,7 @@
     }
     .foot {
     position: relative;
-    z-index: 100000;
+    z-index: 10;
     }
     A#em{
         color:yellow;

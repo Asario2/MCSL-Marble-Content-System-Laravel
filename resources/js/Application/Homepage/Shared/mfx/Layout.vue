@@ -229,13 +229,13 @@
                   </h3>
                   <ul role="list" class="mt-6 space-y-4 list-none">
                     <li>
-                      <link-footer name="Impressum" :route-name="route('home.imprint.mfx')"></link-footer>
+                      <link-footer name="Impressum" :route-name="route('home.imprint.gen')"></link-footer>
                     </li>
                     <li>
                       <link-footer name="Datenschutzerklärung" :route-name="route('home.privacy')"></link-footer>
                     </li>
                     <li>
-                      <link-footer @click="reopenCookieBanner">Cookie-Einstellungen</link-footer>
+                     <a class="showHideToggleCookiePreferencesModal">Cookie Einstellungen</a>   
                     </li>
                   </ul>
                 </div>

@@ -10,19 +10,21 @@
                 </PersonalProfile>
                 <section-border />
             </div>
-            <div v-if="GetRights('delete','private_messages')">
+            <div v-if="pmdel == '1'">
+
                 <MessageSettings>
 
                 </MessageSettings>
                 <section-border />
             </div>
+            <span v-else>asdads</span>
             <div v-if="$page.props.jetstream.canUpdatePassword">
                 <update-password-form class="mt-10 sm:mt-0" />
 
                 <section-border />
             </div>
 
-            <span v-else>asd</span>
+            <span v-else></span>
 
             <div v-if="$page.props.jetstream.canManageTwoFactorAuthentication">
                 <two-factor-authentication-form
@@ -50,7 +52,7 @@
 
 <script>
 import { defineComponent } from "vue";
-import { GetRights } from "@/helpers";
+import { CheckTRights } from "@/helpers";
 import DeleteUserForm from "@/Application/Shared/DeleteUserForm.vue";
 import LogoutOtherBrowserSessionsForm from "@/Application/Shared/LogoutOtherBrowserSessionsForm.vue";
 import TwoFactorAuthenticationForm from "@/Application/Shared/TwoFactorAuthenticationForm.vue";
@@ -58,7 +60,7 @@ import PersonalProfile from "@/Application/Shared/PersonalProfile.vue";
 import UpdatePasswordForm from "@/Application/Shared/UpdatePasswordForm.vue";
 import MessageSettings from "@/Application/Shared/MessageSettings.vue";
 import UpdateProfileInformationForm from "@/Application/Shared/UpdateProfileInformationForm.vue";
-import ProfileTextfield from "@/Application/Shared/ProfileTextfield.vue";
+// import ProfileTextfield from "@/Application/Shared/ProfileTextfield.vue";
 
 import SectionBorder from "@/Application/Components/Content/SectionBorder.vue";
 
@@ -72,11 +74,15 @@ export default defineComponent({
         UpdatePasswordForm,
         UpdateProfileInformationForm,
         SectionBorder,
-        ProfileTextfield,
+        // ProfileTextfield,
         PersonalProfile,
         MessageSettings,
     },
-
+    data(){
+    return {
+        pmdel: 0,
+    };
+    },
     props: {
         sessions: {
             type: Array,
@@ -87,8 +93,12 @@ export default defineComponent({
             default: false,
         },
     },
+    async mounted() {
+    this.pmdel = await CheckTRights('delete', 'private_messages');
+    alert(this.pmdel);
+    },
     methods:{
-        GetRights,
+        CheckTRights,
     }
 });
 </script>

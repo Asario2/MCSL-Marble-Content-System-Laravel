@@ -29,7 +29,6 @@ class CountPageView
 
             PageView::create([
                 'url' => $request->fullUrl(),
-                'referrer' => $request->headers->get('referer'),
                 'ip' => $ip,
                 'visited_at' => now(),
             ]);
