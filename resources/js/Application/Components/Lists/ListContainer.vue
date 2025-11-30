@@ -85,7 +85,7 @@
 
                 </table>
                 <!-- Pagination -->
-                <pagination :links="pag.links" v-if="numberOfRows > 0" />
+                <pagination :links="pag?.links" v-if="numberOfRows > 0" />
                 <div v-else class="np-dl-td-no-entries">
                     <alert type="info">{{ noEntries }}</alert>
                 </div>

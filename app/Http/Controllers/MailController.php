@@ -233,7 +233,7 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
 
             $nick = $email;
 
-            $res_alt = DB::table('contacts')->where('email_hash', hash('sha256', $email))->select("uhash")->first();
+            $res_alt = DB::table('contacts')->where('email_hash', hash('sha256', $email))->select("uhash","email")->first();
 
             $uhash = $res_alt->uhash;
             $email = decval($res_alt->email);

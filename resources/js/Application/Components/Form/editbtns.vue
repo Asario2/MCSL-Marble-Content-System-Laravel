@@ -53,7 +53,6 @@
     async mounted() {
         this.rights.edit = await CheckTRights("edit", this.table);
         this.rights.delete = await CheckTRights("delete", this.table);
-
     },
 
 

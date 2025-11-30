@@ -85,11 +85,11 @@ $pos = DB::table("admin_table")
     ->value("position");
 
 // RICHTIG: Position nutzen!
-$rf = substr(@$rightfe->posi, ($pos-1), 1);
-if(!$pos){
+$rf = substr(@$rightfe->posi, ($pos), 1);
+if(!$pos && $pos !== "0"){
 $rf = "0";
 }
-\Log::info("R:".$right."POSS:".$pos."V:".$rf);
+\Log::info("R:".$right."POSS:".($pos-1)."V:".$rf);
     return response()->json($rf);
 }
 public function allTableRights($right)

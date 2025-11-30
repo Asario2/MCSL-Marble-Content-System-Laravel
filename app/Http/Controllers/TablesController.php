@@ -787,19 +787,23 @@ public function ShowTable(Request $request, $table_alt = null)
     if (CheckZRights("SendMailToAll")) {
         $users = DB::table("users")
             ->leftJoin('newsletter_blacklist', 'users.email', '=', 'newsletter_blacklist.mail')
+            ->leftJoin('users_config', 'users.id', '=', 'users_config.users_id')
             ->where("xis_disabled", "0")
             ->where("name", "!=", "Gast")
-            ->select("users.id", "name", "email", "xch_newsletter", "newsletter_blacklist.mail AS BM")
+            ->select("users.id", "name", "email", "users_config.xch_newsletter AS xch_newsletter", "newsletter_blacklist.mail AS BM")
+            ->distinct()
             ->orderBy("name", "ASC")
             ->get();
     } else {
         $users = DB::table('users')
             ->leftJoin('newsletter_blacklist', 'users.email', '=', 'newsletter_blacklist.mail')
+            ->leftJoin('users_config', 'users.id', '=', 'users_config.users_id')
             ->whereNull('newsletter_blacklist.mail')
             ->where('xch_newsletter', '1')
             ->where('xis_disabled', '0')
             ->where('name', '!=', 'Gast')
-            ->select('users.id', 'users.name', 'users.email', 'users.xch_newsletter')
+            ->select('users.id', 'users.name', 'users.email', 'users_config.xch_newsletter AS xch_newsletter')
+            ->distinct()
             ->orderBy('users.name', 'ASC')
             ->get();
     }

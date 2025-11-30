@@ -11,7 +11,7 @@ import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
                     {{ Redirect() }}
                 </span>
               <span class="dark:text-layout-night-1050 text-layout-sun-1000 inline">
-                Bildergalerie: {{ images.name }} <editbtns style="float:left;" :id="CleanId()" table="images" />
+                Bildergalerie: {{ images.name }} <editbtns :id="CleanId()" table="images" />
               </span>
             </template>
           </page-title>

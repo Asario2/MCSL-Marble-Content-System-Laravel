@@ -79,6 +79,7 @@
         </tr>
         </tbody>
     </table>
+    {{ users }}
     </template>
 
 
@@ -137,7 +138,10 @@
 
   // Nur Benutzer, die Newsletter aktiviert haben
   const newsletterIds = this.users
-    .filter(u => u.xch_newsletter == '1' || u.xch_newsletter === 1)
+    .filter(u =>
+    u.xch_newsletter == 1 ||
+    (typeof u.xch_newsletter === 'string' && u.xch_newsletter.includes('to_mail'))
+)
     .map(u => u.id);
 
   if (checked) {

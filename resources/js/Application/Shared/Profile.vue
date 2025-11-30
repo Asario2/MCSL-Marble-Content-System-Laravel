@@ -17,7 +17,6 @@
                 </MessageSettings>
                 <section-border />
             </div>
-            <span v-else>asdads</span>
             <div v-if="$page.props.jetstream.canUpdatePassword">
                 <update-password-form class="mt-10 sm:mt-0" />
 
@@ -95,7 +94,7 @@ export default defineComponent({
     },
     async mounted() {
     this.pmdel = await CheckTRights('delete', 'private_messages');
-    alert(this.pmdel);
+
     },
     methods:{
         CheckTRights,
