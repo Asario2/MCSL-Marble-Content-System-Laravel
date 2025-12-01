@@ -48,7 +48,7 @@
                 </input-group>
                 </template>
         <template #actions>
-            <button-group>
+
                 <input-action-message
                     :on="form.recentlySuccessful"
                     class="me-3"
@@ -61,7 +61,7 @@
                 >
                     Speichern
                 </input-button>
-            </button-group>
+
         </template>
     </section-form>
 </template>

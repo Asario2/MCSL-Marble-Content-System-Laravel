@@ -25,7 +25,12 @@
     font-style: normal;
     font-display: swap;
 }
-
+address {
+    font-style: normal; /* verhindert kursiv */
+}
+.ToggleCookieLink{
+    cursor:pointer;
+}
 
 ul {
     display: block;

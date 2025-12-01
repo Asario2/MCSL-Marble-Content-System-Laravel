@@ -33,7 +33,7 @@ class CountPixelController extends Controller
 
     public function track(Request $request)
     {
-        if(!substr_count($_COOKIE['mcsl_preferences'],'"analytics":true'))
+        if(!substr_count(@$_COOKIE['mcsl_preferences'],'"analytics":true'))
         {
                 return $this->pixelResponse();
         }

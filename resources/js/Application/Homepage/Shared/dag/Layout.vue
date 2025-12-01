@@ -129,7 +129,7 @@
                       <li><link-footer name="Impressum" :route-name="route('home.imprint.gen')" /></li>
                       <li><link-footer name="Datenschutzerklärung" :route-name="route('home.privacy')" /></li>
                       <li><link-footer name="Kontakt" :route-name="route('home.contacts.dag')" /></li>
-                      <li><a class="showHideToggleCookiePreferencesModal">Cookie Einstellungen</a>         </li>
+                      <li><link-footer name="Cookie Einstellungen" class="ToggleCookieLink"  onclick="showHideToggleCookiePreferencesModal()" href="#"/></li>
                     </ul>
                   </div>
 
@@ -492,6 +492,9 @@ DIV.hd:hover{
   .slide-fade-leave-to {
     opacity: 0;
     transform: translateY(-8px);
+  }
+  .ToggleCookieLink{
+    color:#fff !important;
   }
   </style>
 
