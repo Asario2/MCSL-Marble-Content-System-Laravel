@@ -150,3 +150,5 @@
 ![Version](https://img.shields.io/badge/version-3.92.9-orange) Hotfix - Changed check of PM Setttings in user profile (#290)  
 ![Version](https://img.shields.io/badge/version-3.93.5-orange) Feature - Choosed another Cookie Consent Script (#291)  
 ![Version](https://img.shields.io/badge/version-3.94.7-orange) Hotfix - fixed pagination on TableShow (#293)  
+![Version](https://img.shields.io/badge/version-3.95.1-orange) Hotfix - Fixed font in footer (#294)  
+![Version](https://img.shields.io/badge/version-3.96.0-orange) Feature - Statistics Completed (#302)  

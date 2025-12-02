@@ -44,6 +44,7 @@
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.13",
+        "enlightn/security-checker": "^2.0",
         "fakerphp/faker": "^1.23",
         "laravel-lang/lang": "^15.1",
         "laravel/pint": "^1.13",
@@ -85,7 +86,9 @@
             "@php artisan key:generate --ansi",
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
-        ]
+        ],
+		    "security:check": "vendor\\bin\\security-checker security:check composer.lock"
+
     },
     "extra": {
         "laravel": {

@@ -76,7 +76,7 @@ if(SD() == "mfx"){
         Route::get("/api/user/rights",[RightsController::class,"GetRights_all"])->name("GetRights_all");
         Route::post('/api/contact/send',[CommentController::class,"sendmc"]);
         Route::get('/api/pageviews', [CountPixelController::class, 'stats']);
-
+    Route::get('/home/impressum', [HomeController::class, 'imprint_gen'])->name('home.imprint.gen');
         // Route::get('/allroutes', function () {
         //     $routes = collect(Route::getRoutes())
         //         ->filter(fn($route) => in_array('GET', $route->methods()) && !str_contains($route->uri(), '{'))
@@ -84,7 +84,9 @@ if(SD() == "mfx"){
 
         //     return response()->view('allroutes', ['routes' => $routes]);
         // });
-        Route::get('/impressum', [HomeController::class, 'imprint_dag'])->name('home.imprint.dag');
+        Route::get('/impressum', function ( ){
+            return redirect("home/impressum");
+        });
 //
 // DAGIE
 //
@@ -196,7 +198,7 @@ Route::get('/home/privacy', [HomeController::class, 'home_privacy'])->name('home
         Route::get('/home/images/show/{id}', [HomeController::class, 'home_images_show_mfx'])->name('home.images.mfx');
 
         Route::get('/home/people', [HomeController::class, 'people'])->name('home.people.mfx');
-        Route::get('/home/impressum', [HomeController::class, 'imprint_mfx'])->name('home.imprint.mfx');
+
         Route::get('/home/privacy_info', [HomeController::class, 'infos_privacy'])->name('home.privacy.mfx');
 
         Route::get('/home/infos', [HomeController::class, 'infos_index'])->name('home.infos.mfx');

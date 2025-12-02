@@ -1,4 +1,5 @@
 <?php
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
 use App\Http\Controllers\EncryptController;
@@ -262,7 +263,7 @@ if(!function_exists("renderText"))
         use Illuminate\Database\Query\Builder;
         use App\Models\Settings;
         use Illuminate\Support\Facades\Session;
-        use Illuminate\Support\Facades\Schema;
+
       if (!Builder::hasMacro('filterdefault')) {
     Builder::macro('filterdefault', function ($filters) {
         $path = request()->path();
@@ -1479,6 +1480,10 @@ if(!function_exists("CheckZRights"))
         if(!Auth::check())
         {
             return redirect("login")->send();
+        }
+        if(!Schema::hasColumn("users_rights","xkis_".$right))
+        {
+            return false;
         }
         $user = DB::table("users")->where("id",Auth::id())->select("users_rights_id")->first();
         $rights = DB::table("users_rights")->where("id",$user->users_rights_id)->select("xkis_".$right)->first();

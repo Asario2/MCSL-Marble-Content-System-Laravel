@@ -693,6 +693,15 @@ public function imprint_dag()
         return Inertia::render('Homepage/Changelog_old', ["data" => [$data]]); // <-- in Array umwandeln
 
     }
+    public function imprint_gen()
+    {
+        $imprintFile = Jetstream::localizedMarkdownPath('imprint.md');
+        $imprint = Str::markdown(file_get_contents($imprintFile));
+        //
+        return Inertia::render('Homepage/Imprint', [
+            'imprint' => $imprint,
+        ]);
+    }
     //
     public function home_privacy()
     {
@@ -706,7 +715,7 @@ public function imprint_dag()
 
         include_once "inc/functions/rinfo_code.php";
         // dd($privacyFile);
-        $privacy = Str::markdown(file_get_contents($privacyFile)); // HTML erzeugt
+        $privacy = @Str::markdown(file_get_contents($privacyFile)); // HTML erzeugt
         $privacy = rinfo_code($privacy);
 
         // $privacy = nl2br($privacy);

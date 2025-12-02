@@ -16,6 +16,7 @@ class CountPixelController extends Controller
         '*statistics*',
         'cookieconsent.*',
         '*stats*',
+        'tables.noview',
     ];
 
     protected $excludeURLs = [
@@ -147,57 +148,126 @@ class CountPixelController extends Controller
         return empty($clean) ? '/' : $clean;
     }
 
-    public function dboard()
-    {
-        $rows = DB::connection('gnerals')
-            ->table('page_views')
-            ->select('url', 'dom', DB::raw('COUNT(*) as cnt'))
-            ->groupBy('url', 'dom')
-            ->orderBy('url')
-            ->get();
+    public function dboard(Request $request)
+{
 
-        $labels = $rows->pluck('url')->unique()->values()->all();
 
-        $domColors = [
-            'ab'  => '#4F86F7',
-            'mfx' => '#FFA500',
-            'dag' => '#E63946',
-            'chh' => '#1B3A8A',
-        ];
+    //
+    // 1) Domain bestimmen
 
+
+    $domm = strtolower($request->dom);
+    $m = max((int) $request->month, 1);
+
+    $ris  = ($domm !== '');
+
+    if (!$ris) {
+        $domm = strtolower(SD());
+    }
+
+    Log::info("REQUEST DOM = {$domm}, RIS = " . ($ris ? 'true' : 'false'));
+
+    //
+    // 2) Query Grundstruktur
+    //
+    $query = DB::connection('gnerals')
+        ->table('page_views');
+    $query->where('visited_at', '>=', now()->subMonths($m));
+
+    //
+    // 3) Rechte-Logik
+    //
+    // Wenn KEINE Rechte: immer eigene Domain erzwingen
+    // Wenn GET dom gesetzt wurde: dom explizit erzwingen
+    //
+    if (!@CheckZRights("StatisticsAll") || $ris) {
+        $query->whereRaw("LOWER(dom) = ?", [$domm]);
+        Log::info("WHERE applied: dom = {$domm}");
+    } else {
+        Log::info("NO WHERE applied – full stats allowed");
+    }
+
+    //
+    // 4) Daten holen
+    //
+    $rows = $query
+        ->select('url', DB::raw('LOWER(dom) as dom'), DB::raw('COUNT(*) as cnt'))
+        ->groupBy('url', 'dom')
+        ->orderBy('url')
+        ->get();
+
+    Log::info("ROWS DOMS = " . json_encode($rows->pluck('dom')->unique()->values()->all()));
+
+    //
+    // 5) Labels sammeln
+    //
+    $labels = $rows->pluck('url')->unique()->values()->all();
+
+    //
+    // 6) Farben pro Domain
+    //
+    $domColors = [
+        'ab'  => '#4F86F7',
+        'mfx' => '#FFA500',
+        'dag' => '#E63946',
+        'chh' => '#1B3A8A',
+    ];
+
+    //
+    // 7) Welche Domains sollen dargestellt werden?
+    //
+    if (!CheckZRights("StatisticsAll")) {
+        // Nur SD()
+        $doms = [ strtolower(SD()) ];
+    } elseif ($ris) {
+        // Nur die gefilterte Domain
+        $doms = [ $domm ];
+    } else {
+        // Alle in den Ergebnissen
         $doms = $rows->pluck('dom')->unique()->values()->all();
+    }
 
-        $datasets = [];
+    Log::info("Final DOMS to display = " . json_encode($doms));
 
-        foreach ($doms as $dom) {
-            $color = $domColors[$dom] ?? '#888888';
-            $label = SD('1', $dom);
+    //
+    // 8) Dataset erzeugen
+    //
+    $datasets = [];
 
-            Log::info("SD-Label: " . $label);
+    foreach ($doms as $dom) {
 
-            $data = array_fill(0, count($labels), 0);
+        $label = SD('1', $dom);
+        $color = $domColors[$dom] ?? '#888888';
 
-            foreach ($rows as $r) {
-                if ($r->dom === $dom) {
-                    $idx = array_search($r->url, $labels);
-                    if ($idx !== false) $data[$idx] = (int)$r->cnt;
+        $data = array_fill(0, count($labels), 0);
+
+        foreach ($rows as $r) {
+            if ($r->dom === $dom) {
+                $idx = array_search($r->url, $labels);
+                if ($idx !== false) {
+                    $data[$idx] = (int)$r->cnt;
                 }
             }
-
-            $datasets[] = [
-                'label' => $label,
-                'data'  => $data,
-                'backgroundColor' => $color,
-                'borderColor'     => $color,
-                'borderWidth'     => 1,
-            ];
         }
 
-        return response()->json([
-            'labels'   => $labels,
-            'datasets' => $datasets,
-        ]);
+        $datasets[] = [
+            'label' => $label,
+            'data'  => $data,
+            'backgroundColor' => $color,
+            'borderColor'     => $color,
+            'borderWidth'     => 1,
+        ];
     }
+
+    //
+    // 9) Ausgabe
+    //
+    return response()->json([
+        'labels'   => $labels,
+        'datasets' => $datasets,
+    ]);
+}
+
 
     public function stats()
     {

@@ -229,13 +229,13 @@ return [
      */
     'policy_links' => [
         [
-            'text' => 'Privacy Policy',
+            'text' => 'Datenschutzerklärung',
             'link' => env('COOKIE_CONSENT_PRIVACY_POLICY_URL', '') ?? url('privacy-policy')
         ],
-        [
-            'text' => 'Terms and Conditions',
-            'link' => env('COOKIE_CONSENT_TERMS_URL', '') ?? url('terms-and-conditions')
-        ],
+        // [
+        //     'text' => 'Terms and Conditions',
+        //     'link' => env('COOKIE_CONSENT_TERMS_URL', '') ?? url('terms-and-conditions')
+        // ],
     ],
 ];
 
