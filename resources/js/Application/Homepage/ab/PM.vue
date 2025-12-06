@@ -274,14 +274,6 @@
             rows="4"
             name="message"
           ></InputHtml>
-
-          <div class="mt-4 p-4 bg-yellow-100 dark:bg-yellow-900 rounded-lg">
-            <p class="font-bold">Debug-Info:</p>
-            <p>To ID: {{ to_id }}</p>
-            <p>Subject: {{ subject }}</p>
-            <p>Message Length: {{ message.length }}</p>
-          </div>
-
           <button
             class="mt-3 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
             @click="sendMessage"

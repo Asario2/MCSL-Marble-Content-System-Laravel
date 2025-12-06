@@ -58,6 +58,8 @@ Route::middleware('auth')->group(function () {
 
 
 });
-Route::post('/register', [RegisteredUserController::class, 'store'])
-     ->name('register.override');
+// OLD REGISTER
+
+// Route::post('/register', [RegisteredUserController::class, 'store'])
+//      ->name('register.override');
 

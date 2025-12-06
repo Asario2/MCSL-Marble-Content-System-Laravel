@@ -55,7 +55,11 @@
                         ></input-element>
                         <input-error :message="errors.password" />
                     </input-container>
+                    <input-container :full-width="true">
+                   <a href="/auth/google" class="flex items-center gap-2"><GoogleSVG he="22" wi="22"/>Mit Google anmelden</a>
 
+
+                    </input-container>
                     <input-container :full-width="true">
                         <input-checkbox name="remember" v-model="form.remember">
                             Erinnere Dich an mich
@@ -98,7 +102,7 @@ import Layout from "@/Application/Auth/Shared/Layout.vue";
 
 import PageContent from "@/Application/Components/Content/PageContent.vue";
 import SectionForm from "@/Application/Components/Content/SectionForm.vue";
-
+import GoogleSVG from "@/Application/Components/Icons/GoogleSVG.vue";
 import Favicon from "@/Application/Components/Logo/Favicon.vue";
 import Alert from "@/Application/Components/Content/Alert.vue";
 
@@ -128,6 +132,7 @@ export default defineComponent({
         Alert,
         InputLoading,
         ErrorList,
+        GoogleSVG,
         InputGroup,
         InputContainer,
         InputLabel,

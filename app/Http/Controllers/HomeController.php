@@ -715,7 +715,7 @@ public function imprint_dag()
 
         include_once "inc/functions/rinfo_code.php";
         // dd($privacyFile);
-        $privacy = @Str::markdown(file_get_contents($privacyFile)); // HTML erzeugt
+        $privacy = @Str::markdown(file_get_contents(@$privacyFile)); // HTML erzeugt
         $privacy = rinfo_code($privacy);
 
         // $privacy = nl2br($privacy);

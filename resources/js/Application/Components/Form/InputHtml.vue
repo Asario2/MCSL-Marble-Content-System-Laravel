@@ -1,5 +1,7 @@
 <template>
+
     <div>
+        <span v-if="!nohtml">
         <!-- Menü -->
         <div class="mb-4 h-14 p-4 flex items-center bg-layout-sun-300 dark:bg-layout-night-300 rounded-lg edit0R">
             <p class='border rounded label p-3'><nobr>{{name ? getLabel(name) : ''}}</nobr></p>
@@ -59,7 +61,7 @@
         <div v-if="hasError && required" class="text-red-500 text-sm mt-1">
             Dieses Feld darf nicht leer sein.
         </div>
-
+        </span>
         <!-- Textfeld -->
         <div class="mb-4 p-4 bg-layout-sun-0 dark:bg-layout-night-0 rounded-lg edit0R editor">
             <div
@@ -67,7 +69,7 @@
                 :id="'editor_' + name"
                 contenteditable="true"
                 dir="ltr"
-                class="editor rounded p-3 min-h-[150px] max-h-[350px] focus:outline-none"
+                class="editor rounded min-h-[150px] max-h-[350px] focus:outline-none"
                 :required="required"
                 @focus="onFocus"
                 @blur="onBlur"
@@ -142,7 +144,12 @@ export default {
         nosmilies: {
             type: String,
             default: '',
+        },
+        nohtml: {
+            type: String,
+            default: '',
         }
+
     },
     data() {
         return {

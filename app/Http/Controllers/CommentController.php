@@ -159,40 +159,56 @@ class CommentController extends Controller
     ]);
     }
     public function sendmc(Request $request)
-{
-//     \Log::info($request);
-    $request->validate([
-        'name' => 'required',
-        'email' => 'required|email',
-        'subject' => 'required',
-        'message' => 'required',
-        'captcha' => 'required|string',
-        'accepted' => 'accepted',
-    ]);
-//     \Log::info([$_SESSION['captcha_text'], $request->captcha]);
+        {
+            // Eingeloggte User brauchen kein Captcha & kein "accepted"
+            if (Auth::check()) {
+                $request->validate([
+                    'name'    => 'required|string|max:255',
+                    'email'   => 'required|email|max:255',
+                    'subject' => 'required|string|max:255',
+                    'message' => 'required|string',
+                ]);
+            } else {
+                // Gäste brauchen Captcha + akzeptierte AGB
+                $request->validate([
+                    'name'    => 'required|string|max:255',
+                    'email'   => 'required|email|max:255',
+                    'subject' => 'required|string|max:255',
+                    'message' => 'required|string',
+                    'captcha' => 'required|string',
+                    'accepted'=> 'accepted',
+                ]);
 
-    if($_SESSION['captcha_text'] !== $request->captcha  || empty($request->captcha) || empty($_SESSION['captcha_text']))
-    {
+                // Captcha prüfen
+                if (@$_SESSION['captcha_text'] !== $request->captcha) {
+                    return response()->json(['error' => 'Captcha falsch'], 422);
+                }
+                unset($_SESSION['captcha_text']);
+            }
 
-        return false;
-    }
-    else{
-        unset($_SESSION['captcha_text']);
-        Mail::to(comfig('mail.maintainer'))->send(new ContactMail(request()->getHost(),$request->name,$request->email,$request->subject,$request->message));
-        return "1";
-    }
-    return false;
+            // Mail versenden
+            try {
+                Mail::to(config('mail.maintainer'))->send(new ContactMail(
+                    $request->getHost(),
+                    $request->name,
+                    $request->email,
+                    $request->subject,
+                    $request->message
+                ));
 
-    // try {
-    //     Mail::to('admin@marblefx.de')->send(new ContentMail(
-    //         $request->nick,
-    //         $requesr->text,
-    //     ));
-    //     return response()->json(['status' => 'ok']);
-    // } catch (\Exception $e) {
-    //     return response()->json(['error' => $e->getMessage()], 500);
-    // }
-}
+                return response()->json("1", 200);
+
+            } catch (\Exception $e) {
+                \Log::error('Fehler beim Mailversand', [
+                    'error' => $e->getMessage(),
+                    'request' => $request->all()
+                ]);
+
+                return response()->json(['error' => 'Mail konnte nicht gesendet werden'], 500);
+            }
+        }
+
+
     public function SendMailContent(Request $request){
         return true;
     }

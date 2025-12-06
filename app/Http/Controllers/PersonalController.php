@@ -25,11 +25,18 @@ class PersonalController
         $dateString = $request->input('birthday'); // z.B. '31.12.2023'
 
         // \Log::info('Raw birthday input: ' . $dateString);
+        $birthday = $request->birthday;
 
-        $request['birthday'] = date("Y-m-d 00:00:00",strtotime($dateString));
+        $request['birthday'] = $birthday
+            ? date("Y-m-d", strtotime($birthday))
+            : null;
+
+
         $validated = $request->validate([
             'birthday' => ['nullable', 'date', 'before:today'],
             'music' => ['nullable', 'string', 'max:255'],
+            'name' => ['nullable', 'string', 'max:255'],
+            'first_name' => ['nullable', 'string', 'max:255'],
             'occupation' => ['nullable', 'string', 'max:255'],
             'about' => ['nullable', 'string'],
             'website' => ['nullable', 'string', 'max:255'],
@@ -41,7 +48,7 @@ class PersonalController
             'xch_newsletter' => ['nullable', 'boolean'],
         ], [], [], 'updateProfileInformation');
 
-//         \Log::info("✅ Empfangen:", $validated);
+        \Log::info("✅ Empfangen:", $validated);
 
         $table = "users"; // ermittelt die Tabelle des Models
 
@@ -53,6 +60,8 @@ class PersonalController
 
             'updated_at' => now(),
         ]))->save();
+    \Log::info("fil:".json_encode($filtered))   ;
+    \Log::info($request->birthday);
     return response()->json(["success"=>true,"Messsage"=>"Profil gespeichert"]);
     }
 

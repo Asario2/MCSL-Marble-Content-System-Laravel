@@ -5,8 +5,35 @@
         <template #description>
             Aktualisiere deine Persönlichen Daten
         </template>
+<template #form>
 
-        <template #form>
+<input-container :full-width="true" v-if="regi">
+    <input-label name="name" label="Nickname" />
+    <input-element
+        type="text"
+        name="name"
+        v-model="form.name"
+        placeholder="Nickname"
+        ref="name"
+        id="name"
+        :required="true"
+    />
+    <input-error :message="form.errors.name" />
+</input-container>
+<input-container :full-width="true" v-if="regi">
+    <input-label name="first_name" label="Vorname" />
+    <input-element
+        type="text"
+        name="first_name"
+        v-model="form.first_name"
+        placeholder="Vorname"
+        ref="first_name"
+        id="first_name"
+        :required="true"
+    />
+    <input-error :message="form.errors.first_name" />
+</input-container>
+
             <input-group class="mt-4">
             <input-container :full-width="true">
             <input-label name="birthday" label="Geburtstag" />
@@ -19,6 +46,7 @@
                 @blur="onBirthdayBlur"
                 ref="birthday"
                 class="dt"
+                :required="false"
             />
             <!--
                 @input="onBirthdayInput"
@@ -179,8 +207,7 @@ import InputHtml from "@/Application/Components/Form/InputHtml.vue";
 import InputError from "@/Application/Components/Form/InputError.vue";
 import SectionForm from "@/Application/Components/Content/SectionForm.vue";
 import InputButton from "@/Application/Components/Form/InputButton.vue";
-import IconCal from "@/Application/Components/Icons/IconCal.vue";
-import { useForm } from '@inertiajs/inertia-vue3';
+// import IconCal from "@/Application/Components/Icons/IconCal.vue";
 import InputCheckbox from "@/Application/Components/Form/InputCheckbox.vue";
 import { GetColumns } from "@/helpers";
 import { route } from 'ziggy-js';
@@ -204,6 +231,11 @@ export default {
       type: Object,
       required: false,
     },
+    regi:{
+        type:[Boolean],
+        required: false,
+        default:false,
+    }
   },
   components: {
     SectionForm,
@@ -213,7 +245,6 @@ export default {
     InputElement,
     InputHtml,
     InputError,
-    IconCal,
     InputButton,
     InputCheckbox,
     InputActionMessage,
@@ -228,6 +259,8 @@ export default {
         birthday: this.initialForm?.birthday || '',
         xch_newsletter: this.initialForm?.xch_newsletter || '0',
         music: this.initialForm?.music || '',
+        name: this.initialForm?.name || '',
+        first_name: this.initialForm?.first_name || '',
         occupation: this.initialForm?.occupation || '',
         interests: this.initialForm?.interests || '',
         fbd: this.initialForm?.fbd || '',
@@ -261,15 +294,26 @@ export default {
   },
   methods: {
     syncBirthday() {
+  // Wenn leer → komplett zurücksetzen
+  if (!this.inputBirthday || this.inputBirthday.trim() === '') {
+    this.form.birthday = null;      // → geht ans Backend
+    this.inputBirthday = "";        // Anzeige bleibt leer
+    this.form.errors.birthday = null;
+    return;
+  }
+
+  // Wenn Datum eingegeben wurde → parsen
   const parsed = dayjs(this.inputBirthday, 'DD.MM.YYYY', true);
+
   if (parsed.isValid()) {
     this.form.birthday = parsed.format('YYYY-MM-DD');
     this.form.errors.birthday = null;
   } else {
+    this.form.birthday = null;
     this.form.errors.birthday = 'Ungültiges Datum';
-    this.form.birthday = '';
   }
-},
+}
+,
 async updateProfileInformation() {
   this.syncBirthday();
 
@@ -295,6 +339,9 @@ async updateProfileInformation() {
 
     window.scrollTo(window.pageXOffset, window.pageYOffset);
     toastBus.emit('toast', response.data);
+    if(this.regi){
+        location.href='/';
+    }
   } catch (error) {
 //     console.log("Fehler", error.response?.data || error.message);
     if (error.response?.data?.errors) {
@@ -304,7 +351,7 @@ async updateProfileInformation() {
 }
 ,
 
-    validateDateInput(event) {
+    validateDateInput() {
       // Logik aktuell deaktiviert
     },
 
@@ -334,13 +381,15 @@ async updateProfileInformation() {
     this.isform = await GetColumns("users");
     },
     watch: {
-          'form.xch_newsletter'(val) {
+          'form.xch_newsletter'() {
 //     console.log("Newsletter:", val);
   },
   initialForm: {
     handler(newVal) {
       if (newVal) {
         this.form.music = newVal.music || '';
+        this.form.name = newVal.name || '';
+        this.form.first_name = newVal.first_name || '';
         this.form.occupation = newVal.occupation || '';
         this.form.interests = newVal.interests || '';
         this.form.fbd = newVal.fbd || '';

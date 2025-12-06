@@ -71,6 +71,7 @@
       <!-- Funktionen Rechte -->
       <div v-if="activeTab === 'functions'">
         <div class="p-4 bg-layout-sun-100 dark:bg-layout-night-100 rounded-lg shadow-sm">
+
           <table class="w-full border-collapse text-sm md:text-base">
             <thead class="bg-layout-sun-300 dark:bg-layout-night-300 text-layout-sun-800 dark:text-layout-night-800">
               <tr>
@@ -94,13 +95,53 @@
             </tbody>
           </table>
 
+<span v-if="addF" class="flex items-end gap-0">
+
+  <!-- Feld 1 -->
+  <div class="w-1/2">
+    <InputFormText
+      id="addF"
+      label="Funktionsname"
+      name="addF"
+      placeholder="Funktionnamen angeben"
+      v-model="addedF"
+    >
+      <template #label>Funktionsname</template>
+    </InputFormText>
+  </div>
+
+  <!-- Feld 2 -->
+  <div class="w-1/2">
+    <InputFormText
+      id="function_desc"
+      label="Beschreibung"
+      name="function_desc"
+      placeholder="Beschreibung"
+      v-model="fdesc"
+    >
+      <template #label>Beschreibung</template>
+    </InputFormText>
+  </div>
+
+  <!-- Button -->
+  <button
+    @click="addfsubm"
+    class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded h-[42px]"
+  >
+    Speichern
+  </button>
+
+</span>
+
           <button
             @click="saveRights"
             class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded mt-4"
           >
             Modulrechte speichern
           </button>
+          &nbsp;&nbsp;<button @click="addFunc" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded mt-4"> Funktion hinzufügen </button>
         </div>
+
       </div>
 
       <!-- Benutzer Tab -->
@@ -249,6 +290,7 @@
 import { toastBus } from '@/utils/toastBus';
 import { GetSettings } from "@/helpers";
 import axios from "axios";
+import InputFormText from "@/Application/Components/Form/InputFormText.vue";
 import InputSelect from "@/Application/Components/Form/InputSelect.vue";
 import InputCheckbox from "@/Application/Components/Form/InputCheckbox.vue";
 import IconRight from "@/Application/Components/Icons/IconRight.vue";
@@ -257,7 +299,7 @@ import SearchFilter from "@/Application/Components/Lists/SearchFilter.vue";
 
 export default {
   name: "UserRights",
-  components: {ErrorSVG,SearchFilter, InputSelect, InputCheckbox, IconRight },
+  components: { ErrorSVG, SearchFilter, InputSelect, InputCheckbox, IconRight, InputFormText },
   props: {
     adminTables: { type: Array, default: () => [] },
     urid: [String, Number],
@@ -277,296 +319,415 @@ export default {
       selected: String(this.urid || ''),
       activeTab: "tables",
       settings: {},
-      localFunc: {},
-      lf: {},
+      localFunc: {},    // nur xkis_ functions (reactive)
+      lf: {},           // functions list
       lf2: {},
       users: [],
       selectedUsers: {},
       userSearch: '',
+      addF: false,
+      labels: {},       // labels von API (beschreibungen)
       showDisabled: false,
+
+      // fehlende Felder, die im Template/Methods verwendet werden
+      addedF: '',
+      fdesc: '',
     };
   },
   computed: {
- activeUsers() {
-    return this.users.filter(u => Number(u.xis_disabled) === 0);
-  },
-  disabledUsers() {
-    // Nur deaktivierte User
-    return this.users.filter(u => Number(u.xis_disabled) === 1);
-  },
-  reversedRoles() {
-    return [...this.roles].sort((a, b) => Number(b.position) - Number(a.position));
-
-  },
-  filteredUsers() {
-    return this.users
-      .filter(u => this.showDisabled ? Number(u.xis_disabled) === 1 : Number(u.xis_disabled) === 0)
-      .filter(u => u.name.toLowerCase().includes(this.userSearch.toLowerCase())); // optional: Suche
-  },
+    activeUsers() {
+      return this.users.filter(u => Number(u.xis_disabled) === 0);
+    },
+    disabledUsers() {
+      return this.users.filter(u => Number(u.xis_disabled) === 1);
+    },
+    reversedRoles() {
+      return [...this.roles].sort((a, b) => Number(b.position) - Number(a.position));
+    },
+    filteredUsers() {
+      return this.users
+        .filter(u => this.showDisabled ? Number(u.xis_disabled) === 1 : Number(u.xis_disabled) === 0)
+        .filter(u => u.name.toLowerCase().includes(this.userSearch.toLowerCase()));
+    },
   },
   methods: {
-    toggleDisabled(u) {
-  // Der aktuelle Zustand der Checkbox (true = disabled)
-  const isChecked = this.selectedUsers[u.id];
+    // --- Funktionen / UI ---
+    addFunc() {
+      this.addF = !this.addF;
+    },
 
-  // Passe das Feld am User an
-  u.xis_disabled = isChecked ? 1 : 0;
+    async addfsubm() {
+      try {
+        const res = await axios.post('/api/AddFunc', {
+          name: this.addedF,
+          desc: this.fdesc,
+        });
 
-  // Sofort in der DB speichern
-  axios.post('/api/save-user-disabled', {
-    id: u.id,
-    xis_disabled: u.xis_disabled
-  })
-  .then(res => {
-    toastBus.emit('toast', {
-      message: res.data?.message || (isChecked ? 'Benutzer deaktiviert' : 'Benutzer aktiviert'),
-      type: 'success'
-    });
-  })
-  .catch(err => {
-    console.error(err);
-    toastBus.emit('toast', {
-      message: 'Fehler beim Aktualisieren des Status!',
-      type: 'error'
-    });
-  });
-},
-      toggleDisabledSelection() {
-    this.showDisabled = !this.showDisabled;
+        toastBus.emit('toast', {
+          message: res.data?.message,
+          type: 'success'
+        });
 
-    if (this.showDisabled) {
-      // Alle deaktivierten User anchecken
-      this.users.forEach(u => {
-        if (Number(u.xis_disabled) === 1) {
-          this.selectedUsers[u.users_rights_id] = true;
-        }
-      });
-    } else {
-      // Optional: alle deaktivierten User wieder abchecken
-      this.users.forEach(u => {
-        if (Number(u.xis_disabled) === 1) {
-          this.selectedUsers[u.users_rights_id] = false;
-        }
-      });
-    }
-  },
+        // Eingabe zurücksetzen
+        this.addedF = "";
+        this.fdesc = "";
+        this.addF = false;
 
-      toggleUserCheckbox(u) {
-    const roleId = u.users_rights_id;
-    const newState = !this.selectedUsers[roleId]; // aktueller Zustand invertieren
+        // Settings neu laden (damit descriptions aus Settings sichtbar werden)
+        await this.reloadSettings();
 
-    // Setzt alle User mit derselben Rolle auf denselben Wert
-    this.users.forEach(user => {
-      if(user.users_rights_id === roleId) {
-        this.$set(this.selectedUsers, roleId, newState);
+        // Funktionen neu laden (sichtbar + reaktiv)
+        await this.loadFunctions(this.selected);
+      } catch (err) {
+        console.error(err);
+        toastBus.emit('toast', {
+          message: 'Fehler beim Aktualisieren des Status!',
+          type: 'error'
+        });
       }
-    });
-  },
-    reset() {
-    this.userSearch = ''; // v-model zurücksetzen
-  },
-    saveSelectedUserRoles() {
-  this.activeUsers.forEach(u => {
-    if(this.selectedUsers[u.users_rights_id]){
-      this.saveUserRole(u);
-    }
-  });
-},
-    saveUserRole(u) {
-        console.error("not Saved:" + u);
-        if (!u.selectedRoleId) {
-        toastBus.emit('toast', { message: 'Bitte eine Rolle auswählen!', type: 'error' });
+    },
 
-        return;
-        }
+    // reload Settings helper
+    async reloadSettings() {
+      try {
+        this.settings = await GetSettings();
+      } catch (e) {
+        console.error("reloadSettings error", e);
+      }
+    },
 
-        const payload = {
+    // --- User / Rollen ---
+    toggleDisabled(u) {
+      const isChecked = this.selectedUsers[u.id];
+      u.xis_disabled = isChecked ? 1 : 0;
+
+      axios.post('/api/save-user-disabled', {
         id: u.id,
-        users_rights_id: u.selectedRoleId,
-        xis_disabled:u.xis_disabled
-        };
-        console.log("Saved:" + payload);
-        axios.post('/api/save-user-role', payload)
+        xis_disabled: u.xis_disabled
+      })
         .then(res => {
-            toastBus.emit('toast', { message: res.data?.message || 'Rolle gespeichert!', type: 'success' });
-            // Optional: Icon aktualisieren
-            u.selectedRoleIcon = `/images/icons/ugr/${u.selectedRoleName}.gif`;
-            u.hoverIcon = u.selectedRoleIcon;
+          toastBus.emit('toast', {
+            message: res.data?.message || (isChecked ? 'Benutzer deaktiviert' : 'Benutzer aktiviert'),
+            type: 'success'
+          });
         })
         .catch(err => {
-            console.error('Fehler beim Speichern der Rolle:', err);
-            toastBus.emit('toast', { message: 'Fehler beim Speichern!', type: 'error' });
+          console.error(err);
+          toastBus.emit('toast', {
+            message: 'Fehler beim Aktualisieren des Status!',
+            type: 'error'
+          });
         });
     },
+
+    toggleDisabledSelection() {
+      this.showDisabled = !this.showDisabled;
+
+      if (this.showDisabled) {
+        this.users.forEach(u => {
+          if (Number(u.xis_disabled) === 1) {
+            this.selectedUsers[u.users_rights_id] = true;
+          }
+        });
+      } else {
+        this.users.forEach(u => {
+          if (Number(u.xis_disabled) === 1) {
+            this.selectedUsers[u.users_rights_id] = false;
+          }
+        });
+      }
+    },
+
+    toggleUserCheckbox(u) {
+      const roleId = u.users_rights_id;
+      const newState = !this.selectedUsers[roleId];
+
+      this.users.forEach(user => {
+        if (user.users_rights_id === roleId) {
+          this.selectedUsers[roleId] = newState;
+        }
+      });
+    },
+
+    reset() {
+      this.userSearch = '';
+    },
+
+    saveSelectedUserRoles() {
+      this.activeUsers.forEach(u => {
+        if (this.selectedUsers[u.users_rights_id]) {
+          this.saveUserRole(u);
+        }
+      });
+    },
+
+    saveUserRole(u) {
+      if (!u.selectedRoleId) {
+        toastBus.emit('toast', { message: 'Bitte eine Rolle auswählen!', type: 'error' });
+        return;
+      }
+
+      const payload = {
+        id: u.id,
+        users_rights_id: u.selectedRoleId,
+        xis_disabled: u.xis_disabled
+      };
+
+      axios.post('/api/save-user-role', payload)
+        .then(res => {
+          toastBus.emit('toast', { message: res.data?.message || 'Rolle gespeichert!', type: 'success' });
+          u.selectedRoleIcon = `/images/icons/ugr/${u.selectedRoleName}.gif`;
+          u.hoverIcon = u.selectedRoleIcon;
+        })
+        .catch(err => {
+          console.error('Fehler beim Speichern der Rolle:', err);
+          toastBus.emit('toast', { message: 'Fehler beim Speichern!', type: 'error' });
+        });
+    },
+
     // --- Tabs ---
     selectTab(tab) {
       this.activeTab = tab;
-      if(tab==='users') this.loadUsers();
-      if(tab==='functions') this.loadFunctions(this.selected);
-      if(tab==='tables') this.fetchRights(this.selected);
+      if (tab === 'users') this.loadUsers();
+      if (tab === 'functions') this.loadFunctions(this.selected);
+      if (tab === 'tables') this.fetchRights(this.selected);
     },
     tabClass(tab) {
-      return ['cursor-pointer px-4 py-2', this.activeTab===tab ? 'border-b-2 border-blue-500 font-bold' : ''];
+      return ['cursor-pointer px-4 py-2', this.activeTab === tab ? 'border-b-2 border-blue-500 font-bold' : ''];
     },
 
     navigate() {
       this.fetchRights(this.selected);
       this.loadFunctions(this.selected);
-      if(this.activeTab==='users') this.loadUsers();
+      if (this.activeTab === 'users') this.loadUsers();
     },
 
     // --- Dropdown ---
     toggleDropdown(u) {
-      this.users.forEach(user => { if(user!==u) user.showDropdown=false; });
+      this.users.forEach(user => { if (user !== u) user.showDropdown = false; });
       u.showDropdown = !u.showDropdown;
     },
-  selectRoleForUser(u, r) {
-    u.selectedRoleId = r.id;
-    u.selectedRoleName = r.name;
-    u.selectedRoleIcon = `/images/icons/ugr/${r.name}.gif`;
-    u.showDropdown = false;
-    u.hoverIcon = u.selectedRoleIcon; // Hover zurücksetzen
-  },
-saveAllUserRoles() {
-  // Nur User sammeln, bei denen sich die Rolle geändert hat
-  const payload = this.users
-    .filter(u => u.selectedRoleId)
-    .map(u => ({
-      id: u.id,
-      users_rights_id: u.selectedRoleId
-    }));
+    selectRoleForUser(u, r) {
+      u.selectedRoleId = r.id;
+      u.selectedRoleName = r.name;
+      u.selectedRoleIcon = `/images/icons/ugr/${r.name}.gif`;
+      u.showDropdown = false;
+      u.hoverIcon = u.selectedRoleIcon;
+    },
 
-  if (payload.length === 0) {
-    toastBus.emit('toast', { message: 'Keine Rollen zum Speichern ausgewählt!', type: 'error' });
-    return;
-  }
+    saveAllUserRoles() {
+      const payload = this.users
+        .filter(u => u.selectedRoleId)
+        .map(u => ({ id: u.id, users_rights_id: u.selectedRoleId }));
 
-  axios.post('/api/save-user-roles', { users: payload })
-    .then(res => {
-      toastBus.emit('toast', { message: res.data?.message || 'Rollen gespeichert!', type: 'success' });
-      // Optional: Icons aktualisieren
-      this.users.forEach(u => {
-        const role = this.roles.find(r => r.id === u.selectedRoleId);
-        if(role) {
-          u.selectedRoleIcon = `/images/icons/ugr/${role.name}.gif`;
-          u.hoverIcon = u.selectedRoleIcon;
-        }
-      });
-    })
-    .catch(err => {
-      console.error(err);
-      toastBus.emit('toast', { message: 'Fehler beim Speichern!', type: 'error' });
-    });
-},
+      if (payload.length === 0) {
+        toastBus.emit('toast', { message: 'Keine Rollen zum Speichern ausgewählt!', type: 'error' });
+        return;
+      }
+
+      axios.post('/api/save-user-roles', { users: payload })
+        .then(res => {
+          toastBus.emit('toast', { message: res.data?.message || 'Rollen gespeichert!', type: 'success' });
+          this.users.forEach(u => {
+            const role = this.roles.find(r => r.id === u.selectedRoleId);
+            if (role) {
+              u.selectedRoleIcon = `/images/icons/ugr/${role.name}.gif`;
+              u.hoverIcon = u.selectedRoleIcon;
+            }
+          });
+        })
+        .catch(err => {
+          console.error(err);
+          toastBus.emit('toast', { message: 'Fehler beim Speichern!', type: 'error' });
+        });
+    },
+
     // --- User Actions ---
     async loadUsers() {
-  try {
-    const res = await axios.get('/api/users_rights');
-    this.users = Array.isArray(res.data) ? res.data : [];
-    this.users.forEach(u => {
-    if (Number(u.xis_disabled) === 1) {
-        this.selectedUsers[u.id] = true; // disabled User automatisch anhaken
-    } else {
-        this.selectedUsers[u.id] = false;
-    }
-    });
-this.users.forEach(u => {
-  u.selectedRoleId = this.roles.find(r => r.id === u.users_rights_id)?.id || null;
-  u.selectedRoleName = this.roles.find(r => r.id === u.users_rights_id)?.name || '';
-  u.selectedRoleIcon = u.selectedRoleName ? `/images/icons/ugr/${u.selectedRoleName}.gif` : null;
-  u.showDropdown = false;
-  u.hoverIcon = u.selectedRoleIcon;
+      try {
+        const res = await axios.get('/api/users_rights');
+        this.users = Array.isArray(res.data) ? res.data : [];
 
-  // Checkbox-Status anhand disabled
-  this.selectedUsers[u.id] = Number(u.xis_disabled) === 1;
-});
-  } catch(e) {
-    console.error(e);
-  }
-}
-,
-    selectAllVisible(){ this.activeUsers.forEach(u=>this.selectedUsers[u.users_rights_id]=true); },
-    clearAllSelection(){ Object.keys(this.selectedUsers).forEach(k=>this.selectedUsers[k]=false); },
-    saveUserRights(){
-      const payload = Object.keys(this.selectedUsers).filter(id=>this.selectedUsers[id]);
-      axios.post('/api/save_user_rights',{users_rights_ids:payload})
-        .then(()=>toastBus.emit('toast',{message:'Benutzerrechte gespeichert!',type:'success'}))
-        .catch(()=>toastBus.emit('toast',{message:'Speichern fehlgeschlagen!',type:'error'}));
+        this.users.forEach(u => {
+          this.selectedUsers[u.id] = Number(u.xis_disabled) === 1;
+        });
+
+        this.users.forEach(u => {
+          u.selectedRoleId = this.roles.find(r => r.id === u.users_rights_id)?.id || null;
+          u.selectedRoleName = this.roles.find(r => r.id === u.users_rights_id)?.name || '';
+          u.selectedRoleIcon = u.selectedRoleName ? `/images/icons/ugr/${u.selectedRoleName}.gif` : null;
+          u.showDropdown = false;
+          u.hoverIcon = u.selectedRoleIcon;
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    },
+
+    selectAllVisible() { this.activeUsers.forEach(u => this.selectedUsers[u.users_rights_id] = true); },
+    clearAllSelection() { Object.keys(this.selectedUsers).forEach(k => this.selectedUsers[k] = false); },
+
+    saveUserRights() {
+      const payload = Object.keys(this.selectedUsers).filter(id => this.selectedUsers[id]);
+      axios.post('/api/save_user_rights', { users_rights_ids: payload })
+        .then(() => toastBus.emit('toast', { message: 'Benutzerrechte gespeichert!', type: 'success' }))
+        .catch(() => toastBus.emit('toast', { message: 'Speichern fehlgeschlagen!', type: 'error' }));
     },
 
     // --- Rechteverwaltung Tabellen ---
-    async fetchRights(urid){
-      try{
-        const res=await axios.get(`/admin/user-rights/get?urid=${urid}`);
-        this.userRights = res.data||{};
+    async fetchRights(urid) {
+      try {
+        const res = await axios.get(`/admin/user-rights/get?urid=${urid}`);
+
+        // support both shapes: { rights: {...}, labels: {...} } OR flat object
+        const rightsPayload = res.data?.rights || res.data || {};
+        this.userRights = rightsPayload;
+
+        // if labels included, set them
+        this.labels = res.data?.labels || this.labels || {};
+
+        // initialize rights array states
         this.initializeRights();
-      }catch(e){console.error(e);}
-    },
-    initializeRights(){
-      const fieldNames=Object.keys(this.rights);
-      for(const field of fieldNames){
-        const binary = this.userRights[field]||'';
-        const padded = binary.padEnd(this.adminTables.length,'0');
-        for(let i=0;i<this.adminTables.length;i++) this.rights[field][i]=padded[i]==='1';
+      } catch (e) {
+        console.error(e);
       }
     },
-    togglerow(index){
-      const allEnabled=Object.keys(this.rights).every(f=>this.rights[f][index]);
-      for(const f in this.rights) this.rights[f][index]=!allEnabled;
+
+    initializeRights() {
+      const fieldNames = Object.keys(this.rights);
+
+      // ensure adminTables length exists
+      const total = this.adminTables.length || 0;
+
+      for (const field of fieldNames) {
+        // binary string like "10101" or empty
+        let binary = this.userRights[field] ?? '';
+
+        // if numeric (e.g. 0/1), coerce to string
+        if (typeof binary === 'number') binary = String(binary);
+
+        // pad to adminTables length
+        const padded = (binary || '').padEnd(total, '0');
+
+        // ensure rights[field] array length
+        this.rights[field] = this.rights[field] || [];
+
+        for (let i = 0; i < total; i++) {
+          this.rights[field][i] = padded[i] === '1';
+        }
+      }
     },
-    saveRights(){
-      const payload={};
-      for(const [key,value] of Object.entries(this.rights)) payload[key]=value.map(v=>v?'1':'0').join('');
-      for(const [k,v] of Object.entries(this.lf2||{})) payload[k]=v;
-      axios.post('/api/admin/user-rights/save?urid='+this.selected,payload)
-        .then(r=>toastBus.emit('toast',{message:r.data?.message||'Gespeichert',type:'success'}))
-        .catch(e=>console.error(e));
+
+    togglerow(index) {
+      const allEnabled = Object.keys(this.rights).every(f => this.rights[f][index]);
+      for (const f in this.rights) this.rights[f][index] = !allEnabled;
+    },
+
+    saveRights() {
+      const payload = {};
+      // tables
+      for (const [key, value] of Object.entries(this.rights)) payload[key] = value.map(v => v ? '1' : '0').join('');
+
+      // functions (localFunc)
+      for (const [k, v] of Object.entries(this.localFunc || {})) {
+        payload[k] = v ? "1" : "0";
+      }
+
+      axios.post('/api/admin/user-rights/save?urid=' + this.selected, payload)
+        .then(r => toastBus.emit('toast', { message: r.data?.message || 'Gespeichert', type: 'success' }))
+        .catch(e => console.error(e));
     },
 
     // --- Funktionen ---
-    async loadFunctions(urid){
-      try{
-        const res=await axios.get(`/admin/user-rights/get?urid=${urid}`);
-        Object.entries(res.data||{}).forEach(([k,v])=>{if(k.includes('xkis_')) this.lf[k]=v;});
-        this.localFunc=res.data||{};
-      }catch(e){console.error(e);}
+    async loadFunctions(urid) {
+      try {
+        const res = await axios.get(`/admin/user-rights/get?urid=${urid}`);
+
+        console.log("RESP", res.data);
+
+        // rights root (don't overwrite this.userRights or tables)
+        const rights = res.data?.rights || res.data || {};
+
+        // Only xkis_ keys (functions)
+        const functions = Object.entries(rights).filter(([k]) => k.startsWith("xkis_"));
+
+        functions.sort((a, b) => a[0].localeCompare(b[0]));
+
+        this.lf = Object.fromEntries(functions);
+
+        // labels from API (descriptions)
+        this.labels = res.data?.labels || this.labels || {};
+
+        // set localFunc only to the functions (deep copy for reactivity)
+        const newLocal = {};
+        for (const [k, v] of functions) {
+          newLocal[k] = v;
+        }
+        this.localFunc = JSON.parse(JSON.stringify(newLocal));
+
+      } catch (e) {
+        console.error(e);
+      }
     },
 
-  handleClickOutside(event) {
-    this.users.forEach(u => {
-      const el = this.$refs['dropdown' + u.id]?.[0];
-      if (u.showDropdown && (!el || !el.contains(event.target))) {
-        u.showDropdown = false;
-        u.hoverIcon = null;
-      }
-    });
+    handleClickOutside(event) {
+      this.users.forEach(u => {
+        const el = this.$refs['dropdown' + u.id]?.[0];
+        if (u.showDropdown && (!el || !el.contains(event.target))) {
+          u.showDropdown = false;
+          u.hoverIcon = null;
+        }
+      });
+    },
+
+    stripXkis(k) { return k.replace(/^xkis_/, ''); },
+
+    getLabel(k) {
+      const key = this.stripXkis(k);
+      return this.labels?.[key] || this.settings.exl?.[key] || key;
+    },
+
+    ucf(str) { return String(str).split('_').map(s => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()).join(' '); },
+    ucf2(str) { return this.settings.exl?.[str] ?? str; },
   },
-    stripXkis(k){ return k.replace(/^xkis_/,''); },
-    getLabel(k){ return this.settings.exl?.[this.stripXkis(k)]||this.stripXkis(k); },
-    ucf(str){ return String(str).split('_').map(s=>s.charAt(0).toUpperCase()+s.slice(1).toLowerCase()).join(' '); },
-    ucf2(str){ return this.settings.exl?.[str]??str; },
-  },
-  async mounted(){
+
+  async mounted() {
+    // initial settings
     this.settings = await GetSettings();
-    if(this.selected){ this.fetchRights(this.selected); this.loadFunctions(this.selected); }
-    else{ this.fetchRights(this.urid||''); this.loadFunctions(this.urid||''); }
+
+    // initial load: fetch rights & functions for current selection or urid
+    const ur = this.selected || this.urid || '';
+    if (ur) {
+      await this.fetchRights(ur);
+      await this.loadFunctions(ur);
+    } else {
+      await this.fetchRights('');
+      await this.loadFunctions('');
+    }
 
     // click outside dropdown
-    document.addEventListener('click', e=>{
-      this.users.forEach(u=>{
-        if(u.showDropdown && !e.target.closest('.relative.inline-block')) u.showDropdown=false;
+    document.addEventListener('click', e => {
+      this.users.forEach(u => {
+        if (u.showDropdown && !e.target.closest('.relative.inline-block')) u.showDropdown = false;
       });
     });
   },
-  watch:{
-    selected(newVal){ this.navigate(newVal); },
-    localFunc:{ immediate:true, deep:true, handler(newVal){
-      this.lf2={};
-      for(const k in newVal) if(k.includes('xkis_')) this.lf2[k]=newVal[k]===1?1:0;
-    }},
+
+  watch: {
+    selected(newVal) { this.navigate(newVal); },
+    localFunc: {
+      immediate: true,
+      deep: true,
+      handler(newVal) {
+        // build lf2 for backwards compat (if used elsewhere)
+        this.lf2 = {};
+        for (const k in newVal) if (k.includes('xkis_')) this.lf2[k] = newVal[k] === 1 ? 1 : (newVal[k] ? 1 : 0);
+      }
+    },
   }
 }
 </script>
+
 
 <style>
 .wff { min-width: 200px !important; }

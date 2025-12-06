@@ -3012,7 +3012,11 @@ return response()->json($user);
         // \Log::info($request->all());
         $userRights = UsersRight::find($urid);
         //\Log::info("UR: ".$userRights);
-        return response()->json($userRights);
+        $data = [
+            'rights' => $userRights,
+            'labels' => Settings::$exl   // ⬅️ NEU!
+        ];
+        return response()->json($data);
     }
     public function getRoles(Request $request)
     {

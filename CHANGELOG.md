@@ -152,3 +152,5 @@
 ![Version](https://img.shields.io/badge/version-3.94.7-orange) Hotfix - fixed pagination on TableShow (#293)  
 ![Version](https://img.shields.io/badge/version-3.95.1-orange) Hotfix - Fixed font in footer (#294)  
 ![Version](https://img.shields.io/badge/version-3.96.0-orange) Feature - Statistics Completed (#302)  
+![Version](https://img.shields.io/badge/version-3.97.5-orange) Hotfix - Changed Email Form (#303)  
+![Version](https://img.shields.io/badge/version-4.12.4-orange) Feature - Sign in with Google (#283)  

@@ -31,7 +31,7 @@ class RightsController extends Controller
         if(!Auth::check())
         {
             //return response()->json(0);
-            $userId = 1;
+            $userId = 0;
         }
         // Stelle sicher, dass der Benutzer eingeloggt ist
         else{
@@ -92,6 +92,133 @@ $rf = "0";
 \Log::info("R:".$right."POSS:".($pos-1)."V:".$rf);
     return response()->json($rf);
 }
+// public function AddFunction(Request $request)
+// {
+
+//     \Log::info("FUNC: ".$request->name);
+// }
+public function AddFunction(Request $request)
+{
+    if(!CheckZRights("Users_Rights"))
+    {
+        return redirect("/no-rights");
+    }
+    $new = $request->name;   // z.B. "neuer eintrag"
+    $column = 'xkis_' .str_replace(' ', '_', $new);
+
+    $table = 'users_rights';
+
+    // 1) Alle Spalten aus users_rights holen
+    $columns = DB::select("SHOW COLUMNS FROM `$table`");
+
+    // Nur xkis_* herausfiltern
+    $xkisColumns = array_map(fn($c) => $c->Field, array_filter($columns, function ($col) {
+        return str_starts_with($col->Field, 'xkis_');
+    }));
+
+    // Alphabetisch sortieren
+    sort($xkisColumns, SORT_NATURAL);
+
+    // 2) Prüfen, ob Spalte schon existiert
+    if (in_array($column, $xkisColumns)) {
+        return response()->json(['message' => "Feld $column existiert bereits"], 400);
+    }
+    $this->addColumn($request);
+    // 3) Alphabetische Position finden
+    $insertAfter = null;
+    foreach ($xkisColumns as $col) {
+        if (strcmp($column, $col) > 0) {
+            $insertAfter = $col; // letzter kleinerer Eintrag
+        }
+    }
+
+    // 4) SQL erstellen: ALTER TABLE ... ADD COLUMN ... AFTER ...
+    if ($insertAfter) {
+        $sql = "ALTER TABLE `$table` ADD COLUMN `$column` TINYINT(1) NOT NULL DEFAULT 0 AFTER `$insertAfter`";
+    } else {
+        // Alphabetisch ganz am Anfang der xkis-Blöcke → vor dem ersten xkis_ Feld
+        $first = $xkisColumns[0] ?? null;
+
+        if ($first) {
+            $sql = "ALTER TABLE `$table` ADD COLUMN `$column` TINYINT(1) NOT NULL DEFAULT 0 BEFORE `$first`";
+        } else {
+            // Es gibt noch keine xkis-Spalten → einfach ans Ende
+            $sql = "ALTER TABLE `$table` ADD COLUMN `$column` TINYINT(1) NOT NULL DEFAULT 0";
+        }
+    }
+
+    // 5) Spalte erzeugen
+    DB::statement($sql);
+
+    // 6) User ID 1 bekommt automatisch Wert = 1
+        DB::table($table)->where('id', 1)->update([$column => 1]);
+
+        return response()->json([
+            'message' => "Feld $column erfolgreich hinzugefügt",
+            'insert_after' => $insertAfter,
+            'new_column' => $column
+        ]);
+}
+public function addColumn(Request $request)
+{
+    $table  = "users_rights";
+    $column = $request->name;
+    $desc   = $request->desc;
+
+    // Key ohne xkis_
+    $key = str_replace('xkis_', '', $column);
+
+    // Datei-Pfad
+    $path = app_path("/Models/Settings.php");
+
+    if (!file_exists($path)) {
+        return response()->json([
+            'error' => "Settings.php nicht gefunden!",
+        ], 500);
+    }
+
+    // Settings-Klasse laden
+    require_once $path;
+    $current = \App\Models\Settings::$exl;
+
+    // Prüfen ob Key existiert
+    if (array_key_exists($key, $current)) {
+        return response()->json([
+            'message' => "Key '$key' existiert bereits in Settings::\$exl",
+        ]);
+    }
+
+    // Neuen Eintrag hinzufügen
+    $current[$key] = $desc;
+
+    // Nun Datei neu schreiben
+    $content = file_get_contents($path);
+
+    // EXAKT das exl-Array ersetzen
+    $newExl = "public static array \$exl = [\n";
+
+    foreach ($current as $k => $v) {
+        $newExl .= "        '$k' => '" . addslashes($v) . "',\n";
+    }
+
+    $newExl .= "    ];";
+
+    // Ersetzt nur das exl-Array
+    $content = preg_replace(
+        '/public static array \$exl = \[(.*?)\];/s',
+        $newExl,
+        $content
+    );
+
+    file_put_contents($path, $content);
+
+    return response()->json([
+        'message' => "Feld $column wurde gespeichert und Settings::\$exl wurde erweitert",
+        'added_to_exl' => [$key => $desc]
+    ]);
+}
+
+
 public function allTableRights($right)
 {
     // Beispiel: $right = "view_table"

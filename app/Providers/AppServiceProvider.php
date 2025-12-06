@@ -3,9 +3,6 @@
 namespace App\Providers;
 use App\Http\Controllers\GlobalController;
 use Illuminate\Support\ServiceProvider;
-use Whitecube\LaravelCookieConsent\CookiesManager;
-use Whitecube\LaravelCookieConsent\Cookies\Manager;
-use Whitecube\LaravelCookieConsent\Facades\LaravelCookieConsent;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Config;
 use \App\Models\Settings;

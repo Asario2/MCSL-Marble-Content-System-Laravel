@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="!$page?.props?.auth?.user">
       <img
         :src="captchaUrl"
         alt="CAPTCHA"

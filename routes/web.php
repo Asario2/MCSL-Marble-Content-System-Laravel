@@ -2,6 +2,8 @@
 
 use Inertia\Inertia;
 
+
+use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -50,11 +52,9 @@ use App\Helpers;
 use App\Mail\CommentMail;
 use App\Mail\ContactMail;
 use App\Mail\RegisterMail;
-use Whitecube\LaravelCookieConsent\CookiesManager;
-use Whitecube\LaravelCookieConsent\Http\Controllers\AcceptAllController;
-use Whitecube\LaravelCookieConsent\Http\Controllers\AcceptEssentialsController;
-use Whitecube\LaravelCookieConsent\Http\Controllers\ConfigureController;
+use App\Http\Middleware\HandleSocialitePlusProviders;
 use App\Http\Controllers\CountPixelController;
+use App\Http\Controllers\Auth\GoogleController;
 
 GlobalController::SetDomain();
 
@@ -65,13 +65,36 @@ if(SD() == "mfx"){
     Route::get('/', function () {
         return redirect('/news');
     });
-}
+    }
 // Route::middleware(['checksubd:ab,asario'])->group(function () {
     // Route::middleware('checksubd:ab,asario')->group(function () {
         Route::get('/countpixel', [CountPixelController::class, 'track'])->name('countpixel');
 
         Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+        // Route::get('auth/google', function () {
+        //     return Socialite::driver('google')->redirect();
+        // });
+
+        // Route::get('auth/google/callback', function () {
+        //     $googleUser = Socialite::driver('google')->user();
+
+        //     // Debug Output:
+        //     // dd($googleUser);
+        // });
+
+
+        //
+        // GOOGLE AUTH
+        //
+
+        Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name("ggle.login");
+        Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+        Route::get('/register/nickname', [GoogleController::class, 'showNicknameForm']);
+        Route::post('/register/nickname', [GoogleController::class, 'saveNickname']);
+        Route::get('/auth/nickname', function () {
+            return inertia('Admin/nickname');
+        })->name('auth.nickname');
 
         Route::get("/api/user/rights",[RightsController::class,"GetRights_all"])->name("GetRights_all");
         Route::post('/api/contact/send',[CommentController::class,"sendmc"]);
@@ -122,6 +145,7 @@ Route::middleware(\App\Http\Middleware\CheckSubd::class . ':ab,asario')->group(f
     Route::get('/dashboard', function () {
         return redirect('/admin/dashboard');
     })->name('dashboard');
+    Route::post("/personal_update", [PersonalController::class, 'update'])->name("personal.update");
     Route::get('/home/QRCodaH', [HomeController::class, 'QRCodaH'])->name('home.qrcodah');
     Route::get('/home/aboutme', [HomeController::class, 'home_about'])->name('home.about');
     Route::get("/admin/Kontakte", [TablesController::class, "show_contacts"])->name('admin.kontakte');
@@ -214,10 +238,22 @@ Route::get('/home/privacy', [HomeController::class, 'home_privacy'])->name('home
 
     Route::get('/api/table-columns/{table}', [TablesController::class, 'getTableColumns'])
     ->name('api.table-columns');
-    Route::get('/login', [CustomLoginController::class, 'showLoginForm'])->name('login');
+
+    // OLD LOGIN
+
+    //Route::get('/login', [CustomLoginController::class, 'showLoginForm'])->name('login');
+
+
     Route::get('/home/contacts', [HomeController::class, 'contacts'])->name('home.contacts');
     // Login absenden
     Route::post('/login', [CustomLoginController::class, 'login']);
+    Route::get('register', [RegisteredUserController::class, 'create'])
+    // ->middleware(HandleSocialitePlusProviders::class)
+    ->name('register');
+
+Route::get('login', [AuthenticatedSessionController::class, 'create'])
+    // ->middleware(HandleSocialitePlusProviders::class)
+    ->name('login');
     Route::post('/logout', [CustomLoginController::class, 'logout'])
     ->name('logout');
 
@@ -497,6 +533,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/userx/update-config/{id}', [UserConfigController::class, 'updateConfig'])->name('usconfi');
         Route::get('/dboard/data', [CountPixelController::class, 'dboard'])->name('dboard.data');
         Route::get('/admin/Statistics', [HomeController::class, 'plot_gfx'])->name('stats');
+        // Route::post('/api/AddFunc', [RightsController::class, 'AddFunction'])->name('admin.add.func');
 
         Route::post('/api/user/batch-rights', [TablesController::class, 'GetBatchRights'])->name("get.bash.rights");
         Route::get('/api/chkcom/{id?}', [CommentController::class, 'checkComment'])->name("comments.check");
