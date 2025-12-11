@@ -47,7 +47,7 @@
                         :disabled="true"
                         class="cursor-not-allowed"
                         :required="isRequired(field.required)"
-                        @input="handleInput"
+                        @input="handleInput_alt(field.name)"
                         >
                         <template #label>{{ field.label }}</template>
                     </InputFormText>
@@ -119,6 +119,10 @@
                         @validationFailed="() => handleValidationFailed(index, field.required)"
                         @validationPassed="() => handleValidationPassed(index)"
                         :required="isRequired(field.required)"
+                        @input="handleInput_alt(field.name)"
+                        @paste="handleInput_alt(field.name, $event)"
+                        @keyup="handleInput_alt(field.name, $event)"
+                        @content-updated="handleInput_alt(field.name, $event)"
                     >
                         <template #label>{{ field.label }}</template>
                     </Editor>
@@ -1050,21 +1054,31 @@ export default defineComponent({
             this.readingTime = event.target.value;
             this.updateFormData();
         },
+    //    handleInput_alt(field) {
+    //         this.updateReadingTime("editor_" + field);
+    //     },
+    handleInput_alt(fieldName, content) {
+  this.updateReadingTime("content_alt");
+},
 
-        updateReadingTime() {
-            if (!Array.isArray(this.ffo) || this.ffo.length === 0) return;
+        updateReadingTime(field) {
+            // alert(field);
+            const element = document.getElementById(field);
 
-            const textareaField = this.ffo.find(field => ['textarea'].includes(field.type));
-            if (textareaField) {
-                this.readingTime = this.calculateReadingTime(textareaField.value);
+            if (!element) {
+                console.error("Element not found:", field);
+                return;
             }
+            // alert(element.value);
+            this.readingTime = this.calculateReadingTime(element.value);
+
         },
 
         calculateReadingTime(text) {
-            if (!text) return 0;
-            const wordsPerMinute = 190;
-            const words = text.trim().split(/\s+/).length;
-            return Math.round(words / wordsPerMinute,1);
+            text = text.replace(/<[^>]+>/g, "").trim();
+            const words = text?.trim().split(/\s+/).length;
+            const minutes = words / 200; // durchschnittliche Lesegeschwindigkeit
+            return Math.ceil(minutes); // gerundet auf volle Minuten
         },
 
         removeNumericKeys(obj) {
@@ -1533,6 +1547,7 @@ if (!isValid) {
 
     async mounted() {
 
+
         if(!this.ffo || this.ffo.length < 3 || this.ffo === "undefined"){
             this.$inertia.visit('/no-rights');
             return;
@@ -1574,6 +1589,7 @@ if (!isValid) {
         this.nf = await this.getOF();
     }
     this.table_image = "images";
+    this.updateReadingTime("content_alt");
 },
 })  ;
 </script>

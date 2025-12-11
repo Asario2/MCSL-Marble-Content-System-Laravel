@@ -14,6 +14,7 @@ use App\Http\Controllers\PMController;
 use App\Http\Controllers\UserConfigController;
 use App\Http\Controllers\BlogPostController;
 use App\Http\Controllers\RatingController;
+use App\Http\Controllers\SQLUpdateController;
 use App\Http\Controllers\DarkModeController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\NameBindingsController;
@@ -135,6 +136,7 @@ Route::middleware(['auth'])->group(function () {
 Route::post("/newsl_subscribe", [MailController::class, "Subscribe_Newsl"])->name("mail.subscribe_newsl");
 Route::get("/unsubscribe/{uhash}", [MailController::class, "UnSubscribe_Newsl"])->name("mail.unsubscribe_newsl");
 Route::get("/mail/subscribe/{uhash}/{email}",[TablesController::class, "newsletter_save"])->name("mail.savenewsletter");
+Route::get('/home/ai', [HomeController::class, 'home_AI'])->name('home.ai');
 //
 //     AB- Asarios BLog
 //
@@ -155,7 +157,7 @@ Route::middleware(\App\Http\Middleware\CheckSubd::class . ':ab,asario')->group(f
     // Terms
     Route::get('/home/terms', [HomeController::class, 'home_terms'])->name('home.terms');
     // Ai Content
-    Route::get('/home/ai', [HomeController::class, 'home_AI'])->name('home.ai');
+
 
     // Pictures
     Route::get('/home/show/pictures/{slug}', [HomeController::class, 'home_images'])->name('home.images.gallery');
@@ -528,7 +530,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         )->name('admin.dashboard');
 
 ### ============== API ISADMIN QI ================ ###
-
+        Route::get("/SQLUpdate", [SQLUpdateController::class,"index"])->name("SQL.index");
         Route::get('/api/admin-tables', [TablesController::class, 'GetDBTables'])->name("get.db.tables");
         Route::get('/userx/update-config/{id}', [UserConfigController::class, 'updateConfig'])->name('usconfi');
         Route::get('/dboard/data', [CountPixelController::class, 'dboard'])->name('dboard.data');

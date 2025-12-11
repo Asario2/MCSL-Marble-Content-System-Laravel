@@ -121,14 +121,16 @@ import Layout from "@/Application/Admin/Shared/Layout.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 
 import NavigationCard from "@/Application/Components/NavigationCard.vue";
-import { loadRights,ucf,CleanTable,GetRights } from '@/helpers';
+import { loadRights,ucf,CleanTable,GetRights,SD } from '@/helpers';
 // import { hasRight,loadAllRights,isRightsReady } from '@/utils/rights';
+import { defineAsyncComponent } from "vue";
 import axios from "axios";
 export default defineComponent({
     name: "Admin_Dashboard",
 
     components: {
-        Layout,
+        Layout: defineAsyncComponent(() =>
+        import(`@/Application/Admin/Shared/${SD()}/Layout.vue`)),
         Breadcrumb,
         NavigationCard,
     },
@@ -163,6 +165,7 @@ export default defineComponent({
     },
     methods: {
         ucf,
+        SD,
         CleanTable,
         GetRights,
         fetchAdminTables() {

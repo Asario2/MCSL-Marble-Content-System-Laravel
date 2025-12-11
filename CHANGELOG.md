@@ -154,3 +154,4 @@
 ![Version](https://img.shields.io/badge/version-3.96.0-orange) Feature - Statistics Completed (#302)  
 ![Version](https://img.shields.io/badge/version-3.97.5-orange) Hotfix - Changed Email Form (#303)  
 ![Version](https://img.shields.io/badge/version-4.12.4-orange) Feature - Sign in with Google (#283)  
+![Version](https://img.shields.io/badge/version-4.13.7-orange) Feature - Add DB sync (#304)  

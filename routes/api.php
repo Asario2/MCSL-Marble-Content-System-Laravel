@@ -5,11 +5,25 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\TablesController;
 use App\Http\Controllers\RightsController;
-
-
+use App\Http\Controllers\SQLUpdateController;
 
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 Route::post('/AddFunc', [RightsController::class, 'AddFunction']);
+Route::prefix('mysqlops')->group(function () {
+
+    // Datum aus lastmySQLOps.dat
+    Route::get('/last', [SQLUpdateController::class, 'last']);
+
+    // Tabellen-Liste (local + online)
+    Route::get('/tables', [SQLUpdateController::class, 'tables']);
+
+    // Sync Localhost → Online
+    Route::post('/sync', [SQLUpdateController::class, 'sync']);
+    // Sync ALL
+    Route::post('/sync-to-all', [SQLUpdateController::class, 'syncToAll']);
+
+});
+

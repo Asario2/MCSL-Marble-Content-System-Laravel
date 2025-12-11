@@ -11,41 +11,41 @@
                 <b>B</b>
             </button>
 
-            <button type="button" @click="toggleItalic()" class="icon-btn" v-tippy aria-label="Kursiv">
+            <button tabindex="-1" type="button" @click="toggleItalic()" class="icon-btn" v-tippy aria-label="Kursiv">
                 <b><i>I</i></b>
             </button>
 
             <template v-for="i in 6" :key="i">
-                <button type="button" @click="toggleHeading(`${i}`)" class="icon-btn" v-tippy :aria-label="'Überschrift ' + i">
+                <button tabindex="-1" type="button" @click="toggleHeading(`${i}`)" class="icon-btn" v-tippy :aria-label="'Überschrift ' + i">
                     <b>H{{ i }}</b>
                 </button>
             </template>
 
-            <button type="button" @click="openModal_alt2" class="icon-btn" v-tippy aria-label="Bildupload">
+            <button tabindex="-1" type="button" @click="openModal_alt2" class="icon-btn" v-tippy aria-label="Bildupload">
                 <b><IconPictures stroke="currentColor"/></b>
             </button>
 
-            <button type="button" @click="toggleCode()" class="icon-btn" v-tippy aria-label="Code">
+            <button tabindex="-1" type="button" @click="toggleCode()" class="icon-btn" v-tippy aria-label="Code">
                 <b><IconCode /></b>
             </button>
 
-            <button type="button" @click="AddHr" class="icon-btn" v-tippy  aria-label="Trennlinie">
+            <button tabindex="-1" type="button" @click="AddHr" class="icon-btn" v-tippy  aria-label="Trennlinie">
                 <b><nobr>---</nobr></b>
             </button>
 
-            <button type="button" @click="toggleFormat('email')" class="icon-btn" v-tippy  aria-label="Email">
+            <button tabindex="-1" type="button" @click="toggleFormat('email')" class="icon-btn" v-tippy  aria-label="Email">
                 <b>@</b>
             </button>
 
-            <button type="button" @click="toggleFormat('link')" class="icon-btn" v-tippy aria-label="Hyperlink">
+            <button tabindex="-1" type="button" @click="toggleFormat('link')" class="icon-btn" v-tippy aria-label="Hyperlink">
                 <b><IconHyperLink/></b>
             </button>
 
-            <button type="button" @click="toggleList('ul')" class="icon-btn" v-tippy  aria-label="Ungeordnete Liste">
+            <button tabindex="-1" type="button" @click="toggleList('ul')" class="icon-btn" v-tippy  aria-label="Ungeordnete Liste">
                 <b><IconList/></b>
             </button>
 
-            <button type="button" @click="toggleList('ol')" class="icon-btn" v-tippy aria-label="Geordnete Liste">
+            <button tabindex="-1" type="button" @click="toggleList('ol')" class="icon-btn" v-tippy aria-label="Geordnete Liste">
                 <b><IconOrdList/></b>
             </button>
         </div>
@@ -311,6 +311,9 @@ export default {
                 this.updateValue();
                 this.saveSelection();
             });
+
+
+
         },
 
         validate() {
@@ -653,7 +656,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 /* CSS bleibt gleich */
 .edit0R {
     max-width: 1177px;

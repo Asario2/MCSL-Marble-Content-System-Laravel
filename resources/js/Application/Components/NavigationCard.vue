@@ -59,6 +59,7 @@ import IconProjects from "@/Application/Components/Icons/IconProjects.vue";
 import IconProjectsSheets from "@/Application/Components/Icons/IconProjectsSheets.vue";
 import IconStar from "@/Application/Components/Icons/IconStar.vue";
 import IconTexts from "@/Application/Components/Icons/IconTexts.vue";
+import texts from "@/Application/Components/Icons/texts.vue";
 import IconInfos from "@/Application/Components/Icons/IconInfos.vue";
 import IconLock from "@/Application/Components/Icons/IconLock.vue";
 import IconMail from "@/Application/Components/Icons/IconMail.vue";
@@ -92,6 +93,7 @@ export default {
         IconNews,
         IconTexts,
         IconInfos,
+        texts,
         IconStar,
         IconContacts,
     },
@@ -140,6 +142,7 @@ export default {
                 IconPictures,
                 IconLogs,
                 IconDidyou,
+                texts,
                 IconInfos,
                 IconProjects,
                 IconProjectsSheets,

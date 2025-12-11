@@ -159,6 +159,7 @@
                                         >
                                             Profil
                                         </dropdown-link>
+
                                           <dropdown-link v-if="modulRights?.PrivateMessages"
                                                 :with-icon="false"
                                                 :with-route="true"
@@ -255,7 +256,7 @@
                         >
                             Dashboard
                         </ResponsiveNavLink>
-                            
+
                         <ResponsiveNavLink as="button">
                             <button-change-mode
                                 :mode="mode"
@@ -296,6 +297,7 @@
                         </div>
 
                         <div class="mt-3 space-y-1">
+
                             <ResponsiveNavLink
                                 :href="route('admin.profile')"
                                 :active="route().current('admin.profile')"

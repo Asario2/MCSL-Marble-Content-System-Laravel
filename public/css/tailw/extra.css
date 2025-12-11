@@ -1,6 +1,9 @@
 .tw{
 color:#fff !important;
 }
+    .ai-image-corner{
+    border-bottom-right-radius: 64px !important;
+}
 *, ::before, ::after {
 --tw-border-spacing-x: 0;
 --tw-border-spacing-y: 0;

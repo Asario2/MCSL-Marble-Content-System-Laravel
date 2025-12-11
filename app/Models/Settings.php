@@ -161,6 +161,7 @@
 
     ];
     public static array $regdom =   ['ab'=>true];
+    public static array $excl_dump_tables = ["xgen_migrations","password_reset_tokens","personal_access_tokens","blog_images","private_messages","xgen_page_views","xgen_migrations","privacy_orig","colors","dbhash","tenant","cache","cache_locks","comments","countpixel","newsletter_blacklist","newsletter_reci","prvacy_orig","privaze_messages","private_messages_text","ratings","sessions","users","users_config"];
 
         public static array $no_req = ['exif_copyright','exif_comp','exif_model','Mpixel','modul','is_admin','is_customer','is_employee','customer_id','admin_id','company_id',
                                        'profile_photo_path',"category_id","type_id",'message','message_en',

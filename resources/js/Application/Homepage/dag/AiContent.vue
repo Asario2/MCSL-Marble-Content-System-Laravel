@@ -32,7 +32,7 @@
                   {{ item.headline }}
                 </h2>
 
-                <div class="text-xs text-layout-sun-600 dark:text-layout-night-600 py-2">
+                <div class="text-xs text-layout-sun-600 dark:text-layout-night-600">
                   Von: {{ item.author_name }}
                 </div>
 

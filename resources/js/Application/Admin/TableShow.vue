@@ -174,7 +174,7 @@
 
     <script>
     import { defineComponent } from "vue";
-    import Layout from "@/Application/Admin/Shared/Layout.vue";
+    import Layout from "@/Application/Admin/Shared/ab/Layout.vue";
     import CreatedAt from "@/Application/Components/Form/CreatedAt.vue";
     import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
     import ListContainer from "@/Application/Components/Lists/ListContainer.vue";

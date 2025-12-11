@@ -72,7 +72,7 @@ import InputContainer from "@/Application/Components/Form/InputContainer.vue";
 import InputLabel from "@/Application/Components/Form/InputLabel.vue";
 import InputElement from "@/Application/Components/Form/InputElement.vue";
 import InputError from "@/Application/Components/Form/InputError.vue";
-
+import texts from "@/Application/Components/Icons/texts.vue";
 import ButtonGroup from "@/Application/Components/Form/ButtonGroup.vue";
 import InputButton from "@/Application/Components/Form/InputButton.vue";
 
