@@ -1,5 +1,5 @@
 <template>
-<label :for="name">Benutzer</label>
+<!-- <label :for="name">Benutzer</label> -->
 <div>
       <select
         v-bind="$attrs"
@@ -58,7 +58,7 @@
 
     computed: {
         resolvedValue() {
-            return this.internalValue < 1 ? "dummy" : this.internalValue;
+            return this.internalValue < 1 ? "0" : this.internalValue;
         },
       optionsList() {
         let opts = [];

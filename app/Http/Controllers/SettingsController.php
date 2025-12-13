@@ -36,6 +36,7 @@ class SettingsController extends Controller
             "aftsetting"=> Settings::$aftsetting,
             "thirdparty"=> Settings::$thirdparty,
             "userexcl"=> Settings::$userexcl,
+            'connect_dbname'=>Settings::$connect_dbname,
         ]);
     }
 }

@@ -530,7 +530,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         )->name('admin.dashboard');
 
 ### ============== API ISADMIN QI ================ ###
-        Route::get("/SQLUpdate", [SQLUpdateController::class,"index"])->name("SQL.index");
+        Route::get("/admin/SQLUpdate", [SQLUpdateController::class,"index"])->name("SQL.index");
         Route::get('/api/admin-tables', [TablesController::class, 'GetDBTables'])->name("get.db.tables");
         Route::get('/userx/update-config/{id}', [UserConfigController::class, 'updateConfig'])->name('usconfi');
         Route::get('/dboard/data', [CountPixelController::class, 'dboard'])->name('dboard.data');

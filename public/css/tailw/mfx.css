@@ -5,7 +5,9 @@
 .dark\:bg-layout-night-0:is(.dark *){
     color:#fff !important;
 }
-
+.dark\:bg-layout-night-100:is(.dark *){
+    background-color:#313033  !important;
+}
 .dark\:border-layout-night-1050:is(.dark *){
     border-color:#ffa200 !important;
     border-width: 2px !important;

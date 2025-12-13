@@ -12,16 +12,42 @@ class SQLUpdateController extends Controller
 {
     private string $opsFile;
     private string $domset;
+    private string $domset_of;
+    private array $KTables;
 
     public function __construct()
     {
-        $this->domset  = "mariadb_ol";
+        $_SESSION['domain'] ?? "ab";
+        $this->domset  = $this->GetDBCon(1,@$_SESSION['domain']);
+        $this->domset_of = $this->GetDBCon(0,@$_SESSION['domain']);
+        $this->adb = $this->GetDBBase();
+        $this->KTables = ["cleo_","ffrog_","monxx_"];
         $this->opsFile = "lastmySQLOps.dat";
+        if(!session_id())
+        {
+            session_start();
+        }
     }
+    public function GetDBBase()
+    {
+//        return Settings::$con_db[SD()];
+    }
+    public function GetDBCon($reg=0,$domain="ab")
+    {
+        $domain = $domain ?? "ab";
+        \Log::info("SET:".json_encode(Settings::$connect_dbname));
 
+        if($reg == 1){
+            // dd(Settings::$connect_dbname[SD()]."_ol");
+            return Settings::$connect_dbname[$domain]."_ol";
+        }
+        return Settings::$connect_dbname[$domain];
+
+    }
     public function index()
     {
-        return Inertia::render('Admin/SQLUpdate');
+        $cor_date = date("d.m.Y H:i:s",strtotime(file_get_contents(storage_path("/app/".$this->opsFile))));
+        return Inertia::render('Admin/SQLUpdate',compact("cor_date"));
     }
 
     public function last()
@@ -44,11 +70,17 @@ class SQLUpdateController extends Controller
     // ---------------------------
     // Tabellen + Hashes
     // ---------------------------
-    public function tables()
+    public function tables(Request $request,$domain='ab')
     {
+        $this->domset  = $this->GetDBCon(1,$request->domain);
+        $this->domset_of = $this->GetDBCon(0,$request->domain);
+        $_SESSION['domain'] = $domain;
+
+        \Log::info("DOM: ".$domain);
+
         return response()->json([
-            'local'  => $this->getTablesWithHash(DB::getDefaultConnection()),
-            'online' => $this->getTablesWithHash($this->domset),
+            'local'  => $this->getTablesWithHash($this->domset_of,$request->domain),
+            'online' => $this->getTablesWithHash($this->domset,$request->domain),
         ]);
     }
     // public function syncToAll()
@@ -86,7 +118,7 @@ class SQLUpdateController extends Controller
     //         $this->syncOnlineToLocal($t['name']);
 
     //         // neuen Hash berechnen
-    //         $hash = $this->getTableHash($t['name'], DB::getDefaultConnection());
+    //         $hash = $this->getTableHash($t['name'], $this->domset_of);
 
     //         // Hash speichern (offline = lh)
     //         $this->UpdateHash($t['name'], $hash, 'lh');
@@ -120,7 +152,7 @@ class SQLUpdateController extends Controller
     //     ]);
     // }
 
-    private function getTablesWithHash(string $connection): array
+    private function getTablesWithHash(string $connection,$domain): array
     {
         $database = DB::connection($connection)->getDatabaseName();
 
@@ -132,35 +164,49 @@ class SQLUpdateController extends Controller
 
         // Tabellen filtern
         $tables = array_filter($tables, fn($t) => !in_array($t->name, Settings::$excl_dump_tables));
+        $tables = array_filter($tables, function ($t) {
+        foreach ($this->KTables as $prefix) {
+            if (str_starts_with($t->name, $prefix)) {
+                // Tabelle enthält einen unerwünschten Prefix → ignorieren
+                return false;
+            }
+        }
+        return true; // Tabelle ohne Prefix → behalten
+        });
         usort($tables, fn($a, $b) => strcmp($a->name, $b->name));
 
         $result = [];
-        $dom = SD();
+        $dom = $domain;
 
         foreach ($tables as $t) {
-            $table = $t->name;
 
+            $table = $t->name;
+                // Tabelle überspringen, wenn kein Prefix passt
+
+            // if (! collect($this->KTables)->contains(fn($p) => str_starts_with($table, $p))) {
+            //     continue;
+            // }
             // aktuellen Hash berechnen
-            $hashLocal  = $this->getTableHash($table, DB::getDefaultConnection());
+            $hashLocal  = $this->getTableHash($table, $this->domset_of);
             $hashOnline = $this->getTableHash($table, $this->domset);
 
             // gespeicherte Hashes abrufen
-            $storedLocal = DB::table('dbhash')
+            $storedLocal = DB::connection("mariadb")->table('dbhash')
                 ->where('dom', $dom)->where('table', $table)->where('online', 'lh')
                 ->value('hash');
 
-            $storedOnline = DB::table('dbhash')
+            $storedOnline = DB::connection("mariadb")->table('dbhash')
                 ->where('dom', $dom)->where('table', $table)->where('online', 'rh')
                 ->value('hash');
 
             // Wenn Hash NULL → aktuellen Hash speichern, nur einmal
             if ($storedLocal === null) {
-                $this->AddHash($table, $hashLocal, 'lh');
+                $this->AddHash($table, $hashLocal, 'lh',1);
                 $storedLocal = $hashLocal;
             }
 
             if ($storedOnline === null) {
-                $this->AddHash($table, $hashOnline, 'rh');
+                $this->AddHash($table, $hashOnline, 'rh',1);
                 $storedOnline = $hashOnline;
             }
 
@@ -169,14 +215,26 @@ class SQLUpdateController extends Controller
                 // Beide Seiten identisch → rot
                 $offlineColor = 'red';
                 $onlineColor  = 'red';
-            } else {
+                // continue;
+                $dred  = true;
+                continue;
+            }
+            elseif($storedLocal == NULL && $storedOnline == NULL)
+                {
+                    $offlineColor = 'green';
+                    $onlineColor = 'green';
+                }
+            else {
                 // Local grün, wenn hashLocal != storedLocal
                 $offlineColor = ($hashLocal !== $storedLocal && $hashLocal !== $hashOnline && $hashLocal !== $storedOnline) ? 'green' : 'red';
                 $onlineColor  = ($hashOnline !== $storedOnline && $hashLocal !== $hashOnline && $hashOnline !== $storedLocal) ? 'green' : 'red';
             }
-
+            if($offlineColor == "red" && $onlineColor == "red")
+            {
+                continue;
+            }
             // Debug-Log
-if($table == "image_categories"){
+            if($table == "adm_tables"){
                 \Log::info("Table: $table | hashLocal: $hashLocal | hashOnline: $hashOnline | storedLocal: $storedLocal | storedOnline: $storedOnline | offlineColor: $offlineColor | onlineColor: $onlineColor");
             }
 
@@ -192,10 +250,59 @@ if($table == "image_categories"){
                 'col_online'  => $onlineColor,
             ];
         }
-
         return $result;
     }
 
+    public function diffTable(string $table, string $domain)
+    {
+        $this->domset  = $this->GetDBCon(1, $domain);
+        $this->domset_of = $this->GetDBCon(0, $domain);
+        $_SESSION['domain'] = $domain;
+
+        // Daten aus beiden DBs holen
+        $localRows = DB::connection($this->domset_of)->table($table)->get()->toArray();
+        $onlineRows = DB::connection($this->domset)->table($table)->get()->toArray();
+
+        // JSON-encode/decode um vergleichbare Arrays zu bekommen
+        $local = json_decode(json_encode($localRows), true);
+        $online = json_decode(json_encode($onlineRows), true);
+
+        // Diff berechnen
+        $diff = [];
+        $max = max(count($local), count($online));
+
+        for ($i = 0; $i < $max; $i++) {
+            $localRow = $local[$i] ?? [];
+            $onlineRow = $online[$i] ?? [];
+
+            $rowDiff = [];
+            $columns = array_unique(array_merge(array_keys($localRow), array_keys($onlineRow)));
+
+            foreach ($columns as $col) {
+                $localVal = $localRow[$col] ?? null;
+                $onlineVal = $onlineRow[$col] ?? null;
+
+                if ($localVal !== $onlineVal) {
+                    $rowDiff[$col] = [
+                        'local' => $localVal,
+                        'online' => $onlineVal,
+                    ];
+                }
+            }
+
+            if (!empty($rowDiff)) {
+                $diff[] = [
+                    'row' => $i,
+                    'changes' => $rowDiff,
+                ];
+            }
+        }
+
+        return response()->json([
+            'table' => $table,
+            'diff' => $diff,
+        ]);
+    }
 
 
 
@@ -242,7 +349,7 @@ if($table == "image_categories"){
             // neuen Hash nach dem Sync berechnen
             $hash = $this->getTableHash(
                 $table,
-                $con === 'lh' ? DB::getDefaultConnection() : $this->domset
+                $con === 'lh' ? $this->domset_of : $this->domset
             );
 
             // Hash speichern
@@ -256,31 +363,31 @@ if($table == "image_categories"){
 
     private function syncLocalToOnline(string $table)
     {
-        $data = DB::table($table)->get();
-        DB::connection($this->domset)->statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::connection($this->domset)->table($table)->delete();
-        DB::connection($this->domset)->statement('SET FOREIGN_KEY_CHECKS=1;');
+        $data = DB::connection($this->domset)->table($table)->get();
+        DB::connection($this->domset_of)->statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::connection($this->domset_of)->table($table)->delete();
+        DB::connection($this->domset_of)->statement('SET FOREIGN_KEY_CHECKS=1;');
         foreach ($data as $row) {
-            DB::connection($this->domset)->table($table)->insert((array)$row);
+            DB::connection($this->domset_of)->table($table)->insert((array)$row);
         }
     }
 
     private function syncOnlineToLocal(string $table)
     {
         $data = DB::connection($this->domset)->table($table)->get();
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table($table)->delete();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        DB::connection($this->domset_of)->statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::connection($this->domset_of)->table($table)->delete();
+        DB::connection($this->domset_of)->statement('SET FOREIGN_KEY_CHECKS=1;');
         foreach ($data as $row) {
-            DB::table($table)->insert((array)$row);
+            DB::connection($this->domset_of)->table($table)->insert((array)$row);
         }
     }
 
     private function UpdateHash($table, $hash, $con='lh')
     {
-        $dom = SD();
+        $dom = $_SESSION['domain'];
 
-        DB::table("dbhash")
+        DB::connection("mariadb")->table("dbhash")
             ->where("dom", $dom)
             ->where("table", $table)
             ->where("online", $con)
@@ -290,13 +397,20 @@ if($table == "image_categories"){
             ]);
     }
 
-    private function AddHash($table, $hash, $con='lh')
+    private function AddHash($table, $hash, $con='lh',$ov=false)
     {
-        $dom = SD();
+        $dom = $_SESSION['domain'];
         $online = $con === "lh" ? "lh" : "rh";
-
+        if($ov)
+        {
+            DB::connection("mariadb")->table("dbhash")
+            ->where("dom", $dom)
+            ->where("table", $table)
+            ->where("online", $online)
+            ->update(["hash"=>md5('test')]);
+        }
         // Wenn bereits existiert → niemals überschreiben
-        $exists = DB::table("dbhash")
+        $exists = DB::connection("mariadb")->table("dbhash")
             ->where("dom", $dom)
             ->where("table", $table)
             ->where("online", $online)
@@ -305,12 +419,11 @@ if($table == "image_categories"){
         if ($exists) return;
 
         // Neuer Eintrag, aber hash IMMER null
-        DB::table("dbhash")->insert([
+        DB::connection("mariadb")->table("dbhash")->insert([
             'dom'        => $dom,
             'table'      => $table,
             'online'     => $online,
             'hash'       => null,
-            'created_at' => now(),
             'updated_at' => now(),
         ]);
     }

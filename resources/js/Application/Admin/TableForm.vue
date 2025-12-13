@@ -605,6 +605,8 @@ import DialogModal from "@/Application/Components/DialogModal.vue";
 import { toastBus } from '@/utils/toastBus';
 import { reactive } from "vue";
 import PublicRadio from "@/Application/Components/Form/PublicRadio.vue";
+import { nextTick } from 'vue'
+
 // import Alert from "@/Application/Components/Content/Alert.vue";
 import ImageJsonEditor from "@/Application/Admin/ImageJsonEditor.vue";
 
@@ -1057,7 +1059,8 @@ export default defineComponent({
     //    handleInput_alt(field) {
     //         this.updateReadingTime("editor_" + field);
     //     },
-    handleInput_alt(fieldName, content) {
+async handleInput_alt(fieldName, content) {
+        await nextTick()
   this.updateReadingTime("content_alt");
 },
 

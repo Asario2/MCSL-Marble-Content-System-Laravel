@@ -18,7 +18,11 @@ Route::prefix('mysqlops')->group(function () {
     Route::get('/last', [SQLUpdateController::class, 'last']);
 
     // Tabellen-Liste (local + online)
-    Route::get('/tables', [SQLUpdateController::class, 'tables']);
+    Route::get('/tables/{domain}', [SQLUpdateController::class, 'tables']);
+
+    // Get Diff from DB
+    Route::get('/diff/{table}/{domain}', [SQLUpdateController::class, 'diffTable']);
+
 
     // Sync Localhost → Online
     Route::post('/sync', [SQLUpdateController::class, 'sync']);
