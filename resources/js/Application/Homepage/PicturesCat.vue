@@ -1,4 +1,4 @@
-    <template>
+p    <template>
         <Layout>
             <MetaHeader title="Meine Bilder Übersicht" />
             <newbtn table="images">

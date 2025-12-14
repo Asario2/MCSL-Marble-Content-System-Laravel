@@ -144,6 +144,9 @@
 <script>
 import Layout from "@/Application/Homepage/Shared/Layout.vue";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
+import PhotoSwipeLightbox from 'photoswipe/dist/photoswipe-lightbox.esm.js';
+// import PhotoSwipe from 'photoswipe/dist/photoswipe.esm.js';
+import 'photoswipe/dist/photoswipe.css'
 import {stripTags} from "@/helpers";
 import ZoomImage from "@/Application/Components/Content/ZoomImage.vue";
 import SocialButtons from "@/Application/Components/Social/socialButtons.vue";
@@ -156,8 +159,14 @@ import mapValues from "lodash/mapValues";
 import SearchFilter from "@/Application/Components/Lists/SearchFilter.vue";
 import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
-import PhotoSwipeLightbox from "photoswipe/lightbox";
-import "photoswipe/style.css";
+// import PhotoSwipeLightbox from "photoswipe/lightbox";
+import 'photoswipe/dist/photoswipe.css';
+
+import { onMounted } from "vue";
+// import PhotoSwipeLightbox from "photoswipe/lightbox";
+// import "photoswipe/style.css";
+
+
 import he from "he";
 import BackBtn from "@/Application/Components/Form/BackBtn.vue";
 import Alert from "@/Application/Components/Content/Alert.vue";
@@ -323,12 +332,7 @@ export default {
     }
     this.lightbox.init();
   },
-  beforeUnmount() {
-    if (this.lightbox) {
-      this.lightbox.destroy();
-      this.lightbox = null;
-    }
-  },
+
 };
 </script>
 
