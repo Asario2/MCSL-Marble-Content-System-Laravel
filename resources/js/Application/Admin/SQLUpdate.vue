@@ -230,8 +230,9 @@
       <div
         v-if="syncStatus"
         class="mt-4 p-3 bg-gray-100 dark:bg-gray-800 border rounded text-gray-700 dark:text-gray-200"
-      >
-        {{ syncStatus }}
+        v-html="syncStatus"
+        >
+
       </div>
 
     </div>
@@ -334,8 +335,8 @@ export default {
 
         this.syncStatus =
           direction === "local_to_online"
-            ? "Sync Local → Online abgeschlossen!"
-            : "Sync Online → Local abgeschlossen!";
+            ? "<span class='text-blue-400 font-bold'>Sync Local → Online</span> abgeschlossen!"
+            : "<span class='text-purple-700 font-bold'>Sync Online → Local</span> abgeschlossen!";
 
         await this.loadTables();
       } catch (e) {
@@ -371,9 +372,10 @@ export default {
 
     await this.loadTables();
 
-    this.syncStatus = `SyncToAll abgeschlossen!
-      Online→Local: ${onlineToLocal.length} Tabellen,
-      Local→Online: ${localToOnline.length} Tabellen.`;
+    this.syncStatus = `SyncToAll abgeschlossen!<br />
+    <span class='text-blue-400 font-bold'>Local→Online:</span> ${localToOnline.length} Tabellen.<br />
+    <span class='text-purple-700 font-bold'>Online→Local:</span> ${onlineToLocal.length} Tabellen,<br />`;
+
 
     // -------------------------------
     // Neu: Tabellen bei beiden Seiten grün -> Diff laden
