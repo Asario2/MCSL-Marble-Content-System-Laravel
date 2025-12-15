@@ -253,56 +253,65 @@ class SQLUpdateController extends Controller
         return $result;
     }
 
-    public function diffTable(string $table, string $domain)
-    {
-        $this->domset  = $this->GetDBCon(1, $domain);
-        $this->domset_of = $this->GetDBCon(0, $domain);
-        $_SESSION['domain'] = $domain;
+public function diffTable(string $table, string $domain)
+{
+    $this->domset     = $this->GetDBCon(1, $domain);
+    $this->domset_of  = $this->GetDBCon(0, $domain);
+    $_SESSION['domain'] = $domain;
 
-        // Daten aus beiden DBs holen
-        $localRows = DB::connection($this->domset_of)->table($table)->get()->toArray();
-        $onlineRows = DB::connection($this->domset)->table($table)->get()->toArray();
+    $localRows  = DB::connection($this->domset_of)->table($table)->get()->toArray();
+    $onlineRows = DB::connection($this->domset)->table($table)->get()->toArray();
 
-        // JSON-encode/decode um vergleichbare Arrays zu bekommen
-        $local = json_decode(json_encode($localRows), true);
-        $online = json_decode(json_encode($onlineRows), true);
+    $local  = json_decode(json_encode($localRows), true);
+    $online = json_decode(json_encode($onlineRows), true);
 
-        // Diff berechnen
-        $diff = [];
-        $max = max(count($local), count($online));
+    // ✅ Headline-Spalte aus Settings
+    $headlineColumn = Settings::$headline[$table] ?? null;
 
-        for ($i = 0; $i < $max; $i++) {
-            $localRow = $local[$i] ?? [];
-            $onlineRow = $online[$i] ?? [];
+    $diff = [];
+    $max = max(count($local), count($online));
 
-            $rowDiff = [];
-            $columns = array_unique(array_merge(array_keys($localRow), array_keys($onlineRow)));
+    for ($i = 0; $i < $max; $i++) {
+        $localRow  = $local[$i]  ?? [];
+        $onlineRow = $online[$i] ?? [];
 
-            foreach ($columns as $col) {
-                $localVal = $localRow[$col] ?? null;
-                $onlineVal = $onlineRow[$col] ?? null;
+        $rowDiff = [];
+        $columns = array_unique(array_merge(
+            array_keys($localRow),
+            array_keys($onlineRow)
+        ));
 
-                if ($localVal !== $onlineVal) {
-                    $rowDiff[$col] = [
-                        'local' => $localVal,
-                        'online' => $onlineVal,
-                    ];
-                }
-            }
+        foreach ($columns as $col) {
+            $localVal  = $localRow[$col]  ?? null;
+            $onlineVal = $onlineRow[$col] ?? null;
 
-            if (!empty($rowDiff)) {
-                $diff[] = [
-                    'row' => $i,
-                    'changes' => $rowDiff,
+            if ($localVal !== $onlineVal) {
+                $rowDiff[$col] = [
+                    'local'  => $localVal,
+                    'online' => $onlineVal,
                 ];
             }
         }
 
-        return response()->json([
-            'table' => $table,
-            'diff' => $diff,
-        ]);
+        if (!empty($rowDiff)) {
+            $diff[] = [
+                'row' => $i,
+                "id"=>$localRow['id'],
+
+                // ⭐ genau das, was du willst
+                'name' =>  $localRow[$headlineColumn] ?? null,
+
+
+                'changes' => $rowDiff,
+            ];
+        }
     }
+
+    return response()->json([
+        'table' => $table,
+        'diff'  => $diff,
+    ]);
+}
 
 
 
