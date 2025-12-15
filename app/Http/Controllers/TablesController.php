@@ -586,6 +586,9 @@ public function ShowTable(Request $request, $table_alt = null)
             if (in_array('created_at', $columns)) {
                 $q->orWhere("{$table}.created_at", 'like', "%{$searchLower}%");
             }
+            foreach(Settings::$searchFields[$table] as $st) {
+                $q->orWhereRaw("LOWER({$table}.{$st}) LIKE ?", ["%{$searchLower}%"]);
+            }
         });
     }
 
@@ -2443,7 +2446,7 @@ return Inertia::render('Admin/Kontakte', [
         }
         if (Schema::hasColumn($table, 'position'))
         {
-            $orig_posi = $formData['position'];
+            $orig_posi = @$formData['position'];
             $formData['position'] = -1;
 
         }

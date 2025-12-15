@@ -363,12 +363,12 @@ class SQLUpdateController extends Controller
 
     private function syncLocalToOnline(string $table)
     {
-        $data = DB::connection($this->domset)->table($table)->get();
-        DB::connection($this->domset_of)->statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::connection($this->domset_of)->table($table)->delete();
-        DB::connection($this->domset_of)->statement('SET FOREIGN_KEY_CHECKS=1;');
+        $data = DB::connection($this->domset_of)->table($table)->get();
+        DB::connection($this->domset)->statement('SET FOREIGN_KEY_CHECKS=0;');
+        DB::connection($this->domset)->table($table)->delete();
+        DB::connection($this->domset)->statement('SET FOREIGN_KEY_CHECKS=1;');
         foreach ($data as $row) {
-            DB::connection($this->domset_of)->table($table)->insert((array)$row);
+            DB::connection($this->domset)->table($table)->insert((array)$row);
         }
     }
 

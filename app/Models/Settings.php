@@ -251,7 +251,7 @@
             "blog_categories" => ['name',"summary"],
             "blog_images" => ['name'],
             "types" => ['name,"name_en'],
-            "images"=> ['name',"message"],
+            "images"=> ['name',"message","headline_en","message_en"],
             "comments" => ['users.name','content',"email","admin_table.name"],
             "didyouknow" => ['headline',"answer"],
             "image_categories"=>['heading_alt'],

@@ -156,3 +156,4 @@
 ![Version](https://img.shields.io/badge/version-4.12.4-orange) Feature - Sign in with Google (#283)  
 ![Version](https://img.shields.io/badge/version-4.29.7-orange) Feature - Add DB sync (#304)  
 ![Version](https://img.shields.io/badge/version-4.30.3-orange) Hotfix - Fix Photoswipe Gallery on asario.de (#305)  
+![Version](https://img.shields.io/badge/version-4.31.4-orange) Feature - Add Adding & edit buttons for images (#306)  

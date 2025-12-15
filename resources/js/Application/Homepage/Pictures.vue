@@ -12,10 +12,21 @@
             <hgroup>
 
             <h1 class="text-2xl font-bold">{{ decodeEntities(ocont?.slug) }}</h1>
-            <h4 v-html="ocont?.description.replace('fx_year()', new Date().getFullYear()).replace(/\n/g, '<br />')"></h4>
+          <div class="flex items-start gap-4">
+            <h4
+                class="flex-1"
+                v-html="ocont?.description
+                .replace('fx_year()', new Date().getFullYear())
+                .replace(/\n/g, '<br />')"
+            ></h4>
 
-
-        </hgroup>
+            <editbtns
+                v-if="ocont?.id"
+                :id="ocont.id"
+                table="image_categories"
+            />
+            </div>
+            </hgroup>
        </div>
     <div>
 
