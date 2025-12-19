@@ -158,11 +158,19 @@
         'Statistics' => 'Zugriffsstatistiken',
         'StatisticsAll' => 'Statistiken alle Domains',
         'UserDisable' => 'Benutzer deaktivieren',
-
+        'SQLUpdate' => 'Datenbank Synchronisieren',
+        'test dzads' => 'asdasd',
     ];
     public static array $regdom =   ['ab'=>true];
     public static array $connect_dbname = ["ab"=>"mariadb","dag"=>"mariadb_dag","mfx"=>"mariadb_mfx"];
-    public static array $excl_dump_tables = ["xgen_migrations","password_reset_tokens","personal_access_tokens","blog_images","private_messages","xgen_page_views","xgen_migrations","privacy_orig","colors","dbhash","tenant","cache","cache_locks","comments","countpixel","newsletter_blacklist","newsletter_reci","prvacy_orig","privaze_messages","private_messages_text","ratings","sessions","users","users_config"];
+
+    /*
+
+    SQLUPDATE EXCUDED
+
+    */
+
+    public static array $excl_dump_tables = ["xgen_migrations","mcs_backup_doku","mcsdoku2","password_reset_tokens","personal_access_tokens","blog_images","private_messages","xgen_page_views","xgen_migrations","privacy_orig","colors","dbhash","tenant","cache","cache_locks","comments","countpixel","newsletter_blacklist","newsletter_reci","prvacy_orig","privaze_messages","private_messages_text","ratings","sessions"];
 
         public static array $no_req = ['exif_copyright','exif_comp','exif_model','Mpixel','modul','is_admin','is_customer','is_employee','customer_id','admin_id','company_id',
                                        'profile_photo_path',"category_id","type_id",'message','message_en',
@@ -251,7 +259,7 @@
             "blog_categories" => ['name',"summary"],
             "blog_images" => ['name'],
             "types" => ['name,"name_en'],
-            "images"=> ['name',"message"],
+            "images"=> ['name',"message","headline_en","message_en"],
             "comments" => ['users.name','content',"email","admin_table.name"],
             "didyouknow" => ['headline',"answer"],
             "image_categories"=>['heading_alt'],
@@ -400,4 +408,18 @@ public static array $image_sizes =
             ]
 
         ];
+    public static array $Ignored_Field = [
+    0 => 'ab_users_rights_xkis_SQLUpdate',
+    1 => 'dag_users_rights_xkis_SQLUpdate',
+    2 => 'mfx_users_rights_xkis_SQLUpdate',
+    3 => 'ab_users_rights_updated_at',
+    4 => 'dag_users_rights_updated_at',
+    5 => 'mfx_users_rights_updated_at',
+    ];
+    public static array $nostats = [
+    '/admin',
+    '/_debug',
+    '/api/',
+    ];
     }
+

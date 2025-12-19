@@ -98,6 +98,18 @@
                 <!-- DB updaten -->
                 <template #description> Logs anzeigen    </template>
             </navigation-card>
+            <navigation-card v-if="modulRights?.SQLUpdate"
+                class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
+                title="DB Synchronisieren"
+                :routeName="route('SQL.index')"
+                linkName="Datenbanken abgleichen"
+                target="_self"
+                :withIcon="true"
+                icon="IconSync"
+            >
+                <!-- DB updaten -->
+                <template #description> Datenbanken Synchronisieren </template>
+            </navigation-card>
             <navigation-card v-if="modulRights?.UserRights"
                 class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
                 title="Rechte"
@@ -110,6 +122,7 @@
                 <!-- DB updaten -->
                 <template #description> Benutzer Rechte </template>
             </navigation-card>
+
         </div>
     </layout>
 </template>
@@ -117,7 +130,7 @@
 <script>
 import { defineComponent } from "vue";
 import {route} from 'ziggy-js';
-import Layout from "@/Application/Admin/Shared/Layout.vue";
+//import Layout from "@/Application/Admin/Shared/Layout.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 
 import NavigationCard from "@/Application/Components/NavigationCard.vue";

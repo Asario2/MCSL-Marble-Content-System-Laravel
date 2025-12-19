@@ -95,7 +95,7 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
                 foreach($entries as $entry)
                 {
                     if(file_exists(public_path("/timespy/".$entry['timespy']))){
-                        $time = file_get_contents(public_path("/timespy/".$entry['timespy']));
+                        $time = strtotime(file_get_contents(public_path("/timespy/".$entry['timespy'])));
                     }
                     $lh = false;
                     if($entry['type'] == "localhost" && substr_count(request()->getHost(),"localhost"))
@@ -110,9 +110,9 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
                     {
                         $lh = true;
                     }
+                    $offset = (60*60*24*$entry['days']);
 
-
-                    if((!$time || time() > $time) && $lh)
+                    if((!$time || time() > $time+$offset) && $lh)
                     {
                     $xx .= "<div style='background-color:#CCC;color:#002;padding:5px;z-index:19999999'>";
                     $xx .= "<h3 style='padding:2px;'>".$entry['name']."</h3>";
@@ -125,7 +125,7 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
                     $xx .= "</div>";
                     $time = false;
                 }
-
+                file_put_contents(public_path("/timespy/".$entry['timespy']),now());
 
                 }
                 if($xx)

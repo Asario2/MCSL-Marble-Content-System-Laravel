@@ -5,7 +5,6 @@ _work/*
 **/connnfi/**
 /storage/*.key
 /storage/debugbar/**
-README.md
 /public/*.sql
 !/public/**
 /public/build
@@ -15,6 +14,7 @@ README.md
 vendor/
 .env
 *.bat
+!README.md
 *.sh
 *.yml
 **/phpmyadmin/**
@@ -32,7 +32,6 @@ vendor/
 Homestead.json
 Homestead.yaml
 auth.json
-README.md
 npm-debug.log
 yarn-error.log
 /.fleet

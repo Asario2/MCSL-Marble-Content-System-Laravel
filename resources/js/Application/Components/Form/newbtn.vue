@@ -60,8 +60,8 @@
             }
         },
         async mounted() {
-            this.rights.add = await CheckTRights("add", this.table_alt);
-            console.log("RES:" + this.table_alt);
+            this.rights.add = await CheckTRights("add", this.table);
+            console.log("RES:" + this.table);
         },
         methods: {
               //     hasRight(right, table) {

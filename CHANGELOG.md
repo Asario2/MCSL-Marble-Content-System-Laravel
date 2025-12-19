@@ -156,3 +156,7 @@
 ![Version](https://img.shields.io/badge/version-4.12.4-orange) Feature - Sign in with Google (#283)  
 ![Version](https://img.shields.io/badge/version-4.29.7-orange) Feature - Add DB sync (#304)  
 ![Version](https://img.shields.io/badge/version-4.30.3-orange) Hotfix - Fix Photoswipe Gallery on asario.de (#305)  
+![Version](https://img.shields.io/badge/version-4.31.4-orange) Feature - Add Adding & edit buttons for images (#306)  
+![Version](https://img.shields.io/badge/version-4.32.9-orange) Feature - Add name column from Settings to Sync Diff (#307)  
+![Version](https://img.shields.io/badge/version-4.33.9-orange) Hotfix - Bug in EmailSender Script (#308)  
+![Version](https://img.shields.io/badge/version-4.34.7-orange) Hotfix Notification not loading (#309)  

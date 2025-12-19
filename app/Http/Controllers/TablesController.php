@@ -586,6 +586,9 @@ public function ShowTable(Request $request, $table_alt = null)
             if (in_array('created_at', $columns)) {
                 $q->orWhere("{$table}.created_at", 'like', "%{$searchLower}%");
             }
+            foreach(Settings::$searchFields[$table] as $st) {
+                $q->orWhereRaw("LOWER({$table}.{$st}) LIKE ?", ["%{$searchLower}%"]);
+            }
         });
     }
 
@@ -2443,7 +2446,7 @@ return Inertia::render('Admin/Kontakte', [
         }
         if (Schema::hasColumn($table, 'position'))
         {
-            $orig_posi = $formData['position'];
+            $orig_posi = @$formData['position'];
             $formData['position'] = -1;
 
         }
@@ -2761,7 +2764,7 @@ return Inertia::render('Admin/Kontakte', [
             'users.profile_photo_path'
         )
 
-        ->where('users.pub', 1)
+        ->where('users.id', '!=', 7)
         ->orderBy("users.name","ASC")
         ->get();
 

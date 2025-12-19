@@ -24,8 +24,9 @@ class SendAdminNewUserNotification
             $message->to($adminEmail)
                 ->subject('Neuer Benutzer auf '.request()->getHost().' registriert')
                 ->html(
+                    MCSL_GRAD().
                     "<h2>Hallo Admin,</h2>
-                    <p>Ein neuer Benutzer hat sich auf ".request()->getHost()." registriert:</p>
+                    <p>Ein neuer Benutzer hat sich auf <a href='https://".request()->getHost()."'>".request()->getHost()."</a> registriert:</p>
                     <ul>
                         <li>Name: {$user->name}</li>
                         <li>Email: {$user->email}</li>

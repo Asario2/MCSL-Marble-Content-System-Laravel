@@ -1,386 +1,267 @@
-    <!-- EmailSender.vue -->
-    <template>
-    <Layout>
-        <MetaHeader title="Email Center" />
+<!-- EmailSender.vue -->
+<template>
+  <Layout>
+    <MetaHeader title="Email Center" />
 
-        <template #header>
-        <breadcrumb :breadcrumbs="breadcrumbs"></breadcrumb>
-        </template>
-
-        <section
-        class="block max-w-sm mx-auto sm:max-w-full p-4 group hover:no-underline focus:no-underline bg-layout-sun-100 dark:bg-layout-night-100"
-        >
-        <h1 class="text-3xl font-bold mb-6 text-layout-title">Email Center</h1>
-
-        <!-- Label + Button in einer Zeile -->
-        <div class="flex items-center justify-between mb-3">
-            <label
-            for="mail_body"
-            class="text-sm font-medium text-layout-sun-900 dark:text-layout-night-900"
-            >
-            <b>Empfänger/innen</b>
-            </label>
-
-            <button
-            @click="showSelectRecipient = true"
-            class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium"
-            >
-            Empfänger auswählen
-            </button>
-        </div>
-        <form @submit.prevent="submitForm">
-        <!-- Modal -->
-        <SelectRecipient
-            :show="showSelectRecipient"
-            :user="user"
-            :usergroups="usergroups"
-            :contacts="contacts"
-            @close="showSelectRecipient = false"
-            @confirm="handleSelectRecipient"
-            @check-news-changed="handleCheckNews"
-        />
-
-        <!-- Textarea -->
-        <InputTextarea
-            id="recip"
-            name="recip"
-            v-model="recipientNames"
-            required="required"
-            placeholder="Ausgewählte Empfänger..."
-            class="w-full border rounded p-2 dark:bg-gray-800 dark:text-gray-100"
-        />
-
-        <!-- Mailbody Select -->
-        <InputLabel name="mailbody" class="mt-4"><b>Vorlage wählen</b></InputLabel>
-        <InputSelect
-            id="mailbodysel"
-            v-model="selectedMbId"
-            :model-value="selectedMbId"
-            :options="mailbodyOptions"
-            @input-change="updateMailbody"
-        />
-            <inputFormText id="subject" v-model="subject">
-                <template #label><b>Betreff</b></template>
-            </inputFormText>
-        <!-- E-Mail Text -->
-        <InputHtml
-            id="mail_body"
-            name="EmailText"
-            :nosmilies="true"
-            v-model="mailbodyText"
-
-        />
-
-        <!-- Signatur Select -->
-        <InputLabel name="signatur"><b>E-Mail Signatur</b></InputLabel>
-        <InputSelect
-            id="signature"
-            v-model="selectedSigId"
-            :model-value="selectedSigId"
-            :options="signaturOptions"
-            @input-change="updateSigData"
-        />
-
-        <!-- Signaturanzeige -->
-        <div v-if="activeSignatur">
-            <InputHtml
-            name="EmailSignatur"
-            id="signatur"
-            rows="8"
-            :nosmilies="true"
-            v-model="signatureText"
-            />
-        </div>
-        <!-- Buttons -->
-        <div class="flex flex-wrap gap-2 mt-4">
-        <button
-            type="submit"
-            @click="submitPreview"
-            class="px-3 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium"
-        >
-            Vorschau
-        </button>
-
-        <button
-            type="button"
-            @click="saveMail"
-            class="px-3 py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-medium"
-        >
-            Mail speichern
-        </button>
-
-        <button
-            type="button"
-            @click="saveSignature"
-            class="px-3 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium"
-        >
-            Signatur speichern
-        </button>
-        </div>
-    </form>
-    </section>
-
-
-    </Layout>
+    <template #header>
+      <Breadcrumb :breadcrumbs="breadcrumbs" />
     </template>
 
-    <script>
-    import { rumLaut, nl2br } from "@/helpers";
-    import { router } from '@inertiajs/vue3';
-    //import { Inertia } from '@inertiajs/inertia'
-    import axios from "axios";
-    import Layout from "@/Application/Admin/Shared/Layout.vue";
-    import SelectRecipient from "./SelectRecipient.vue";
-    import InputHtml from "@/Application/Components/Form/InputHtml.vue";
-    import InputTextarea from "@/Application/Components/Form/InputTextarea.vue";
-    import InputFormText from "@/Application/Components/Form/InputFormText.vue";
-    import InputSelect from "@/Application/Components/Form/InputSelect.vue";
-    import InputLabel from "@/Application/Components/Form/InputLabel.vue";
-    import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
-    import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
+    <section
+      class="block max-w-sm mx-auto sm:max-w-full p-4 bg-layout-sun-100 dark:bg-layout-night-100"
+    >
+      <h1 class="text-3xl font-bold mb-6 text-layout-title">
+        Email Center
+      </h1>
 
+      <!-- Empfänger -->
+      <div class="flex items-center justify-between mb-3">
+        <label class="text-sm font-medium">
+          <b>Empfänger/innen</b>
+        </label>
 
-    export default {
+        <button
+          @click="showSelectRecipient = true"
+          class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm"
+        >
+          Empfänger auswählen
+        </button>
+      </div>
+
+      <form @submit.prevent>
+        <SelectRecipient
+          :show="showSelectRecipient"
+          :user="user"
+          :usergroups="usergroups"
+          :contacts="contacts"
+          @close="showSelectRecipient = false"
+          @confirm="handleSelectRecipient"
+          @check-news-changed="checkNews = $event"
+        />
+
+        <InputTextarea
+          v-model="recipientNames"
+          placeholder="Ausgewählte Empfänger…"
+          class="w-full border rounded p-2"
+        />
+
+        <!-- MAILVORLAGE -->
+        <InputLabel class="mt-4">
+          <b>Vorlage wählen</b>
+        </InputLabel>
+
+        <InputSelect
+          v-model="selectedMbId"
+          :options="mailbodyOptions"
+        />
+
+        <!-- BETREFF -->
+        <InputFormText v-model="subject">
+          <template #label><b>Betreff</b></template>
+        </InputFormText>
+
+        <!-- MAILTEXT -->
+        <InputHtml
+            name="Mailtext"
+            v-model="mailbodyText"
+            :nosmilies="true"
+        />
+
+        <!-- SIGNATUR -->
+        <InputLabel>
+          <b>E-Mail Signatur</b>
+        </InputLabel>
+
+        <InputSelect
+          v-model="selectedSigId"
+          :options="signaturOptions"
+        />
+
+        <InputHtml
+          v-if="signatureText"
+          v-model="signatureText"
+          :nosmilies="true"
+          name="Signatur"
+        />
+
+        <!-- BUTTONS -->
+        <div class="flex gap-2 mt-4">
+          <button
+            @click="submitPreview"
+            class="px-3 py-2 rounded-lg bg-blue-600 text-white"
+          >
+            Vorschau
+          </button>
+
+          <button
+            type="button"
+            @click="saveMail"
+            class="px-3 py-2 rounded-lg bg-green-600 text-white"
+          >
+            Mail speichern
+          </button>
+
+          <button
+            type="button"
+            @click="saveSignature"
+            class="px-3 py-2 rounded-lg bg-purple-600 text-white"
+          >
+            Signatur speichern
+          </button>
+        </div>
+      </form>
+    </section>
+  </Layout>
+</template>
+
+<script>
+import axios from "axios";
+import { router } from "@inertiajs/vue3";
+import Layout from "@/Application/Admin/Shared/Layout.vue";
+import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
+import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
+import SelectRecipient from "./SelectRecipient.vue";
+import InputHtml from "@/Application/Components/Form/InputHtml.vue";
+import InputTextarea from "@/Application/Components/Form/InputTextarea.vue";
+import InputFormText from "@/Application/Components/Form/InputFormText.vue";
+import InputSelect from "@/Application/Components/Form/InputSelect.vue";
+import InputLabel from "@/Application/Components/Form/InputLabel.vue";
+
+export default {
   name: "EmailSender",
-  components: { Layout, Breadcrumb, SelectRecipient, InputHtml, InputLabel, InputSelect, InputFormText, MetaHeader, InputTextarea },
+
+  components: {
+    Layout,
+    Breadcrumb,
+    MetaHeader,
+    SelectRecipient,
+    InputHtml,
+    InputTextarea,
+    InputFormText,
+    InputSelect,
+    InputLabel,
+  },
+
   props: {
-    sig: String,
+    sig: Array,
     mailbody: Array,
-    breadcrumbs: { type: Object, required: true },
+    breadcrumbs: Object,
     user: [Array, Object],
     usergroups: [Array, Object],
     contacts: [Array, Object],
   },
+
   data() {
     return {
       showSelectRecipient: false,
-      recipientNames: [],
-      recip: '',
-      selectedSigId: null,
-      signatureText: "",
-      signaturOptions: this.sig,
+      recipientNames: "",
+
       selectedMbId: null,
+      selectedSigId: null,
+
       subject: "",
       mailbodyText: "",
-      mailbodyOptions: this.mailbody,
-      checkNews: false,
-      newsletterName: "", // 👈 hier neu
+      signatureText: "",
 
+      mailbodyOptions: this.mailbody,
+      signaturOptions: this.sig,
+
+      newsletterName: "",
+      checkNews: false,
     };
   },
+
   watch: {
-    activeSignatur(newSig) {
-      if (newSig) {
-        this.signatureText = this.nl2br(this.rumLaut(newSig.sigtext));
-      }
-    },
-    mailbodyText(val) {
-      if (val.trim() != "") {
-        document.getElementById("EmailText").style.border = "none";
-      }
-    },
-  },
-  computed: {
-    activeSignatur() {
-      return this.signaturOptions.find(sig => sig.id === this.selectedSigId);
-    },
-  },
-  methods: {
-    rumLaut,
-    nl2br,
+    /** 📌 Mailvorlage geändert */
+    selectedMbId(id) {
+      const mb = this.mailbodyOptions.find(m => m.id === id);
 
-    // Vorschau
-    submitPreview() {
-      const formData = {
-        recipients: this.recipientNames,
-        mailbodyId: this.selectedMbId,
-        mailbodyText: this.mailbodyText,
-        signaturId: this.selectedSigId,
-        signatureText: this.signatureText,
-        subject: this.subject,
-      };
-      if(formData.recipients.trim() === '')
-      {
-        alert("Bitte Empfänger angeben");
-        return;
-      }
-      router.post("/email/preview", formData, {
-        onSuccess: (page) => console.log("✅ Vorschau geladen", page),
-        onError: (errors) => console.error("❌ Fehler:", errors),
-      });
-    },
-
-    // Mail speichern
-    saveMail() {
-        if(document.getElementById("subject").value.trim() === ""){
-            alert("Bitte Betreff Angeben");
-            return;
-        }
-        if(document.getElementById("EmailText")?.value?.trim() === "" || !this.mailbodyText)
-        {
-        alert("Bitte Text Angeben");
-        return;
-        }
-
-       if (!this.newsletterName) {
-    const name = prompt("Bitte einen Namen für den Newsletter eingeben:");
-    if (!name || name.trim() === "") {
-      alert("Newsletter-Name ist erforderlich.");
-      return;
-    }
-    this.newsletterName = name.trim();
-  }
-
-  // 🔹 Dann speichern
-  const data = {
-    name: this.newsletterName, // 👈 wird mitgeschickt
-    subject: this.subject,
-    Body: this.mailbodyText,
-    signatur_id: this.selectedSigId,
-  };
-
-  router.post("/email/save", data, {
-  onSuccess: () => {
-    alert("✅ Mail erfolgreich gespeichert");
-  },
-  onError: (errors) => {
-    // Wenn Laravel eine JSON-Response mit "message" zurückgibt:
-    if (errors.response && errors.response.data && errors.response.data.message) {
-      alert("❌ Fehler beim Speichern der Mail: " + errors.response.data.message);
-    } else if (typeof errors === 'object') {
-      alert("❌ Fehler beim Speichern der Mail: " + Object.values(errors));
-    } else {
-      alert("❌ Fehler beim Speichern der Mail: " + errors);
-    }
-  },
-});
-   this.newsletterName = '';
-    },
-
-    // Signatur speichern
-    async saveSignature() {
-        // if(document.getElementById("EmailSignatur")?.value?.trim() === '' || !this.selectedSigId)
-        // {
-        //     alert("Bitte Signatur ausfüllen");
-        //     return;
-        // }
-      let sname = null;
-
-
-
-  // Nur fragen, wenn keine bestehende Signatur vorhanden ist
-  if (!this.signatur_id) {
-    sname = prompt("Wie soll die neue Signatur heißen?");
-    if (!sname) return; // Abbrechen, wenn nichts eingegeben wurde
-  }
-try {
-
-let text = this.signatureText;
-const el = document.getElementById("signatur");
-if (el && el.innerHTML.trim() !== '') text = el.innerHTML;
-
-if (!text || text.trim() === '') {
-  alert("Bitte Signatur ausfüllen");
-  return;
-}
-let text2 = document.getElementById("EmailSignatur").innerHTML;
-alert(text2);
-
-
-const res = await axios.post('/email/signatur/save', {
-  signatur_id: this.selectedSigId,
-  signature_text: text2,
-  signature_name: sname,
-});
-
-  alert(res.data.message);
-} catch (err) {
-  console.error(err.response?.data || err);
-  alert('❌ Fehler beim Speichern der Signatur: ' + (err.response?.data?.message || err.message));
-}
-    // await axios.post('/email/signatur/save', {
-
-
-    // });
-
-
-    },
-
-    // Standard-Submit (kann ggf. entfernt werden)
-    submitForm() {
-      console.log("Sende Daten:", {
-        recipients: this.recipientNames,
-        mailbodyText: this.mailbodyText,
-        signatureText: this.signatureText,
-        subject: this.subject,
-      });
-
-      const formData = {
-        recipients: this.recipientNames,
-        mailbodyId: this.selectedMbId,
-        mailbodyText: this.mailbodyText,
-        signaturId: this.signaturId,
-        signatureText: this.signatureText,
-        subject: this.subject,
-      };
-
-      router.post("/email/preview", formData);
-    },
-
-   updateMailbody(value) {
-    const selected = this.mailbodyOptions.find(mb => mb.id === value);
-
-    if (selected) {
-        this.mailbodyText = selected.Body || "";
-        this.subject = selected.subject || "";
-
-        // 🔹 automatisch passende Signatur wählen
-        if (selected.signatur_id) {
-        this.selectedSigId = selected.signatur_id;
-
-        // Signaturtext aus sig-Array holen
-        const foundSig = this.signaturOptions.find(s => s.id === selected.signatur_id);
-        if (foundSig) {
-            this.signatureText = foundSig.sigtext || "";
-        } else {
-            this.signatureText = "";
-        }
-        } else {
-        this.selectedSigId = null;
-        this.signatureText = "";
-        }
-    } else {
-        this.mailbodyText = "";
+      if (!mb) {
         this.subject = "";
+        this.mailbodyText = "";
         this.selectedSigId = null;
         this.signatureText = "";
-    }
+        return;
+      }
+
+      this.subject = mb.subject || "";
+      this.mailbodyText = mb.Body || "";
+
+      if (mb.signatur_id) {
+        this.selectedSigId = mb.signatur_id;
+      }
     },
 
+    /** 📌 Signatur geändert */
+    selectedSigId(id) {
+      const sig = this.signaturOptions.find(s => s.id === id);
+      this.signatureText = sig ? sig.sigtext || "" : "";
+    },
+  },
+
+  methods: {
+    submitPreview() {
+      router.post("/email/preview", {
+        recipients: this.recipientNames,
+        subject: this.subject,
+        body: this.mailbodyText,
+        signature: this.signatureText,
+      });
+    },
+
+    saveMail() {
+      if (!this.subject || !this.mailbodyText) {
+        alert("Betreff und Text sind Pflichtfelder");
+        return;
+      }
+
+      if (!this.newsletterName) {
+        const n = prompt("Newsletter-Name:");
+        if (!n) return;
+        this.newsletterName = n;
+      }
+
+      router.post("/email/save", {
+        name: this.newsletterName,
+        subject: this.subject,
+        Body: this.mailbodyText,
+        signatur_id: this.selectedSigId,
+      });
+
+      this.newsletterName = "";
+    },
+
+    async saveSignature() {
+      if (!this.signatureText) {
+        alert("Signatur leer");
+        return;
+      }
+
+      const name = prompt("Name der Signatur:");
+      if (!name) return;
+
+      await axios.post("/email/signatur/save", {
+        signature_text: this.signatureText,
+        signature_name: name,
+      });
+
+      alert("Signatur gespeichert");
+    },
 
     handleSelectRecipient(data) {
-      const allNames = [...data.names];
-      if (data.extern) allNames.push(data.extern);
-      this.recipientNames = allNames.join(", ");
+      const list = [...data.names];
+      if (data.extern) list.push(data.extern);
+      this.recipientNames = list.join(", ");
       this.showSelectRecipient = false;
     },
-
-    handleCheckNews(value) {
-//       console.log("Newsletter-Checkbox:", value);
-      this.checkNews = value;
-    },
-
-    updateSigData(value) {
-      this.selectedSigId = value;
-    },
   },
-  async mounted() {
-    console.log(this.users);
-}
 };
-
 </script>
-    <style scoped>
-    button { outline: none; }
-    </style>
+
+
+        <style>
+        button { outline: none; }
+        .w-fully{min-width:100% !important;
+                max-width:100% !important;}
+        </style>
 

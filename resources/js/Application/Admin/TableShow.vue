@@ -30,7 +30,7 @@
             <!-- Header-Spalten -->
             <template #header>
                 <tr>
-                <th class="np-dl-th-normal" v-if="rows?.data[0]?.position > -1 && CleanTable() != ''">Drop</th>
+                <th class="np-dl-th-normal"  v-if="rows?.data?.length && !rows.data[0]?.isNAN && CleanTable()?.trim() !== ''">Drop</th>
                 <th class="np-dl-th-normal">ID</th>
                 <th class="np-dl-th-normal">Pub</th>
                 <th v-if="cat_on_head" class="np-dl-ht-normal">{{ cat_on_head }}</th>
@@ -182,7 +182,9 @@
     import IconStar from "@/Application/Components/Icons/IconStar.vue";
     import { CleanTable, ucf, SD, GetSettings, rumLaut,GetProfileImagePath } from "@/helpers";
     //import { safeInertiaGet } from '@/utils/inertia';
+    import { Inertia } from '@inertiajs/inertia';
 
+    import {route} from 'ziggy-js';
     import Sortable from "sortablejs";
     import axios from "axios";
 
@@ -228,8 +230,8 @@
             tablez: this.ucf(table_z),
             checkedStatus: {},
             sortable: null,
-            table: table.toLowerCase(),
-            tableq: CleanTable(),
+            // table: table.toLowerCase(),
+            // tableq: CleanTable(),
             settings: {},
             namealias: "",
             descalias: "",
@@ -371,6 +373,7 @@
             try {
                 rows = JSON.parse(this.localRows);
             } catch (e) {
+                console.error(e);
                 return null;
             }
             } else if (Array.isArray(this.localRows)) {
