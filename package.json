@@ -66,7 +66,7 @@
         "node-fetch": "^3.3.2",
         "photoswipe": "^5.4.4",
         "php-parser": "^3.2.4",
-        "pinia": "^3.0.2",
+        "pinia": "^3.0.4",
         "process": "^0.11.10",
         "qrcode": "^1.5.4",
         "shariff": "^3.3.0",
