@@ -62,7 +62,7 @@
 
         <button
           @click="saveRights"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded mt-4 transition-colors"
+          class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded mt-4 transition-colors"
         >
           Rechte speichern
         </button>
@@ -135,7 +135,7 @@
 
           <button
             @click="saveRights"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded mt-4"
+            class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded mt-4"
           >
             Modulrechte speichern
           </button>
@@ -274,7 +274,7 @@
   <div class="flex items-center gap-3 mt-4">
     <button
       @click="saveAllUserRoles"
-      class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded"
+      class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded"
     >
       Benutzerrollen speichern
     </button>

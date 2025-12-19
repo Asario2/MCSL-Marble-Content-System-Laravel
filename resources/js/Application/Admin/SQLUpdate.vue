@@ -24,7 +24,7 @@
             <select
               name="domain"
               v-model="domain"
-              class="p-2.5 text-sm rounded-lg block border border-layout-sun-300 text-layout-sun-900 bg-layout-sun-50 placeholder-layout-sun-400 focus:ring-primary-sun-500 focus:border-primary-sun-500 dark:border-layout-night-300 dark:text-layout-night-900 dark:bg-layout-night-50 dark:placeholder-layout-night-400 dark:focus:ring-primary-night-500 dark:focus:border-primary-night-500"
+              class="p-2.5 pr-4 text-sm rounded-lg block border border-layout-sun-300 text-layout-sun-900 bg-layout-sun-50 placeholder-layout-sun-400 focus:ring-primary-sun-500 focus:border-primary-sun-500 dark:border-layout-night-300 dark:text-layout-night-900 dark:bg-layout-night-50 dark:placeholder-layout-night-400 dark:focus:ring-primary-night-500 dark:focus:border-primary-night-500"
             >
               <option value="ab">Asarios Blog</option>
               <option value="mfx">MarbleFX</option>
@@ -77,13 +77,21 @@
                 t.status_local === 'green' ? 'text-green-900 dark:text-green-400' : 'text-red-900 dark:text-red-400'
               ]"
             >
-              <span @click="loadDiff(t)" class="cursor-pointer">{{ t.name }}</span>
-              <span class="text-sm text-gray-500 dark:text-gray-400">{{ t.hash_local }}</span>
+            <span @click="loadDiff(t)" class="cursor-pointer">{{ t.name }}</span>
+            <span class="text-sm text-gray-500 dark:text-gray-400">{{ t.hash_local }}</span>
+            <button
+                @click="loadDiff(t)"
+                class="inline-flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-500 p-2.5 bg-black dark:bg-white rounded-full"
+                title="Diff anzeigen"
+                >
+                <IconMagni class="w-4 h-4 hover:text-white dark:hover:text-black text-blue-400 dark:text-blue-500" />
+
+                </button>
             </li>
           </ul>
 
           <button
-            v-if="allTables.some(t => t.status_local === 'green')"
+            v-if="allTables.some(t => t.status_local === 'green' || t.status_local === 'red')"
             @click="syncTables('local_to_online')"
             class="mt-4 w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition"
           >
@@ -106,13 +114,22 @@
                 t.status_online === 'green' ? 'text-green-900 dark:text-green-400' : 'text-red-900 dark:text-red-400'
               ]"
             >
-              <span @click="loadDiff(t)" class="cursor-pointer">{{ t.name }}</span>
-              <span class="text-sm text-gray-500 dark:text-gray-400">{{ t.hash_online }}</span>
+                <span @click="loadDiff(t)" class="cursor-pointer">{{ t.name }}</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400">{{ t.hash_online }}</span>
+                <button
+                @click="loadDiff(t)"
+                class="inline-flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-500 p-2.5 bg-black dark:bg-white rounded-full"
+                title="Diff anzeigen"
+                >
+                <IconMagni class="w-4 h-4 text-blue-400 dark:text-blue-500" />
+
+                </button>
+
             </li>
           </ul>
 
           <button
-            v-if="allTables.some(t => t.status_online === 'green')"
+            v-if="allTables.some(t => t.status_local === 'green' || t.status_local === 'red')"
             @click="syncTables('online_to_local')"
             class="mt-4 w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition"
           >
@@ -160,16 +177,17 @@
       class="mb-8"
     >
       <p class="mb-2 font-semibold text-sm text-gray-600 dark:text-gray-400">
-        Zeile {{ (row.row+1) }}
+        Zeile {{ (row.id) }}
       </p>
 
       <table class="w-full border-collapse text-sm">
         <thead>
           <tr class="bg-gray-100 dark:bg-gray-800">
-            <th class="px-3 py-2 text-left w-[25%]">Spalte</th>
-            <th class="px-3 py-2 text-left w-[25%]">Offline</th>
-            <th class="px-3 py-2 text-left w-[25%]">Online</th>
-            <th class="px-3 py-2 text-left w-[25%]">Name</th>
+            <th class="px-3 py-2 text-left w-[20%]">Spalte</th>
+            <th class="px-3 py-2 text-left w-[20%]">Offline</th>
+            <th class="px-3 py-2 text-left w-[20%]">Online</th>
+            <th class="px-3 py-2 text-left w-[20%]">Name</th>
+            <th class="px-3 py-2 text-left w-[20%]">Überspringen</th>
           </tr>
         </thead>
 
@@ -193,6 +211,7 @@
             <td class="px-3 py-2">
                 {{ row.name }}
             </td>
+            <td class="px-3 py-2"><ErrorSVG @click="Ignore_Field(col,selectedTable)" class="w-4 h-4"/></td>
           </tr>
 
           <!-- Buttons (NUR EINMAL) -->
@@ -204,9 +223,9 @@
     </div>
 <table class="w-full">
         <tr class="border-t">
-            <td class="px-3 py-3 w-[25%]"></td>
+            <td class="px-3 py-3 w-[20%]"></td>
 
-            <td class="px-3 py-3 text-left w-[25%]">
+            <td class="px-3 py-3 text-left w-[20%]">
               <button
                 @click="syncDiff('local_to_online')"
                 class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm"
@@ -215,7 +234,7 @@
               </button>
             </td>
 
-            <td class="px-3 py-3 text-left w-[25%]">
+            <td class="px-3 py-3 text-left w-[20%]">
               <button
                 @click="syncDiff('online_to_local')"
                 class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded text-sm"
@@ -223,6 +242,7 @@
                 Online → Offline
               </button>
             </td>
+            <td></td>
           </tr>
       </table>
   </div>
@@ -245,6 +265,8 @@
 
 <script>
 import axios from "axios";
+import IconMagni from "@/Application/Components/Icons/IconMagni.vue";
+import ErrorSVG from "@/Application/Components/Icons/ErrorSVG.vue";
 import { SD } from "@/helpers";
 import { defineAsyncComponent } from "vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
@@ -254,6 +276,8 @@ export default {
   components: {
     Layout: defineAsyncComponent(() => import(`@/Application/Admin/Shared/${SD()}/Layout.vue`)),
     Breadcrumb,
+    IconMagni,
+    ErrorSVG,
 
   },
   props:{
@@ -267,6 +291,7 @@ export default {
       showDiffModal: false,
       selectedTable: null,
       syncStatus: "",
+      tablez:[],
       loading: false,
       domain: "ab",
         direct: {
@@ -303,15 +328,17 @@ export default {
         console.error("Fehler beim Laden:", e);
       }
     },
-
+    async Ignore_Field(col,table)
+    {
+        await axios.get("/api/mysqlops/ignore/" + this.domain + "/" + table + "/" + col);
+        this.tablez.name = table;
+        this.loadDiff(this.tablez);
+        this.loadTables();
+    },
     async loadDiff(table) {
     if (!table || !table.name) return;
 
-    // optional: nur wenn beide Seiten grün
-    const tData = this.allTables.find(t => t.name === table.name);
-    if (!tData || tData.status_local !== 'green' || tData.status_online !== 'green') {
-        return;
-    }
+
 
     this.selectedTable = table.name;
 
@@ -331,8 +358,8 @@ export default {
       try {
         const tablesToSync =
           direction === "local_to_online"
-            ? this.allTables.filter(t => t.status_local === "green").map(t => t.name)
-            : this.allTables.filter(t => t.status_online === "green").map(t => t.name);
+            ? this.allTables.filter(t => t.status_local === "green" || t.status_local === "red").map(t => t.name)
+            : this.allTables.filter(t => t.status_online === "green"|| t.status_local === "red").map(t => t.name);
 
         if (!tablesToSync.length) {
           this.syncStatus = "Keine Tabellen zum Sync vorhanden.";
@@ -433,3 +460,4 @@ export default {
 <style scoped>
 
 </style>
+>

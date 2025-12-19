@@ -79,8 +79,7 @@
         </tr>
         </tbody>
     </table>
-    {{ users }}
-    </template>
+</template>
 
 
     <script>
@@ -140,7 +139,7 @@
   const newsletterIds = this.users
     .filter(u =>
     u.xch_newsletter == 1 ||
-    (typeof u.xch_newsletter === 'string' && u.xch_newsletter.includes('to_mail'))
+    (typeof u.xch_newsletter === 'string' && u.xch_newsletter.includes('mail'))
 )
     .map(u => u.id);
 

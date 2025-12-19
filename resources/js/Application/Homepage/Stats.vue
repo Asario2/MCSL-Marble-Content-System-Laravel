@@ -41,7 +41,7 @@
       <select
         v-model="dom"
         @change="loadData"
-        class="p-2.5 text-sm rounded-lg border border-layout-sun-300
+        class="p-2.5 pr-5 text-sm rounded-lg border border-layout-sun-300
                text-layout-sun-900 bg-layout-sun-50
                focus:ring-primary-sun-500 focus:border-primary-sun-500
                dark:border-layout-night-300 dark:text-layout-night-900

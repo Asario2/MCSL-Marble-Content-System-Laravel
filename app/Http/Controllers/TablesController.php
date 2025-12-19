@@ -2764,7 +2764,7 @@ return Inertia::render('Admin/Kontakte', [
             'users.profile_photo_path'
         )
 
-        ->where('users.pub', 1)
+        ->where('users.id', '!=', 7)
         ->orderBy("users.name","ASC")
         ->get();
 

@@ -28,6 +28,53 @@ class SQLUpdateController extends Controller
             session_start();
         }
     }
+    public function Ignore_Field(Request $request)
+    {
+        $dom = $request->domain;
+        $table = $request->table;
+        $col = $request->col;
+
+        $settingsPath = app_path("Models/Settings.php");
+
+        // Aktuelle Settings laden
+        $cont = file_get_contents($settingsPath);
+
+        // Variable aus der Datei evalen (nur $Ignored_Field)
+        $Ignored_Field = [];
+        if (preg_match('/public static array \$Ignored_Field\s*=\s*\[(.*?)\];/s', $cont, $matches)) {
+            // Inhalt in Array umwandeln
+            $code = '$tmp = [' . $matches[1] . '];';
+            eval($code); // setzt $tmp
+            $Ignored_Field = $tmp ?? [];
+        }
+
+        // Neue Kombination
+        $newEntry = $dom . "_" . $table . "_" . $col;
+
+        // Hinzufügen, wenn noch nicht vorhanden
+        if (!in_array($newEntry, $Ignored_Field)) {
+            $Ignored_Field[] = $newEntry;
+        }
+
+        // Array als String formatieren
+        $arrayString = "public static array \$Ignored_Field = [\n";
+        foreach ($Ignored_Field as $key => $val) {
+            $arrayString .= "    $key => '$val',\n";
+        }
+        $arrayString .= "];";
+
+        // Alten $Ignored_Field Block ersetzen oder hinzufügen
+        if (preg_match('/public static array \$Ignored_Field\s*=\s*\[.*?\];/s', $cont)) {
+            $newCont = preg_replace('/public static array \$Ignored_Field\s*=\s*\[.*?\];/s', $arrayString, $cont);
+        } else {
+            // Falls noch nicht vorhanden: ans Ende anhängen
+            $newCont = $cont . "\n" . $arrayString;
+        }
+
+        // Speichern
+        file_put_contents($settingsPath, $newCont);
+    }
+
     public function GetDBBase()
     {
 //        return Settings::$con_db[SD()];
@@ -35,7 +82,7 @@ class SQLUpdateController extends Controller
     public function GetDBCon($reg=0,$domain="ab")
     {
         $domain = $domain ?? "ab";
-        \Log::info("SET:".json_encode(Settings::$connect_dbname));
+        // \Log::info("SET:".json_encode(Settings::$connect_dbname));
 
         if($reg == 1){
             // dd(Settings::$connect_dbname[SD()]."_ol");
@@ -46,6 +93,11 @@ class SQLUpdateController extends Controller
     }
     public function index()
     {
+        if(!CheckZRights("SQLUpdate"))
+        {
+            header("Location: /no-rights");
+            exit;
+        }
         $cor_date = date("d.m.Y H:i:s",strtotime(file_get_contents(storage_path("/app/".$this->opsFile))));
         return Inertia::render('Admin/SQLUpdate',compact("cor_date"));
     }
@@ -151,11 +203,25 @@ class SQLUpdateController extends Controller
     //         'local_to_online' => $localToOnline->pluck('name'),
     //     ]);
     // }
+    private function getColumnHashes(string $table, string $connection): array
+    {
+        $rows = DB::connection($connection)->table($table)->get();
 
-    private function getTablesWithHash(string $connection,$domain): array
+        $hashes = [];
+
+        foreach ($rows as $row) {
+            foreach ((array) $row as $col => $value) {
+                $hashes[$col] = md5(($hashes[$col] ?? '') . '|' . serialize($value));
+            }
+        }
+
+        return $hashes;
+    }
+    private function getTablesWithHash(string $connection, string $domain): array
     {
         $database = DB::connection($connection)->getDatabaseName();
 
+        // Tabellen laden
         $tables = DB::connection($connection)->select("
             SELECT TABLE_NAME AS name
             FROM information_schema.tables
@@ -163,95 +229,136 @@ class SQLUpdateController extends Controller
         ", [$database]);
 
         // Tabellen filtern
-        $tables = array_filter($tables, fn($t) => !in_array($t->name, Settings::$excl_dump_tables));
+        $tables = array_filter($tables, fn ($t) =>
+            !in_array($t->name, Settings::$excl_dump_tables, true)
+        );
+
         $tables = array_filter($tables, function ($t) {
-        foreach ($this->KTables as $prefix) {
-            if (str_starts_with($t->name, $prefix)) {
-                // Tabelle enthält einen unerwünschten Prefix → ignorieren
-                return false;
+            foreach ($this->KTables as $prefix) {
+                if (str_starts_with($t->name, $prefix)) {
+                    return false;
+                }
             }
-        }
-        return true; // Tabelle ohne Prefix → behalten
+            return true;
         });
-        usort($tables, fn($a, $b) => strcmp($a->name, $b->name));
+
+        usort($tables, fn ($a, $b) => strcmp($a->name, $b->name));
 
         $result = [];
-        $dom = $domain;
 
         foreach ($tables as $t) {
 
             $table = $t->name;
-                // Tabelle überspringen, wenn kein Prefix passt
 
-            // if (! collect($this->KTables)->contains(fn($p) => str_starts_with($table, $p))) {
-            //     continue;
-            // }
-            // aktuellen Hash berechnen
+            /* --------------------------------------------------
+            * Hashes berechnen
+            * -------------------------------------------------- */
             $hashLocal  = $this->getTableHash($table, $this->domset_of);
             $hashOnline = $this->getTableHash($table, $this->domset);
 
-            // gespeicherte Hashes abrufen
-            $storedLocal = DB::connection("mariadb")->table('dbhash')
-                ->where('dom', $dom)->where('table', $table)->where('online', 'lh')
+            /* --------------------------------------------------
+            * Gespeicherte Hashes
+            * -------------------------------------------------- */
+            $storedLocal = DB::connection('mariadb')->table('dbhash')
+                ->where('dom', $domain)
+                ->where('table', $table)
+                ->where('online', 'lh')
                 ->value('hash');
 
-            $storedOnline = DB::connection("mariadb")->table('dbhash')
-                ->where('dom', $dom)->where('table', $table)->where('online', 'rh')
+            $storedOnline = DB::connection('mariadb')->table('dbhash')
+                ->where('dom', $domain)
+                ->where('table', $table)
+                ->where('online', 'rh')
                 ->value('hash');
 
-            // Wenn Hash NULL → aktuellen Hash speichern, nur einmal
             if ($storedLocal === null) {
-                $this->AddHash($table, $hashLocal, 'lh',1);
+                $this->AddHash($table, $hashLocal, 'lh', 1);
                 $storedLocal = $hashLocal;
             }
 
             if ($storedOnline === null) {
-                $this->AddHash($table, $hashOnline, 'rh',1);
+                $this->AddHash($table, $hashOnline, 'rh', 1);
                 $storedOnline = $hashOnline;
             }
 
-            // Farben bestimmen
+            /* --------------------------------------------------
+            * Wenn komplett identisch → überspringen
+            * -------------------------------------------------- */
             if ($hashLocal === $hashOnline) {
-                // Beide Seiten identisch → rot
-                $offlineColor = 'red';
-                $onlineColor  = 'red';
-                // continue;
-                $dred  = true;
                 continue;
             }
-            elseif($storedLocal == NULL && $storedOnline == NULL)
-                {
-                    $offlineColor = 'green';
-                    $onlineColor = 'green';
+
+            /* --------------------------------------------------
+            * Spalten-Hashes laden
+            * -------------------------------------------------- */
+            $localCols  = $this->getColumnHashes($table, $this->domset_of);
+            $onlineCols = $this->getColumnHashes($table, $this->domset);
+
+            $changedCols = [];
+
+            foreach ($localCols as $col => $hash) {
+                if (!isset($onlineCols[$col])) {
+                    continue;
                 }
-            else {
-                // Local grün, wenn hashLocal != storedLocal
-                $offlineColor = ($hashLocal !== $storedLocal && $hashLocal !== $hashOnline && $hashLocal !== $storedOnline) ? 'green' : 'red';
-                $onlineColor  = ($hashOnline !== $storedOnline && $hashLocal !== $hashOnline && $hashOnline !== $storedLocal) ? 'green' : 'red';
+
+                if ($hash !== $onlineCols[$col]) {
+                    $changedCols[] = $col;
+                }
             }
-            if($offlineColor == "red" && $onlineColor == "red")
-            {
+
+            /* --------------------------------------------------
+            * Ignorierte Spalten filtern
+            * -------------------------------------------------- */
+            $effectiveChangedCols = [];
+
+            foreach ($changedCols as $col) {
+                $key = $domain . '_' . $table . '_' . $col;
+
+                if (!in_array($key, Settings::$Ignored_Field, true)) {
+                    $effectiveChangedCols[] = $col;
+                }
+            }
+
+            // ❌ Alle Änderungen ignoriert → Tabelle NICHT anzeigen
+            if (count($effectiveChangedCols) === 0) {
                 continue;
             }
-            // Debug-Log
-            if($table == "adm_tables"){
-                \Log::info("Table: $table | hashLocal: $hashLocal | hashOnline: $hashOnline | storedLocal: $storedLocal | storedOnline: $storedOnline | offlineColor: $offlineColor | onlineColor: $onlineColor");
+
+            /* --------------------------------------------------
+            * Farben bestimmen
+            * -------------------------------------------------- */
+            $offlineColor = (
+                $hashLocal !== $storedLocal &&
+                $hashLocal !== $hashOnline &&
+                $hashLocal !== $storedOnline
+            ) ? 'green' : 'red';
+
+            $onlineColor = (
+                $hashOnline !== $storedOnline &&
+                $hashLocal !== $hashOnline &&
+                $hashOnline !== $storedLocal
+            ) ? 'green' : 'red';
+
+            if ($offlineColor === 'red' && $onlineColor === 'red') {
+                continue;
             }
 
-            // Hash-Datensätze neu anlegen falls nicht vorhanden
-            $this->AddHash($table, null, 'lh');
-            $this->AddHash($table, null, 'rh');
-
+            /* --------------------------------------------------
+            * Ergebnis
+            * -------------------------------------------------- */
             $result[] = [
-                'name'        => $table,
-                'hash'        => $hashLocal,
-                'hash_online' => $hashOnline,
-                'col_offline' => $offlineColor,
-                'col_online'  => $onlineColor,
+                'name'          => $table,
+                'hash'          => $hashLocal,
+                'hash_online'   => $hashOnline,
+                'col_offline'   => $offlineColor,
+                'col_online'    => $onlineColor,
+                'changed_cols'  => $effectiveChangedCols, // NUR relevante
             ];
         }
+
         return $result;
     }
+
 
 public function diffTable(string $table, string $domain)
 {
@@ -285,7 +392,7 @@ public function diffTable(string $table, string $domain)
             $localVal  = $localRow[$col]  ?? null;
             $onlineVal = $onlineRow[$col] ?? null;
 
-            if ($localVal !== $onlineVal) {
+            if ($localVal !== $onlineVal && !in_array($domain."_".$table."_".$col,Settings::$Ignored_Field)) {
                 $rowDiff[$col] = [
                     'local'  => $localVal,
                     'online' => $onlineVal,
@@ -296,7 +403,7 @@ public function diffTable(string $table, string $domain)
         if (!empty($rowDiff)) {
             $diff[] = [
                 'row' => $i,
-                "id"=>$localRow['id'],
+                "id"=>$localRow['id'] ?? $onlineRow['id'],
 
                 // ⭐ genau das, was du willst
                 'name' =>  $localRow[$headlineColumn] ?? null,
@@ -412,11 +519,11 @@ public function diffTable(string $table, string $domain)
         $online = $con === "lh" ? "lh" : "rh";
         if($ov)
         {
-            DB::connection("mariadb")->table("dbhash")
-            ->where("dom", $dom)
-            ->where("table", $table)
-            ->where("online", $online)
-            ->update(["hash"=>md5('test')]);
+            // DB::connection("mariadb")->table("dbhash")
+            // ->where("dom", $dom)
+            // ->where("table", $table)
+            // ->where("online", $online)
+            // ->update(["hash"=>md5('test')]);
         }
         // Wenn bereits existiert → niemals überschreiben
         $exists = DB::connection("mariadb")->table("dbhash")

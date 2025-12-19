@@ -10,14 +10,13 @@ class UpdateChangelog extends Command
     protected $signature = 'changelog:update';
     protected $description = 'Lädt alle geschlossenen GitHub-Issues (ohne PRs), versioniert sie nach closed_at und schreibt sie in die CHANGELOG.md';
 
-
-
-
     public function handle()
     {
         $owner = "Asario2";
         $repo = "MCSL-based-on-Starter-Eleven";
         $changelogPath = 'E:\git\git-olirein\CHANGELOG.md';
+        $configFile = 'D:\XAMPPP\htdocs\laravel-tutorial\oliver-rein\config\starter_eleven.php';
+        $readmeFile = 'D:\XAMPPP\htdocs\laravel-tutorial\oliver-rein\README.md';
 
         $allIssues = collect();
         $page = 1;
@@ -88,6 +87,7 @@ class UpdateChangelog extends Command
         }
 
         $entries = '';
+        $lastVersionUsed = '';
 
         foreach ($newIssues as $issue) {
             // Minor/major hochzählen
@@ -100,6 +100,7 @@ class UpdateChangelog extends Command
             $patch = rand(0, 9);
 
             $version = sprintf("%d.%02d.%d", $major, $minor, $patch);
+            $lastVersionUsed = $version;
             $badge = "![Version](https://img.shields.io/badge/version-{$version}-orange)";
 
             $entries .= "{$badge} {$issue['title']} (#{$issue['number']})  \n";
@@ -108,12 +109,40 @@ class UpdateChangelog extends Command
         // Neue Sektion unten anhängen
         $newChangelog = $changelog . "" . $entries;
         file_put_contents($changelogPath, $newChangelog);
-
         $this->info("📄 Alle neuen Issues nach {$changelogPath} geschrieben.");
+
+        // ✅ Config aktualisieren
+        if (file_exists($configFile)) {
+            $configContent = file_get_contents($configFile);
+            $configContent = preg_replace(
+                "/('versionnr'\s*=>\s*)['\"].*?['\"]/",
+                "\$1'{$lastVersionUsed}'",
+                $configContent
+            );
+            $configContent = preg_replace(
+                "/('versionsdatum'\s*=>\s*)['\"].*?['\"]/",
+                "\$1'" . date('d.m.Y') . "'",
+                $configContent
+            );
+            file_put_contents($configFile, $configContent);
+            $this->info("⚙️ config/starter_eleven.php aktualisiert (Version/Datum)");
+        }
+
+        // ✅ README.md aktualisieren
+        if (file_exists($readmeFile)) {
+            $readmeContent = file_get_contents($readmeFile);
+            $readmeContent = preg_replace(
+                "/!\[Version\]\(https:\/\/img\.shields\.io\/badge\/version-.*?-orange\)/",
+                "![Version](https://img.shields.io/badge/version-{$lastVersionUsed}-orange)",
+                $readmeContent,
+                1
+            );
+            file_put_contents($readmeFile, $readmeContent);
+            $this->info("📘 README.md Badge aktualisiert auf Version {$lastVersionUsed}");
+        }
+
         return Command::SUCCESS;
     }
-
-
 
     public function handle_getallnew()
     {

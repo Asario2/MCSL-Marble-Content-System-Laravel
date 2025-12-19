@@ -5,7 +5,7 @@ use App\Http\Controllers\GlobalController;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Config;
-use \App\Models\Settings;
+use App\Models\Settings;
 class AppServiceProvider extends ServiceProvider
 {
     /**

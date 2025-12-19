@@ -244,7 +244,7 @@
                     <h3 class="text-sm font-semibold leading-6 px-2">
                         <span> Webseite </span>
                     </h3>
-                    <ul role="list" class="mt-6 space-y-4">
+                    <ul role="list" class="mt-6 space-y-4 list-none">
                         <li>
                         <link-footer name="Benutzer" :href="route('home.userlist')"></link-footer>
                         </li>
@@ -264,13 +264,13 @@
                         </li>
                     </ul>
                     <br />
-                    <NewsletterSubscribe class="mb-[-2px]"/>
+                    <NewsletterSubscribe class="ml-[4px] mb-[-2px]"/>
                     </div>
                     <div class="text-center md:text-left">
                     <h3 class="text-sm font-semibold leading-6 px-2">
                         <span> Authentifizierung </span>
                     </h3>
-                    <ul role="list" class="mt-6 space-y-4">
+                    <ul role="list" class="mt-6 space-y-4 list-none">
                         <li>
                         <link-footer name="Login" :route-name="route('login')"></link-footer>
                         </li>

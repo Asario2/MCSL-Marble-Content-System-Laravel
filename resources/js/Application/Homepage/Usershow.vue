@@ -62,7 +62,7 @@
                 </tr>
                 <th class="pr-4">Facebook:</th>
                 <td>
-                    <a v-if="users?.fbd" :href="'https://facebook.com/profile.php?id=' + users?.fbd" target="_blank">
+                    <a v-if="users?.fbd" :href="fbid(users?.fbd)" target="_blank">
                     Zu Faceboook</a>
                     <p v-else>keine Angabe</p>
                 </td>
@@ -141,6 +141,24 @@ export default {
     },
     methods: {
         SD,
+        fbid(id) {
+            if (!id) return "";
+
+            const value = String(id).trim();
+
+            // Bereits eine Facebook-URL
+            if (value.includes("facebook.")) {
+                return value;
+            }
+
+            // Username (nicht rein numerisch)
+            if (!/^\d+$/.test(value)) {
+                return "https://facebook.com/" + value;
+            }
+
+            // Numerische Facebook-ID
+            return "https://facebook.com/profile.php?id=" + value;
+        },
     get_age(birthday) {
       if (!birthday) return 'unbekannt';
       const birthDate = new Date(birthday);

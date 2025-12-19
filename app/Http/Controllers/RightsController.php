@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use App\Http\Controllers\SQLUpdateController;
 use App\Models\AdminTable;
 use App\Models\UsersRight;
 use App\Models\User;
@@ -123,6 +124,11 @@ public function AddFunction(Request $request)
     if (in_array($column, $xkisColumns)) {
         return response()->json(['message' => "Feld $column existiert bereits"], 400);
     }
+    // Connection_GET
+    $sqlu = NEW SQLUpdateController();
+    $this->onl_con = $sqlu->GetDBCon(1,SD());
+
+
     $this->addColumn($request);
     // 3) Alphabetische Position finden
     $insertAfter = null;
@@ -150,9 +156,12 @@ public function AddFunction(Request $request)
     // 5) Spalte erzeugen
     DB::statement($sql);
 
-    // 6) User ID 1 bekommt automatisch Wert = 1
-        DB::table($table)->where('id', 1)->update([$column => 1]);
+    DB::connection($this->onl_con)->statement($sql);
 
+
+    // 6) UserRights ID 1 bekommt automatisch Wert = 1
+    DB::table($table)->where('id', 1)->update([$column => 1]);
+    DB::connection($this->onl_con)->table($table)->where('id', 1)->update([$column => 1]);
         return response()->json([
             'message' => "Feld $column erfolgreich hinzugefügt",
             'insert_after' => $insertAfter,
