@@ -415,7 +415,9 @@ public static array $image_sizes =
     3 => 'ab_users_rights_updated_at',
     4 => 'dag_users_rights_updated_at',
     5 => 'mfx_users_rights_updated_at',
-    ];
+    6 => 'ab_users_last_login_at',
+    7 => 'ab_users_updated_at',
+];
     public static array $nostats = [
     '/admin',
     '/_debug',

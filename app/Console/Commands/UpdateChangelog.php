@@ -16,7 +16,7 @@ class UpdateChangelog extends Command
         $repo = "MCSL-based-on-Starter-Eleven";
         $changelogPath = 'E:\git\git-olirein\CHANGELOG.md';
         $configFile = 'D:\XAMPPP\htdocs\laravel-tutorial\oliver-rein\config\starter_eleven.php';
-        $readmeFile = 'D:\XAMPPP\htdocs\laravel-tutorial\oliver-rein\README.md';
+        $readmeFile = 'E:\git\git-olirein\README.md';
 
         $allIssues = collect();
         $page = 1;

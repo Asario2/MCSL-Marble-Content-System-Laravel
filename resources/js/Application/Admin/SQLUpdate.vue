@@ -211,7 +211,7 @@
             <td class="px-3 py-2">
                 {{ row.name }}
             </td>
-            <td class="px-3 py-2"><ErrorSVG @click="Ignore_Field(col,selectedTable)" class="w-4 h-4"/></td>
+            <td class="px-3 py-2"><ErrorSVG @click="Ignore_Field(col,selectedTable)" class="w-4 h-4 cursor-pointer"/></td>
           </tr>
 
           <!-- Buttons (NUR EINMAL) -->
