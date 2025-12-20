@@ -45,12 +45,6 @@
                                     label="Dashboard"
                                 >
                                 </NavLink>
-                                <NavLink
-                                    :routeName="route('admin.handbook')"
-                                    label="Handbuch"
-                                    target="_blank"
-                                >
-                                </NavLink>
                             </div>
                         </div>
 
@@ -285,7 +279,7 @@
                                 Profil
                             </ResponsiveNavLink>
 
-                           
+
                             <!-- Authentication -->
                             <form method="POST" @submit.prevent="logoutUser">
 

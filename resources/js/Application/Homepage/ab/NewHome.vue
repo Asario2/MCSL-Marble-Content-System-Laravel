@@ -85,11 +85,14 @@ import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 export default {
     name: 'NewHome',
     components: { Layout, JArrow, MetaHeader },
+
     methods: {
-        redirect() {
+         redirect() {
             this.$inertia.visit('/blogs');
-        }
-    }
+        },
+
+    // andere Methoden hier...
+  }
 };
 </script>
 

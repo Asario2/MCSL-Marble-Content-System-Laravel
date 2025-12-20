@@ -161,3 +161,5 @@
 ![Version](https://img.shields.io/badge/version-4.33.9-orange) Hotfix - Bug in EmailSender Script (#308)  
 ![Version](https://img.shields.io/badge/version-4.34.7-orange) Hotfix Notification not loading (#309)  
 ![Version](https://img.shields.io/badge/version-4.35.0-orange) Error Description on Register (#310)  
+![Version](https://img.shields.io/badge/version-4.36.0-orange) Hotfix - Visibility of Newsletter Registration Form (#311)  
+![Version](https://img.shields.io/badge/version-4.37.1-orange) Hotfix - newsletter unsubscribe (#312)  

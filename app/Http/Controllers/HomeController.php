@@ -443,7 +443,7 @@ return Inertia::render('Homepage/Pictures', [
             $item->headline = html_entity_decode(html_entity_decode($item->headline));
             return $item;
         });
-        return Inertia::render('Pages/shortpoems', [
+        return Inertia::render('Pages/Shortpoems', [
             'items' => $data,
             'ratings' => $rat, // falls du Bewertungen dazupackst
             "filters" => request()->only('search'),

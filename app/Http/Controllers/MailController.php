@@ -144,9 +144,26 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
         $email = $this->getEmailByUhash($uhash);
         $email = decval($email);
         if($email){
-            $resul = DB::table("newsletter_blacklist")->updateOrInsert(["mail"=>$email,"created_at"=>now(),"pub"=>"1"]);
+            // $resul = DB::table("newsletter_blacklist")->updateOrInsert(["mail"=>$email,"created_at"=>now(),"pub"=>"1"]);
+       $exists = DB::table('newsletter_blacklist')
+            ->where('mail', $email)
+            ->exists();
+
+        if (!$exists) {
+            DB::table('newsletter_blacklist')->insert([
+                'mail' => $email,
+                'pub' => 1,          // 👈 nur beim Insert
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        } else {
+            DB::table('newsletter_blacklist')->update([
+                'updated_at' => now(),
+            ]);
         }
 
+        }
+        return Inertia::render("Components/Social/Newsl_Blacklist");
     }
     //return $ma->PrevMail("[MCSl] Newsletter","emails.newsletter",$email,$nick,$link,$content,$signatur);
     function PrevMail(Request $request,$title,$template,$email,$nick,$link,$content,$signatur){

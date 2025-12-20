@@ -256,7 +256,7 @@
                         </li>
                         <li>
                             <!-- <link-footer @click="reopenCookieBanner"><b>Cookie-Einstellungen</b></link-footer> -->
-<a class="ToggleCookieLink text-layout-sun-600 dark:text-layout-night-900 cursor-pointer inline-block rounded-lg px-2 py-1 text-sm text-layout-sun-700 hover:bg-primary-sun-300 hover:text-layout-sun-900 dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900"onclick="showHideToggleCookiePreferencesModal()"><span>Cookie Einstellungen</span></a>
+<a class="ToggleCookieLink text-layout-sun-600 dark:text-layout-night-900 cursor-pointer inline-block rounded-lg px-2 py-1 text-sm text-layout-sun-700 hover:bg-primary-sun-300 hover:text-layout-sun-900 dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900" onclick="showHideToggleCookiePreferencesModal()"><span>Cookie Einstellungen</span></a>
 
                         </li>
                         <li>
@@ -264,7 +264,7 @@
                         </li>
                     </ul>
                     <br />
-                    <NewsletterSubscribe class="ml-[4px] mb-[-2px]"/>
+                    <NewsletterSubscribe class="ml-[4px] mb-[-2px]" />
                     </div>
                     <div class="text-center md:text-left">
                     <h3 class="text-sm font-semibold leading-6 px-2">
@@ -546,7 +546,7 @@
             return;
           }
 
-          const markImageDone = (src, type) => {
+          const markImageDone = () => {
             imagesLoadedCount++;
 //             console.log(`📸 Bild ${type}:`, src, `${imagesLoadedCount}/${totalImages}`);
             if (imagesLoadedCount === totalImages) {

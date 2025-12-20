@@ -45,13 +45,7 @@
                                     label="Dashboard"
                                 >
                                 </NavLink>
-                                <NavLink
-                                    :routeName="route('admin.handbook')"
-                                    label="Handbuch"
-                                    target="_blank"
-                                >
-                                </NavLink>
-                            </div>
+                              </div>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">

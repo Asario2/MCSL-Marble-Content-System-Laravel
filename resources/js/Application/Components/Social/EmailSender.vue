@@ -87,6 +87,7 @@
         <!-- BUTTONS -->
         <div class="flex gap-2 mt-4">
           <button
+            type="button"
             @click="submitPreview"
             class="px-3 py-2 rounded-lg bg-blue-600 text-white"
           >
@@ -201,12 +202,14 @@ export default {
 
   methods: {
     submitPreview() {
-      router.post("/email/preview", {
+    router.post("/email/preview", {
         recipients: this.recipientNames,
         subject: this.subject,
-        body: this.mailbodyText,
-        signature: this.signatureText,
-      });
+        mailbodyText: this.mailbodyText,
+        signatureText: this.signatureText,
+        mailbodyId: this.selectedMbId,
+        signaturId: this.selectedSigId,
+    });
     },
 
     saveMail() {
