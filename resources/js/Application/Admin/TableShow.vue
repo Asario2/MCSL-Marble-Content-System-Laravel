@@ -1,5 +1,6 @@
         <template>
         <layout>
+            <MetaHeader :title="ucf(CleanTable()) + ' - Übersicht'" />
         <!-- Header -->
         <template #header>
             <breadcrumb :breadcrumbs="breadcrumbs" :current="tablet"></breadcrumb>
@@ -65,7 +66,7 @@
 
                 <!-- Kategorie -->
                 <td v-if="data.datarow.image_categories" class="np-dl-td-normal"  draggable="false" @dragstart.prevent @dragstart.prevent.stop>
-                <img :src="'/images/_ab/images_categories/sm/' + data.datarow.image_categories + '.jpg'" />
+                <img :src="'/images/_ab/images_categories/sm/' + data.datarow.image_categories + '.jpg'" :title="ucf(data.datarow.image_categories)" :alt="ucf(data.datarow.image_categories)"/>
                 </td>
                 <td v-if="data.datarow.blog_categories" class="np-dl-td-normal" draggable="false" @dragstart.prevent @dragstart.prevent.stop>
                 <span
@@ -181,6 +182,8 @@
     import CreatedAt from "@/Application/Components/Form/CreatedAt.vue";
     import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
     import ListContainer from "@/Application/Components/Lists/ListContainer.vue";
+
+    import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
     import PublishButton from "@/Application/Components/Form/PublishButton.vue";
     import IconStar from "@/Application/Components/Icons/IconStar.vue";
     import { CleanTable, ucf, SD, GetSettings, rumLaut,GetProfileImagePath } from "@/helpers";
@@ -198,6 +201,7 @@
     export default defineComponent({
         name: "AdminTableShow",
         components: {
+        MetaHeader,
         Layout,
         Breadcrumb,
         CreatedAt,

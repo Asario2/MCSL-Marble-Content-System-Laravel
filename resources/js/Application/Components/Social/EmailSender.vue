@@ -118,7 +118,7 @@
 <script>
 import axios from "axios";
 import { router } from "@inertiajs/vue3";
-import Layout from "@/Application/Admin/Shared/Layout.vue";
+import Layout from "@/Application/Admin/Shared/ab/Layout.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import SelectRecipient from "./SelectRecipient.vue";

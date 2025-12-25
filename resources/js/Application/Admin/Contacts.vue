@@ -1,6 +1,7 @@
 <template>
     <Layout>
-      <div class="p-4 bg-gray-900 text-white min-h-screen">
+        <MetaHeader title="Kontakte"></MetaHeader>
+        <div class="p-4 bg-gray-900 text-white min-h-screen">
 
         <!-- Prüfen ob Kontakte vorhanden sind -->
         <template v-if="hasContacts">
@@ -98,12 +99,12 @@
   </template>
 
   <script>
-  import Layout from "@/Application/Admin/Shared/Layout.vue";
+  import Layout from "@/Application/Admin/Shared/ab/Layout.vue";
   import { rumLaut } from "@/helpers";
-
+  import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
   export default {
     name: 'ContactTable',
-    components: { Layout },
+    components: { Layout,MetaHeader },
     props: {
       contacts: {
         type: Array,

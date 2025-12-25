@@ -6,8 +6,15 @@
             :class="classes"
             :target="target"
         >
-            <span class="text-layout-sun-600 dark:text-layout-night-900">{{ label }}</span></a
-        >
+        <span class="inline-flex items-center gap-1 text-layout-sun-600 dark:text-layout-night-900">
+    <component
+        v-if="icon"
+        :is="icon"
+        class="w-4 h-4"
+    />
+    <span> {{ label }}</span>
+</span></a>
+
     </div>
     <div v-else class="flex items-center">
         <div
@@ -19,6 +26,8 @@
     </div>
 </template>
 <script>
+import  IconStar  from '@/Application/Components/Icons/IconStar.vue';
+
 export default {
     name: "Components_Content_NavLink",
     //
@@ -39,6 +48,13 @@ export default {
             type: Boolean,
             default: false,
         },
+        icon:{
+            type:String,
+            default: '',
+        }
+    },
+    components:{
+        IconStar,
     },
     //
     computed: {

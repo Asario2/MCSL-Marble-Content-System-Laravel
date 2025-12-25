@@ -1,5 +1,6 @@
 <template>
   <Layout>
+    <MetaHeader title='DB Synchronisierung' />
     <template #header>
       <breadcrumb
         :application-name="$page.props.applications.app_admin_name"
@@ -270,7 +271,7 @@ import ErrorSVG from "@/Application/Components/Icons/ErrorSVG.vue";
 import { SD } from "@/helpers";
 import { defineAsyncComponent } from "vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
-
+import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 export default {
   name: "SQLSyncTables",
   components: {
@@ -278,6 +279,7 @@ export default {
     Breadcrumb,
     IconMagni,
     ErrorSVG,
+    MetaHeader,
 
   },
   props:{

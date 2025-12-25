@@ -1,5 +1,6 @@
 <template>
     <Layout>
+        <MetaHeader title="Benutzerrechte" />
       <template #header>
         <Breadcrumb
           :application-name="$page.props.applications.app_admin_name"
@@ -20,7 +21,8 @@
 
   <script>
   import RightsTable from "@/Application/Admin/UserRights.vue";
-  import Layout from "@/Application/Admin/Shared/Layout.vue";
+  import Layout from "@/Application/Admin/Shared/ab/Layout.vue";
+  import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
   import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
   import axios from "axios";
 
@@ -30,6 +32,7 @@
       RightsTable,
       Layout,
       Breadcrumb,
+      MetaHeader,
     },
     props: {
       adminTables: Array,

@@ -103,7 +103,7 @@ import { rumLaut, nl2br } from "@/helpers";
 // import { router } from '@inertiajs/vue3';
 import { Inertia } from '@inertiajs/inertia'
 
-import Layout from "@/Application/Admin/Shared/Layout.vue";
+import Layout from "@/Application/Admin/Shared/ab/Layout.vue";
 import SelectRecipient from "./SelectRecipient.vue";
 import InputHtml from "@/Application/Components/Form/InputHtml.vue";
 import InputTextarea from "@/Application/Components/Form/InputTextarea.vue";

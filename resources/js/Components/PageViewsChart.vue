@@ -1,6 +1,10 @@
 <template>
     <Layout>
-        <div class="w-full p-4">
+        <MetaHeader title="Statistik" />
+    <template #header>
+      <breadcrumb :breadcrumbs="breadcrumbs" :current="'Private_Nachrichten'"></breadcrumb>
+    </template>        <div class="w-full p-4">
+
             <canvas ref="canvas"></canvas>
         </div>
     </Layout>
@@ -10,13 +14,16 @@
 import axios from "axios";
 import { Chart, BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from "chart.js";
 import Layout from "@/Application/Homepage/Shared/Layout.vue";
+import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+
 
 export default {
   name: "PageViewsChart",
 
 components:{
     Layout,
+    MetaHeader,
 },
 
   data() {

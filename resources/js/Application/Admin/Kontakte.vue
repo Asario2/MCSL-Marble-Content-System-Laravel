@@ -1,5 +1,6 @@
 <template>
     <Layout>
+        <MetaHeader title="Kontakte"></MetaHeader>
       <div class="p-4 bg-gray-900 text-white min-h-screen">
         <addbtn table="contacts" text="Neuer Kontakt" :safe="true"></addbtn>
         <!-- Prüfen ob Kontakte vorhanden sind -->
@@ -118,13 +119,15 @@
     </Layout>
   </template>
 <script>
-import Layout from "@/Application/Admin/Shared/Layout.vue";
+import Layout from "@/Application/Admin/Shared/ab/Layout.vue";
 import { rumLaut } from "@/helpers";
 import editbtns from "@/Application/Components/Form/editbtns.vue";
 import { throttle } from "lodash";
+import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import Addbtn from "@/Application/Components/Form/addbtn.vue";
 import SearchFilter from "@/Application/Components/Lists/SearchFilter.vue";
 import pickBy from "lodash/pickBy";
+
 
 
 export default {
@@ -133,7 +136,8 @@ export default {
     Layout,
     editbtns,
     Addbtn,
-    SearchFilter
+    SearchFilter,
+    MetaHeader,
   },
   props: {
     contacts: {

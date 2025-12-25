@@ -1,5 +1,6 @@
 <template>
   <layout>
+    <meta-header :title="'Übersicht der Tabelle Admin Table'" />
     <template #header>
       <breadcrumb v-if="CleanTable() !== 'contacts'"
                   :application-name="$page.props.applications.app_admin_name"
@@ -50,7 +51,8 @@
 
 <script>
 import { defineComponent } from "vue";
-import Layout from "@/Application/Admin/Shared/Layout.vue";
+import Layout from "@/Application/Admin/Shared/ab/Layout.vue";
+import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 import ListContainer from "@/Application/Components/Lists/ListContainer.vue";
 import { CleanTable,CheckTRights } from '@/helpers'; // NEU: Import der Batch-Funktionen
@@ -63,6 +65,7 @@ export default defineComponent({
   components: {
     Layout,
     Breadcrumb,
+    MetaHeader,
     ListContainer,
   },
 

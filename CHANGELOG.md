@@ -165,3 +165,6 @@
 ![Version](https://img.shields.io/badge/version-4.37.1-orange) Hotfix - newsletter unsubscribe (#312)  
 ![Version](https://img.shields.io/badge/version-4.38.4-orange) Hotfix - Fixed Bugs in Tablesow.vue (#313)  
 ![Version](https://img.shields.io/badge/version-4.39.4-orange) Bug - Had to change share functions (#314)  
+![Version](https://img.shields.io/badge/version-4.40.0-orange) Hotfix - Bug in Birthday cron job (#316)  
+![Version](https://img.shields.io/badge/version-4.41.2-orange) Feature - Added <Title>'s (#317)  
+![Version](https://img.shields.io/badge/version-4.42.3-orange) Feature - Icons for user navigation (#318)  

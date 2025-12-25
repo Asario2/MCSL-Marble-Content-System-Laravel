@@ -1,7 +1,8 @@
 <template>
   <Layout>
+    <MetaHeader title="Zugriffs-Statistik" />
     <template #header>
-      <breadcrumb :breadcrumbs="breadcrumbs" :current="'Zugriff Statistik'"></breadcrumb>
+      <breadcrumb :breadcrumbs="breadcrumbs" :current="'Zugriffs-Statistik'"></breadcrumb>
     </template>
 
     <div class="flex justify-between items-center mb-4">
@@ -77,15 +78,16 @@ import {
   Legend,
   Title
 } from "chart.js";
-import Layout from "@/Application/Admin/Shared/Layout.vue";
+import Layout from "@/Application/Admin/Shared/ab/Layout.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 import { SD } from "@/helpers";
+import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend, Title);
 
 export default {
   name: "PageViewsChart",
-  components: { Layout, Breadcrumb },
+  components: { Layout, Breadcrumb,MetaHeader, },
 
   data() {
     return {

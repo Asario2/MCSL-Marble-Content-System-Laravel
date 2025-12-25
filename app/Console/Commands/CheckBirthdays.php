@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class CheckBirthdays extends Command
 {
@@ -19,6 +20,7 @@ class CheckBirthdays extends Command
         $this->info("Starte Geburtstags-/Todestagsprüfung für {$heute}");
 
         $users = DB::table('asarios_BLog.contacts')
+            ->where("us_poster","1")
             ->select('id', 'Vorname', 'Nachname', 'Email', 'Telefon', 'Handy', 'Geburtsdatum', 'ripdate', 'hasyear', 'hasryear')
             ->get();
 

@@ -41,7 +41,7 @@
             >
               <td class="px-4 py-3 cursor-pointer text-left">
                 <button @click="togglerow(index)" class="flex items-center text-blue-500">
-                  <IconRight class="w-5 h-5" fill="currentColor" v-tippy />
+                  <IconDarr class="w-5 h-5" fill="currentColor" v-tippy />
                   <tippy>{{ ucf(table.name) }} An/Aus</tippy>
                 </button>
               </td>
@@ -293,13 +293,13 @@ import axios from "axios";
 import InputFormText from "@/Application/Components/Form/InputFormText.vue";
 import InputSelect from "@/Application/Components/Form/InputSelect.vue";
 import InputCheckbox from "@/Application/Components/Form/InputCheckbox.vue";
-import IconRight from "@/Application/Components/Icons/IconRight.vue";
+import IconDarr from "@/Application/Components/Icons/IconDarr.vue";
 import ErrorSVG from "@/Application/Components/Icons/ErrorSVG.vue";
 import SearchFilter from "@/Application/Components/Lists/SearchFilter.vue";
 
 export default {
   name: "UserRights",
-  components: { ErrorSVG, SearchFilter, InputSelect, InputCheckbox, IconRight, InputFormText },
+  components: { ErrorSVG, SearchFilter, InputSelect, InputCheckbox, IconDarr, InputFormText },
   props: {
     adminTables: { type: Array, default: () => [] },
     urid: [String, Number],

@@ -6,7 +6,7 @@
                 :start-page="true"
             ></breadcrumb>
         </template>
-
+        <MetaHeader title="Dashboard" />
         <div
             class="w-full bg-layout-sun-0 dark:bg-layout-night-0 grid grid-cols-1 md:grid-cols-2 gap-2 lg:gap-3 p-6 lg:p-4"
         >
@@ -130,9 +130,9 @@
 <script>
 import { defineComponent } from "vue";
 import {route} from 'ziggy-js';
-//import Layout from "@/Application/Admin/Shared/Layout.vue";
+//import Layout from "@/Application/Admin/Shared/ab/Layout.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
-
+import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import NavigationCard from "@/Application/Components/NavigationCard.vue";
 import { loadRights,ucf,CleanTable,GetRights,SD } from '@/helpers';
 // import { hasRight,loadAllRights,isRightsReady } from '@/utils/rights';
@@ -146,6 +146,7 @@ export default defineComponent({
         import(`@/Application/Admin/Shared/${SD()}/Layout.vue`)),
         Breadcrumb,
         NavigationCard,
+        MetaHeader,
     },
 
 

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CustomLoginController;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\MCSPointsController;
 use App\Http\Controllers\PMController;
 use App\Http\Controllers\UserConfigController;
 use App\Http\Controllers\BlogPostController;
@@ -530,6 +531,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         )->name('admin.dashboard');
 
 ### ============== API ISADMIN QI ================ ###
+        Route::get("/admin/mcspoints",[MCSPointsController::class,"index"])->name("admin.mcspoints");
+        Route::get("/api/mcspoints/{users_id?}",[MCSPointsController::class,"GetCount"])->name("api.mcspoints");
         Route::get("/admin/SQLUpdate", [SQLUpdateController::class,"index"])->name("SQL.index");
         Route::get('/api/admin-tables', [TablesController::class, 'GetDBTables'])->name("get.db.tables");
         Route::get('/userx/update-config/{id}', [UserConfigController::class, 'updateConfig'])->name('usconfi');

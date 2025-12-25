@@ -1,5 +1,6 @@
 <template>
     <layout>
+        <MetaHeader title="Beitrag Bearbeiten"></MetaHeader>
         <template #header>
             <breadcrumb
                 :breadcrumbs="breadcrumbs"
@@ -568,7 +569,7 @@ import ImageUploadModal from '@/Application/Components/ImageUploadModal.vue';
 import InputPosition from '@/Application/Components/InputPosition.vue';
 
 
-import Layout from "@/Application/Admin/Shared/Layout.vue";
+import Layout from "@/Application/Admin/Shared/ab/Layout.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 import SmoothScroll from "@/Application/Components/SmoothScroll.vue";
 
@@ -609,6 +610,7 @@ import { nextTick } from 'vue'
 
 // import Alert from "@/Application/Components/Content/Alert.vue";
 import ImageJsonEditor from "@/Application/Admin/ImageJsonEditor.vue";
+import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 
 
 export default defineComponent({
@@ -640,7 +642,7 @@ export default defineComponent({
         InputTextarea,
         InputPWD,
         Editor,
-        // InputFormTextArea,
+        MetaHeader,
         InputFormDate,
         InputFormPrice,
         ImageJsonEditor,

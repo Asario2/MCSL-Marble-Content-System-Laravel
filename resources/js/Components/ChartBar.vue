@@ -1,4 +1,5 @@
 <template>
+  <MetaHeader title="Statistiken" />
   <Layout>
   <div class="w-full">
     <canvas ref="canvas"></canvas>
@@ -9,6 +10,7 @@
 <script>
 import { Chart, BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend } from 'chart.js';
 import Layout from "@/Application/Homepage/Shared/Layout.vue";
+import MetaHeader from '@/Application/Homepage/Shared/MetaHeader.vue';
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 export default {
@@ -16,6 +18,7 @@ export default {
 
   components:{
     Layout,
+    MetaHeader,
   },
 
   props: {

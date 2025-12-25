@@ -9,9 +9,11 @@ export default {
     props:{
         he:{
             type:[String,Number],
+            default:24,
         },
         wi:{
             type:[String,Number],
+            default:24,
         },
         color:{
             type:String,

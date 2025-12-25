@@ -295,7 +295,7 @@
 </template>
 
 <script>
-import Layout from "@/Application/Admin/Shared/Layout.vue";
+import Layout from "@/Application/Admin/Shared/ab/Layout.vue";
 import editbtns from '@/Application/Components/Form/editbtns.vue';
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";

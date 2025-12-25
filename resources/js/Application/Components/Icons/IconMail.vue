@@ -10,8 +10,8 @@
 
     props: {
         lcol:{default:"black"},
-        wi:{default:''},
-        he:{default:''},
+        wi:{default:24,},
+        he:{default:24,},
     },
 };
 </script>

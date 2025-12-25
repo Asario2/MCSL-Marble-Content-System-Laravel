@@ -6,7 +6,16 @@
 <script>
 export default {
     name: "IconStarEmpty",
-
+   props:{
+    he:{
+            type:[String,Number],
+            default:24,
+        },
+        wi:{
+            type:[String,Number],
+            default:24,
+        },
+    }
 };
 </script>
 

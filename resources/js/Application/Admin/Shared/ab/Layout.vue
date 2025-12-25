@@ -1,6 +1,6 @@
 <template>
     <div class="dark" id="app-layout-start">
-        <Head :title="title"></Head>
+        <Head :title="title">Admin Dashboard</Head>
 
         <div
             class="min-h-screen bg-layout-sun-100 text-layout-sun-800 dark:bg-layout-night-100 dark:text-layout-night-800 transition duration-2000 ease-in-out"
@@ -43,6 +43,12 @@
                                     :routeName="route('admin.dashboard')"
                                     :active="route().current('admin.dashboard')"
                                     label="Dashboard"
+                                >
+                                </NavLink>
+                                <NavLink v-if="SD() == 'abc'" icon="IconStar"
+                                    :routeName="route('admin.mcspoints')"
+                                    :active="route().current('admin.mcspoints')"
+                                    :label="mcspoints"
                                 >
                                 </NavLink>
                               </div>
@@ -136,7 +142,10 @@
                                                 "
                                                 >Anwendung wechseln</span
                                             >
-                                            <span v-else>zum Dashboard</span>
+                                            <span v-else><span class="inline-flex items-center gap-1">
+                                                <IconDashboard class="w-4 h-4" color="#ffa500" />
+                                                <span>Zum Dashboard</span>
+                                            </span></span>
                                         </dropdown-link>
 
                                         <!-- Account Management -->
@@ -151,16 +160,33 @@
                                             :with-route="true"
                                             :route-name="route('admin.profile')"
                                         >
-                                            Profil
+                                            <span class="inline-flex items-center gap-1">
+                                                <IconProfile class="w-4 h-4" color="#ffa500" />
+                                                <span>Profil</span>
+                                            </span>
                                         </dropdown-link>
+                                        <dropdown-link v-if="SD() == 'ab'"
+                                            :with-icon="false"
+                                            :with-route="true"
+                                            :route-name="route('admin.mcspoints')"
+                                        >
+                                            <span class="inline-flex items-center gap-1">
+                                                <IconStar_thin class="w-4 h-4" color="#ffa500" />
+                                                <span>{{ mcspoints }} MCSL Points</span>
+                                            </span>
+                                        </dropdown-link>
+
                                              <dropdown-link v-if="rights.delete == 1"
                                                 :with-icon="false"
                                                 :with-route="true"
                                                 :route-name="
                                                     route('pm.index')
                                                 ">
+                                            <span class="inline-flex items-center gap-1">
+                                                <IconPM class="w-4 h-4" color="#ffa500" />
+                                                <span>Private Nachrichten</span>
+                                            </span>
 
-                                            Private Nachrichten
                                             </dropdown-link>
                                         <dropdown-link
                                                 :with-icon="false"
@@ -168,9 +194,13 @@
                                                 :route-name="
                                                     route('admin.kontakte')
                                                 ">
+                                            <span class="inline-flex items-center gap-1">
+                                                <IconContacts_alt class="w-4 h-4" color="#ffa500" />
+                                                <span>Kontakte</span>
+                                            </span>
 
-                                            Kontakte
                                             </dropdown-link>
+
 
                                         <div
                                             class="my-2 border-t border-layout-sun-200 dark:border-layout-night-200"
@@ -180,7 +210,10 @@
                                         <form @submit.prevent="logoutUser">
                                             <button type="submit">
                                                 <dropdown-link>
-                                                    Abmelden
+                                            <span class="inline-flex items-center gap-1">
+                                                <IconLogout class="w-4 h-4" color="#ffa500" />
+                                                <span>Abmelden</span>
+                                            </span>
                                                 </dropdown-link>
                                             </button>
                                         </form>
@@ -352,26 +385,33 @@
 </template>
 
 <script>
-import { Head } from "@inertiajs/vue3";
-
+// import { Head } from "@inertiajs/vue3";
+import axios from "axios";
 import BrandHeader from "@/Application/Shared/BrandHeader.vue";
 import Toast from "@/Application/Components/Content/Toast.vue";
 import ButtonChangeMode from "@/Application/Components/ButtonChangeMode.vue";
 import { toastBus } from '@/utils/toastBus';
+import IconStar_thin from "@/Application/Components/Icons/IconStar_thin.vue";
+import IconContacts_alt from "@/Application/Components/Icons/IconContacts_alt.vue";
+import IconLogout from "@/Application/Components/Icons/IconLogout.vue";
+import IconProfile from "@/Application/Components/Icons/IconProfile.vue";
+import IconPM from "@/Application/Components/Icons/IconPM.vue";
+import IconDashboard from "@/Application/Components/Icons/IconDashboard.vue";
 import Loader from "@/Application/Components/Loader.vue";
 import Dropdown from "@/Application/Components/Content/Dropdown.vue";
 import DropdownLink from "@/Application/Components/Content/DropdownLink.vue";
-import { SD,GetProfileImagePath,CheckTRights,GetRights } from "@/helpers";
+import { SD,GetProfileImagePath,CheckTRights,GetRights,CleanTable } from "@/helpers";
 import NavLink from "@/Application/Components/Content/NavLink.vue";
 import ResponsiveNavLink from "@/Application/Components/Content/ResponsiveNavLink.vue";
-import { throttle } from 'lodash';
+// import { throttle } from 'lodash';
 import FooterGrid from "@/Application/Components/Content/FooterGrid.vue";
+
 
 export default {
     name: "Admin_Shared_Layout",
 
     components: {
-        Head,
+        // Head,
         BrandHeader,
         Toast,
         ButtonChangeMode,
@@ -381,6 +421,12 @@ export default {
         ResponsiveNavLink,
         FooterGrid,
         Loader,
+        IconLogout,
+        IconProfile,
+        IconPM,
+        IconContacts_alt,
+        IconStar_thin,
+        IconDashboard,
     },
 
     props: {
@@ -398,10 +444,10 @@ export default {
             rights: {
             edit: null,
             delete: null,
-        }
+            },
+            mcspoints: null,
         };
     },
-
 async mounted() {
         this.rights.edit = await CheckTRights("edit", 'private_messages');
     this.rights.delete = await CheckTRights("delete", 'private_messages');
@@ -410,12 +456,20 @@ async mounted() {
             localStorage.removeItem('reload_dashboard');
             window.location.reload();
         }
+      await this.loadMcspoints();
     },
 
     methods: {
         SD,
         GetProfileImagePath,
         GetRights,
+        CleanTable,
+          async loadMcspoints() {
+            const { data } = await axios.get('/api/mcspoints');
+            this.mcspoints = data;
+            console.log(data);
+        },
+
         async getServer() {
             try {
                 const response = await axios.get('/api/GetLastAct');
