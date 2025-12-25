@@ -53,17 +53,29 @@ class MailController extends Controller
 
         }
         $uhash = $this->randomString64();
+        $exists = DB::table("newsletter_reci")->where("email",$request->email)->exists();
+        if(!$exists){
+
+
         DB::table("newsletter_reci")->insert([
             "pub"=>0,
             "uhash"=> $uhash,
-            "email"=>encval($request->email),
-            "nick"=>$this->Quote($request->email),
+            "email"=>$request->email,
             "title"=>$request->title,
             "prename"=>$request->firstname,
             "surname"=>$request->lastname,
         ]);
+        }
+        else{
+            DB::table("newsletter_reci")->where("email",$request->email)->update([
+            "title"=>$request->title,
+            "prename"=>$request->firstname,
+            "surname"=>$request->lastname,
+            ]);
+            $uhash = DB::table("newsletter_reci")->where("email",$request->email)->value("uhash");
+        }
         $title = "Newsletter Anmeldung";
-        $link = "http://".request()->getHost()."/mail/subscribe/".$uhash."/".decval($request->email);
+        $link = "http://".request()->getHost()."/mail/subscribe/".$uhash."/".$request->email;
         $nick = trim($request->title." ".$request->firstname." ".$request->lastname) ?? "Liebe Leserin, lieber Leser,";
         $content_alt = '';
         $template = '';
@@ -80,7 +92,7 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
     if(empty($email)) return false;
 
     $html = str_replace('%uhash%', $uhash, $html);
-    $email = decval($email);
+    $email = $email;
     Mail::send([], [], function ($message) use ($email, $html, $title) {
         $message->to($email)
                 ->subject($title)
@@ -94,7 +106,7 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
         if(empty($email)){
             return false;
         }
-        $email = decval($email);
+        $email = $email;
         $html = str_replace('%uhash%',@$uhash,$html);
 //         \Log::info($uhash);
         // Mail::to($email)->send(new GeneralMail($title,$link,$nick,$html,$template));
@@ -113,7 +125,7 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
             ->first();
 
         if ($user && !empty($user->email)) {
-            return decval($user->email);
+            return $user->email;
         }
 
         // 2. Prüfe Contacts
@@ -123,7 +135,7 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
             ->first();
 
         if ($contact && !empty($contact->email)) {
-            return decval($contact->email);
+            return $contact->email;
         }
 
         // 3. Prüfe Newsletter_Recei
@@ -133,7 +145,7 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
             ->first();
 
         if ($newsletter && !empty($newsletter->email)) {
-            return decval($newsletter->email);
+            return $newsletter->email;
         }
 
         // Wenn nichts gefunden wurde
@@ -142,11 +154,11 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
     public function UnSubscribe_Newsl($uhash)
     {
         $email = $this->getEmailByUhash($uhash);
-        $email = decval($email);
+        $email = $email;
         if($email){
             // $resul = DB::table("newsletter_blacklist")->updateOrInsert(["mail"=>$email,"created_at"=>now(),"pub"=>"1"]);
        $exists = DB::table('newsletter_blacklist')
-            ->where('mail', $email)
+            ->where('uhash', $uhash)
             ->exists();
 
         if (!$exists) {
@@ -154,14 +166,17 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
                 'mail' => $email,
                 'pub' => 1,          // 👈 nur beim Insert
                 'created_at' => now(),
-                'updated_at' => now(),
+                "uhash" => $uhash,
+
             ]);
         } else {
             DB::table('newsletter_blacklist')->update([
                 'updated_at' => now(),
             ]);
         }
-
+        if($uhash){
+            // DB::table("newsletter_reci")->where("uhash",$uhash)->delete();
+        }
         }
         return Inertia::render("Components/Social/Newsl_Blacklist");
     }
@@ -237,7 +252,7 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
         foreach ($ugroups as $regro)
         {
             $uhash = @$regro->uhash;
-            $email = @decval($regro->email);
+            $email = @$regro->email;
             $nick = @$regro->name;
             $sendm[] = $email;
             $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
@@ -246,14 +261,14 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
         foreach($contacts as $con)
         {
             preg_match_all('/\(([^)]+)\)/', $con, $matches);
-            $email = decval(implode("",$matches[1]));
+            $email = implode("",$matches[1]);
 
             $nick = $email;
 
             $res_alt = DB::table('contacts')->where('email_hash', hash('sha256', $email))->select("uhash","email")->first();
 
             $uhash = $res_alt->uhash;
-            $email = decval($res_alt->email);
+            $email = $res_alt->email;
             if(!in_array($email,$sendm) && !empty($email)){
                 $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
                 $i++;
@@ -271,7 +286,7 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
             }
             // dd(session('reci'));
             $uhash = @$res->uhash;
-            $email = decval(@$res->email);
+            $email = @$res->email;
             $nick = @$res->name;
             if(!in_array($email,$sendm) && !empty($res) && !empty($email)){
                 $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
@@ -287,7 +302,7 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
             foreach($resi as $rep)
             {
                 $uhash = $rep->uhash;
-                $email = decval($rep->email);
+                $email = $rep->email;
                 $ni = $rep->surname." ".$rep->prename;
                 $nick = trim($ni) ?? $email;
                 $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);

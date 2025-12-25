@@ -406,41 +406,6 @@
             location.reload();
 
             },
-            // async chkcom(){
-            //     alert(route('comments.check'));
-            //     try {
-            //         const response = await axios.get(route('comments.check'), {
-            //             params: { id: CleanId() }
-            //         });
-
-            //         if(response.data.success) {
-            //             console.log('Kommentarstatus aktualisiert');
-            //             const coms = response.data.success;
-            //             location.reload();// oder Kommentar neu laden
-            //         }
-            //     } catch (error) {
-            //         console.error('Fehler beim Prüfen:', error);
-            //     }
-            // },
-            // async fetchStatus(){
-            //     if (!this.datarows || this.datarows.length === 0) {
-            //         console.warn("Daten noch nicht verfügbar");
-            //         return;
-            //     }
-
-
-            //     if (this.datarows && this.datarows.length > 0) {
-            // const ids = this.datarows.map(r => r.id);
-            // try {
-
-            // const response = await axios.post('/api/getCheckedBatch', { ids });
-            // this.checkedStatus = response.data; // { [id]: true/false }
-            // // console.log("CS:" + JSON.stringify(this.checkedStatus,null,2));
-            // } catch (error) {
-            // console.error("Fehler beim Batch-Status laden:", error);
-            // }
-            //     }
-            // },
             reset() {
                 this.form = mapValues(this.form, () => null);
                 this.$emit("list-container-search-reset");

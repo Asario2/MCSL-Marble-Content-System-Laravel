@@ -1,8 +1,12 @@
+<template>
+    <draggable></draggable>
+</template>
 <script>
 import Draggable from "vuedraggable";
 
 export default {
-    components: {
+    name:"DragNDrop",
+        components: {
         Draggable,
     },
     props: {

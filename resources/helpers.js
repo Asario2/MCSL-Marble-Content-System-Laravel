@@ -228,27 +228,15 @@ import { cachen } from './cache';
 // Zwischenspeicher für laufende Requests
 if (!cachen.pending) cachen.pending = {};
 
-// Rechte-Cache und Pending-Requests
-// const cachen = {
-//   batchRights: {}, // gespeicherte Ergebnisse
-//   pending: {},     // laufende Requests
-// };
-
-/**
- * Prüft ein Recht für eine Tabelle.
- * @param {string} right - z.B. 'edit', 'view', 'delete'
- * @param {string} table - Tabellenname
- * @returns {Promise<number>} 0 oder 1
- */
 export async function CheckTRights(right, table) {
   const cacheKey = `${right}_${table}`;
 
-  // 1. Cache vorhanden?
+  // 1. Cache vorhanden? -> OK
   if (cachen.batchRights[cacheKey] !== undefined) {
-    return Promise.resolve(cachen.batchRights[cacheKey]);
+    return cachen.batchRights[cacheKey];
   }
 
-  // 2. Pending Request prüfen
+  // 2. Läuft gerade ein Request für dieselbe Sache?
   if (cachen.pending[cacheKey]) {
     return cachen.pending[cacheKey];
   }
@@ -257,23 +245,22 @@ export async function CheckTRights(right, table) {
   const request = axios.get(`/api/user/rights/des/${table}/${right}`)
     .then(({ data }) => {
       cachen.batchRights[cacheKey] = data; // Cache setzen
-      delete cachen.pending[cacheKey];     // Pending entfernen
+      delete cachen.pending[cacheKey];
+      console.log("data" + data);    // Pending entfernen
       return data;
     })
     .catch(err => {
-      delete cachen.pending[cacheKey];     // Pending entfernen
-      console.error('CheckTRights Error:', err);
-      return 0;                             // Default bei Fehler
+      delete cachen.pending[cacheKey];
+      console.error(err);
+      return 0;
     });
 
-  // Pending speichern
+  // Als "pending" speichern
   cachen.pending[cacheKey] = request;
 
-  // Promise zurückgeben
+  // Ergebnis zurückgeben
   return request;
 }
-
-
 
 
 

@@ -27,7 +27,7 @@ export default {
   },
   mounted() {
     if (window.location.pathname !== '/') {
-      this.iterationCount = 1; // nur 1 Wiederholung, wenn nicht die Startseite
+      this.iterationCount = 4; // nur 1 Wiederholung, wenn nicht die Startseite
     }
   },
 };

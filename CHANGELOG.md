@@ -163,3 +163,5 @@
 ![Version](https://img.shields.io/badge/version-4.35.0-orange) Error Description on Register (#310)  
 ![Version](https://img.shields.io/badge/version-4.36.0-orange) Hotfix - Visibility of Newsletter Registration Form (#311)  
 ![Version](https://img.shields.io/badge/version-4.37.1-orange) Hotfix - newsletter unsubscribe (#312)  
+![Version](https://img.shields.io/badge/version-4.38.4-orange) Hotfix - Fixed Bugs in Tablesow.vue (#313)  
+![Version](https://img.shields.io/badge/version-4.39.4-orange) Bug - Had to change share functions (#314)  

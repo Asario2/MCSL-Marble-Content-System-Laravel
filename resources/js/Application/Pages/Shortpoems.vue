@@ -1,232 +1,242 @@
 <template>
-    <Layout>
-      <MetaHeader title="Meine Shortpoems Übersicht" />
-      <section class="max-w-3xl mx-auto mt-10 px-4">
-        <h1 class="text-3xl font-bold mb-6 text-layout-title">Shortpoems</h1>
+  <Layout>
+    <MetaHeader title="Shortpoems" />
 
+    <section class="max-w-3xl mx-auto mt-10 px-4">
+      <h1 class="text-3xl font-bold mb-6 text-layout-title">Shortpoems</h1>
 
-        <newbtn table="shortpoems">
-        </newbtn>
-        <div class="flex justify-between items-center">
-          <search-filter
-            v-if="searchFilter"
-            v-model="form.search"
-            :placeholder="searchText"
-            class="w-full"
-            @reset="reset"
+      <newbtn table="shortpoems" />
 
-            @input="$emit('update:modelValue', $event.target.value)"
-          />
-        </div>
-        <div class="p-2 md:p-4" v-if="Array.isArray(items.data) && items.data.length === 0 && form.search">
-          <alert type="warning">
-            Für den vorgegebenen Suchbegriff wurden keine Shortpoems gefunden.
-          </alert>
-        </div>
-        <div
-          v-for="(item, index) in items.data"
-          :key="item.id || index"
-          class="mb-4 border border-gray-300 dark:border-gray-600 rounded-lg"
-        >
-          <div :id="'st' + item.id"></div>
-          <button
-            @click="toggle(index)"
-            class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex justify-between items-center transition"
-            :aria-expanded="openIndex === index"
-            :aria-controls="'st' + item.id"
-            :title="'Shortpoem anzeigen/verbergen'"
-          >
-            <span class="text-lg font-medium text-gray-900 dark:text-white">{{ item.headline }}</span>
-            <svg
-              :class="{ 'rotate-180': openIndex === index }"
-              class="h-5 w-5 transform transition-transform text-gray-600 dark:text-gray-300"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          <div
-            v-if="openIndex === index"
-            class="px-4 py-3 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-300 border-t border-gray-300 dark:border-gray-700"
-          >
-            <p>{{ item.story || 'Kein Text vorhanden.' }}&nbsp;&nbsp;</p>
-            <editbtns :id="item.id" table="shortpoems" /><br />
-            <averageRating
-              :postId="item.id"
-              :av="parseFloat(ratings['original'][item.id]?.average) || 0"
-              :tot="ratings['original'][item.id]?.total || 0"
-            />
-            <SocialButtons :postId="item.id" :xslug="true"/>
-          </div>
-        </div>
-      </section>
-
-      <!-- Pagination -->
-      <div class="flex items-center justify-center flex-wrap mt-6 -mb-1 text-xs md:text-base bg-transparent text-layout-sun-700 dark:text-layout-night-700">
-        <template v-for="(link, index) in items.links" :key="index">
-          <!-- Deaktivierte Links -->
-          <div
-            v-if="!link.url"
-            class="flex items-center px-3 py-0.5 mx-1 mb-1 rounded-md cursor-not-allowed"
-          >
-            <span v-html="link.label"></span>
-          </div>
-
-          <!-- Aktive Seite -->
-          <a
-            v-else-if="link.active"
-            href="#"
-            @click.prevent="$inertia.get(link.url)"
-            class="flex items-center px-2.5 py-0.5 mx-1 mb-1 h-7 transition-colors duration-200 transform rounded-md border border-primary-sun-500 text-primary-sun-900 dark:border-primary-night-500 dark:text-primary-night-900 hover:bg-layout-sun-200 hover:text-layout-sun-800 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-800 font-bold"
-          >
-            <span v-html="link.label"></span>
-          </a>
-
-          <!-- Normale Links -->
-          <a
-            v-else
-            href="#"
-            @click.prevent="$inertia.get(link.url)"
-            class="flex items-center px-2.5 py-0.5 mx-1 mb-1 h-7 transition-colors duration-200 transform rounded-md border hover:bg-layout-sun-200 hover:text-layout-sun-800 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-800"
-          >
-            <span v-html="link.label"></span>
-          </a>
-        </template>
+      <div class="flex justify-between items-center">
+        <search-filter
+          v-if="searchFilter"
+          v-model="form.search"
+          :placeholder="searchText"
+          class="w-full"
+          @reset="reset"
+          @input="$emit('update:modelValue', $event.target.value)"
+        />
       </div>
-    </Layout>
-  </template>
 
-  <script>
-  import Layout from '@/Application/Homepage/Shared/Layout.vue';
-  import editbtns from '@/Application/Components/Form/editbtns.vue';
-  import SocialButtons from "@/Application/Components/Social/socialButtons.vue";
-  import averageRating from "@/Application/Components/Social/averageratings.vue";
-  import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
-  import SearchFilter from "@/Application/Components/Lists/SearchFilter.vue";
-  import Alert from "@/Application/Components/Content/Alert.vue";
-  import newbtn from "@/Application/Components/Form/newbtn.vue";
+      <div
+        class="p-2 md:p-4"
+        v-if="Array.isArray(items.data) && items.data.length === 0 && form.search"
+      >
+        <alert type="warning">
+          Für den vorgegebenen Suchbegriff wurden keine Shortpoems gefunden.
+        </alert>
+      </div>
 
-  import pickBy from "lodash/pickBy";
-  import mapValues from "lodash/mapValues";
-  import { throttle } from "lodash";
+      <div
+        v-for="(item, index) in items.data"
+        :key="item.id || index"
+        class="mb-4 border border-gray-300 dark:border-gray-600 rounded-lg"
+      >
+        <!-- Marker für Hash -->
+        <div :id="'st' + item.id"></div>
+        <button
+          @click="toggle(index, item)"
+          class="w-full px-4 py-3 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex justify-between items-center transition"
+          :title="'Shortpoem anzeigen/verbergen'"
+        >
+          <span class="text-lg font-medium text-gray-900 dark:text-white">{{ item.headline }}</span>
+          <svg
+            :class="{ 'rotate-180': openIndex === index }"
+            class="h-5 w-5 transform transition-transform text-gray-600 dark:text-gray-300"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        <!-- Accordion-Content -->
+        <div
+          v-if="openIndex === index || items.total == '1'"
+          :ref="`content-${item.id}`"
+          class="px-4 py-3 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-300 border-t border-gray-300 dark:border-gray-700"
+        >
+          <p>{{ item.story || 'Kein Text vorhanden.' }}</p>
+          <editbtns :id="item.id" table="shortpoems" /><br />
+          <averageRating
+            :postId="item.id"
+            :av="parseFloat(ratings['original'][item.id]?.average) || 0"
+            :tot="ratings['original'][item.id]?.total || 0"
+          />
 
-  export default {
-    components: {
-      Layout,
-      editbtns,
-      SocialButtons,
-      averageRating,
-      MetaHeader,
-      SearchFilter,
-      Alert,
-      newbtn,
-    },
-    computed: {
-        search() {
-    // return this.filters?.search ?? "";
+          <SocialButtons :postId="item.id" :xslug="true" :sse="item.headline"/>
+        </div>
+
+        <!-- Accordion Button -->
+
+      </div>
+    </section>
+
+    <!-- Pagination -->
+    <div class="flex items-center justify-center flex-wrap mt-6 -mb-1 text-xs md:text-base bg-transparent text-layout-sun-700 dark:text-layout-night-700">
+      <template v-for="(link, index) in items.links" :key="index">
+        <div
+          v-if="!link.url"
+          class="flex items-center px-3 py-0.5 mx-1 mb-1 rounded-md cursor-not-allowed"
+        >
+          <span v-if="link.label === 'pagination.previous'">&laquo; Zurück</span>
+          <span v-else-if="link.label === 'pagination.next'">Weiter &raquo;</span>
+        </div>
+
+        <a
+          v-else-if="link.active"
+          href="#"
+          @click.prevent="$inertia.get(link.url)"
+          class="flex items-center px-2.5 py-0.5 mx-1 mb-1 h-7 transition-colors duration-200 transform rounded-md border border-primary-sun-500 text-primary-sun-900 dark:border-primary-night-500 dark:text-primary-night-900 hover:bg-layout-sun-200 hover:text-layout-sun-800 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-800 font-bold"
+        >
+          <span v-html="link.label"></span>
+        </a>
+
+        <a
+          v-else
+          href="#"
+          @click.prevent="$inertia.get(link.url)"
+          class="flex items-center px-2.5 py-0.5 mx-1 mb-1 h-7 transition-colors duration-200 transform rounded-md border hover:bg-layout-sun-200 hover:text-layout-sun-800 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-800"
+        >
+          <span v-if="link.label === 'pagination.previous'">&laquo; Zurück</span>
+          <span v-else-if="link.label === 'pagination.next'">Weiter &raquo;</span>
+          <span v-else v-html="link.label"></span>
+        </a>
+      </template>
+    </div>
+  </Layout>
+</template>
+
+<script>
+import Layout from '@/Application/Homepage/Shared/Layout.vue';
+import MetaHeader from '@/Application/Homepage/Shared/MetaHeader.vue';
+import newbtn from '@/Application/Components/Form/newbtn.vue';
+import SearchFilter from '@/Application/Components/Lists/SearchFilter.vue';
+import Alert from '@/Application/Components/Content/Alert.vue';
+import editbtns from '@/Application/Components/Form/editbtns.vue';
+import SocialButtons from "@/Application/Components/Social/socialButtons.vue";
+import averageRating from "@/Application/Components/Social/averageratings.vue";
+import pickBy from "lodash/pickBy";
+import { throttle } from "lodash";
+
+export default {
+    name:"ShortPoems",
+  components: {
+    Layout, MetaHeader, newbtn, SearchFilter, Alert, editbtns, SocialButtons, averageRating
   },
+  props: {
+    items: { type: Object, required: true },
+    ratings: { type: [Array, Object], default: () => ({}) },
+    filters: { type: Object, default: () => ({}) },
+    searchFilter: { type: Boolean, default: true },
+    searchText: { type: String, default: "Hier kannst du den Suchbegriff eingeben" },
+  },
+  data() {
+    return {
+      openIndex: null,
+      form: { search: this.filters?.search ?? "" },
+    };
+  },
+  watch: {
+    form: {
+      handler: throttle(function () {
+        const query = pickBy(this.form, v => v != null && v !== '');
+        this.$inertia.get(
+          this.route("home.shortpoems"),
+          Object.keys(query).length ? query : { remember: "forget" },
+          { preserveState: true, preserveScroll: false, replace: true }
+        );
+      }, 150),
+      deep: true
     },
-    props: {
-      items: {
-        type: Object,
-        required: true,
-      },
-      ratings: {
-        type: [Array, Object],
-        default: () => ({}),
-      },
-      filters: {
-        type: Object,
-        default: () => ({}),
-      },
-      searchFilter: {
-        type: Boolean,
-        default: true,
-      },
-      searchText: {
-        type: String,
-        default: "Hier kannst du den Suchbegriff eingeben",
-      },
-    //   searchValue: {
-    //     type: String,
-    //     default: null,
-    //   },
-      links: {
-        type: Array,
-        default: () => [],
-      },
-    },
-    data() {
-      return {
-        openIndex: null,
-        form: {
-            search: this.filters?.search ?? "",
+    items: {
+      immediate: true,
+      async handler() {
+        await this.$nextTick();
+        this.scrollToHash();
+      }
+    }
+  },
+  methods: {
+    reset() { this.form.search = null },
 
-        }
+    toggle(index, item) {
+      const opening = this.openIndex !== index;
+      this.openIndex = opening ? index : null;
+      if (!opening || !item?.id) return;
+      this.$nextTick(() => this.scrollToItem(item.id));
+    },
+
+    async scrollToHash() {
+  const hash = window.location.hash;
+  if (!hash) return;
+
+  const id = hash.replace('#st', '');
+
+  const index = this.items.data.findIndex(
+    item => String(item.id) === id
+  );
+  if (index === -1) return;
+
+  // Accordion öffnen
+  this.openIndex = index;
+
+  // 1️⃣ Warten bis Vue gerendert hat
+  await this.$nextTick();
+
+  // 2️⃣ Warten bis Layout stabil ist (SEHR wichtig)
+  await new Promise(r => requestAnimationFrame(r));
+  await new Promise(r => requestAnimationFrame(r));
+
+  // 3️⃣ Marker verwenden (NICHT content!)
+  const marker = document.getElementById(`st${id}`);
+  if (!marker) return;
+
+  const y =
+    marker.getBoundingClientRect().top +
+    window.pageYOffset -
+    180;
+
+  window.scrollTo({
+    top: y,
+    behavior: 'auto' // ❗ beim Laden niemals smooth
+  });
+},
+
+    async waitForRef(refName) {
+      return new Promise(resolve => {
+        const check = () => {
+          const el = this.$refs[refName]?.[0];
+          if (el) resolve(el);
+          else requestAnimationFrame(check);
+        };
+        check();
+      });
+    },
+
+    scrollToItem(id) {
+      const content = this.$refs[`content-${id}`]?.[0];
+      if (!content) return;
+
+      const doScroll = () => {
+        const y = content.getBoundingClientRect().top + window.pageYOffset - 170;
+        window.scrollTo({ top: y, behavior: 'smooth' });
       };
-    },
-    watch: {
-      form: {
-        handler: throttle(function () {
-          const query = pickBy(this.form, (v) => v != null && v !== '');
-          this.$inertia.get(
-            this.route("home.shortpoems"),
-            Object.keys(query).length ? query : { remember: "forget" },
-            {
-              preserveState: true,
-              replace: true,
-            }
-          );
-        }, 150),
-        deep: true,
-      },
-    },
-    methods: {
-      reset() {
-        this.form.search = null;
-      },
-      toggle(index) {
-        this.openIndex = this.openIndex === index ? null : index;
-      },
-    },
-    mounted() {
-        const hash = window.location.hash;
-            if (hash && hash.startsWith("#st")) {
-                const id = hash.replace("#st", "");
-                const index = this.items.data.findIndex((item) => String(item.id) === id);
 
+      const imgs = content.querySelectorAll('img');
+      if (!imgs.length) return doScroll();
 
-                if (index !== -1) {
-                this.openIndex = index;
-
-                // Warten, bis das Element sichtbar gerendert ist
-                this.$nextTick(() => {
-                    const el = document.getElementById(`st${id}`);
-                    if (el) {
-                    const y = el.getBoundingClientRect().top + window.pageYOffset - 115;
-                    window.scrollTo({ top: y, behavior: 'smooth' });
-                    }
-                });
-                }
-            }
-
-
-        const params = new URLSearchParams(window.location.search);
-    const search = params.get("search");
-
-    // Wenn search gesetzt ist, verstecke das Loading-Div
-    if (search && search.trim() !== "") {
-
-      this.isLoading = false;
+      let loaded = 0;
+      imgs.forEach(img => {
+        if (img.complete) loaded++;
+        else img.addEventListener('load', () => { loaded++; if (loaded === imgs.length) doScroll(); });
+      });
+      if (loaded === imgs.length) doScroll();
     }
-    else{
-        this.isLoading = true;
-    }
-
-        },
-  };
-  </script>
-
+  },
+  mounted() {
+    // initial scroll beim Laden
+    this.scrollToHash();
+  }
+};
+</script>

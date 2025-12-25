@@ -239,30 +239,110 @@ export default {
   },
   watch: {
     form: {
-        handler: throttle(function () {
-            const query = pickBy(this.form);
+      handler: throttle(function () {
+        const query = pickBy(this.form);
 
-            this.$inertia.get(
-                this.route('home.images.gallery',{ slug: this.CleanTable() }),
-                query,
-                {
-                    preserveState: true,
-                    replace: true,
-                }
-            );
-        }, 150),
-        deep: true,
+        this.$inertia.get(
+          this.route('home.images.gallery', { slug: this.CleanTable() }),
+          query,
+          {
+            preserveState: true,
+            replace: true,
+          }
+        );
+      }, 150),
+      deep: true,
     },
-  '$page.url'() {
-    this.$nextTick(() => {
-      this.$refs.searchField?.focus();
-    });
-  }
 
+      entries: {
+    deep: true,
+    immediate: true,
+    handler() {
+      if (!window.location.hash) return;
 
+      requestAnimationFrame(() => {
+        this.scrollToHashAnchor();
+      });
+    },
+  },
 },
   methods: {
+
     CleanTable,
+    //     scrollToHashAnchor() {
+    //   const hash = window.location.hash;
+    //   if (!hash) return;
+
+    //   const el = document.getElementById(hash.replace("#", ""));
+    //   if (!el) return;
+
+    //   const y = el.getBoundingClientRect().top + window.scrollY - 134;
+    //   window.scrollTo({ top: y, behavior: "smooth" });
+    // },
+
+
+  getHashElement() {
+    const hash = window.location.hash;
+    console.log('DEBUG: window.location.hash =', hash);
+
+    if (!hash) return null;
+
+    // erlaubt: #st123 ODER #123
+    const raw = hash.replace('#', '');
+    const el = document.getElementById(raw) || document.getElementById(`st${raw}`);
+    console.log('DEBUG: target element =', el);
+    return el;
+  },
+
+    scrollToHashAnchor() {
+    const el = this.getHashElement();
+    if (!el) return;
+
+    console.log('DEBUG: scrolling to element', el);
+
+    const scroll = () => {
+        const y = el.getBoundingClientRect().top + window.pageYOffset - 134;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+        console.log('DEBUG: scrolling to y =', y);
+    };
+
+    // Prüfe, ob Bilder noch laden
+    const imgs = el.closest('#gallery')?.querySelectorAll('img');
+    if (!imgs || imgs.length === 0) {
+        scroll();
+        return;
+    }
+
+    let loaded = 0;
+    imgs.forEach((img) => {
+        if (img.complete) loaded++;
+        else img.addEventListener('load', () => {
+        loaded++;
+        if (loaded === imgs.length) scroll();
+        });
+    });
+
+    // Falls alle Bilder schon geladen
+    if (loaded === imgs.length) scroll();
+    },
+
+
+
+
+
+     // OLDDDDDDDDDDDDD
+    // scrollToHashAnchor() {
+    //   const hash = window.location.hash;
+    //   if (hash && hash.startsWith("#")) {
+    //     setTimeout(() => {
+    //       const el = document.getElementById(hash.substring(1));
+    //       if (el) {
+    //         const y = el.getBoundingClientRect().top + window.pageYOffset - 134;
+    //         window.scrollTo({ top: y, behavior: "smooth" });
+    //       }
+    //     }, 50);
+    //   }
+    // },
     reset() {
         this.form = mapValues(this.form, () => null);
     },
@@ -294,26 +374,29 @@ export default {
     },
   },
   mounted() {
+
+
+
     this.$nextTick(() => {
     this.$refs.searchField?.focus();
     });
-    const hash = window.location.hash;
-    if (hash && hash.startsWith("#st")) {
-      const id = hash.replace("#st", "");
-      const index = this.entries.data.findIndex((item) => String(item?.id) === id);
+    // const hash = window.location.hash;
+    // if (hash && hash.startsWith("#st")) {
+    //   const id = hash.replace("#st", "");
+    //   const index = this.entries.data.findIndex((item) => String(item?.id) === id);
 
-      if (index !== -1) {
-        this.openIndex = index;
+    //   if (index !== -1) {
+    //     this.openIndex = index;
 
-        this.$nextTick(() => {
-          const el = document.getElementById(`st${id}`);
-          if (el) {
-            const y = el.getBoundingClientRect().top + window.pageYOffset - 134;
-            window.scrollTo({ top: y, behavior: 'smooth' });
-          }
-        });
-      }
-    }
+    //     this.$nextTick(() => {
+    //       const el = document.getElementById(`st${id}`);
+    //       if (el) {
+    //         const y = el.getBoundingClientRect().top + window.pageYOffset - 134;
+    //         window.scrollTo({ top: y, behavior: 'smooth' });
+    //       }
+    //     });
+    //   }
+    // }
 
     this.lightbox = new PhotoSwipeLightbox({
       gallery: "#gallery",
@@ -342,7 +425,8 @@ export default {
         this.isLoading = true;
     }
     this.lightbox.init();
-  },
+    // this.scrollToHashAnchor();
+},
 
 };
 </script>

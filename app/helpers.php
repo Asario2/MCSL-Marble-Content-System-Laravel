@@ -29,10 +29,11 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
     if(!function_exists("MCSL_GRAD"))
     {
         function MCSL_GRAD(){
-            return "<div style=\"background-color:#000;background-position:right;height:52px;background-repeat:no-repeat;background-image:url('https://www.marblefx.de/_images/mailheader/mcsl_grad.png');\">
-        <div style=\"float:left;position:relative;margin-top:0px;margin-left:0px;\">
-        <img src=\"https://www.marblefx.de/_images/mailheader/mcsl_mail_system2.png\" alt=\"MCS Mail System\" title=\"MCS Mail System\">
-        </div></div><br>";
+            return "<style>BODY{font-family:Tahome !important;}</style>
+            <div style=\"background-color:#000;background-position:right;height:52px;background-repeat:no-repeat;background-image:url('https://www.marblefx.de/_images/mailheader/mcsl_grad.png');\">
+            <div style=\"float:left;position:relative;margin-top:0px;margin-left:0px;\">
+            <img src=\"https://www.marblefx.de/_images/mailheader/mcsl_mail_system2.png\" alt=\"MCS Mail System\" title=\"MCS Mail System\">
+            </div></div><br>";
         }
     }
     if(!function_exists("decval_old"))
@@ -85,6 +86,10 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
         {
             function Notify()
             {
+// echo encval('kunst@marblefx.de')."<br />";
+// exit;
+
+
             $entries = DB::table('genxlo.notifications')
                 ->get()
                 ->map(function ($item) {
@@ -174,6 +179,31 @@ function decval($value)
     }
     try {
         return Crypt::decryptString($value);
+    } catch (\Exception $e) {
+        return $value; // Fallback falls schon im Klartext
+    }
+}
+}
+if(!function_exists("encval_new"))
+{
+function encval_new($value)
+{
+    if ($value === null || $value === '') {
+        return $value;
+    }
+
+    return hash('sha256', trim(decval($value)));
+}
+}
+if(!function_exists("decval_new"))
+{
+function decval_new($value)
+{
+    if ($value === null || $value === '') {
+        return $value;
+    }
+    try {
+        return hash('sha256', $value);
     } catch (\Exception $e) {
         return $value; // Fallback falls schon im Klartext
     }

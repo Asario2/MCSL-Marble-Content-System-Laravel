@@ -327,6 +327,7 @@
         "blog_authors"=>"Author",
         "categories"=>"Kategorie",
         "users_rights"=>"Name",
+        "blogs"=>"Headline",
     ];
     public static array $descalias = [
         "comments"=>"Autor",
@@ -336,6 +337,7 @@
         "shortpoems"=>"Autor",
         "didyouknow"=>"Autor",
         "texts"=>"Autor",
+        "blogs"=>"Zusammenfassung",
         "categories"=>"Kategorie Englsich",
         "images"=>"Autor",
         "projects_sheets"=>"Aufgabe",
@@ -417,6 +419,7 @@ public static array $image_sizes =
     5 => 'mfx_users_rights_updated_at',
     6 => 'ab_users_last_login_at',
     7 => 'ab_users_updated_at',
+    8 => 'ab_users_remember_token',
 ];
     public static array $nostats = [
     '/admin',

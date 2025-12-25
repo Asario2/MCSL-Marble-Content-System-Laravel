@@ -27,17 +27,18 @@ class PagesController extends Controller
     }
     public function RegisterMail(Request $request)
     {
-        $sdr = DB::table("newsletter_reci")->pluck("uhash")->where("email",$request['email'])->first();
+        $sdr = DB::table("newsletter_reci")->pluck("uhash")->where("email",encval($request['email']))->first();
         if($sdr['uhash'] == $request['uhash'])
         {
             DB::table('newsletter_reci')->insert([
-                'email' => $request['email'],
-                'firstname'  => $request['firstname'],
-                "lastname" =>$request['lastname'],
-                "title"=> $request['title'],
+                'email' => encval($request['email']),
+                'firstname'  => encval($request['firstname']),
+                "lastname" => encval($request['lastname']),
+                "title"=> encval($request['title']),
                 'subscribed_at' => now(),
+                "uhash"=>$request['uhash'],
             ]);
-            DB::table("newsletter_blacklist")->where("mail",$request->mail)->delete();
+            DB::table("newsletter_blacklist")->where("uhash",$request['uhash'])->delete();
 
 $adminEmail = "parie@gmx.de";  // oder deine IONOS-Mail
     $admin = (object) ['email' => $adminEmail]; // Dummy-Notifiable

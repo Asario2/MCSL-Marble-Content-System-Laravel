@@ -18,6 +18,7 @@ if(!function_exists("DUMP_DB"))
     {
         function Notify()
         {
+            
             $entries = DB::table("notifications")->get();
             foreach($entries as $entry)
             {

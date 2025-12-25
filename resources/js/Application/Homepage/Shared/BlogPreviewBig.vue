@@ -7,7 +7,7 @@
         <div class="blog-container mh_64 lg:col-span-7" style="padding:0px;margin:0px;">
             <Link
         :href="route('home.blog.show', blog.autoslug)" class="block text-layout-sun-600 dark:text-layout-night-900">
-
+            <figure>
         <img
             :src="`/images/_ab/blogs/image_path/${blog.url}`"
             style='min-width:300px;max-height:365px;width:100%;min-height:auto;'
@@ -17,6 +17,10 @@
             :class="['object-cover w-full rounded lg:col-span-7 object-cover rounded biggie bg-layout-sun-100 dark:bg-layout-night-100', blog.madewithai ? 'ai-image-corner' : '']"
 
         />
+      <figcaption class="sr-only">
+        {{ blog.title }} {{ blog.sumary }}
+      </figcaption>
+    </figure>
 
         </Link>
         <div class="relative my7">
@@ -29,7 +33,7 @@
 
         <div id="teaser-img" class="p-6 space-y-1 lg:col-span-5 pb-0">
   <Link :href="route('home.blog.show', blog.autoslug)" class="text-layout-sun-600 dark:text-layout-night-900">
-    <div class="flex items-center justify-between w-full">
+    <div class="flex items-center justify-between w-full" aria-hidden="true">
       <!-- Blog-Titel -->
       <h2
         class="text-xl font-semibold sm:text-2xl font-title group-hover:underline group-focus:underline"
@@ -195,7 +199,9 @@ img {
   border: none;
 
 }
-
+.opi{
+    display: none;
+}
 /* Hier kannst du zusätzliche Anpassungen vornehmen, falls nötig */
 </style>
 

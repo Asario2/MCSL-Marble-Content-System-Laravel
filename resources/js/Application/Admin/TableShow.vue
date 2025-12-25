@@ -30,7 +30,10 @@
             <!-- Header-Spalten -->
             <template #header>
                 <tr>
-                <th class="np-dl-th-normal"  v-if="rows?.data?.length && !rows.data[0]?.isNAN && CleanTable()?.trim() !== ''">Drop</th>
+                    <th class="np-dl-th-normal lg:hidden">Aktionen</th>
+                    <th class="np-dl-th-normal"  v-if="rows?.data?.length && !rows.data[0]?.isNAN && CleanTable()?.trim() !== ''">Drop</th>
+
+
                 <th class="np-dl-th-normal">ID</th>
                 <th class="np-dl-th-normal">Pub</th>
                 <th v-if="cat_on_head" class="np-dl-ht-normal">{{ cat_on_head }}</th>
@@ -49,10 +52,10 @@
 
             <!-- Datenzeilen -->
             <template v-slot:datarow="data">
-                <td class="np-dl-td-normal">{{ getMixId(data.datarow) }}</td>
+                <td class="np-dl-td-normal" draggable="false" @dragstart.prevent @dragstart.prevent.stop>{{ getMixId(data.datarow) }}</td>
 
                 <!-- Pub -->
-                <td class="np-dl-td-normal" v-if="data.datarow.pub !== 'undefined'">
+                <td class="np-dl-td-normal" draggable="false" v-if="data.datarow.pub !== 'undefined'">
                 <PublishButton
                     :table="CleanTable()"
                     :id="data.datarow.id"
@@ -61,10 +64,10 @@
                 </td>
 
                 <!-- Kategorie -->
-                <td v-if="data.datarow.image_categories" class="np-dl-td-normal">
+                <td v-if="data.datarow.image_categories" class="np-dl-td-normal"  draggable="false" @dragstart.prevent @dragstart.prevent.stop>
                 <img :src="'/images/_ab/images_categories/sm/' + data.datarow.image_categories + '.jpg'" />
                 </td>
-                <td v-if="data.datarow.blog_categories" class="np-dl-td-normal">
+                <td v-if="data.datarow.blog_categories" class="np-dl-td-normal" draggable="false" @dragstart.prevent @dragstart.prevent.stop>
                 <span
                     class="text-sm min-w-fit min-h-fit bg-primary-sun-500 text-primary-sun-900
                         dark:bg-primary-night-500 dark:text-primary-night-900
@@ -75,12 +78,12 @@
                 </td>
 
                 <!-- Projekte -->
-                <td v-if="table === 'projects_sheets'" class="np-dl-td-normal break-words whitespace-normal">
+                <td v-if="table === 'projects_sheets'" class="np-dl-td-normal break-words whitespace-normal" draggable="false" @dragstart.prevent @dragstart.prevent.stop>
                 {{ ucf(data.datarow.projects) }}
                 </td>
 
-                <!-- Comments Tabelle -->
-                <td v-if="table == 'comments'" class="np-dl-td-normal">
+                <!-- comments Tabelle -->
+                <td v-if="table == 'comments'" class="np-dl-td-normal"  draggable="false" @dragstart.prevent @dragstart.prevent.stop>
                 <CreatedAt :post_id="data.datarow.post_id" :table="data.datarow.admin_table">
                     <span
                     class="text-sm min-w-fit min-h-fit bg-primary-sun-500 text-primary-sun-900
@@ -93,7 +96,7 @@
                 </td>
 
                 <!-- Admin Table -->
-                <td v-else-if="table != 'comments' && table_head" class="np-dl-td-normal">
+                <td v-else-if="table != 'comments' && table_head" class="np-dl-td-normal" draggable="false" @dragstart.prevent @dragstart.prevent.stop>
                 <span
                     class="text-sm min-w-fit min-h-fit bg-primary-sun-500 text-primary-sun-900
                         dark:bg-primary-night-500 dark:text-primary-night-900
@@ -104,13 +107,13 @@
                 </td>
 
                 <!-- Name -->
-                <td class="np-dl-td-normal break-words whitespace-normal max-w-[600px]">
+                <td class="np-dl-td-normal break-words whitespace-normal max-w-[600px]"  draggable="false" @dragstart.prevent @dragstart.prevent.stop>
                 <span v-html="rumLaut(data.datarow.name)"></span>
                 </td>
 
                 <!-- User bei Kommentaren -->
                 <td
-                class="np-dl-td-normal"
+                class="np-dl-td-normal" draggable="false" @dragstart.prevent @dragstart.prevent.stop
                 v-if="table != 'people' && (users[data.datarow.users_id]?.img || data.datarow.nick || data.datarow.users)"
                 >
                 <div v-if="users[data.datarow.users_id]?.img && users[data.datarow.users_id].img !== '008.jpg'">
@@ -135,17 +138,17 @@
 
                 <!-- Description -->
                 <td
-                class="np-dl-td-normal break-words whitespace-normal"
+                class="np-dl-td-normal break-words whitespace-normal" draggable="false" @dragstart.prevent @dragstart.prevent.stop
                 v-if="table !== 'comments' && table != 'ratings' && table != 'projects_sheets'"
                 >
                 <span v-html="rumLaut(data.datarow.description)"></span>
                 </td>
 
-                <!-- Ratings -->
-                <td v-else-if="table === 'ratings'" class="np-dl-td-normal break-words whitespace-normal">
+                <!-- ratings -->
+                <td v-else-if="table === 'ratings'" class="np-dl-td-normal break-words whitespace-normal" draggable="false" @dragstart.prevent @dragstart.prevent.stop>
                 {{ data.datarow.images }}
                 </td>
-                <td v-if="table === 'ratings'" class="np-dl-td-normal break-words whitespace-normal">
+                <td v-if="table === 'ratings'" class="np-dl-td-normal break-words whitespace-normal" draggable="false" @dragstart.prevent @dragstart.prevent.stop>
                 <IconStar
                     v-for="i in data.datarow.rating"
                     :key="i"
@@ -190,7 +193,7 @@
 
     let table_z = CleanTable();
     let table_alt = table_z;
-    let table = table_z.toLowerCase();
+    let table = CleanTable();
 
     export default defineComponent({
         name: "AdminTableShow",
@@ -230,7 +233,7 @@
             tablez: this.ucf(table_z),
             checkedStatus: {},
             sortable: null,
-            // table: table.toLowerCase(),
+            table: CleanTable().toLowerCase(),
             // tableq: CleanTable(),
             settings: {},
             namealias: "",
@@ -276,6 +279,7 @@
         },
 
         async mounted() {
+
         this.cat_on_head = this.checkCat();
         this.checkhasCreated();
         this.settings = await GetSettings();
@@ -289,6 +293,7 @@
         }
 
         this.initSortable();
+        this.fetchStatus();
         },
         methods: {
             GetProfileImagePath,
@@ -322,7 +327,7 @@
 
                 // Reihenfolge speichern
                 try {
-                    await axios.post(`/api/save-order/${this.table}`, {
+                    await axios.post('/api/save-order/'+ CleanTable(), {
                     rows: this.localRows.map((row, index) => ({
                         id: row.id,
                         position: index
@@ -358,6 +363,7 @@
             try {
             const response = await axios.get("/api/chkcom/");
             this.checkedStatus = response.data.success;
+            // console.log(this.checkedStatus);
             } catch (error) {
             console.error("Fehler beim Batch-Status laden:", error);
             }
@@ -434,3 +440,4 @@
         margin-left: 8px;
     }
     </style>
+

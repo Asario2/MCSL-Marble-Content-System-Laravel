@@ -104,6 +104,7 @@ export default {
         sslug: { type: Boolean, default: false },
         xslug: { type: Boolean, default: false },
         ublock: String,
+        sse:String,
         big:{Boolean,default:false},
     },
     data() {
@@ -113,6 +114,7 @@ export default {
             showShareBox: {},
             showStarBox: {},
             showComments: null,
+            // url2:'',
         };
     },
     mounted() {
@@ -120,6 +122,7 @@ export default {
         this.imageRemove(this.postId);
     },
     methods: {
+        CleanTable,
         openComments(id) {
             this.imageRemove(id);
             this.showComments = this.showComments === id ? null : id;
@@ -150,8 +153,13 @@ export default {
             nextTick(() => {
                 const shariffRef = this.$refs['shariff_' + id];
                 if (!shariffRef) return;
-                const url = `${window.location.origin}${window.location.pathname}${this.urlAdded || ''}`;
-                shariffRef.setAttribute('data-url', url);
+                this.ssez =  this.sse ? "?search=" + encodeURIComponent(this.sse) : this.urlAdded || '';
+
+                const url = `${window.location.origin}${window.location.pathname}${this.ssez || ''}`;
+                const url_alt = url.replace(CleanTable() + CleanTable() + "/",CleanTable()+"/");
+                console.log(url_alt);
+
+                shariffRef.setAttribute('data-url', url_alt);
                 new Shariff(shariffRef, {
                     services: ["facebook", "telegram", "whatsapp", "xing", "twitter"],
                     theme: "classic",

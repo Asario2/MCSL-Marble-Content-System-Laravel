@@ -604,7 +604,11 @@ public function ShowTable(Request $request, $table_alt = null)
     // Sortierung
     if(Schema::hasColumn($table,"position")){
         $ord = ["position","asc"];
-    } elseif (in_array($table, ["blogs", "didyouknow", "images", "comments", "shortpoems"])) {
+    }
+    elseif($table == "comments"){
+        $ord = ["created_at", "DESC"];
+    }
+    elseif (in_array($table, ["blogs", "didyouknow", "images", "comments", "shortpoems"])) {
         $ord = ["created_at", "DESC"];
     } elseif(in_array($table, ["admin_table", "image_categories", "camera","users"])) {
         $ord = ["name","ASC"];
@@ -905,8 +909,13 @@ public function ShowTable(Request $request, $table_alt = null)
         }
     public function newsletter_save($uhash,$email)
     {
-        DB::table("newsletter_blacklist")->where("mail",$email)->delete();
-        DB::table("newsletter_reci")->where("email",$email)->where("uhash",$uhash)->update(["pub"=>"1","xis_checked"=>"1","subscribed_at"=>now()]);
+        DB::table("newsletter_blacklist")->where("uhash",$uhash)->delete();
+
+        $encryptedEmail = encval($email);
+
+
+        $res = DB::table("newsletter_reci")->where("uhash",$uhash)->update(["pub"=>"1","xis_checked"=>"1","subscribed_at"=>now()]);
+
         return Inertia::render("Components/Social/newsl_Subscribed");
     }
     public function ShowTable_old_def(Request $request, $table_alt = null)
@@ -1211,6 +1220,7 @@ public function ShowTable(Request $request, $table_alt = null)
     public function save_order(Request $request,$table)
     {
         $rows = request()->input('rows');
+        $table = strtolower($table);
         // $rows = json_decode($rows);
 //         \Log::info("row:". json_encode($rows,JSON_PRETTY_PRINT));
         // \Log::info("TABLE:".$table);
