@@ -168,3 +168,4 @@
 ![Version](https://img.shields.io/badge/version-4.40.0-orange) Hotfix - Bug in Birthday cron job (#316)  
 ![Version](https://img.shields.io/badge/version-4.41.2-orange) Feature - Added <Title>'s (#317)  
 ![Version](https://img.shields.io/badge/version-4.42.3-orange) Feature - Icons for user navigation (#318)  
+![Version](https://img.shields.io/badge/version-4.43.4-orange) Hotfix Loader Imageupload (#319)  

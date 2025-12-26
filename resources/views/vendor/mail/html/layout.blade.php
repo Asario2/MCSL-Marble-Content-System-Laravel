@@ -51,6 +51,7 @@ width: 100% !important;
     border:3px solid #ffc600 !important;
     padding:5px 7px !important;
     }</style>
+    <div width="570" align="center" style='max-width:800px;min-width:100%;background-color:#fff' class="border">
     <div style="background-color:#000;background-position:right;height:52px;background-repeat:no-repeat;background-image:url('https://www.marblefx.de/_images/mailheader/mcsl_grad.png');">
         <div style="float:left;position:relative;margin-top:0px;margin-left:0px;">
         <img src="https://www.marblefx.de/_images/mailheader/mcsl_mail_system2.png" alt="MCS Mail System" title="MCS Mail System">
@@ -82,5 +83,6 @@ width: 100% !important;
 </td>
 </tr>
 </table>
+</div>
 </body>
 </html>

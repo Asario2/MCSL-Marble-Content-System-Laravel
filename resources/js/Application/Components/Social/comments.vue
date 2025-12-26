@@ -35,7 +35,7 @@
   <!-- Kommentar-Eingabefeld -->
   <div v-if="showComments" class="mb-4 p-4 rounded-lg bg-gray-100 dark:bg-gray-800">
     <textarea @click.stop
-      :id="'editor' + comment.id"
+      :id="'editor_' + this.postId"
       name="editor"
       v-model="newComment"
       class="w-full p-2 rounded-lg dark:bg-gray-900 dark:text-white"
@@ -43,7 +43,11 @@
       @keydown.enter.exact.prevent="submitComment"
       @keydown.enter.shift="insertNewline"
     ></textarea>
-    <SmiliesBox :editor="'editor'+comment.id"></SmiliesBox>
+    <SmiliesBox
+    :name="postId"
+    @update:comment="newComment = $event"
+    />
+
     <button
       @click="submitComment"
       class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
@@ -204,36 +208,35 @@
         },
 
         async submitComment() {
-    //     console.log("Sende Kommentar:", this.newComment);
+        const content = this.newComment.trim();
 
-        if (!this.newComment.trim()) return;
+        if (!content) return; // jetzt auch nur Smiley-Codes funktionieren
 
         try {
-            let table = CleanTable_alt() || "blogs";
+            const table = CleanTable_alt() || "blogs";
             const response = await axios.post(`/comments/store/${table}/${this.postId}`, {
-                post_id: this.postId,
-                comment: this.newComment,
-                _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+            post_id: this.postId,
+            comment: content,
+            _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
             });
 
-    //         console.log("Antwort:", response.data);
+            if (response.data.status === "success") {
+            // Kommentar in Liste anzeigen
+            this.comments.unshift(response.data.comment);
 
-            if (response.data.redirect) {
-                window.location.href = response.data.redirect;
-                return;
+            // Textarea leeren
+            this.newComment = "";
+            document.getElementById("editor_" + this.postId).value = "";
             }
 
-            if (response.data.status === "success") {
-                // Neuen Kommentar sofort sichtbar machen
-                this.comments.unshift(response.data.comment);
-
-                // Eingabefeld leeren
-                this.newComment = "";
+            if (response.data.redirect) {
+            window.location.href = response.data.redirect;
+            return;
             }
         } catch (error) {
             console.error("Fehler beim Speichern des Kommentars:", error);
         }
-    },
+        },
 
         },
         };

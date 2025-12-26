@@ -456,7 +456,8 @@ async mounted() {
             localStorage.removeItem('reload_dashboard');
             window.location.reload();
         }
-      await this.loadMcspoints();
+        this.loadMcspoints(); // initial
+       // setInterval(this.loadMcspoints, 5000);
     },
 
     methods: {
@@ -464,11 +465,14 @@ async mounted() {
         GetProfileImagePath,
         GetRights,
         CleanTable,
-          async loadMcspoints() {
-            const { data } = await axios.get('/api/mcspoints');
-            this.mcspoints = data;
-            console.log(data);
-        },
+  async loadMcspoints() {
+        try {
+                const { data } = await axios.get('/api/mcspoints/1');
+                this.mcspoints = data; // automatisch reaktiv
+            } catch (err) {
+                console.error('Fehler beim Laden der MCSL Points:', err);
+            }
+            },
 
         async getServer() {
             try {

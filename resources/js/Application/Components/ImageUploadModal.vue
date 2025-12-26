@@ -204,18 +204,19 @@
       async uploadImage() {
         const file = this.selectedImages[this.column];
         if (!file) return;
+
         const sizeInMB = (file.size / (1024 * 1024)).toFixed(2);
-        if(sizeInMB > 5)
-        {
-            alert("Bild zu Groß, Maximal 5 MB erlaubt");
+        if (sizeInMB > 5) {
+            alert("Bild zu groß, max. 5 MB");
             return;
         }
+
         this.uploading = true;
         this.progress = 0;
 
         const formData = new FormData();
         formData.append('image', file);
-        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+        formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
         formData.append('ulpath', this.ulpath);
         formData.append('column', this.column);
         formData.append('namee', this.namee);
@@ -224,42 +225,53 @@
         formData.append('Message', this.Message ? 1 : 0);
         formData.append('is_imgdir', this.finalPath);
 
-        try {
-          const res = await fetch(`/upload-image/${this.tablex}/1`, { method: 'POST', body: formData });
-          const data = await res.json();
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `/upload-image/${this.tablex}/1`, true);
 
-          if (!data.image_url) throw new Error('Upload fehlgeschlagen');
-
-          const filePath = data.image_url;
-          this.$emit('update:modelValue', filePath);
-          this.$emit('imageUploaded', filePath);
-
-          if (this.Message) this.$emit('insertImage', filePath);
-
-          if (this.is_imgdir) {
-
-            // Reset upload state
-            this.selectedImages = { ...this.selectedImages, [this.column]: null };
-            this.previewImages = { ...this.previewImages, [this.column]: null };
-            this.uploading = false;
-            this.progress = 0;
-
-            await nextTick();
-            if (this.$refs.editor3) {
-              await this.$refs.editor3.fetchImages();
+        // 🔥 Fortschritt
+        xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) {
+            this.progress = Math.round((event.loaded / event.total) * 100);
             }
+        };
+
+        xhr.onload = () => {
+            this.uploading = false;
+
+            if (xhr.status !== 200) {
+            console.error("Upload fehlgeschlagen");
+            return;
+            }
+
+            const data = JSON.parse(xhr.responseText);
+            if (!data.image_url) return;
+
+            const filePath = data.image_url;
+
+            this.$emit('update:modelValue', filePath);
+            this.$emit('imageUploaded', filePath);
+
+            if (this.Message) this.$emit('insertImage', filePath);
+
+            if (this.is_imgdir) {
+            this.selectedImages[this.column] = null;
+            this.previewImages[this.column] = null;
+            this.progress = 0;
 
             this.$emit('refresh-gallery');
             this.$emit('refresh-preview');
-
-          } else {
+            } else {
             this.closeModal();
-          }
-        } catch (e) {
-          console.error(e);
-          this.uploading = false;
-        }
-      },
+            }
+        };
+
+        xhr.onerror = () => {
+            this.uploading = false;
+            console.error("XHR Fehler");
+        };
+
+        xhr.send(formData);
+        },
 
       onJsonUpdated(newJson) {
         this.$emit('jsonUpdated', newJson);
