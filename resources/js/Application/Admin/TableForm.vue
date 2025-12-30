@@ -1,6 +1,6 @@
 <template>
     <layout>
-        <MetaHeader title="Beitrag Bearbeiten"></MetaHeader>
+        <MetaHeader title="Eintrag Bearbeiten"></MetaHeader>
         <template #header>
             <breadcrumb
                 :breadcrumbs="breadcrumbs"

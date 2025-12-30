@@ -587,7 +587,13 @@ public function ShowTable(Request $request, $table_alt = null)
                 $q->orWhere("{$table}.created_at", 'like', "%{$searchLower}%");
             }
             foreach(Settings::$searchFields[$table] as $st) {
-                $q->orWhereRaw("LOWER({$table}.{$st}) LIKE ?", ["%{$searchLower}%"]);
+                if(substr_count($st,".")){
+                    $q->orWhereRaw("LOWER({$st}) LIKE ?", ["%{$searchLower}%"]);
+                }
+                else{
+                    $q->orWhereRaw("LOWER({$table}.{$st}) LIKE ?", ["%{$searchLower}%"]);
+                }
+
             }
         });
     }

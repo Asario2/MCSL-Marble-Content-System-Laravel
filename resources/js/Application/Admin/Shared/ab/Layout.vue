@@ -46,9 +46,9 @@
                                 >
                                 </NavLink>
                                 <NavLink v-if="SD() == 'abc'" icon="IconStar"
-                                    :routeName="route('admin.mcspoints')"
-                                    :active="route().current('admin.mcspoints')"
-                                    :label="mcspoints"
+                                    :routeName="route('admin.mcslpoints')"
+                                    :active="route().current('admin.mcslpoints')"
+                                    :label="mcslpoints"
                                 >
                                 </NavLink>
                               </div>
@@ -168,11 +168,11 @@
                                         <dropdown-link v-if="SD() == 'ab'"
                                             :with-icon="false"
                                             :with-route="true"
-                                            :route-name="route('admin.mcspoints')"
+                                            :route-name="route('admin.mcslpoints')"
                                         >
                                             <span class="inline-flex items-center gap-1">
                                                 <IconStar_thin class="w-4 h-4" color="#ffa500" />
-                                                <span>{{ mcspoints }} MCSL Points</span>
+                                                <span>{{ mcslpoints }} MCSL Points</span>
                                             </span>
                                         </dropdown-link>
 
@@ -445,7 +445,7 @@ export default {
             edit: null,
             delete: null,
             },
-            mcspoints: null,
+            mcslpoints: null,
         };
     },
 async mounted() {
@@ -456,8 +456,8 @@ async mounted() {
             localStorage.removeItem('reload_dashboard');
             window.location.reload();
         }
-        this.loadMcspoints(); // initial
-       // setInterval(this.loadMcspoints, 5000);
+        this.loadmcslpoints(); // initial
+       // setInterval(this.loadmcslpoints, 5000);
     },
 
     methods: {
@@ -465,10 +465,10 @@ async mounted() {
         GetProfileImagePath,
         GetRights,
         CleanTable,
-  async loadMcspoints() {
+  async loadmcslpoints() {
         try {
-                const { data } = await axios.get('/api/mcspoints/1');
-                this.mcspoints = data; // automatisch reaktiv
+                const { data } = await axios.get('/api/mcslpoints/1');
+                this.mcslpoints = data; // automatisch reaktiv
             } catch (err) {
                 console.error('Fehler beim Laden der MCSL Points:', err);
             }

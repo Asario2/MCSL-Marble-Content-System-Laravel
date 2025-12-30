@@ -2,7 +2,7 @@
     <Layout>
         <MetaHeader :title="'Benutzer - ' + users?.name" />
         <back-btn url="/home/users" r="r">Benutzerliste</back-btn>
-        <div id="teaser-img2" v-if="users" class="block max-w-sm gap-3 mx-auto mh_65 sm:max-w-full focus:no-underline lg:grid lg:grid-cols-12 bg-layout-sun-100 dark:bg-layout-night-100 overfl" style="z-index:0;margin-bottom:-0px;" :class="{ 'disable-link': isCommentActive }"
+        <div id="teaser-img2" v-if="users" class="block max-w-sm gap-3 mx-auto mh_65 sm:max-w-full focus:no-underline lg:grid lg:grid-cols-12 bg-layout-sun-100 dark:bg-layout-night-100" style="z-index:10;margin-bottom:-0px;" :class="{ 'disable-link': isCommentActive }"
     >
         <!-- Das Bild des Blog-Posts -->
         <div class="blog-container mh_65 lg:col-span-4 bg-layout-sun-100 dark:bg-layout-night-100" style="">
@@ -25,7 +25,6 @@
 
     </div>
         </div>
-
         <div id="teaser-img" class="p-6 space-y-2 lg:col-span-8 pb-0">
 
             <!-- Blog-Titel -->
@@ -60,12 +59,25 @@
                 <th class="pr-4">Beschäftigung:</th>
                 <td>{{ users?.occupation }}</td>
                 </tr>
+                <tr>
+                <th class="pr-4">Statistiken:</th>
+                <td>
+                <a :href="'/admin/mcslpoints/' + users.id + '#stats'" class="inline-flex items-center gap-2 mb-3">
+                <span class="lg:rounded" style="background-color:#3d983b;padding:3px 7px;color:#fff !important;display:inline-flex;align-items:center;gap:4px;">
+                    <img :src="'/images/icons/chart.png'" class="w-[16px] h-[16px]" alt="Statistik">Zur Statistik
+                </span>
+                </a>
+                </td>
+
+                </tr>
+                <tr>
                 <th class="pr-4">Facebook:</th>
                 <td>
                     <a v-if="users?.fbd" :href="fbid(users?.fbd)" target="_blank">
-                    Zu Faceboook</a>
+                    <span style="background-color:#3b5998;padding:3px;padding: 3px 7px;color:#fff !important" class="lg:rounded">Zu <i class="w-[18px] h-[18px] fab fa-facebook-f"></i>acebook</span> </a>
                     <p v-else>keine Angabe</p>
                 </td>
+                </tr>
                 <tr>
                 <th class="pr-4">Letzter Login:</th>
                 <td>{{ formatDate(users?.last_login_at) }}</td>

@@ -70,7 +70,7 @@ export default {
         .then(({ data }) => {
           if (!data) return {}
 
-          console.log('API-Daten:', JSON.stringify(data, null, 2)) // Debug-Ausgabe
+          //console.log('API-Daten:', JSON.stringify(data, null, 2)) // Debug-Ausgabe
 
           const formatted = {}
 

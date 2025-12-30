@@ -107,9 +107,17 @@ class RatingController extends Controller
     }
     public function GetExistingRate($table,$postId)
     {
-        $id = DB::table("ratings")->where("table",$table)->where("users_id",Auth::id())->where("imagea_id",$postId)->select("id")->first();
+        $id = DB::table("ratings")->where("table",$table)->where("users_id",Auth::id())->where("images_id",$postId)->select("id")->first();
         $id = !$id ? null : $id;
         return $id;
+    }
+    public function getRat(Request $request)
+    {
+        $ex = DB::table("ratings")
+            ->where("images_id",$request->postId)
+            ->selectRaw('AVG(rating) as average, COUNT(id) as total')
+            ->first();
+            return response()->json($ex);
     }
     public function getAverageRating($table, $postId)
     {

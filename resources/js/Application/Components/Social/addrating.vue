@@ -1,19 +1,18 @@
 <template>
     <div class="rating-container w300 relative border border-gray-300 p-4 pt-1 rounded-lg shadow-sm bg-white dark:bg-gray-800">
-      <div class="stars">
-        <!-- Erstelle 5 Sterne, die je nach Bewertung entweder gelb oder grau sind -->
-        <span
-          v-for="star in 5"
-          :key="star"
-          class="star"
-          :class="{'filled': star <= rating, 'hovered': star <= hoverRating}"
-          @mouseover="hoverRating = star"
-          @mouseleave="hoverRating = 0"
-          @click="setRating(star)"
-        >
-          <icon-star style="display:inline" wi="24" he="24"></icon-star>&nbsp;
-        </span>
-      </div>
+    <div class="stars">
+    <span
+        v-for="star in 5"
+        :key="star"
+        class="star"
+        :class="{'filled': star <= rating, 'hovered': star <= hoverRating}"
+        @mouseover="hoverRating = star"
+        @mouseleave="hoverRating = 0"
+        @click="setRating(star)"
+    >
+        <icon-star class="inline-block" wi="24" he="24" />
+    </span>
+    </div>
       <!-- Text anzeigen, dass die Bewertung gesetzt wurde -->
       <p v-if="rating > 0">Du hast {{ rating }} Sterne bewertet</p>
     </div>
@@ -21,7 +20,8 @@
 
  <script>
   import axios from "axios";
-  import { CleanTable, checkAuthAndRedirect } from '@/helpers';
+  import { CleanTable, checkAuthAndRedirect,GetAuth } from '@/helpers';
+  import { toastBus } from '@/utils/toastBus';
   import {route} from 'ziggy-js';
   import IconStar from "@/Application/Components/Icons/IconStar.vue";
   export default {
@@ -50,16 +50,17 @@
       // Bewertung in die Datenbank speichern
       async saveRating(star) {
         try {
-            //  if(GetAuth() !== true)
-            //  {
-            //     alert(GetAuth());
-            //     // location.href=route("login");
-            //     return;
-            //  }
+             if(GetAuth() !== true)
+             {
+
+                // location.href=route("login");
+                // return;
+             }
+
             if (await checkAuthAndRedirect() === "login") {
 
-                location.href = route('login');
-                return;
+                // location.href = route('login');
+                // return;
             } else {
                 const table = CleanTable();
                 await axios.post("/save-rating", {
@@ -68,9 +69,14 @@
                     table: table,
                     _token: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
                 });
-                window.location.hash = '#st' + this.postId;
-                window.location.reload();
+                //window.location.hash = '#st' + this.postId;
+
             }
+            toastBus.emit('toast', {
+                    status: 'points',          // success, info, warning, error
+                    message: 'Du hast 1 MCSL Point gesammelt'
+                });
+                // window.location.reload();
 
         } catch (error) {
           console.error("Fehler beim Speichern der Bewertung:", error.response?.data || error);
@@ -107,7 +113,7 @@
   };
   </script>
 
-  <style scoped>
+  <style>
   .star {
     font-size: 30px;
     cursor: pointer;
@@ -123,6 +129,26 @@
     z-index:100;
     margin-top:-16px;
   }
+.stars {
+  display: flex;
+  align-items: center;
+}
+
+.star {
+  cursor: pointer;
+}
+.star svg {
+  display: inline-block !important;
+}
+
+.star {
+  display: inline-block;
+}
+.stars {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
   </style>
 
 

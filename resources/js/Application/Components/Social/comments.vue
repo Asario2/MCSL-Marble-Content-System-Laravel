@@ -68,6 +68,8 @@
             import IconComment from "@/Application/Components/Icons/IconComment.vue";
             import SmiliesBox from "@/Application/Components/Social/SmiliesBox.vue";
             import IconTrash from "@/Application/Components/Icons/Trash.vue";
+            import { toastBus } from '@/utils/toastBus';
+
             import { CleanTable_alt, replaceSmilies,SD } from '@/helpers';
             export default {
 
@@ -228,10 +230,14 @@
             this.newComment = "";
             document.getElementById("editor_" + this.postId).value = "";
             }
-
+            toastBus.emit('toast', {
+                    status: 'points',          // success, info, warning, error
+                    message: 'Du hast 3 MCSL Points gesammelt'
+                });
             if (response.data.redirect) {
             window.location.href = response.data.redirect;
             return;
+
             }
         } catch (error) {
             console.error("Fehler beim Speichern des Kommentars:", error);

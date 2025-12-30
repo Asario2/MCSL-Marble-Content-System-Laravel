@@ -92,7 +92,7 @@ class CommentController extends Controller
         //     'comment' => 'required|string|max:4000',
         //     'comment2' => 'string|max:4000' // Maximale Länge kann angepasst werden
         // ]);
-        $user = DB::table("users")->where("id",Auth()->id())->select("email","nick_name")->first();
+        $user = DB::table("users")->where("id",Auth()->id())->select("email","name")->first();
         // Kommentar erstellen und in der Datenbank speichern
         // \Log::info("USAH".json_encode($user));
         if (!auth()->check()) {
@@ -130,7 +130,9 @@ class CommentController extends Controller
         $gnow = DB::table($table)->where("id",$request->post_id)->pluck("created_at");
         $gnow = str_replace(array('["','"]'),'',$gnow);
         $cid = $comment->id;
-        $nick = $user->nick_name;
+        $nick = '';
+        $nick = $user->name;
+        $content = '';
         $content = $comment->content;
         // $MailHelper = NEW MailHelper();
         Mail::to('parie@gmx.de')->send(

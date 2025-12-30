@@ -64,6 +64,7 @@ class MailController extends Controller
             "title"=>$request->title,
             "prename"=>$request->firstname,
             "surname"=>$request->lastname,
+            "comphash"=>bin2hex(random_bytes(32)),  
         ]);
         }
         else{

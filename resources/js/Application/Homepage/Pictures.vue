@@ -100,7 +100,10 @@
         <div v-if="item?.Format">
         <b>Format:</b> {{ item?.Format }}
         </div>
-        <averageRating :postId="item?.id" :av="parseFloat(ratings['original'][item?.id]?.average) || 0" :tot="ratings['original'][item?.id]?.total || 0"/>
+        <RatingWrapper
+            :post-id="item.id"
+            table="images"
+            />
 
         <editbtns :id="item?.id" table="images" />
 
@@ -161,7 +164,7 @@ import 'photoswipe/dist/photoswipe.css'
 import {stripTags} from "@/helpers";
 import ZoomImage from "@/Application/Components/Content/ZoomImage.vue";
 import SocialButtons from "@/Application/Components/Social/socialButtons.vue";
-import averageRating from "@/Application/Components/Social/averageratings.vue";
+import RatingWrapper from "@/Application/Components/Social/RatingWrapper.vue";
 import editbtns from "@/Application/Components/Form/editbtns.vue";
 import newbtn from "@/Application/Components/Form/newbtn.vue";
 import DisplayDate from "@/Application/Components/Content/DisplayDate.vue";
@@ -171,9 +174,9 @@ import SearchFilter from "@/Application/Components/Lists/SearchFilter.vue";
 import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
 // import PhotoSwipeLightbox from "photoswipe/lightbox";
-import 'photoswipe/dist/photoswipe.css';
+// import 'photoswipe/dist/phot oswipe.css';
 
-import { onMounted } from "vue";
+// import { onMounted } from "vue";
 // import PhotoSwipeLightbox from "photoswipe/lightbox";
 // import "photoswipe/style.css";
 
@@ -183,12 +186,13 @@ import BackBtn from "@/Application/Components/Form/BackBtn.vue";
 import Alert from "@/Application/Components/Content/Alert.vue";
 import { CleanTable } from '@/helpers';
 export default {
+    name:"PcitureGallery",
   components: {
     Layout,
     MetaHeader,
     ZoomImage,
     SocialButtons,
-    averageRating,
+    RatingWrapper,
     editbtns,
     newbtn,
     DisplayDate,
@@ -358,7 +362,7 @@ export default {
       }
       return "";
     },
-    handleBodyClick(event) {
+    handleBodyClick() {
       // Hier evtl. Kommentare schließen o.Ä.
     },
     /**
@@ -369,9 +373,9 @@ export default {
     isAdminLink(href) {
       return href.startsWith("/admin/tables");
     },
-    reset() {
-      this.form.search = "";
-    },
+    // reset() {
+    //   this.form.search = "";
+    // },
   },
   mounted() {
 

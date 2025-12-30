@@ -64,144 +64,161 @@
                     <button-change-mode :mode="mode" @changeMode="changeMode"></button-change-mode>
                     <div class="ms-3 relative">
                                     <Dropdown align="right" width="72" v-if="$page.props.auth.user">
-                                        <template #trigger>
-                                            <button
-                                                v-if="
-                                                    $page.props.jetstream
-                                                        .managesProfilePhotos
-                                                "
-                                                class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-layout-sun-300 dark:focus:border-layout-night-300 transition"
-                                            >
-                                                <img
-                                                id="prof_pic"
+                                    <template #trigger>
+                                        <button
+                                            v-if="
+                                                $page.props.jetstream
+                                                    .managesProfilePhotos
+                                            "
+                                            class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-layout-sun-300 dark:focus:border-layout-night-300 transition"
+                                        >
+                                            <img
                                                 class="h-8 w-8 rounded-full object-cover"
-                                                    :src="GetProfileImagePath($page.props.auth.user.profile_photo_url)"
-                                                    :alt="
-                                                        $page.props.userdata
-                                                            .full_name
-                                                    "
-
-                                                />
-                                                <!-- {{  }} -->
-                                            </button>
-
-                                            <span
-                                                v-else
-                                                class="inline-flex rounded-md"
-                                            >
-                                                <button
-                                                    type="button"
-                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-layout-sun-500 dark:text-layout-night-500 bg-layout-sun-0 dark:bg-layout-night-0 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150"
-                                                >
-                                                    {{
-                                                        $page.props.userdata
-                                                            .full_name
-                                                    }}
-
-                                                    <svg
-                                                        class="ms-2 -me-0.5 h-4 w-4"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 24 24"
-                                                        stroke-width="1.5"
-                                                        stroke="currentColor" fill="none"
-                                                    >
-                                                        <path
-                                                            stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                            d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                                                        />
-                                                    </svg>
-                                                </button>
-                                            </span>
-                                        </template>
-
-                                        <template #content>
-                                            <!-- Anwendung wechseln bzw. zur Startseite -->
-                                            <div
-                                                class="block px-4 py-2 text-xs text-layout-sun-500 dark:text-layout-night-500"
-                                            >
-                                                <span
-                                                    v-if="
-                                                        $page.props.userdata
-                                                            .application_count > 100
-                                                    "
-                                                    >Anwendung wechseln</span
-                                                >
-                                                <span v-else>Startseite</span>
-                                            </div>
-                                            <dropdown-link v-if="$page.props.userdata.is_admin"
-                                                :with-icon="false"
-                                                :with-route="true"
-                                                :route-name="
-                                                    route('admin.dashboard')
+                                                :src="
+                                                GetProfileImagePath($page.props.auth.user?.profile_photo_url)"
+                                                :alt="
+                                                    $page.props.userdata
+                                                        .full_name
                                                 "
-                                            >
+                                            />
+                                            {{  }}
+                                        </button>
 
-                                                <span
-                                                    v-if="
-                                                        $page.props.userdata
-                                                            .application_count > 100
-                                                    "
-                                                    >Anwendung wechseln</span
+                                        <span
+                                            v-else
+                                            class="inline-flex rounded-md"
+                                        >
+                                            <button
+                                                type="button"
+                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-layout-sun-500 dark:text-layout-night-500 bg-layout-sun-0 dark:bg-layout-night-0 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150"
+                                            >
+                                                {{
+                                                    $page.props.userdata
+                                                        .full_name
+                                                }}
+
+                                                <svg
+                                                    class="ms-2 -me-0.5 h-4 w-4"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24"
+                                                    stroke-width="1.5"
+                                                    stroke="currentColor" fill="none"
                                                 >
-                                                <span v-else-if="$page.props.userdata.is_admin">zum Dashboard</span>
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                                                    />
+                                                </svg>
+                                            </button>
+                                        </span>
+                                    </template>
 
-                                            </dropdown-link>
-
-                                                <dropdown-link v-else
-                                                    :with-icon="false"
-                                                    :with-route="true"
-                                                    :route-name="route('home.index')">
-                                                    Home
-                                            </dropdown-link>
-
-
-                                            <!-- Account Management -->
-                                            <div
-                                                class="block px-4 py-2 text-xs text-layout-sun-500 dark:text-layout-night-500"
+                                    <template #content>
+                                        <!-- Anwendung wechseln bzw. zur Startseite -->
+                                        <div
+                                            class="block px-4 py-2 text-xs text-layout-sun-500 dark:text-layout-night-500"
+                                        >
+                                            <span
+                                                v-if="
+                                                    $page.props.userdata
+                                                        .application_count > 100
+                                                "
+                                                >Anwendung wechseln</span
                                             >
-                                                Dein Konto
-                                            </div>
-
-                                            <dropdown-link
-                                                :with-icon="false"
-                                                :with-route="true"
-                                                :route-name="route('admin.profile')"
+                                            <span v-else>Startseite</span>
+                                        </div>
+                                        <dropdown-link
+                                            :with-icon="false"
+                                            :with-route="true"
+                                            :route-name="
+                                                route('admin.dashboard')
+                                            "
+                                        >
+                                            <span
+                                                v-if="
+                                                    $page.props.userdata
+                                                        .application_count > 100
+                                                "
+                                                >Anwendung wechseln</span
                                             >
-                                                Profil
-                                            </dropdown-link>
-                                             <dropdown-link
+                                            <span v-else><span class="inline-flex items-center gap-1">
+                                                <IconDashboard class="w-4 h-4" color="#ffa500" />
+                                                <span>Zum Dashboard</span>
+                                            </span></span>
+                                        </dropdown-link>
+
+                                        <!-- Account Management -->
+                                        <div
+                                            class="block px-4 py-2 text-xs text-layout-sun-500 dark:text-layout-night-500"
+                                        >
+                                            Dein Konto
+                                        </div>
+
+                                        <dropdown-link
+                                            :with-icon="false"
+                                            :with-route="true"
+                                            :route-name="route('admin.profile')"
+                                        >
+                                            <span class="inline-flex items-center gap-1">
+                                                <IconProfile class="w-4 h-4" color="#ffa500" />
+                                                <span>Profil</span>
+                                            </span>
+                                        </dropdown-link>
+                                        <dropdown-link v-if="SD() == 'ab'"
+                                            :with-icon="false"
+                                            :with-route="true"
+                                            :route-name="route('admin.mcslpoints')"
+                                        >
+                                            <span class="inline-flex items-center gap-1">
+                                                <IconStar_thin class="w-4 h-4" color="#ffa500" />
+                                                <span>{{ mcslpoints }} MCSL Points</span>
+                                            </span>
+                                        </dropdown-link>
+
+                                             <dropdown-link v-if="rights?.delete == 1"
                                                 :with-icon="false"
                                                 :with-route="true"
                                                 :route-name="
                                                     route('pm.index')
                                                 ">
+                                            <span class="inline-flex items-center gap-1">
+                                                <IconPM class="w-4 h-4" color="#ffa500" />
+                                                <span>Private Nachrichten</span>
+                                            </span>
 
-                                            Private Nachrichten
                                             </dropdown-link>
-                                            <dropdown-link
+                                        <dropdown-link
                                                 :with-icon="false"
                                                 :with-route="true"
                                                 :route-name="
                                                     route('admin.kontakte')
                                                 ">
+                                            <span class="inline-flex items-center gap-1">
+                                                <IconContacts_alt class="w-4 h-4" color="#ffa500" />
+                                                <span>Kontakte</span>
+                                            </span>
 
-                                            Kontakte
                                             </dropdown-link>
-                                            <div
-                                                class="my-2 border-t border-layout-sun-200 dark:border-layout-night-200"
-                                            />
 
-                                            <!-- Authentication -->
-                                            <form @submit.prevent="logoutUser">
-                                                <button type="submit">
-                                                    <dropdown-link>
-                                                        Abmelden
-                                                    </dropdown-link>
-                                                </button>
-                                            </form>
-                                        </template>
-                                    </Dropdown>
+
+                                        <div
+                                            class="my-2 border-t border-layout-sun-200 dark:border-layout-night-200"
+                                        />
+
+                                        <!-- Authentication -->
+                                        <form @submit.prevent="logoutUser">
+                                            <button type="submit">
+                                                <dropdown-link>
+                                            <span class="inline-flex items-center gap-1">
+                                                <IconLogout class="w-4 h-4" color="#ffa500" />
+                                                <span>Abmelden</span>
+                                            </span>
+                                                </dropdown-link>
+                                            </button>
+                                        </form>
+                                    </template>
+                                </Dropdown>
                                     </div>
                 </div>
                 </div>
@@ -340,9 +357,15 @@
     import IconMenu from "@/Application/Components/Icons/Menu.vue";
     import Toast from "@/Application/Components/Content/Toast.vue";
     import ButtonChangeMode from "@/Application/Components/ButtonChangeMode.vue";
-    import { SD,GetProfileImagePath } from "@/helpers";
+    import { SD,GetProfileImagePath,CheckTRights } from "@/helpers";
     import NewsletterSubscribe from "@/Application/Components/Social/NewsletterSubscribe.vue";
     import JrightArrow from "@/Application/Components/Icons/JrightArrow.vue";
+    import IconStar_thin from "@/Application/Components/Icons/IconStar_thin.vue";
+import IconContacts_alt from "@/Application/Components/Icons/IconContacts_alt.vue";
+import IconLogout from "@/Application/Components/Icons/IconLogout.vue";
+import IconProfile from "@/Application/Components/Icons/IconProfile.vue";
+import IconPM from "@/Application/Components/Icons/IconPM.vue";
+import IconDashboard from "@/Application/Components/Icons/IconDashboard.vue";
 
 
 
@@ -354,7 +377,12 @@
         BrandHeader,
         LinkHeader,
         BrandFooter,
-
+        IconLogout,
+        IconProfile,
+        IconPM,
+        IconContacts_alt,
+        IconStar_thin,
+        IconDashboard,
         JrightArrow,
         LinkFooter,
         Toast,
@@ -364,6 +392,7 @@
         DropdownLink,
         ButtonChangeMode,
         NewsletterSubscribe,
+
       },
 
       props: {
@@ -389,12 +418,20 @@
           searchval: false,
           imagesLoaded: false,
           searchTimeout: null,
+          rights: {
+            edit: null,
+            delete: null,
+            },
+            mcslpoints: 0,
         };
       },
 
-      mounted() {
+      async mounted() {
         const params = new URLSearchParams(window.location.search);
     const search = params.get("search");
+
+    // MCS POINTS
+    this.loadmcslpoints(); // initial
 
     // Wenn search gesetzt ist, verstecke das Loading-Div
     if (search && search.trim() !== "") {
@@ -404,7 +441,8 @@
     else{
         this.isLoading = true;
     }
-
+    this.rights.edit = await CheckTRights("edit", 'private_messages');
+    this.rights.delete = await CheckTRights("delete", 'private_messages');
         const shouldReload = localStorage.getItem("reload_dashboard");
         if (shouldReload) {
           localStorage.removeItem("reload_dashboard");
@@ -464,7 +502,15 @@
       methods: {
         GetProfileImagePath,
         SD,
-
+        CheckTRights,
+        async loadmcslpoints() {
+        try {
+                const { data } = await axios.get('/api/mcslpoints/1');
+                this.mcslpoints = data; // automatisch reaktiv
+            } catch (err) {
+                console.error('Fehler beim Laden der MCSL Points:', err);
+            }
+        },
         setLoadingState(state) {
 //           console.log("🔄 setLoadingState:", state);
           this.isLoading = state;

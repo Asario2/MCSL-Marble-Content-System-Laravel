@@ -163,7 +163,7 @@
 
                 <!-- Check -->
                 <td class="np-dl-td-normal" v-if="table === 'comments'">
-                <span v-if="checkedStatus && checkedStatus[data.datarow.id]" style="font-size:24px;">✅</span>
+                <span v-if="Number(checkedStatus?.[data.datarow.id]) === 1" style="font-size:24px;">✅</span>
                 <span v-else class="bg-[rgb(50,174,179)] rounded-full w-[24px] h-[24px] px-[3px] text-white">O</span>
                 </td>
             </template>
@@ -298,6 +298,7 @@
 
         this.initSortable();
         this.fetchStatus();
+
         },
         methods: {
             GetProfileImagePath,
@@ -358,7 +359,7 @@
         },
 
         onCheckedStatusUpdate(status) {
-            this.checkedStatus = status;
+            //this.checkedStatus = status;
         },
 
         async fetchStatus() {
@@ -368,6 +369,9 @@
             const response = await axios.get("/api/chkcom/");
             this.checkedStatus = response.data.success;
             // console.log(this.checkedStatus);
+            console.log("response: " + JSON.stringify(response.data, null, 2));
+
+
             } catch (error) {
             console.error("Fehler beim Batch-Status laden:", error);
             }

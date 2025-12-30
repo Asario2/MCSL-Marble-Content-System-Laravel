@@ -58,11 +58,10 @@
         >
           <p>{{ item.story || 'Kein Text vorhanden.' }}</p>
           <editbtns :id="item.id" table="shortpoems" /><br />
-          <averageRating
-            :postId="item.id"
-            :av="parseFloat(ratings['original'][item.id]?.average) || 0"
-            :tot="ratings['original'][item.id]?.total || 0"
-          />
+          <RatingWrapper
+            :post-id="item.id"
+            table="shortpoems"
+            />
 
           <SocialButtons :postId="item.id" :xslug="true" :sse="item.headline"/>
         </div>
@@ -115,14 +114,14 @@ import SearchFilter from '@/Application/Components/Lists/SearchFilter.vue';
 import Alert from '@/Application/Components/Content/Alert.vue';
 import editbtns from '@/Application/Components/Form/editbtns.vue';
 import SocialButtons from "@/Application/Components/Social/socialButtons.vue";
-import averageRating from "@/Application/Components/Social/averageratings.vue";
+import RatingWrapper from "@/Application/Components/Social/RatingWrapper.vue";
 import pickBy from "lodash/pickBy";
 import { throttle } from "lodash";
 
 export default {
     name:"ShortPoems",
   components: {
-    Layout, MetaHeader, newbtn, SearchFilter, Alert, editbtns, SocialButtons, averageRating
+    Layout, MetaHeader, newbtn, SearchFilter, Alert, editbtns, SocialButtons, RatingWrapper
   },
   props: {
     items: { type: Object, required: true },

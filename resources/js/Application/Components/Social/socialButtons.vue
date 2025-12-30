@@ -43,6 +43,7 @@
                                 &times;
                             </button>
                             <br />
+
                             <Comments :postId="postId" :showComments="showComments" />
                         </div>
                     </td>
@@ -61,7 +62,7 @@
                 <!-- Bewertung -->
                 <tr v-if="showStarBox[postId]">
                     <td colspan="3" class="p-4">
-                        <AddRating :postId="postId" :table="tablex" />
+                        <RatingInput :postId="postId" :table="tablex" />
                     </td>
                 </tr>
             </tbody>
@@ -73,7 +74,7 @@
 import { nextTick } from "vue";
 import { Link } from "@inertiajs/vue3";
 import Comments from "@/Application/Components/Social/comments.vue";
-import AddRating from "@/Application/Components/Social/addrating.vue";
+import RatingInput from "@/Application/Components/Social/RatingInput.vue";
 import IconComment from "@/Application/Components/Icons/IconComment.vue";
 import IconShare from "@/Application/Components/Icons/IconShare.vue";
 import IconStar from "@/Application/Components/Icons/IconStar.vue";
@@ -87,11 +88,12 @@ export default {
     components: {
         Link,
         Comments,
-        AddRating,
+        RatingInput,
         IconComment,
         IconShare,
         IconStar,
         averageRating,
+
     },
     props: {
         blog: Object,

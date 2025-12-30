@@ -7,8 +7,9 @@
         :src="src"
         :alt="alt"
         :title="title"
-
-        :class="[awidth, 'w-x object-cover transition-transform duration-300 ease-in-out hover:scale-110 w-full']"      />
+        :width="width"
+        :height="height"
+        :class="imageClasses">
     </div>
   </template>
 
@@ -31,7 +32,21 @@
     type: String,
     required: false,
   },
+  grayscale:{
+    default:false,
     },
+    },
+      computed: {
+    imageClasses() {
+      return [
+        this.awidth,
+        'w-full h-80 object-cover object-center transition-transform duration-300 ease-in-out hover:scale-110',
+        {
+          'grayscale opacity-50': this.grayscale,
+        },
+      ];
+    },
+  },
   };
   </script>
 

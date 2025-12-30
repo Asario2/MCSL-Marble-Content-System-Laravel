@@ -99,7 +99,7 @@
   </template>
 
   <script>
-  import Layout from "@/Application/Admin/Shared/ab/Layout.vue";
+    import Layout from "@/Application/Admin/Shared/ab/Layout.vue";
   import { rumLaut } from "@/helpers";
   import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
   export default {

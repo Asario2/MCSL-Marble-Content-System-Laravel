@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CustomLoginController;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\BlogController;
-use App\Http\Controllers\MCSPointsController;
+use App\Http\Controllers\MCSLPointsController;
 use App\Http\Controllers\PMController;
 use App\Http\Controllers\UserConfigController;
 use App\Http\Controllers\BlogPostController;
@@ -97,7 +97,7 @@ if(SD() == "mfx"){
         Route::get('/auth/nickname', function () {
             return inertia('Admin/nickname');
         })->name('auth.nickname');
-
+        Route::get("/admin/mcslpoints/{users_id?}",[MCSLPointsController::class,"admin_index"])->name("admin.mcslpoints");
         Route::get("/api/user/rights",[RightsController::class,"GetRights_all"])->name("GetRights_all");
         Route::post('/api/contact/send',[CommentController::class,"sendmc"]);
         Route::get('/api/pageviews', [CountPixelController::class, 'stats']);
@@ -399,19 +399,20 @@ Route::get('/api/GetLastAct', function (){
 
     return response($_SERVER['HTTP_REFERER']);
 });
-// Route::get('/GetAuth', function () {
-//     if (Auth::check()) {
-//         // \Log::info("✅ Eingeloggt, User-ID: " . Auth::id());
-//         return response()->json("true");
-//     }
+Route::get('/GetAuth', function () {
+    if (Auth::check()) {
+        // \Log::info("✅ Eingeloggt, User-ID: " . Auth::id());
+        return response()->json("true");
+    }
 
-//     // \Log::i  nfo("🚨 Nicht eingeloggt");
-//     return response()->json("false");
-// })->name("GetAuth");
+    // \Log::i  nfo("🚨 Nicht eingeloggt");
+    return response()->json("false");
+})->name("GetAuth");
  Route::get("/GETUserID", function (){
      return response()->json(Auth::id());
 });
 Route::get('/get-total-rating/{table}', [RatingController::class, 'getTotalRating']);
+Route::get('/api/GetRating/{postId}', [RatingController::class, 'getRat'])->name("api.getRating");
 
 Route::get("/admin/user-rights/get",[TablesController::class,'GetURights'])->name("admin.users_rights.get");
 Route::middleware(['auth'])->group(function () {
@@ -471,6 +472,7 @@ Route::get('/devmod', function () {
     Route::get('tables/{table}/create', [TablesController::class, 'createEntryForm'])->name('tables.create-table');
     Route::post('/comments/store/{table}/{postId}', [CommentController::class, 'store_alt'])->name('comments.store_alt');
     Route::post('/comments/{table}/{id}', [CommentController::class, 'store'])->name('comments.store');
+
     Route::get('/api/admin_table_positions', [RightsController::class,"GetTables_posi"])->name("GetTablesPosi");
     // Route::get('/{table}/{cat?}#headline_{id}', [PostController::class, 'show'])->name('posts.show');
 
@@ -531,15 +533,16 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         )->name('admin.dashboard');
 
 ### ============== API ISADMIN QI ================ ###
-        Route::get("/admin/mcspoints",[MCSPointsController::class,"index"])->name("admin.mcspoints");
-        Route::get("/api/mcspoints/{users_id?}",[MCSPointsController::class,"GetCount"])->name("api.mcspoints");
+
+        Route::get("/api/mcslpoints/{users_id?}",[MCSLPointsController::class,"GetCount"])->name("api.mcslpoints");
         Route::get("/admin/SQLUpdate", [SQLUpdateController::class,"index"])->name("SQL.index");
         Route::get('/api/admin-tables', [TablesController::class, 'GetDBTables'])->name("get.db.tables");
         Route::get('/userx/update-config/{id}', [UserConfigController::class, 'updateConfig'])->name('usconfi');
         Route::get('/dboard/data', [CountPixelController::class, 'dboard'])->name('dboard.data');
         Route::get('/admin/Statistics', [HomeController::class, 'plot_gfx'])->name('stats');
         // Route::post('/api/AddFunc', [RightsController::class, 'AddFunction'])->name('admin.add.func');
-
+        Route::get('/get_MCSL_Points_Preniums', [MCSLPointsController::class, 'SelectPremiums'])->name('store.mcslpoints');
+        Route::get('/SubmitPremiums/{users_id}/{img_id}', [MCSLPointsController::class, 'SendMail'])->name('send.mcslpoints');
         Route::post('/api/user/batch-rights', [TablesController::class, 'GetBatchRights'])->name("get.bash.rights");
         Route::get('/api/chkcom/{id?}', [CommentController::class, 'checkComment'])->name("comments.check");
         Route::get('/api/contacts', [TablesController::class, 'api_contacts'])->name("admin.contacts");

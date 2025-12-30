@@ -12,11 +12,20 @@
             >
                 <icon-done class="w-5 h-5"></icon-done>
             </div>
+             <div
+                v-if="type === 'points'"
+                class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg text-layout-sun-900 dark:bg-yellow-1060 text-layout-sun-200 bg-text-yellow-1060  font-bold dark:bg-layout-night-200"
+                title="Punkte erhalten"
+                aria-label="Punkte erhalten"
+            >
+                <icon-done class="w-5 h-5"></icon-done>
+            </div>
+
             <div
                 v-if="type === 'info'"
                 class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg text-layout-sun-900 bg-layout-sun-0 dark:text-layout-night-900 dark:bg-layout-night-0"
             >
-                <icon-done class="w-5 h-5"></icon-done>
+                <icon-done class="w-5 h-5" fill="currentColor"></icon-done>
             </div>
             <div
                 v-if="type === 'warning'"
@@ -83,6 +92,7 @@ export default {
         showToast(payload) {
             // console.log('Toast payload:', payload);  // Prüfe, ob die Daten hier ankommen
             this.type = payload.status || 'info';
+            console.log(this.type);
             this.message = payload.message;
             this.alertClass = this.determineAlertClass(this.type);
             this.show = true;
@@ -94,6 +104,8 @@ export default {
             switch (type) {
                 case "success":
                     return "border border-green-200 dark:border-green-800";
+                case "points":
+                    return "border border-yellow-500 dark:border-yellow-1060 dark:text-yellow-1060"; // <- neu
                 case "warning":
                     return "border border-orange-200 dark:border-orange-800";
                 case "info":
