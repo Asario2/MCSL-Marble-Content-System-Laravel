@@ -1,4 +1,5 @@
 <?php
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
@@ -113,65 +114,94 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
         {
             return "<a href='dump://parameter1/parameter2'>Start Dump</a>";
         }
-        if(!function_exists("Notify"))
-        {
-            function Notify()
-            {
-// echo encval('kunst@marblefx.de')."<br />";
-// exit;
+    }
+if (!function_exists('Notify')) {
 
+    function Notify()
+    {
+        $entries = DB::table('genxlo.notifications')->get();
 
-            $entries = DB::table('genxlo.notifications')
-                ->get()
-                ->map(function ($item) {
-                    return (array) $item;
-                })
-                ->toArray();
-                $xx = '';
-                foreach($entries as $entry)
-                {
-                    if(file_exists(public_path("/timespy/".$entry['timespy']))){
-                        $time = strtotime(file_get_contents(public_path("/timespy/".$entry['timespy'])));
-                    }
-                    $lh = false;
-                    if($entry['type'] == "localhost" && substr_count(request()->getHost(),"localhost"))
-                    {
-                        $lh = true;
-                    }
-                    elseif($entry['type'] == "online" && !substr_count(request()->getHost(),"localhost"))
-                    {
-                        $lh = true;
-                    }
-                    elseif($entry['type'] == "both")
-                    {
-                        $lh = true;
-                    }
-                    $offset = (60*60*24*$entry['days']);
+        $output = '';
 
-                    if((!$time || time() > $time+$offset) && $lh)
-                    {
-                    $xx .= "<div style='background-color:#CCC;color:#002;padding:5px;z-index:19999999'>";
-                    $xx .= "<h3 style='padding:2px;'>".$entry['name']."</h3>";
-                    $xx .= $entry['text']."<br />";
-                    if($entry['function_link'])
-                    {
-                        $tz  = $entry['function_link'];
-                        $xx .= $tz();
-                    }
-                    $xx .= "</div>";
-                    $time = false;
+        foreach ($entries as $entry) {
+
+            $entry = (array) $entry;
+
+            // --------------------------------------------------
+            // 1️⃣ Zeitpunkt aus timespy-Datei lesen
+            // --------------------------------------------------
+            $time = null;
+            $timespyPath = public_path('/timespy/' . ($entry['timespy'] ?? ''));
+
+            if (!empty($entry['timespy']) && file_exists($timespyPath)) {
+
+                $tfile = trim(file_get_contents($timespyPath));
+
+                if ($tfile !== '' && Carbon::hasFormat($tfile, 'Y-m-d H:i:s')) {
+                    $time = Carbon::createFromFormat('Y-m-d H:i:s', $tfile);
                 }
-                // file_put_contents(public_path("/timespy/".$entry['timespy']),now());
+            }
 
+            // --------------------------------------------------
+            // 2️⃣ Host-Logik (localhost / online / both)
+            // --------------------------------------------------
+            $lh = false;
+            $host = request()->getHost();
+
+            if ($entry['type'] === 'localhost' && str_contains($host, 'localhost')) {
+                $lh = true;
+            } elseif ($entry['type'] === 'online' && !str_contains($host, 'localhost')) {
+                $lh = true;
+            } elseif ($entry['type'] === 'both') {
+                $lh = true;
+            }
+
+            // --------------------------------------------------
+            // 3️⃣ Ablaufdatum berechnen
+            // --------------------------------------------------
+            $days = (int) ($entry['days'] ?? 0);
+            $expiresAt = null;
+
+            if ($time instanceof Carbon) {
+                $expiresAt = $time->copy()->addDays($days);
+            }
+
+            // --------------------------------------------------
+            // 4️⃣ Anzeige prüfen
+            // --------------------------------------------------
+            if (
+                $lh &&
+                (
+                    !$time ||
+                    ($expiresAt && now()->greaterThan($expiresAt))
+                )
+            ) {
+
+                $output .= "<div style='background:#ccc;color:#002;padding:10px;margin-bottom:10px;z-index:999999'>";
+
+                $output .= "<h3>{$entry['name']}</h3>";
+                $output .= $entry['text'];
+
+                if (!empty($entry['function_link']) && function_exists($entry['function_link'])) {
+                    $fn = $entry['function_link'];
+                    $output .= $fn();
                 }
-                if($xx)
-                {
-                    echo "<br /><br /><br /><br />".$xx;
-                }
+
+                $output .= "</div>";
+
+                // ⏱️ Zeitpunkt speichern
 
             }
         }
+
+        if ($output) {
+            echo "<br /><br /><br /><br /><br />".$output;
+
+        }
     }
+}
+
+
 
     if (!function_exists('KILLMD')) {
     function KILLMD($text,$count='45') {
