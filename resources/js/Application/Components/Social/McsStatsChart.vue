@@ -127,7 +127,7 @@
 
     <!-- Bewertungen -->
     <div class="bg-layout-sun-100 dark:bg-layout-night-100 border border-layout-sun-300 dark:border-layout-night-300 p-4 rounded-xl shadow-sm" >
-      <h3 class="text-lg font-semibold mb-3">Bilder-Bewertungen nach Galerie</h3>
+      <h3 class="text-lg font-semibold mb-3">Bewertungen nach Typ</h3>
       <div class="relative h-64" >
         <canvas ref="ratingsChart" v-if="ratingsStats.labels?.length > 0"></canvas>
         <i v-else>Keine Bewertungen gefunden</i>
@@ -401,12 +401,14 @@ computed:{
       this.pointsChartInstance = new Chart(this.$refs.pointsChart, {
         type: "doughnut",
         data: {
-          labels: ["Kommentare", "Newsletter", "Bilderbewertungen", "Shortpoems"],
+          labels: ["Bilderbewertungen", "Kommentare", "Newsletter", "Shortpoems"],
           datasets: [{
             data: [
-              this.mcslpoints?.comments,
+            this.mcslpoints?.ratings,
+            this.mcslpoints?.comments,
+
               this.mcslpoints?.newsletter,
-              this.mcslpoints?.ratings,
+
               this.mcslpoints?.shortpoems
             ],
             backgroundColor: this.COLORS_13.slice(0, 4),

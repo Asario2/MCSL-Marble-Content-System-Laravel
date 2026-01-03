@@ -33,7 +33,38 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
             <div style=\"background-color:#000;background-position:right;height:52px;background-repeat:no-repeat;background-image:url('https://www.marblefx.de/_images/mailheader/mcsl_grad.png');\">
             <div style=\"float:left;position:relative;margin-top:0px;margin-left:0px;\">
             <img src=\"https://www.marblefx.de/_images/mailheader/mcsl_mail_system2.png\" alt=\"MCS Mail System\" title=\"MCS Mail System\">
-            </div></div><br>";
+            </div></div>
+            <style>
+            .button-primary{
+                    background-color:#222;
+                    padding:5px 7px !important;
+                    border-radius:6px;
+                    border:2px solid #ffc600;
+                    line-height:20px;
+                    font-size:20px;
+                    color:#ffc600;
+                    font-family:Tahoma;
+                    margin:3px;
+                    text-decoration:none;
+                }.button-primary:hover,a.button-primary:visited:hover{
+                background-color:#ffc600 !important;
+                color:#222 !important;
+                border:3px solid #ffc600 !important;
+                padding:5px 7px !important;
+                }
+                .ora{
+                    color:#ffc600;
+                    font-weight:bold;
+            }
+            .w-half{
+                width:600px;
+                max-width:100%;
+            }
+            .ncol{
+                color:#3b82f6;
+            }
+            </style>
+        <br />";
         }
     }
     if(!function_exists("decval_old"))

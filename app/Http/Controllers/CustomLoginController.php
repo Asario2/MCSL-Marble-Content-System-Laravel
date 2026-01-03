@@ -15,6 +15,9 @@ class CustomLoginController extends Controller
 {
     public function showLoginForm()
     {
+        if ($request->filled('redirect')) {
+        session(['url.intended' => $request->redirect]);
+        }
         return Inertia::render('Auth/Login');
     }
 
@@ -66,6 +69,14 @@ class CustomLoginController extends Controller
         // Kein 2FA → direkt einloggen
         Auth::login($user, $remember);
         UserConfigController::updateConfig(Auth::id());
+
+
+        $redirect = $request->input('redirect'); // POST oder GET
+        if ($redirect) {
+            return Inertia::location($redirect . '?re=1');
+        }
+
+
         return app(LoginResponse::class);
     }
     public function enableTwoFactor(Request $request)

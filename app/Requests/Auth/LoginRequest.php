@@ -26,6 +26,9 @@ class LoginRequest extends FormRequest
     // Alte + neue Passwortlogik
     public function authenticate_alt()
     {
+
+
+    
         $loginInput = $this->input('email');
         $plainPassword = $this->input('password');
         $remember = $this->boolean('remember');
@@ -58,5 +61,6 @@ class LoginRequest extends FormRequest
         throw ValidationException::withMessages([
             'email' => __('auth.failed'),
         ]);
+
     }
 }

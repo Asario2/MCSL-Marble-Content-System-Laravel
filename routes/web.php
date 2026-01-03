@@ -40,7 +40,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
-use Illuminate\Http\Request;
+
 use App\Models\User;
 use App\Http\Middleware\CheckSubdomain;
 use App\Http\Controllers\TablesController;
@@ -51,6 +51,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\RightsController;
 use App\Helpers\Settings;
 use App\Helpers;
+use Illuminate\Http\Request;
 use App\Mail\CommentMail;
 use App\Mail\ContactMail;
 use App\Mail\RegisterMail;
@@ -59,6 +60,7 @@ use App\Http\Controllers\CountPixelController;
 use App\Http\Controllers\Auth\GoogleController;
 
 GlobalController::SetDomain();
+GlobalController::Redirect();
 
 
 // dd(class_exists(\App\Http\Middleware\CheckSubd::class)); // Sollte "true" zurückgeben
@@ -68,9 +70,13 @@ if(SD() == "mfx"){
         return redirect('/news');
     });
     }
+
+
 // Route::middleware(['checksubd:ab,asario'])->group(function () {
     // Route::middleware('checksubd:ab,asario')->group(function () {
         Route::get('/countpixel', [CountPixelController::class, 'track'])->name('countpixel');
+        Route::get("/api/mcslpoints/{users_id?}",[MCSLPointsController::class,"GetCount"])->name("api.mcslpoints");
+
 
         Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
@@ -131,6 +137,7 @@ Route::middleware(\App\Http\Middleware\CheckSubd::class . ':dag,monikadargies')-
 //
 Route::middleware(['auth'])->group(function () {
     Route::put('/user/profile', [ImageUploadController::class, 'update'])->name('user-profile-information.update_alt');
+    Route::post('/save/shortpoems', [CommentController::class, 'save_shp'])->name('save.shp');
 
     Route::get('/profile/photo', [ImageUploadController::class, 'getProfilePhoto'])->name('profile.photo.get');
 });
@@ -148,6 +155,7 @@ Route::middleware(\App\Http\Middleware\CheckSubd::class . ':ab,asario')->group(f
     Route::get('/dashboard', function () {
         return redirect('/admin/dashboard');
     })->name('dashboard');
+    Route::get('/newslToMCSLPoints/{uhash?}/{comphash?}/{email?}', [TablesController::class, 'SetNewsl_alt'])->name('newsl.to.mcsp');
     Route::post("/personal_update", [PersonalController::class, 'update'])->name("personal.update");
     Route::get('/home/QRCodaH', [HomeController::class, 'QRCodaH'])->name('home.qrcodah');
     Route::get('/home/aboutme', [HomeController::class, 'home_about'])->name('home.about');
@@ -304,9 +312,9 @@ Route::get('/db-check', function () {
         'host' => request()->getHost(),
     ]);
 });
-Route::post("/cookie_acceptall",[AcceptAllController::class,'__invoke'])->name("cookieconsent.accept.all2");
-Route::post("/cookie_acceptess",[AcceptEssentialsController::class,'__invoke'])->name("cookieconsent.accept.essentials2");
-Route::post("/cookie_config",[ConfigureController::class,'__invoke'])->name("cookieconsent.accept.configuration2");
+// Route::post("/cookie_acceptall",[AcceptAllController::class,'__invoke'])->name("cookieconsent.accept.all2");
+// Route::post("/cookie_acceptess",[AcceptEssentialsController::class,'__invoke'])->name("cookieconsent.accept.essentials2");
+// Route::post("/cookie_config",[ConfigureController::class,'__invoke'])->name("cookieconsent.accept.configuration2");
 
 // Route::domain('{domain}')
 //     ->where('domain', '(mfx\.localhost\.de|www\.marblefx\.de)')
@@ -412,7 +420,7 @@ Route::get('/GetAuth', function () {
      return response()->json(Auth::id());
 });
 Route::get('/get-total-rating/{table}', [RatingController::class, 'getTotalRating']);
-Route::get('/api/GetRating/{postId}', [RatingController::class, 'getRat'])->name("api.getRating");
+Route::get('/api/GetRating/{table}/{postId}', [RatingController::class, 'getRat'])->name("api.getRating");
 
 Route::get("/admin/user-rights/get",[TablesController::class,'GetURights'])->name("admin.users_rights.get");
 Route::middleware(['auth'])->group(function () {
@@ -434,7 +442,9 @@ Route::get('/GetUserNull', [TablesController::class, 'GetUserNull'])->name('GetU
 
 Route::post('/save-image/{table}', [ImageUploadController::class, 'save'])->name('save.image');
 Route::get('/comments/{table}/{postId}', [CommentController::class, 'fetchComments'])->name('comments.fetch');
-Route::post('/save-rating', [RatingController::class, 'saveRating']);
+Route::middleware(['auth'])->group(function () {
+    Route::post('/save-rating', [RatingController::class, 'saveRating'])->middleware('auth');
+});
 Route::get('/get-rating/{table}/{postId}', [RatingController::class, 'getStars']);
 Route::get('/get-average-rating/{table}/{postId}', [RatingController::class, 'getAverageRating']);
 Route::get('/tables/form-data/{table}/{id}', [TablesController::class, 'ExportFields'])
@@ -524,7 +534,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::middleware(['is_admin'])->group(function () {
 
         Route::get('/dashboard', function () {
-            return redirect('/admin/dashboard');
+            return redirect('/dashboard');
         })->name('dashboard');
         // Dashboard
         Route::get(
@@ -534,7 +544,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 ### ============== API ISADMIN QI ================ ###
 
-        Route::get("/api/mcslpoints/{users_id?}",[MCSLPointsController::class,"GetCount"])->name("api.mcslpoints");
+
         Route::get("/admin/SQLUpdate", [SQLUpdateController::class,"index"])->name("SQL.index");
         Route::get('/api/admin-tables', [TablesController::class, 'GetDBTables'])->name("get.db.tables");
         Route::get('/userx/update-config/{id}', [UserConfigController::class, 'updateConfig'])->name('usconfi');

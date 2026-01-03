@@ -16,6 +16,38 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  * for events that are broadcast by Laravel. Echo and event broadcasting
  * allows your team to easily build robust real-time web applications.
  */
+import { route } from 'ziggy-js';
+import { toastBus } from '@/utils/toastBus'; // dein Toast-System
+
+// Default Config
+axios.defaults.withCredentials = true;
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+// Interceptor
+axios.interceptors.response.use(
+  response => response,
+  error => {
+    if (error.response?.status === 401) {
+      // Aktuelle URL merken
+      const currentUrl = window.location.href;
+
+      // Optional: Info-Toast
+    //   toastBus.emit('toast', {
+    //     status: 'info',
+    //     message: 'Bitte einloggen, um fortzufahren',
+    //   });
+
+      // Redirect zu Login + Ursprungs-URL
+      window.setTimeout(() => {
+       // window.location.href = route('login', { redirect: currentUrl });
+      }, 500); // kleine Verzögerung für Toast
+    }
+
+    return Promise.reject(error);
+  }
+);
+
+export default axios;
 
 // import Echo from 'laravel-echo';
 

@@ -399,11 +399,12 @@ foreach ($commentsStatsRaw as $stat) {
         }
         $stars = DB::table("ratings")->where("users_id",$users_id)->count();
         $comms = DB::table("comments")->where("users_id",$users_id)->count();
-        $newsl = DB::table("newsletter_sended")->where("users_id",$users_id)->count();
+        $newsl = DB::table("points")->where("users_id",$users_id)->sum('points') ?? 0;
+
         $shopo  = DB::table("shortpoems")->where("users_id",$users_id)->count();
         $res = [
             'comments'    => $comms*$this->ccnt,
-            'newsletter'  => $newsl*$this->ncnt,
+            'newsletter'  => $newsl,
             'ratings'     => $stars*$this->scnt,
             'shortpoems'  => $shopo*$this->SPcnt,
         ];
@@ -456,7 +457,7 @@ foreach ($commentsStatsRaw as $stat) {
         {
             $users_id = Auth::id();
         }
-        $cnt = DB::table("newsletter_sended")->where("users_id",$users_id)->count();
+        $cnt = DB::table("points")->where("users_id",$users_id)->sum("points");
         if ($users_id === null) {
             $cnt = 0;
         }
@@ -478,7 +479,7 @@ foreach ($commentsStatsRaw as $stat) {
         $cnt = $this->GetCommentsCount($request)*$this->ccnt;
         $cnt = $cnt + ($this->GetStarsCount($request)*$this->scnt);
         $cnt = $cnt + ($this->GetShortPCount($request)*$this->SPcnt);
-        $cnt = $cnt + ($this->GetNewslCount($request)*$this->ncnt);
+        $cnt = $cnt + ($this->GetNewslCount($request));
         // dd($cnt);
 
         return $cnt;

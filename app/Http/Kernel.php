@@ -41,6 +41,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\CheckSubd::class,
             \App\Http\Middleware\CountPageView::class,
+            \App\Http\Middleware\RemoveReParam::class,
 
         ],
 

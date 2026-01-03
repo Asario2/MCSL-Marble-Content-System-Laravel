@@ -10,6 +10,7 @@ import axios from "axios";
 import { route } from "ziggy-js";
 import AverageRating from "@/Application/Components/Social/averageratings.vue";
 import { ratingBus } from "@/utils/ratingBus";
+import { CleanTable } from "@/helpers";
 
 export default {
   name: "RatingWrapper",
@@ -30,12 +31,13 @@ export default {
   },
 
   methods: {
+    CleanTable,
     async loadRating() {
       try {
         const { data } = await axios.get(
-          route("api.getRating", this.postId)
+          route("api.getRating",{table:CleanTable(),postId:this.postId})
         );
-
+        console.log(data);
         this.average = Number(data.average) || 0;
         this.total = Number(data.total) || 0;
       } catch (e) {

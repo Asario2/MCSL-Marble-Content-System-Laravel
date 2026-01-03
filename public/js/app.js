@@ -7,8 +7,8 @@ import { createInertiaApp } from "@inertiajs/vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy";
 import { i18nVue } from "laravel-vue-i18n";
-import { route } from "ziggy-js";
-import { getapp} from "helpers";
+// import { route } from "ziggy-js";
+// import { getapp} from "helpers";
 import { createPinia } from "pinia";  // <--- Pinia importieren
 
 // Schriftarten
@@ -77,7 +77,7 @@ loadAllRights()
       },
     });
   })
-  .catch((error) => {
+  .catch(() => {
     // Fehlerbehandlung
     return "";
     // const fallback = document.createElement("div");

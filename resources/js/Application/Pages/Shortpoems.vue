@@ -26,7 +26,29 @@
           Für den vorgegebenen Suchbegriff wurden keine Shortpoems gefunden.
         </alert>
       </div>
+    <form @submit.prevent="submitForm" enctype="multipart/form-data" >
+    <div v-if="AID" class="container mx-auto p-4">
+    <div class="grid grid-cols-6 gap-2">
 
+        <!-- 5 Textfelder -->
+      <div v-for="n in 5" :key="n" class="col-span-1">
+        <InputFormText v-model="inputs[n - 1]" :placeholder="'Wort ' + n " :name="'word[' + n +  ']'" :required="true"/>
+      </div>
+
+      <!-- Button -->
+      <div class="col-span-1">
+        <button
+          @click="submit"
+          type="submit"
+          class="w-full h-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 flex items-center justify-center"
+        >
+          Vorschlagen
+        </button>
+
+      </div>
+    </div>
+  </div>
+  </form>
       <div
         v-for="(item, index) in items.data"
         :key="item.id || index"
@@ -59,7 +81,7 @@
           <p>{{ item.story || 'Kein Text vorhanden.' }}</p>
           <editbtns :id="item.id" table="shortpoems" /><br />
           <RatingWrapper
-            :post-id="item.id"
+            :postId="item.id"
             table="shortpoems"
             />
 
@@ -108,20 +130,25 @@
 
 <script>
 import Layout from '@/Application/Homepage/Shared/Layout.vue';
+import axios from "axios";
+import { route } from "ziggy-js";
 import MetaHeader from '@/Application/Homepage/Shared/MetaHeader.vue';
 import newbtn from '@/Application/Components/Form/newbtn.vue';
 import SearchFilter from '@/Application/Components/Lists/SearchFilter.vue';
+import InputFormText from '@/Application/Components/Form/InputFormText_sm.vue';
 import Alert from '@/Application/Components/Content/Alert.vue';
 import editbtns from '@/Application/Components/Form/editbtns.vue';
 import SocialButtons from "@/Application/Components/Social/socialButtons.vue";
 import RatingWrapper from "@/Application/Components/Social/RatingWrapper.vue";
 import pickBy from "lodash/pickBy";
+// import Toast from "@/Application/Components/Content/Toast.vue";
+import { toastBus } from '@/utils/toastBus';
 import { throttle } from "lodash";
 
 export default {
     name:"ShortPoems",
   components: {
-    Layout, MetaHeader, newbtn, SearchFilter, Alert, editbtns, SocialButtons, RatingWrapper
+    Layout, MetaHeader, newbtn, SearchFilter, Alert, editbtns, SocialButtons, RatingWrapper,InputFormText,
   },
   props: {
     items: { type: Object, required: true },
@@ -133,8 +160,15 @@ export default {
   data() {
     return {
       openIndex: null,
+      inputs: ['', '', '', '', ''],
       form: { search: this.filters?.search ?? "" },
     };
+  },
+  computed:{
+    AID(){
+        return window.authid;
+    }
+
   },
   watch: {
     form: {
@@ -157,6 +191,14 @@ export default {
     }
   },
   methods: {
+   async submitForm(){
+        const payload = this.inputs.join(", ");
+        const response = await axios.post(route('save.shp'), {
+        words: payload
+        });
+        console.log("RED: " + response.data);
+        toastBus.emit('toast', response.data); // ← erwartet { status: "...", message: "..." }
+    },
     reset() { this.form.search = null },
 
     toggle(index, item) {
@@ -239,3 +281,10 @@ export default {
   }
 };
 </script>
+<style>
+INPUT.words{
+    max-width:80% !important;
+    min-width: 80% !important;
+    margin:0px;
+}
+</style>

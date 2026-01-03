@@ -14,6 +14,9 @@ class CustomLoginControllerLegacy extends Controller
     // Login-Formular anzeigen
     public function showLoginForm()
     {
+        if ($request->filled('redirect')) {
+        session(['url.intended' => $request->redirect]);
+        }
         return view('auth.login'); // dein Login-Blade
     }
 

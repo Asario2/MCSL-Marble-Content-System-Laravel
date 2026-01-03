@@ -169,3 +169,6 @@
 ![Version](https://img.shields.io/badge/version-4.41.2-orange) Feature - Added <Title>'s (#317)  
 ![Version](https://img.shields.io/badge/version-4.42.3-orange) Feature - Icons for user navigation (#318)  
 ![Version](https://img.shields.io/badge/version-4.43.4-orange) Hotfix Loader Imageupload (#319)  
+![Version](https://img.shields.io/badge/version-4.44.3-orange) Hotfix - There was an issue with the Smilies function. (#320)  
+![Version](https://img.shields.io/badge/version-4.45.5-orange) Feature - MCSL Points functions (#315)  
+![Version](https://img.shields.io/badge/version-4.46.2-orange) Feature - Add Shortpoems functions (#322)  

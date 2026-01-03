@@ -40,6 +40,13 @@ class GlobalController extends Controller
         }
         }
 
+
+    }
+    public static function Redirect(){
+        if (@$_GET['re'] === '1') {
+            $url = str_replace("?re=1",'',"http://".$_SERVER['HTTP_HOST'].$_SERVER['QUERY_STRING']);
+            return redirect($url);
+        }
     }
     public function PasswordPrint(Request $request){
         echo Hash::make($request->pw);

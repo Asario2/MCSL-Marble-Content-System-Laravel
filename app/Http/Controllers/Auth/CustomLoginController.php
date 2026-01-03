@@ -15,6 +15,9 @@ class CustomLoginController extends Controller
 {
     public function showLoginForm()
     {
+        if ($request->filled('redirect')) {
+        session(['url.intended' => $request->redirect]);
+        }
         return view('auth.custom-login');
     }
 
@@ -24,7 +27,10 @@ class CustomLoginController extends Controller
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
-
+        
+        if ($request->filled('redirect')) {
+        return redirect($request->input('redirect'));
+    }
         return app(\Illuminate\Pipeline\Pipeline::class)
             ->send($request)
             ->through([

@@ -505,7 +505,7 @@ import IconDashboard from "@/Application/Components/Icons/IconDashboard.vue";
         CheckTRights,
         async loadmcslpoints() {
         try {
-                const { data } = await axios.get('/api/mcslpoints/1');
+                const { data } = await axios.get('/api/mcslpoints/');
                 this.mcslpoints = data; // automatisch reaktiv
             } catch (err) {
                 console.error('Fehler beim Laden der MCSL Points:', err);

@@ -40,10 +40,10 @@ import ZoomImage from "@/Application/Components/Content/ZoomImage.vue";
 // ✔ KORREKTE IMPORTS FÜR PHOTOSWIPE 6 (Vite-kompatibel)
 import PhotoSwipeLightbox from 'photoswipe/dist/photoswipe-lightbox.esm.js';
 import PhotoSwipe from 'photoswipe/dist/photoswipe.esm.js';
-import 'photoswipe/dist/photoswipe.css' 
+import 'photoswipe/dist/photoswipe.css'
 
 export default {
-  name: "PhotoSwipeGallery",
+  name: "PhotoSwipeNew",
   components: { ZoomImage },
 
   props: {

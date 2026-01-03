@@ -793,7 +793,7 @@ public function ShowTable(Request $request, $table_alt = null)
     // 🔹 Mailbody / Newsletter holen – mit Signatur-ID
     $mb = DB::table("newsletter")
         ->orderBy("position", "ASC")
-        ->select("id", "name", "subject", "Body", "signatur_id", "position")
+        ->select("id", "name", "subject", "Body", "signatur_id", "position","comphash")
         ->get();
 
     // 🔹 Benutzer laden (abhängig vom Recht)
@@ -846,6 +846,7 @@ public function ShowTable(Request $request, $table_alt = null)
         "user" => $users,
         "contacts" => $data,
         "mailbody" => $mb,
+        'comph'=>@$comph,
         'breadcrumbs' => [
             'Email/Newsletter' => route('admin.mailcenter'),
         ],
@@ -894,8 +895,8 @@ public function ShowTable(Request $request, $table_alt = null)
             }
             $uhash = @$res->uhash;
             $email = @decval($res->email);
-
-            $link[1] = "http://".request()->getHost()."/unsubscribe/%uhash%/".$email;
+            $link[2] = "http://".request()->getHost()."/newslToMCSLPoints/%uhash%/%chash%/".rawurlencode($email);
+            $link[1] = "http://".request()->getHost()."/unsubscribe/%uhash%/".rawurlencode($email);
             $link[0] = "http://".request()->getHost();
 
 
@@ -904,7 +905,7 @@ public function ShowTable(Request $request, $table_alt = null)
         // dd($content);
 
 
-        return $ma->PrevMail($request,SD(1)." Newsletter","emails.newsletter",$email,$nick,$link,$content,$signatur);
+        return $ma->PrevMail($request,SD(1)." Newsletter","emails.newsletter",$email,$nick,$link,$content,$signatur,$uhash='',$chash='');
 
 
 
@@ -913,6 +914,34 @@ public function ShowTable(Request $request, $table_alt = null)
             \Log::info($request->All());
             DB::table("users_config")->where("users_id",Auth::id())->update($request->only(['xch_newsletter', 'xis_pmtoautomail',"cnt_numrows"]));
         }
+        public function SetNewsl_alt(
+    string $uhash = null,
+    string $comphash = null,
+    string $email = null)
+    {
+        $sameuser = DB::table('users')
+            ->where('uhash', $uhash)
+            ->where('email', $email)
+            ->exists();
+        $pub = "1";
+        $users_id = DB::table("users")->where("uhash",$uhash)->value("id");
+        $newsletter_id = DB::table("newsletter")->where("comphash",$comphash)->value("id");
+        $created_at = now();
+        $points = "8";
+        if (!$sameuser) {
+           abort(404);
+        }
+            $ex = DB::table("points")->where("uhash",$uhash)->where("comphash",$comphash)->exists();
+            if(!$ex)
+            {
+                DB::table("points")->insert(
+                    compact('pub', 'email', 'uhash', 'comphash','users_id','newsletter_id',"points","created_at")
+                );
+
+                return Inertia::render('Components/Social/Newsl_points');
+            }
+            return Inertia::render('Components/Social/Newsl_points_dup');
+    }
     public function newsletter_save($uhash,$email)
     {
         DB::table("newsletter_blacklist")->where("uhash",$uhash)->delete();

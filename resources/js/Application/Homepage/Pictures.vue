@@ -128,7 +128,9 @@
                             v-if="!link.url"
                             class="flex items-center px-3 py-0.5 mx-1 mb-1 rounded-md cursor-not-allowed"
                         >
-                            <span v-html="link.label"></span>
+                            <span v-if="link.label === 'pagination.previous'">&laquo; Zurück</span>
+                            <span v-else-if="link.label === 'pagination.next'">Weiter &raquo;</span>
+                            <span v-else v-html="link.label"></span>
                         </div>
 
                         <!-- Aktive Seite -->
@@ -146,7 +148,9 @@
                             :href="link.url + '&search=' + searchterm"
                             class="flex items-center px-2.5 py-0.5 mx-1 mb-1 h-7 transition-colors duration-200 transform rounded-md border hover:bg-layout-sun-200 hover:text-layout-sun-800 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-800"
                         >
-                            <span v-html="link.label"></span>
+                            <span v-if="link.label === 'pagination.previous'">&laquo; Zurück</span>
+                            <span v-else-if="link.label === 'pagination.next'">Weiter &raquo;</span>
+                            <span v-else v-html="link.label"></span>
                         </a>
                     </template>
                 </div>

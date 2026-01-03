@@ -80,7 +80,7 @@
                     <button-change-mode :mode="mode" @changeMode="changeMode"></button-change-mode>
                     <div class="ms-3 relative">
 
-                          <Dropdown align="right" width="72">
+                          <Dropdown align="right" width="72"  v-if="$page.props.auth.user"  >
                                     <template #trigger>
                                         <button
                                             v-if="

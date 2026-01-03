@@ -24,6 +24,7 @@ import IconStar from "@/Application/Components/Icons/IconStar.vue";
 import { CleanTable } from "@/helpers";
 import { toastBus } from "@/utils/toastBus";
 import { ratingBus } from "@/utils/ratingBus";
+import { route } from "ziggy-js";
 
 export default {
   name: "RatingInput",
@@ -48,25 +49,54 @@ export default {
     },
 
     async saveRating(star) {
-      const res = await axios.post("/save-rating", {
-        rating: star,
-        postId: this.postId,
-        table: CleanTable(),
-      });
+        try {
+            const res = await axios.post("/save-rating", {
+            rating: star,
+            postId: this.postId,
+            table: CleanTable(),
+            },
+            {
+                requiresAuth: true, // <- Hier richtig in config
+            }, {
+  headers: {
+    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+  }
+        });
+        // 🔁 Rating neu laden (andere Komponenten)
         ratingBus.emit("rating-updated", {
         postId: this.postId,
         });
 
-      // 🔥 Parent informieren
-      this.$emit("rated", {
+        // 🔥 Parent informieren
+        this.$emit("rated", {
         average: res.data.average,
         total: res.data.total,
-      });
+        });
 
-      toastBus.emit("toast", {
+        // ✅ Erfolg-Toast
+        toastBus.emit("toast", {
         status: "points",
         message: "Du hast 1 MCSL Point gesammelt",
-      });
+        });
+
+    } catch (e) {
+        // 🔐 NICHT EINGELOGGT
+        if (e.response?.status === 401) {
+        const currentUrl = window.location.href;
+
+        window.location.href =
+            route("login") + "?redirect=" + encodeURIComponent(currentUrl);
+        return;
+        }
+
+        // ❌ Sonstiger Fehler
+        console.error("Rating speichern fehlgeschlagen", e);
+
+        toastBus.emit("toast", {
+        status: "error",
+        message: "Bewertung konnte nicht gespeichert werden",
+        });
+    }
     },
   },
 };

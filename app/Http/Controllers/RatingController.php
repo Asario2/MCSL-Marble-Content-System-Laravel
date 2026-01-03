@@ -49,9 +49,10 @@ class RatingController extends Controller
 
 
             $userId = Auth::id();
+
             $existingRate = $this->GetExistingRate($table,$postId);
             $id = is_object($existingRate) ? $existingRate->id : $existingRate;
-            if(!$id)
+            if(!$id && $userId)
             {
                 DB::table("ratings")->insert(
                     [
@@ -62,6 +63,10 @@ class RatingController extends Controller
                         "created_at" => now(),
                         "updated_at" => now(),
                     ]);
+            }
+            elseif(!$userId)
+            {
+                redirect()->intended('/');
             }
             else{
                 DB::table("ratings")->where("id",$id)->update(
@@ -115,6 +120,7 @@ class RatingController extends Controller
     {
         $ex = DB::table("ratings")
             ->where("images_id",$request->postId)
+            ->where("table",$request->table)
             ->selectRaw('AVG(rating) as average, COUNT(id) as total')
             ->first();
             return response()->json($ex);

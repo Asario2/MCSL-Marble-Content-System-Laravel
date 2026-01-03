@@ -9,6 +9,7 @@ use Auth;
 use App\Mail\CommentMail;
 use App\Mail\ContactMail;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\MailController;
 use App\Helpers\MailHelper;
 use Illuminate\Support\Facades\DB;
 use App\Models\Rating;
@@ -159,6 +160,39 @@ class CommentController extends Controller
             'created_at' => $now,
         ]
     ]);
+    }
+    public function save_shp(Request $request)
+    {
+        $exists = DB::table("shortpoems")->where("headline",$request->words)->exists();
+        if(!$exists)
+        {
+            $id = DB::table('shortpoems')->insertGetId([
+                'headline'   => $request->words,
+                'users_id'   => Auth::id(),
+                'created_at'=> now(),
+                'updated_at'=> now(),
+            ]);
+            $email = "shortpoems@asario.de";
+            $uhash = Auth::user()->uhash;
+            $link = "https://www.asario.de/admin/tables/edit/$id/shortpoems";
+            $cont = MCSL_GRAD()."<h2>Nutzer ".Auth::user()->name." hat Wörter für eine Shortpoem gepostet</h2>
+                    Die Wörter <b>".$request->words."</b> hat er gewählt,<br /> nu schreib mal was Asario<br /><br />
+                    <a class='button-primary' href='".$link."'>Zum Shortpoem</a><br /><br />
+                    Viel Spaß";
+
+            $mail = NEW MailController();
+            $mail->SendMail("Nutzer ".Auth::user()->name." hat Wörter für eine Shortpoem gepostet", "send", $email,Auth::user()->name, $link, $cont, $uhash);
+
+            return response()->json([
+                "status" => "points",
+                "message" => "Du hast 5 MCSL Points gesammelt",
+            ]);
+
+        }
+        return response()->json([
+                "status" => "error",
+                "message" => "Eintrag exisitiert bereits",
+            ]);
     }
     public function sendmc(Request $request)
         {

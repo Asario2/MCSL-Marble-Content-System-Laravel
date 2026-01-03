@@ -53,7 +53,7 @@
                             v-model="form.password"
                             ref="password"
                         ></input-element>
-                        <input-error :message="errors.password" />
+                         <input-error :message="errors.password" />
                     </input-container>
                     <input-container :full-width="true">
                    <a href="/auth/google" class="flex items-center gap-2"><GoogleSVG he="22" wi="22"/>Mit Google anmelden</a>
@@ -83,6 +83,7 @@
                         >
                     </input-container>
                 </input-group>
+            <input type="hidden" name="redirect" value="{{ request('redirect') }}">
             </template>
             <template #actions>
                 <!-- Befehle -->
@@ -178,6 +179,7 @@ export default defineComponent({
             const formData = {
                 ...this.form,
                 remember: this.form.remember ? "on" : "",
+                 redirect: $_GET['redirect'],
             };
             //
             localStorage.setItem('reload_dashboard', '1');

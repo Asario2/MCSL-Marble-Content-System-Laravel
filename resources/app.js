@@ -1,24 +1,89 @@
-    import "./bootstrap";
-    import '../css/app.css';
-	import '@fontsource/open-sans/index.css';
-	import '@fontsource/ubuntu/index.css';
+    // import "./bootstrap";
+    // import '../css/app.css';
+	// import '@fontsource/open-sans';
+	// import '@fontsource/ubuntu';
+    // import { createApp, h } from "vue";
+    // import { createInertiaApp } from "@inertiajs/vue3";
+    // import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
+    // import { ZiggyVue } from "../../vendor/tightenco/ziggy";
+    // import { i18nVue } from "laravel-vue-i18n";
+    // import { route as ziggyRoute } from 'ziggy-js';
+    // import { Inertia } from '@inertiajs/inertia';
+    // import { createPinia } from "pinia";
 
-    import { createApp, h } from "vue";
-    import { createInertiaApp } from "@inertiajs/vue3";
-    import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
-    import { ZiggyVue } from "../../vendor/tightenco/ziggy";
-    import { i18nVue } from "laravel-vue-i18n";
-    import { route as ziggyRoute } from 'ziggy-js';
-    import { Inertia } from '@inertiajs/inertia';
-    import { createPinia } from "pinia";
+    // // FontAwesome
+    // import { library } from '@fortawesome/fontawesome-svg-core';
+    // import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+    // import { faPencilAlt, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+    // import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
 
-    // FontAwesome
-    import { library } from '@fortawesome/fontawesome-svg-core';
-    import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-    import { faPencilAlt, faTrashCan } from "@fortawesome/free-solid-svg-icons";
-    import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
+    // library.add(faPencilAlt, faTrashCan, faXTwitter);
 
-    library.add(faPencilAlt, faTrashCan, faXTwitter);
+import "./bootstrap";
+import '../css/app.css';
+import '@fontsource/open-sans';
+import '@fontsource/ubuntu';
+import { createApp, h } from "vue";
+import { createInertiaApp } from "@inertiajs/vue3";
+import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
+import { ZiggyVue } from "../../vendor/tightenco/ziggy";
+import { i18nVue } from "laravel-vue-i18n";
+import { route as ziggyRoute } from 'ziggy-js';
+import { Inertia } from '@inertiajs/inertia';
+import { createPinia } from "pinia";
+
+// FontAwesome
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faPencilAlt, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
+
+library.add(faPencilAlt, faTrashCan, faXTwitter);
+
+// ------------------------------
+// PHOTOSWIPE
+// ------------------------------
+import 'photoswipe/dist/photoswipe.css';
+
+
+
+
+    // COOOKIES
+//     document.addEventListener('DOMContentLoaded', function () {
+//     const categories = window.CookieConsent?.getCategories() || [];
+
+//     // Prüfen, ob analytics existiert
+//     if (!categories.includes('analytics')) {
+//         window.CookieConsent.addCategory({
+//             name: 'analytics',
+//             label: 'Analytics',
+//             description: 'Cookies, die das Nutzerverhalten analysieren.',
+//             required: false
+//         });
+//     }
+
+//     // Pixel laden, wenn schon Consent gegeben
+//     if (window.CookieConsent.hasConsentFor('analytics')) {
+//         loadCountPixel();
+//     }
+
+//     // Event wenn Nutzer nachträglich zustimmt
+//     window.addEventListener('cookieConsentGiven', function(event) {
+//         if(event.detail.category === 'analytics') {
+//             loadCountPixel();
+//         }
+//     });
+
+//     function loadCountPixel() {
+//         const img = document.createElement('img');
+//         img.src = '/countpixel';
+//         img.width = 1;
+//         img.height = 1;
+//         img.style.display = 'none';
+//         document.body.appendChild(img);
+//     }
+// });
+
 
     // Query-Parameter aus der URL holen
 
@@ -44,7 +109,9 @@
     import { loadAllRights, hasRight, isRightsReady } from "@/utils/rights";
 
     // Schriftarten
-
+    import "@fontsource/open-sans/index.css";
+    import "@fontsource/ubuntu/index.css";
+    import axios from "axios";
     // Axios CSRF
     axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 

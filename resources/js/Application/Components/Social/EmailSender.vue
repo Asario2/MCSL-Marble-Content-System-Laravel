@@ -150,6 +150,7 @@ export default {
     user: [Array, Object],
     usergroups: [Array, Object],
     contacts: [Array, Object],
+
   },
 
   data() {
@@ -199,7 +200,9 @@ export default {
       this.signatureText = sig ? sig.sigtext || "" : "";
     },
   },
-
+  mounted(){
+    console.log("th:" + this.comphash);
+  },
   methods: {
     submitPreview() {
     router.post("/email/preview", {
@@ -209,6 +212,7 @@ export default {
         signatureText: this.signatureText,
         mailbodyId: this.selectedMbId,
         signaturId: this.selectedSigId,
+        comphash:this.mailbody.comphash,
     });
     },
 

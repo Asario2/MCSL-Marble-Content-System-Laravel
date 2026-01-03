@@ -64,7 +64,7 @@ class MailController extends Controller
             "title"=>$request->title,
             "prename"=>$request->firstname,
             "surname"=>$request->lastname,
-            "comphash"=>bin2hex(random_bytes(32)),  
+            "comphash"=>bin2hex(random_bytes(32)),
         ]);
         }
         else{
@@ -89,10 +89,11 @@ class MailController extends Controller
         $this->SendMail("Newsletter Anmeldung","emails.newslsub",$request->email,$request->title." ".$request->firstname." ".$request->lastname,"http://".request()->getHost()."/mail/subscribe/".$uhash."/".$request->email,$html,$uhash);
     }
 
-function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
+function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '',$comp='') {
     if(empty($email)) return false;
 
     $html = str_replace('%uhash%', $uhash, $html);
+    $html = str_replace("%comp%",$comp,$html);
     $email = $email;
     Mail::send([], [], function ($message) use ($email, $html, $title) {
         $message->to($email)
@@ -181,15 +182,21 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
         }
         return Inertia::render("Components/Social/Newsl_Blacklist");
     }
+
     //return $ma->PrevMail("[MCSl] Newsletter","emails.newsletter",$email,$nick,$link,$content,$signatur);
-    function PrevMail(Request $request,$title,$template,$email,$nick,$link,$content,$signatur){
+    function PrevMail(Request $request,$title,$template,$email,$nick,$link,$content,$signatur,$uhash,$chash){
 
-
+    $chash = DB::table("newsletter")->where("id",$request->mailbodyId)->value("comphash");
     $footer = $signatur;
+        // dd($request->all());
 
-    $signatur = $this->replink($signatur,$title,$email,$nick,$link,@$uhash);
 
-    $content  = $this->replink($content,$title,$email,$nick,@$uhash);
+
+    $signatur = $this->replink($signatur,$title,$email,$nick,$link,@$chash);
+
+
+
+    $content  = $this->replink($content,$title,$email,$nick,$link,@$chash);
 
     $signatur2 = $signatur.$this->subm_btn();
         $content_alt = $content.$signatur;
@@ -217,7 +224,7 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
     {
         return "<br /><br /><a class='button-primary' href='/email/send/'>E-mail Senden</a>";
     }
-    function send_newsletter(){
+    function send_newsletter(Request $request){
         $i = 0;
         $sendm = [];
         $entries = explode(", ",session("reci"));
@@ -225,6 +232,8 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
         $ugroups = [];
         $contacts = [];
         $users = [];
+        // $to = DB::table("newsletter")
+        // dd($request->all());
 
 
         foreach($entries as $key=>$val){
@@ -289,6 +298,7 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
             $uhash = @$res->uhash;
             $email = @$res->email;
             $nick = @$res->name;
+            // $comp = $co->comphash;
             if(!in_array($email,$sendm) && !empty($res) && !empty($email)){
                 $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
                 $i++;
@@ -334,9 +344,10 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
 
         $this->SendMail("Neuer Nutzer auf " . SD(1), "send", $email, $nick, $link, $cont, $uhash);
     }
-    function replink($con,$title,$email,$nick,$link=''){
+    function replink($con,$title,$email,$nick,$link='',$chash=''){
         $l = '{{ $link }}';
         $la = $link;
+        // dd($link);
         if(is_array($link)){
         $con = preg_replace_callback('/\{\{\s*\$link\[(.*?)\]\s*\}\}/', function ($matches) use ($link) {
             $key = trim($matches[1], "'\" ");
@@ -346,6 +357,7 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '') {
 
     }
 
+            $con = str_replace("%chash%",@$chash,$con);
             $con = str_replace([$l,'{{ $nick }}','{{ $title }}'],[$la,$nick,$title],$con);
 
 

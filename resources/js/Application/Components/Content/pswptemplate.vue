@@ -19,7 +19,7 @@
 </style>
 
 <script>
-import photoawipe_new from "@/Application/Components/photoswipe_new.vue";   
+import photoswipe_new from "@/Application/Components/photoswipe_new.vue";
 export default {
 
         name: "PswpTemplate",
