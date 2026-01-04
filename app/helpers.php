@@ -122,7 +122,7 @@ if (!function_exists('Notify')) {
         $entries = DB::table('genxlo.notifications')->get();
 
         $output = '';
-
+        $xx = '';
         foreach ($entries as $entry) {
 
             $entry = (array) $entry;
@@ -135,12 +135,18 @@ if (!function_exists('Notify')) {
 
             if (!empty($entry['timespy']) && file_exists($timespyPath)) {
 
-                $tfile = trim(file_get_contents($timespyPath));
+                // $tfile = rtrim(file_get_contents($timespyPath));
+
+                $tfile = preg_replace('/^\x{FEFF}/u', '', file_get_contents($timespyPath));
+                $tfile = trim($tfile);
 
                 if ($tfile !== '' && Carbon::hasFormat($tfile, 'Y-m-d H:i:s')) {
                     $time = Carbon::createFromFormat('Y-m-d H:i:s', $tfile);
                 }
+
+                // $time = trim($tfile);
             }
+            // dd($time);
 
             // --------------------------------------------------
             // 2️⃣ Host-Logik (localhost / online / both)
@@ -176,26 +182,33 @@ if (!function_exists('Notify')) {
                     ($expiresAt && now()->greaterThan($expiresAt))
                 )
             ) {
+//                 dd(
+//     file_get_contents($timespyPath),
+//     bin2hex(file_get_contents($timespyPath))
+// );
 
-                $output .= "<div style='background:#ccc;color:#002;padding:10px;margin-bottom:10px;z-index:999999'>";
+//                 dd($time,$expiresAt);
+                // $output .= "<div style='background:#ccc;color:#002;padding:10px;margin-bottom:10px;z-index:999999'>";
 
                 $output .= "<h3>{$entry['name']}</h3>";
-                $output .= $entry['text'];
+                $output .= $entry['text']." ";
 
                 if (!empty($entry['function_link']) && function_exists($entry['function_link'])) {
                     $fn = $entry['function_link'];
                     $output .= $fn();
                 }
+                $status = $entry['status'];
+                $seconds = $entry['seconds'];
+                $xx .= 'window.toastBus.emit({ message: "'.$output.'", type: "'.$status.'", duration: '.$seconds.' })';
 
-                $output .= "</div>";
 
                 // ⏱️ Zeitpunkt speichern
 
             }
         }
 
-        if ($output) {
-            echo "<br /><br /><br /><br /><br />".$output;
+        if ($xx) {
+            return $xx;
 
         }
     }

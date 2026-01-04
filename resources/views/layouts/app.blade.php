@@ -27,7 +27,8 @@
     window.pagename = "{{ $pagen }}";
     window.ahost = "{{ $ahost }}";
     window.app_name = "{{ $pagen }}"
-    </script>
+</script>
+
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 

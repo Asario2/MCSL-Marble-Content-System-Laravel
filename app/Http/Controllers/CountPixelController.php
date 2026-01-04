@@ -35,14 +35,16 @@ class CountPixelController extends Controller
     '/admin',
     '/_debug',
     '/api/',
+    "/login",
+    "pm/index",
     ];
 
     public function track(Request $request)
     {
-        if(!substr_count(@$_COOKIE['mcsl_preferences'],'"analytics":true'))
-        {
-                return $this->pixelResponse();
-        }
+        // if(!substr_count(@$_COOKIE['mcsl_preferences'],'"analytics":true'))
+        // {
+        //         return $this->pixelResponse();
+        // }
         try {
 
             $host = $request->getHost();

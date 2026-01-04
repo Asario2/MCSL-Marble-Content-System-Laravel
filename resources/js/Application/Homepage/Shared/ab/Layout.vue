@@ -427,8 +427,7 @@
         pendingRequests: 0,
         rights: {
             edit: null,
-            delete: null,
-            },
+                    },
         isLoading: localStorage.getItem('loading') === 'true',
         search: '',
         searchval: false,
@@ -440,7 +439,6 @@
     async mounted() {
         const params = new URLSearchParams(window.location.search);
     const search = params.get("search");
-
     // Wenn search gesetzt ist, verstecke das Loading-Div
     if (search && search.trim() !== "") {
 

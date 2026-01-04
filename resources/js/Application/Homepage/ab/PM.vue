@@ -68,7 +68,7 @@
                   <td class="border border-gray-300 dark:border-gray-700 text-center">
                     <span
                       class="inline-block w-5 h-5 rounded-full"
-                      :class="msg.checked ? 'bg-green-500' : 'bg-red-500'"
+                      :class="msg.checked ? 'bg-green-500' : 'bg-gray-400'"
                     ></span>
                   </td>
                   <td class="border border-gray-300 dark:border-gray-700 flex items-center">

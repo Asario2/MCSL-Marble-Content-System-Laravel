@@ -38,7 +38,17 @@
             window.pagename = "{{ $pagen }}";
             window.ahost = "{{ $ahost }}";
             window.app_name = "{{ $pagen }}";
+
         </script>
+
+            {{-- <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        window.toastBusEmit('toast', {
+            type: 'points',
+            message: 'Du hast 8 MCSL Points gesammelt 🎉'
+        });
+    });
+    </script> --}}
 
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <link rel="icon" type="image/png" href="{{ $favicon }}">
@@ -86,6 +96,15 @@
     </head>
     <body class="font-sans antialiased">
 
+
+<script type="module">
+import { reactive } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+
+const toastBus = reactive({ toasts: [] });
+toastBus.toasts.push({ message: 'Hallo', type: 'success', duration: 5000 });
+console.log(toastBus);
+</script>
+    </script>
         @php Notify(); @endphp
         <input type="hidden" id="token" value="{{ csrf_token() }}">
         @routes
@@ -151,6 +170,20 @@
                 sessionStorage.setItem("force_reload", "true");
             @endif
         </script>
+        <script>
+document.addEventListener('DOMContentLoaded', function () {
+    if (window.toastBus) {
+        @php
+            echo Notify();
+        @endphp
+
+
+
+    } else {
+        console.error("toastBus existiert noch nicht");
+    }
+});
+</script>
 
         <style>
             /* Fix für kurzes Aufblitzen des Banners */
