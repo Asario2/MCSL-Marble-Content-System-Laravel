@@ -1,4 +1,3 @@
-import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 <template>
     <layout :header-url="$page.props.saas_url + '/'">
     <MetaHeader :title="'Galerie: ' + images.name" />

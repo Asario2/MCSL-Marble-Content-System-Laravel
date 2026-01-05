@@ -544,7 +544,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 ### ============== API ISADMIN QI ================ ###
 
-
+        Route::get("/api/get_unused_imgz", [TablesController::class,"getunused"])->name("api.getunused");
         Route::get("/admin/SQLUpdate", [SQLUpdateController::class,"index"])->name("SQL.index");
         Route::get('/api/admin-tables', [TablesController::class, 'GetDBTables'])->name("get.db.tables");
         Route::get('/userx/update-config/{id}', [UserConfigController::class, 'updateConfig'])->name('usconfi');

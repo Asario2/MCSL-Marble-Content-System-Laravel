@@ -812,7 +812,7 @@ public function ShowTable(Request $request, $table_alt = null)
             ->leftJoin('newsletter_blacklist', 'users.email', '=', 'newsletter_blacklist.mail')
             ->leftJoin('users_config', 'users.id', '=', 'users_config.users_id')
             ->whereNull('newsletter_blacklist.mail')
-            ->where('xch_newsletter', '1')
+            ->where('users_config.xch_newsletter','LIKE','%to_mail%')
             ->where('xis_disabled', '0')
             ->where('name', '!=', 'Gast')
             ->select('users.id', 'users.name', 'users.email', 'users_config.xch_newsletter AS xch_newsletter')
@@ -881,7 +881,7 @@ public function ShowTable(Request $request, $table_alt = null)
 
 
         if(!CheckZRights("SendMailToAll")){
-            $res = DB::table("users")->where("name",$nick)->where("xch_newsletter","1")->select("email","uhash","name")->first();
+            $res = DB::table("users")->leftJoin("users_config","users_config.users_id","=","users.id")->where("name",$nick)->where('users_config.xch_newsletter', 'LIKE', '%to_mail%')->select("email","uhash","name")->first();
         }
         else{
                $res = DB::table("users")->where("name",$nick)->select("email","uhash","name")->first();
@@ -913,6 +913,10 @@ public function ShowTable(Request $request, $table_alt = null)
         public function us_config_save(Request $request){
             \Log::info($request->All());
             DB::table("users_config")->where("users_id",Auth::id())->update($request->only(['xch_newsletter', 'xis_pmtoautomail',"cnt_numrows"]));
+        }
+        public function getunused()
+        {
+
         }
         public function SetNewsl_alt(
     string $uhash = null,

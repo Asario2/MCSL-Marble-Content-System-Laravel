@@ -174,3 +174,4 @@
 ![Version](https://img.shields.io/badge/version-4.46.2-orange) Feature - Add Shortpoems functions (#322)  
 ![Version](https://img.shields.io/badge/version-4.47.2-orange) Hotfix - Changed Notification on date (#334)  
 ![Version](https://img.shields.io/badge/version-4.48.3-orange) Hotfix - fixed bug in Notify script (#336)  
+![Version](https://img.shields.io/badge/version-4.49.1-orange) Hotfix - removed bug in email center (#338)  

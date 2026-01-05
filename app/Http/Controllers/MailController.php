@@ -289,7 +289,7 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '',$c
         foreach ($users as $rek)
         {
             if(!CheckZRights("SendMailToAll")){
-            $res = DB::table("users")->where("name",$rek)->where("xch_newsletter","1")->select("email","uhash","name")->first();
+            $res = DB::table("users")->leftJoin("users_config as uc","users.id","=","uc.users_id")->where("name",$rek)->where('uc.xch_newsletter', 'LIKE', '%to_mail%')->select("email","uhash","name")->first();
             }
             else{
             $res = DB::table("users")->where("name",$rek)->select("email","uhash","name")->first();
