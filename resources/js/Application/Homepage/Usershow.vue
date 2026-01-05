@@ -37,7 +37,7 @@
             <tbody>
                 <tr>
                 <th class="pr-4">Vorname:</th>
-                <td>{{ users?.first_name }}</td>
+                <td v-html="users?.first_name"></td>
                 </tr>
                 <tr>
                 <th class="pr-4">Registriert seit:</th>
@@ -49,15 +49,15 @@
                 </tr>
                 <tr>
                 <th class="pr-4">Musik:</th>
-                <td>{{ users?.music }}</td>
+                <td v-html="users?.music"></td>
                 </tr>
                 <tr>
                 <th class="pr-4">Interessen:</th>
-                <td>{{ users?.interests }}</td>
+                <td v-html="users?.interests"></td>
                 </tr>
                 <tr>
                 <th class="pr-4">Beschäftigung:</th>
-                <td>{{ users?.occupation }}</td>
+                <td v-html="users?.occupation"></td>
                 </tr>
                 <tr>
                 <th class="pr-4">Statistiken:</th>
