@@ -66,10 +66,11 @@
                     />
                   </td>
                   <td class="border border-gray-300 dark:border-gray-700 text-center">
-                    <span
-                      class="inline-block w-5 h-5 rounded-full"
-                      :class="msg.checked ? 'bg-green-500' : 'bg-gray-400'"
-                    ></span>
+                  <PublishButton
+                    :table="CleanTable()"
+                    :id="msg.id"
+                    :published="msg.checked === 1"
+                />
                   </td>
                   <td class="border border-gray-300 dark:border-gray-700 flex items-center">
                     <img :src="GetProfileImagePath(msg.avatar)" :alt="msg.user" :title="msg.user" class="w-8 h-8 rounded-full object-cover"/>
