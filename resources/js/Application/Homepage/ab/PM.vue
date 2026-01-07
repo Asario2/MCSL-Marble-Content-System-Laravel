@@ -301,6 +301,7 @@ import editbtns from '@/Application/Components/Form/editbtns.vue';
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import MessageSettings from "@/Application/Shared/MessageSettings.vue";
+import PublishButton from "@/Application/Components/Form/PublishButton.vue";
 import { SD, GetProfileImagePath,rumLaut,nl2br, GetSettings } from "@/helpers";
 import InputSelectU from "@/Application/Components/Form/InputSelectU.vue";
 import InputHtml from "@/Application/Components/Form/InputHtml.vue";
@@ -318,6 +319,7 @@ export default {
     Breadcrumb,
     InputSelectU,
     InputFormText,
+    PublishButton,
     InputCheckbox,
     MessageSettings,
   },
