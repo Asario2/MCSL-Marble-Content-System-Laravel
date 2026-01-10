@@ -95,7 +95,7 @@ if(SD() == "mfx"){
         //
         // GOOGLE AUTH
         //
-
+        Route::get('/api/delTempz/{path}', [TablesController::class, 'RemoveTempFiles'])->name('remove.temp');
         Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name("ggle.login");
         Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
         Route::get('/register/nickname', [GoogleController::class, 'showNicknameForm']);
@@ -544,7 +544,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 ### ============== API ISADMIN QI ================ ###
 
-        Route::get("/api/get_unused_imgz", [TablesController::class,"getunused"])->name("api.getunused");
+        Route::get("/admin/get_unused_imgz/{dom?}", [TablesController::class,"getunused"])->name("admin.getunused");
+        Route::post('/admin/zip-images/{dom?}', [TablesController::class, 'zipImages'])->name("zip.images");
+        Route::post('/admin/removeFiles', [TablesController::class, 'remImages'])->name("rem.images");
         Route::get("/admin/SQLUpdate", [SQLUpdateController::class,"index"])->name("SQL.index");
         Route::get('/api/admin-tables', [TablesController::class, 'GetDBTables'])->name("get.db.tables");
         Route::get('/userx/update-config/{id}', [UserConfigController::class, 'updateConfig'])->name('usconfi');
@@ -553,6 +555,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         // Route::post('/api/AddFunc', [RightsController::class, 'AddFunction'])->name('admin.add.func');
         Route::get('/get_MCSL_Points_Preniums', [MCSLPointsController::class, 'SelectPremiums'])->name('store.mcslpoints');
         Route::get('/SubmitPremiums/{users_id}/{img_id}', [MCSLPointsController::class, 'SendMail'])->name('send.mcslpoints');
+        //  
         Route::post('/api/user/batch-rights', [TablesController::class, 'GetBatchRights'])->name("get.bash.rights");
         Route::get('/api/chkcom/{id?}', [CommentController::class, 'checkComment'])->name("comments.check");
         Route::get('/api/contacts', [TablesController::class, 'api_contacts'])->name("admin.contacts");

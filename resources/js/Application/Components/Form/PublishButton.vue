@@ -25,7 +25,8 @@
     props: {
       table: { type: String, required: true },   // z. B. "articles"
       id: { type: Number, required: true },      // Datensatz-ID
-      published: { type: Boolean, default: false } // aktueller Wert aus DB
+      published: { type: Boolean, default: false }, // aktueller Wert aus DB
+      public: {type:Number},
     },
     data() {
       return {
@@ -44,7 +45,8 @@
           const response = await axios.post(route("toggle.pub"), {
             table: this.table,
             id: this.id,
-            pub: newStatus
+            pub: newStatus,
+            public: this.public,
           });
 
           this.isPublished = newStatus; // UI aktualisieren

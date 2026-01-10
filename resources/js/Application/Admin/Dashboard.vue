@@ -110,6 +110,18 @@
                 <!-- DB updaten -->
                 <template #description> Datenbanken Synchronisieren </template>
             </navigation-card>
+            <navigation-card v-if="modulRights?.UnusedImages"
+                class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
+                title="Unbenutzte Bilder"
+                :routeName="route('admin.getunused')"
+                linkName="Unbenutzte Bilder"
+                target="_self"
+                :withIcon="true"
+                icon="IconUnImg"
+            >
+                <!-- DB updaten -->
+                <template #description> Ungenutzte Bilder </template>
+            </navigation-card>
             <navigation-card v-if="modulRights?.UserRights"
                 class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
                 title="Rechte"

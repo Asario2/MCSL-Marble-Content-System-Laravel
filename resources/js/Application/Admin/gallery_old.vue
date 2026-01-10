@@ -10,24 +10,25 @@
     <section
       class="block max-w-sm mx-auto sm:max-w-full p-4 bg-layout-sun-100 dark:bg-layout-night-100"
     >
-      <h1 class="text-3xl font-bold mb-6 text-layout-title">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+    <h1 class="text-3xl font-bold text-layout-title">
         Unused Images
-      </h1>
-      <span v-for="image in images_container"
-        :key="image.id"
-        class="col-span-2">
-      <photoswipe_new :images="image.data" :basePath="image.basepath" :checkable="true">
+    </h1>
 
-      </photoswipe_new>
-      </span>
+   </div>
+
+
+      <photoswipe_old :dom="dom" :images="images_container" :basePath="images_container.basepath" :checkable="true">
+
+      </photoswipe_old>
     </section>
   </Layout>
 </template>
 
 <script>
-import axios from "axios";
-import { router } from "@inertiajs/vue3";
-import photoswipe_new from "@/Application/Components/photoswipe_new.vue";
+// import axios from "axios";
+// import { router } from "@inertiajs/vue3";
+import photoswipe_old from "@/Application/Components/photoswipe_old.vue";
 import Layout from "@/Application/Admin/Shared/ab/Layout.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
@@ -39,12 +40,29 @@ export default {
     Layout,
     Breadcrumb,
     MetaHeader,
-    photoswipe_new,
+    photoswipe_old,
   },
   props:{
     images_container:Object,
+    im_cont:Object,
   },
+  data(){
+    return {
+       dom: this.dom ?? 'ab',
+    }
+  },
+  mounted(){
+
+  },
+  methods:{
+    domres()
+    {
+        alert(this.dom);
+       location.href='/admin/get_unused_imgz/' + this.dom;
+    }
+  }
 };
+
 </script>
 
 

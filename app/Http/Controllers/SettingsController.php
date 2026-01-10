@@ -37,6 +37,7 @@ class SettingsController extends Controller
             "thirdparty"=> Settings::$thirdparty,
             "userexcl"=> Settings::$userexcl,
             'connect_dbname'=>Settings::$connect_dbname,
+            'mariaDBs'=>Settings::$mariaDBs,
         ]);
     }
 }

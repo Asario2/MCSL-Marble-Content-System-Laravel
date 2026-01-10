@@ -480,6 +480,8 @@ export function CleanId() {
 
 export function cc(img)
     {
+        if(!img)
+            return '';
         return img.replace(/^p(\d+)/, (match, p1) => 'P' + p1);
     }
 

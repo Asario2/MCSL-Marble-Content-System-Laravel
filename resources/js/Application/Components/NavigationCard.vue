@@ -62,6 +62,8 @@ import IconTexts from "@/Application/Components/Icons/IconTexts.vue";
 import IconSync from "@/Application/Components/Icons/IconSync.vue";
 import texts from "@/Application/Components/Icons/texts.vue";
 import IconInfos from "@/Application/Components/Icons/IconInfos.vue";
+
+import IconUnImg from "@/Application/Components/Icons/IconUnImg.vue";
 import IconLock from "@/Application/Components/Icons/IconLock.vue";
 import IconMail from "@/Application/Components/Icons/IconMail.vue";
 import IconHyperlink from "@/Application/Components/Icons/IconHyperLink.vue";
@@ -83,6 +85,7 @@ export default {
         IconDB,
         IconSync,
         IconMail,
+        IconUnImg,
         IconLost,
         IconLock,
         IconPictures,
@@ -140,6 +143,7 @@ export default {
             const icons = {
                 IconBook,
                 IconDB,
+                IconUnImg,
                 IconLock,
                 IconPictures,
                 IconLogs,

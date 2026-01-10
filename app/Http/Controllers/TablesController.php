@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
 use Auth;
+use ZipArchive;
 use App\Http\Controllers\Controller;
 use App\Models\User; // <-- WICHTIG!
 use Illuminate\Support\Facades\Redirect;
@@ -19,6 +20,7 @@ use App\Http\Controllers\FormController;
 use App\Helper\CustomHelpers;
 use App\Models\Settings;
 use App\Models\Table;
+use Illuminate\Support\Facades\File;
 use App\Models\AdminTable;
 use App\Models\UsersRight;
 use App\Services\Inkrementierer;
@@ -812,7 +814,7 @@ public function ShowTable(Request $request, $table_alt = null)
             ->leftJoin('newsletter_blacklist', 'users.email', '=', 'newsletter_blacklist.mail')
             ->leftJoin('users_config', 'users.id', '=', 'users_config.users_id')
             ->whereNull('newsletter_blacklist.mail')
-            ->where('users_config.xch_newsletter','LIKE','%to_mail%')
+            ->where('users_config.xch_newsletter','LIKE','%mail%')
             ->where('xis_disabled', '0')
             ->where('name', '!=', 'Gast')
             ->select('users.id', 'users.name', 'users.email', 'users_config.xch_newsletter AS xch_newsletter')
@@ -864,6 +866,7 @@ public function ShowTable(Request $request, $table_alt = null)
 
         return $result;
     }
+
         public function prev_newsl(Request $request)
         {
 
@@ -881,7 +884,7 @@ public function ShowTable(Request $request, $table_alt = null)
 
 
         if(!CheckZRights("SendMailToAll")){
-            $res = DB::table("users")->leftJoin("users_config","users_config.users_id","=","users.id")->where("name",$nick)->where('users_config.xch_newsletter', 'LIKE', '%to_mail%')->select("email","uhash","name")->first();
+            $res = DB::table("users")->leftJoin("users_config","users_config.users_id","=","users.id")->where("name",$nick)->where('users_config.xch_newsletter', 'LIKE', '%mail%')->select("email","uhash","name")->first();
         }
         else{
                $res = DB::table("users")->where("name",$nick)->select("email","uhash","name")->first();
@@ -914,27 +917,235 @@ public function ShowTable(Request $request, $table_alt = null)
             \Log::info($request->All());
             DB::table("users_config")->where("users_id",Auth::id())->update($request->only(['xch_newsletter', 'xis_pmtoautomail',"cnt_numrows"]));
         }
-        public function getunused()
+        public function remImages(Request $request)
         {
+            if(!CheckZRights("UnusedImages"))
+            {
+                header("Location: /no-rights");
+                exit;
+            }
+            $files = $request->input('files', []);
+            foreach($files as $file)
+            {
+                @unlink(public_path($file));
+            }
+            return true;
+        }
+        public function zipImages(Request $request,$dom)
+        {
+            if(!CheckZRights("UnusedImages"))
+            {
+                header("Location: /no-rights");
+                exit;
+            }
+            // $dom = 'ab';
+            // $uri = $_SERVER['REQUEST_URI'];
+            // $dom2 = basename($uri);
+            // // dd($dom2);
+            // if($dom2 !== "zip-images")
+            // {
+            //     $dom = $dom2;
+            // }
+            \Log::info($dom);
+            $files = $request->input('files', []);
 
-        }
-        public function SetNewsl_alt(
-    string $uhash = null,
-    string $comphash = null,
-    string $email = null)
+            if (empty($files)) {
+                return response()->json(['error' => 'Keine Dateien'], 452);
+            }
+
+            $zipName = 'images_' . now()->timestamp .'-'. substr(md5(rand(10,199999)),0,6) .'.zip';
+            $zipDir  = public_path('tmp');
+            $zipPath = $zipDir . '/' . $zipName;
+
+            if (!is_dir($zipDir)) {
+                mkdir($zipDir, 0755, true);
+            }
+
+            $zip = new \ZipArchive();
+
+            if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+                abort(500, 'ZIP konnte nicht erstellt werden');
+            }
+
+            foreach ($files as $file) {
+
+                // $file z.B.: /images/_ab/users/profile_photo_path/thumbs/test.jpg
+                $realPath = public_path(ltrim($file, '/'));
+
+                if (!file_exists($realPath)) {
+                    continue;
+                }
+
+                // 👉 Pfad im ZIP RELATIV ab /images/
+                $zipPathInside = ltrim(
+                    str_replace('/images/', '', $file),
+                    '/'
+                );
+
+                $zip->addFile($realPath, $zipPathInside);
+            }
+
+            $zip->close();
+
+            return response()->json([
+                'url' => '/tmp/' . $zipName,
+                "md5"  => md5_file(public_path("/tmp/" . $zipName)),
+            ]);
+    }
+    public function RemoveTempFiles(Request $request)
     {
-        $sameuser = DB::table('users')
-            ->where('uhash', $uhash)
-            ->where('email', $email)
-            ->exists();
-        $pub = "1";
-        $users_id = DB::table("users")->where("uhash",$uhash)->value("id");
-        $newsletter_id = DB::table("newsletter")->where("comphash",$comphash)->value("id");
-        $created_at = now();
-        $points = "8";
-        if (!$sameuser) {
-           abort(404);
+        // if(!CheckZRights("UnusedImages"))
+        // {
+        //     return;
+        // }
+        if(@unlink(public_path("/tmp/".basename($request->path))))
+        {
+            return "File ".$request->path." Deleted";
         }
+        return "not deleteable";
+
+    }
+    public function getunused(Request $request)
+    {
+        if (!CheckZRights('UnusedImages')) {
+            abort(403);
+        }
+        $db = 'mariadb';
+         if(@$request->dom){
+            $db = Settings::$mariaDBs[$request->dom];
+         }
+        //  dd(@$db);
+        $bp   = public_path('images');
+        $unus = [];
+        $ptz = [];
+        $seen = []; // uniqueKey => index in $unus
+        $xid  = 0;
+
+        foreach (File::directories($bp) as $mandantPath) {
+
+            $mandant = basename($mandantPath); // "_ab"
+            $mandKey  = $mandant;
+            if (!str_starts_with($mandant, '_')) continue;
+
+            $manid = ltrim($mandant, '_');
+            $db = Settings::$mariaDBs[$manid];
+            foreach (File::directories($mandantPath) as $tablePath) {
+
+                $table = basename($tablePath);
+                if (!Schema::connection($db)->hasTable($table)) continue;
+                foreach (File::directories($tablePath) as $columnPath) {
+
+                    $column = basename($columnPath);
+                    if (!Schema::connection($db)->hasColumn($table, $column)) continue;
+
+                    // 🔥 Priorität
+                    $folders = [
+                        'big'     => "$columnPath/big",
+                        'thumbs'  => "$columnPath/thumbs",
+                        'default' => $columnPath,
+                        'bthumbs' => "$columnPath/bthumbs",
+                        'orig'    => "$columnPath/orig",
+                        'ret'     => "$columnPath/ret",
+                        'sm'      => "$columnPath/sm",
+                    ];
+
+                    foreach ($folders as $folderName => $folderPath) {
+
+                        if (!is_dir($folderPath)) continue;
+
+
+                        foreach (File::files($folderPath) as $file) {
+
+                            $filename = $file->getFilename();
+
+                            if (in_array($filename, ['008.jpg','009.jpg','spacer.gif'])) {
+                                continue;
+                            }
+
+                            if(substr_count($file->getPathname(),"\message\\") || substr_count($file->getPathname(),"_abimage_path")){
+                            $ptz[] = $file->getPathname();
+                                continue;
+                            }
+
+                            $uniqueKey = "$manid|$table|$column|$filename";
+
+                            // 🔍 DB nur einmal prüfen
+                            if (!isset($seen[$uniqueKey])) {
+                                $existsInDb = DB::connection($db)->table($table)
+                                    ->where($column, $filename)
+                                    ->exists();
+
+                                if ($existsInDb) continue;
+                            }
+
+                            // 🆕 Erstfund
+                            if(!isset($seen[$uniqueKey])) {
+
+                                $bigPath = public_path("images/$mandant/$table/$column/big/$filename");
+                                $imgPath = file_exists($bigPath)
+                                    ? $bigPath
+                                    : $file->getPathname();
+
+                                [$width, $height] = @getimagesize($imgPath) ?: [null, null];
+
+                                $xid++;
+
+                                $unus[] = [
+                                    'id'       => $xid,
+                                    'dom'      => $manid,
+                                    'mandant'  => $mandant,
+                                    'table'    => $table,
+                                    'column'   => $column,
+                                    'filename' => $filename,
+                                    'width'    => $width,
+                                    'height'   => $height,
+                                    'label'    => $filename,
+                                    'basepath' => "/images/$mandKey/$table/$column/",
+                                    'apath'    => $folderName === 'default' ? '' : $folderName,
+                                    'folders'  => [], // ⭐ HIER ALLES REIN
+                                ];
+
+                                $seen[$uniqueKey] = count($unus) - 1;
+                            }
+
+                            // ➕ Ordner + Datei speichern
+                            $idx = $seen[$uniqueKey];
+                            $relativePath = "/images/$mandant/$table/$column/"
+                                . ($folderName === 'default' ? '' : "$folderName/")
+                                . $filename;
+
+                            $unus[$idx]['folders'][] = [
+                                'folder' => $folderName,
+                                'path'   => $relativePath,
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        return Inertia::render('Admin/gallery_old', [
+            'images_container' => $unus
+        ]);
+    }
+
+        public function SetNewsl_alt(
+        string $uhash = null,
+        string $comphash = null,
+        string $email = null)
+        {
+            $sameuser = DB::table('users')
+                ->where('uhash', $uhash)
+                ->where('email', $email)
+                ->exists();
+            $pub = "1";
+            $users_id = DB::table("users")->where("uhash",$uhash)->value("id");
+            $newsletter_id = DB::table("newsletter")->where("comphash",$comphash)->value("id");
+            $created_at = now();
+            $points = "8";
+            if (!$sameuser) {
+            abort(404);
+            }
             $ex = DB::table("points")->where("uhash",$uhash)->where("comphash",$comphash)->exists();
             if(!$ex)
             {
@@ -3009,10 +3220,18 @@ return response()->json($user);
         ]);
 
         $table = $request->input('table');
+        $public = $request->input("public");
         $id    = $request->input('id');
         $pub   = $request->boolean('pub');
+        if(!$public)
+        {
+            DB::table($table)->where('id', $id)->update(['pub' => $pub]);
+        }
+        else
+        {
+            DB::table($table)->where('id', $id)->where('public',$public)->update(['checked' => $pub]);
+        }
 
-        \DB::table($table)->where('id', $id)->update(['pub' => $pub]);
 
         return response()->json(['success' => true, 'pub' => $pub]);
     }
@@ -3087,6 +3306,9 @@ return response()->json($user);
         // \Log::info($func);
         return response()->json($func);
     }
+
+
+
     public function SaveURights(Request $request)
     {
 

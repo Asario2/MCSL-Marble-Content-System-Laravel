@@ -28,7 +28,7 @@
                         name="newsletter"
                         :options="[
                             { label: 'Nein', value: '0' },
-                            { label: 'Per Email', value: 'to_mail' },
+                            { label: 'Per Email', value: '      ' },
                             { label: 'Per Privater Nachricht', value: 'to_pm' },
                             { label: 'Per Email & Private Nachrichten', value: 'to_pm_and_mail' },
                         ]"

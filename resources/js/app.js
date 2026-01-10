@@ -11,7 +11,7 @@ import { i18nVue } from "laravel-vue-i18n";
 import { route as ziggyRoute } from 'ziggy-js';
 import { Inertia } from '@inertiajs/inertia';
 import { createPinia } from "pinia";
-
+import axios from "axios";
 // FontAwesome
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -86,7 +86,7 @@ loadAllRights().then(() => {
 
             // Globale Komponenten
             app.component("font-awesome-icon", FontAwesomeIcon);
-            app.component("Toast", Toast);
+            app.component("ToastB", Toast);
 
             // App mounten
             app.mount(el);

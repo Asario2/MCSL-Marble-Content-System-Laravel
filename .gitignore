@@ -13,6 +13,7 @@ _work/*
 **/orig/**
 vendor/
 .env
+**/tmp/**
 *.bat
 !README.md
 *.sh

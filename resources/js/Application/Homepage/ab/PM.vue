@@ -67,8 +67,9 @@
                   </td>
                   <td class="border border-gray-300 dark:border-gray-700 text-center">
                   <PublishButton
-                    :table="CleanTable()"
+                    table="private_messages"
                     :id="msg.id"
+                    public='1'
                     :published="msg.checked === 1"
                 />
                   </td>

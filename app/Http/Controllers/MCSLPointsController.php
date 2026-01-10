@@ -431,6 +431,9 @@ foreach ($commentsStatsRaw as $stat) {
         {
             $users_id = Auth::id();
         }
+        if (!Schema::hasTable('ratings')) {
+            return;
+        }
         $cnt = DB::table("ratings")->where("users_id",$users_id)->count();
         if ($users_id === null) {
             $cnt = 0;
@@ -465,7 +468,7 @@ foreach ($commentsStatsRaw as $stat) {
     }
     function GetCount(Request $request,$uid='')
     {
-        if(!Schema::hasTable("comments")){
+        if(!Schema::hasTable("comments") || !Schema::hasTable("ratings")){
             return;
         }
         $users_id = $request->users_id;

@@ -120,7 +120,7 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
-        'mariadb_ol' => [
+            'mariadb_ol' => [
             'driver' => 'mariadb',
             'url' => env('DB_OL_URL'),
             'host' => env('DB_OL_HOST', '127.0.0.1'),
@@ -185,7 +185,7 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => 'prefer',
-        ],  
+        ],
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',

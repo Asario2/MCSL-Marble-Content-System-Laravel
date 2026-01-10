@@ -160,6 +160,7 @@
         'UserDisable' => 'Benutzer deaktivieren',
         'SQLUpdate' => 'Datenbank Synchronisieren',
         'test dzads' => 'asdasd',
+        'UnusedImages' => 'Unbenutzte Bilder Galerie',
     ];
     public static array $regdom =   ['ab'=>true];
     public static array $connect_dbname = ["ab"=>"mariadb","dag"=>"mariadb_dag","mfx"=>"mariadb_mfx"];
@@ -420,6 +421,19 @@ public static array $image_sizes =
     6 => 'ab_users_last_login_at',
     7 => 'ab_users_updated_at',
     8 => 'ab_users_remember_token',
+];
+public static array $doms = [
+    "ab_lh"=>"http://ab.localhost.de",
+    "mfx_lh"=>"http://mfx.localhost.de",
+    "dag_lh"=>"http://mfx.localhost.de",
+    "ab_ol"=>"https://www.asario.de",
+    "mfx_ol"=>"https://www.marblefx.de",
+    "dag_ol"=>"https://www.monikadargies.de",
+];
+public static array $mariaDBs = [
+    "ab"=>"mariadb",
+    "dag"=>"mariadb_dag",
+    "mfx"=>"mariadb_mfx",
 ];
     public static array $nostats = [
     '/admin',

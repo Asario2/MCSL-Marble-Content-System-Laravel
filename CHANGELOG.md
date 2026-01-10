@@ -177,3 +177,4 @@
 ![Version](https://img.shields.io/badge/version-4.49.1-orange) Hotfix - removed bug in email center (#338)  
 ![Version](https://img.shields.io/badge/version-4.50.5-orange) Hotfix - Umlauts in User Show (#339)  
 ![Version](https://img.shields.io/badge/version-4.51.6-orange) Hotfix -  fixed bug in usershow (#340)  
+![Version](https://img.shields.io/badge/version-4.52.5-orange) Feature - Gallery of unused Pictures (#335)  
