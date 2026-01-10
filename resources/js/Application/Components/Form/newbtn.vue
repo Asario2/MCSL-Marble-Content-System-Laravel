@@ -99,7 +99,7 @@
                     }
                 });
                 // console.log(response.data);
-                toastBus.emit('toast', response.data); // ← erwartet { status: "...", message: "..." }
+                window.toastBus.emit( response.data); // ← erwartet { status: "...", message: "..." }
                 this.$inertia.reload();
                 // Optional: Seite neu laden oder Liste aktualisieren
             } catch (error) {

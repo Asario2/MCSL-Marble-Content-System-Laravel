@@ -363,7 +363,7 @@ export default {
           desc: this.fdesc,
         });
 
-        toastBus.emit('toast', {
+        window.toastBus.emit( {
           message: res.data?.message,
           type: 'success'
         });
@@ -380,7 +380,7 @@ export default {
         await this.loadFunctions(this.selected);
       } catch (err) {
         console.error(err);
-        toastBus.emit('toast', {
+        window.toastBus.emit( {
           message: 'Fehler beim Aktualisieren des Status!',
           type: 'error'
         });
@@ -406,14 +406,14 @@ export default {
         xis_disabled: u.xis_disabled
       })
         .then(res => {
-          toastBus.emit('toast', {
+          window.toastBus.emit( {
             message: res.data?.message || (isChecked ? 'Benutzer deaktiviert' : 'Benutzer aktiviert'),
             type: 'success'
           });
         })
         .catch(err => {
           console.error(err);
-          toastBus.emit('toast', {
+          window.toastBus.emit( {
             message: 'Fehler beim Aktualisieren des Status!',
             type: 'error'
           });
@@ -463,7 +463,7 @@ export default {
 
     saveUserRole(u) {
       if (!u.selectedRoleId) {
-        toastBus.emit('toast', { message: 'Bitte eine Rolle auswählen!', type: 'error' });
+        window.toastBus.emit( { message: 'Bitte eine Rolle auswählen!', type: 'error' });
         return;
       }
 
@@ -475,13 +475,13 @@ export default {
 
       axios.post('/api/save-user-role', payload)
         .then(res => {
-          toastBus.emit('toast', { message: res.data?.message || 'Rolle gespeichert!', type: 'success' });
+          window.toastBus.emit( { message: res.data?.message || 'Rolle gespeichert!', type: 'success' });
           u.selectedRoleIcon = `/images/icons/ugr/${u.selectedRoleName}.gif`;
           u.hoverIcon = u.selectedRoleIcon;
         })
         .catch(err => {
           console.error('Fehler beim Speichern der Rolle:', err);
-          toastBus.emit('toast', { message: 'Fehler beim Speichern!', type: 'error' });
+          window.toastBus.emit( { message: 'Fehler beim Speichern!', type: 'error' });
         });
     },
 
@@ -521,13 +521,13 @@ export default {
         .map(u => ({ id: u.id, users_rights_id: u.selectedRoleId }));
 
       if (payload.length === 0) {
-        toastBus.emit('toast', { message: 'Keine Rollen zum Speichern ausgewählt!', type: 'error' });
+        window.toastBus.emit( { message: 'Keine Rollen zum Speichern ausgewählt!', type: 'error' });
         return;
       }
 
       axios.post('/api/save-user-roles', { users: payload })
         .then(res => {
-          toastBus.emit('toast', { message: res.data?.message || 'Rollen gespeichert!', type: 'success' });
+          window.toastBus.emit( { message: res.data?.message || 'Rollen gespeichert!', type: 'success' });
           this.users.forEach(u => {
             const role = this.roles.find(r => r.id === u.selectedRoleId);
             if (role) {
@@ -538,7 +538,7 @@ export default {
         })
         .catch(err => {
           console.error(err);
-          toastBus.emit('toast', { message: 'Fehler beim Speichern!', type: 'error' });
+          window.toastBus.emit( { message: 'Fehler beim Speichern!', type: 'error' });
         });
     },
 
@@ -570,8 +570,8 @@ export default {
     saveUserRights() {
       const payload = Object.keys(this.selectedUsers).filter(id => this.selectedUsers[id]);
       axios.post('/api/save_user_rights', { users_rights_ids: payload })
-        .then(() => toastBus.emit('toast', { message: 'Benutzerrechte gespeichert!', type: 'success' }))
-        .catch(() => toastBus.emit('toast', { message: 'Speichern fehlgeschlagen!', type: 'error' }));
+        .then(() => window.toastBus.emit( { message: 'Benutzerrechte gespeichert!', type: 'success' }))
+        .catch(() => window.toastBus.emit( { message: 'Speichern fehlgeschlagen!', type: 'error' }));
     },
 
     // --- Rechteverwaltung Tabellen ---
@@ -634,7 +634,7 @@ export default {
       }
 
       axios.post('/api/admin/user-rights/save?urid=' + this.selected, payload)
-        .then(r => toastBus.emit('toast', { message: r.data?.message || 'Gespeichert', type: 'success' }))
+        .then(r => window.toastBus.emit( { message: r.data?.message || 'Gespeichert', type: 'success' }))
         .catch(e => console.error(e));
     },
 

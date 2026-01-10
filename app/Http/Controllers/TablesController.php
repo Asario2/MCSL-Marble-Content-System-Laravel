@@ -1708,7 +1708,7 @@ public function ShowTable(Request $request, $table_alt = null)
         }
 
         // Fehlerbehandlung, falls der Datensatz nicht gefunden wird
-        return response()->json(['status' => 'error', 'message' => 'Datensatz nicht gefunden'], 404);
+        return response()->json(['type' => 'error', 'message' => 'Datensatz nicht gefunden'], 404);
         }
         public function createEntryForm($table,$edit='')
         {
@@ -2954,7 +2954,7 @@ return Inertia::render('Admin/Kontakte', [
 
             // $this->debugUpdateQuery($table,$id,$formData);
             // if ($updated) {
-                return response()->json(['status' => 'success','message' => 'Daten erfolgreich aktualisiert!']);
+                return response()->json(['type' => 'success','message' => 'Daten erfolgreich aktualisiert!']);
             // } else {
 
             //     return response()->json(['error' => implode("|",$formData)], 507);
@@ -3152,7 +3152,7 @@ return Inertia::render('Admin/Kontakte', [
         $query->delete();
 
 
-        return response()->json(["status" => "success", "message" => "Eintrag erfolgreich gelöscht"]);
+        return response()->json(["type" => "success", "message" => "Eintrag erfolgreich gelöscht"]);
         return redirect("admin/tables/$table/show");
     }
 
@@ -3332,7 +3332,7 @@ return response()->json($user);
     $userRight = UsersRight::find($urid);
 
     if (!$userRight) {
-        return response()->json(['status' => 'error','message' => 'Benutzerrechte nicht gefunden.'], 404);
+        return response()->json(['type' => 'error','message' => 'Benutzerrechte nicht gefunden.'], 404);
     }
 
     // Werte setzen
@@ -3348,7 +3348,7 @@ return response()->json($user);
 
     $userRight->save();
 
-    return response()->json(['status' => 'success','message' => 'Rechte erfolgreich gespeichert.']);
+    return response()->json(['type' => 'success','message' => 'Rechte erfolgreich gespeichert.']);
     }
     public function GetAdmins($urid)
     {
@@ -3369,7 +3369,7 @@ return response()->json($user);
 
         $img = DB::table($table)->where('id', $id)->first();
         if (!$img) {
-            return response()->json(['status' => 'error', 'message' => 'Datensatz nicht gefunden'], 404);
+            return response()->json(['type' => 'error', 'message' => 'Datensatz nicht gefunden'], 404);
         }
 
         if($table == "admin_table")
@@ -3436,7 +3436,7 @@ return response()->json($user);
     }
 
      return response()->json([
-        'status' => 'success',
+        'type' => 'success',
         'message' => 'Eintrag erfolgreich gelöscht',
         'table' => $table,
         'id' => $id

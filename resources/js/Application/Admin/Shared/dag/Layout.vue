@@ -400,7 +400,7 @@ export default {
                     // this.$inertia.reload();
                 }
             } catch (error) {
-                toastBus.emit('toast', {
+                window.toastBus.emit( {
                     status: 'error',
                     message: error.response?.data?.message || 'Fehler beim Laden.',
                 });

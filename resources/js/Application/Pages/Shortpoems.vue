@@ -197,7 +197,7 @@ export default {
         words: payload
         });
         console.log("RED: " + response.data);
-        toastBus.emit('toast', response.data); // ← erwartet { status: "...", message: "..." }
+        window.toastBus.emit( response.data); // ← erwartet { status: "...", message: "..." }
     },
     reset() { this.form.search = null },
 

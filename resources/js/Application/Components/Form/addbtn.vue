@@ -99,14 +99,14 @@ export default {
                 });
 
                 console.log('Delete response:', response.data);
-                toastBus.emit('toast', response.data);
+                window.toastBus.emit( response.data);
 
                 // Seite neu laden
                 this.$inertia.reload();
 
             } catch (error) {
                 console.error("Fehler beim Löschen:", error);
-                toastBus.emit('toast', {
+                window.toastBus.emit( {
                     status: 'error',
                     message: 'Fehler beim Löschen des Datensatzes'
                 });

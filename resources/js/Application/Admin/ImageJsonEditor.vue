@@ -144,7 +144,7 @@
         try {
           const folderName = this.localFolder.replace(/\/+$/, '').split('/').pop();
           const response = await axios.post(`/api/del_image/${this.column}/${folderName}/${index}`);
-          toastBus.emit('toast', response.data);
+          window.toastBus.emit(response.data);
 
           this.images.splice(index, 1);
           this.refreshGallery();
@@ -159,7 +159,7 @@
         try {
           await axios.post('/api/save-json', { folder: this.localFolder, images: this.images });
           this.fetchImages();
-          toastBus.emit('toast', { status: 'success', message: 'Galerie gespeichert' });
+          window.toastBus.emit( { status: 'success', message: 'Galerie gespeichert' });
         } catch (err) {
           console.error(err);
           alert('Fehler beim Speichern');

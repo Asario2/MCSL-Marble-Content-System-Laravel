@@ -230,7 +230,7 @@
             this.newComment = "";
             document.getElementById("editor_" + this.postId).value = "";
             }
-            toastBus.emit('toast', {
+            window.toastBus.emit( {
                     status: 'points',          // success, info, warning, error
                     message: 'Du hast 3 MCSL Points gesammelt'
                 });

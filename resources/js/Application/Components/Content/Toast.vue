@@ -86,7 +86,7 @@ export const toastBus = reactive({
     const toast = {
       id: this.idCounter++,
       message: payload.message ?? "",
-      type: payload.type || "info",
+      type: payload.type || payload.status || "info",
       duration: payload.duration ?? 400000,
       show: true,
     };

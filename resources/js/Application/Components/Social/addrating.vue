@@ -72,7 +72,7 @@
                 //window.location.hash = '#st' + this.postId;
 
             }
-            toastBus.emit('toast', {
+            window.toastBus.emit( {
                     status: 'points',          // success, info, warning, error
                     message: 'Du hast 1 MCSL Point gesammelt'
                 });

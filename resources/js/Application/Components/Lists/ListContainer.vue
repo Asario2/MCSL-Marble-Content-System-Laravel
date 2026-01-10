@@ -421,7 +421,7 @@
                     }
                     })
                     .then(response => {
-                        toastBus.emit('toast', response.data); // ← erwartet { status: "...", message: "..." }
+                        window.toastBus.emit( response.data); // ← erwartet { status: "...", message: "..." }
                         this.$emit("deleted");
 
                             this.$inertia.reload();

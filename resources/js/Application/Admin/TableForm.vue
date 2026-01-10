@@ -113,6 +113,8 @@
                         v-model="field.value"
                         :rows="field.rows"
                         cols="25"
+
+
                         :vcol="field.value"
                         :placeholder="field.placeholder || ''"
                         :class="field.class"
@@ -1065,19 +1067,24 @@ async handleInput_alt(fieldName, content) {
         await nextTick()
   this.updateReadingTime("content_alt");
 },
+updateReadingTime() {
+    const fieldId = "editor";
+    const element = this.$refs[fieldId];
 
-        updateReadingTime(field) {
-            // alert(field);
-            const element = document.getElementById(field);
+    if (!element) {
+        console.error("Element not found (Ref):", fieldId);
+        return;
+    }
 
-            if (!element) {
-                console.error("Element not found:", field);
-                return;
-            }
-            // alert(element.value);
-            this.readingTime = this.calculateReadingTime(element.value);
+    // Wenn Vue Ref ein Array ist, erstes Element nehmen
+    const el = Array.isArray(element) ? element[0] : element;
 
-        },
+    // Sicherstellen, dass value existiert
+    const value = el?.value ?? '';
+    this.readingTime = this.calculateReadingTime(value);
+}
+
+,
 
         calculateReadingTime(text) {
             text = text.replace(/<[^>]+>/g, "").trim();
@@ -1411,14 +1418,14 @@ if (!isValid) {
                 const response = await axios.post(`/admin/tables/store/${CleanTable()}`, {
                     formData: this.formData
                 });
-                toastBus.emit('toast', response.data);
+                window.toastBus.emit(response.data);
             } else {
                 const xid = CleanId();
                 const tablex = CleanTable();
                 const response = await axios.post(`/admin/tables/update/${tablex}/${xid}`, {
                     formData: this.formData,
                 });
-                toastBus.emit('toast', response.data);
+                window.toastBus.emit(response.data);
             }
 
         } catch (error) {
@@ -1440,7 +1447,7 @@ if (!isValid) {
                 }
             });
             // console.log(response.data);
-            toastBus.emit('toast', response.data); // ← erwartet { status: "...", message: "..." }
+            window.window.toastBus.emit( response.data); // ← erwartet { status: "...", message: "..." }
             this.$inertia.reload();
             // Optional: Seite neu laden oder Liste aktualisieren
         } catch (error) {

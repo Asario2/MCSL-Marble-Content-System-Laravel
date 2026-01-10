@@ -26,7 +26,7 @@ props:{
 },
 mounted()
 {
-    toastBus.emit('toast', { status: 'points', message: 'Du hast 8 MCSL Points gesammelt'});
+    window.toastBus.emit( { status: 'points', message: 'Du hast 8 MCSL Points gesammelt'});
 }
 };
 

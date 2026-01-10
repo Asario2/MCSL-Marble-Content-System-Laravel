@@ -338,7 +338,7 @@ async updateProfileInformation() {
       : '';
 
     window.scrollTo(window.pageXOffset, window.pageYOffset);
-    toastBus.emit('toast', response.data);
+    window.toastBus.emit( response.data);
     if(this.regi){
         location.href='/';
     }

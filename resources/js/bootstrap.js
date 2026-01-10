@@ -32,7 +32,7 @@ axios.interceptors.response.use(
       const currentUrl = window.location.href;
 
       // Optional: Info-Toast
-    //   toastBus.emit('toast', {
+    //   window.toastBus.emit( {
     //     status: 'info',
     //     message: 'Bitte einloggen, um fortzufahren',
     //   });
