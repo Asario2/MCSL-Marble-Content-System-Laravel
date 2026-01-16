@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 if(!session_id())
 {
-    session_start();
+    // session_start();
 }
 class Blog extends Model
 {

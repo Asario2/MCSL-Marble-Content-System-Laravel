@@ -1,5 +1,5 @@
 <?php
-defined('_frutel_new') or die('Direkter Aufruf Verboten.');
+
 function gen_hiddate($arr)
 {
     if(!substr_count_alt($arr,"|||"))

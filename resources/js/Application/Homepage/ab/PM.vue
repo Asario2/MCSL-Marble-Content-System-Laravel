@@ -232,7 +232,8 @@
             </div>
 
             <!-- Rechter Bereich: Benutzerinfos -->
-            <div class="w-full md:w-64 flex-shrink-0 bg-gray-100 dark:bg-gray-800 p-4 rounded-xl text-center">
+            <div class="w-full md:w-64 flex-shrink-0 bg-gray-100 dark:bg-gray-800 p-4 rounded-xl text-center self-start">
+
               <a :href="'/home/users/show/' + selectedMessage.user + '/' + selectedMessage.users_id">
                 <img :src="GetProfileImagePath(selectedMessage.avatar || 'default.jpg')" class="mx-auto w-24 h-24 rounded-full object-cover mb-2" />
               </a>

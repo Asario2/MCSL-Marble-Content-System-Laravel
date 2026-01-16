@@ -14,14 +14,12 @@ class Kernel extends HttpKernel
      * These middleware are run during every request to your application.
      */
     protected $middleware = [
-        \App\Http\Middleware\PhpIdsMiddleware::class,
         \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\TrustProxies::class,
         \Illuminate\Http\Middleware\HandleCors::class,
-        \App\Http\Middleware\CheckSubd::class,
         \App\Http\Middleware\IntrusionDetectionMiddleware::class,
 
     ];
@@ -31,19 +29,20 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            \App\Http\Middleware\PhpIdsMiddleware::class,
-            \App\Http\Middleware\DetectTenant::class,
-            \App\Http\Middleware\EncryptCookies::class,
-            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            \Illuminate\Session\Middleware\StartSession::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class,
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Http\Middleware\CheckSubd::class,
-            \App\Http\Middleware\CountPageView::class,
-            \App\Http\Middleware\RemoveReParam::class,
+    \App\Http\Middleware\EncryptCookies::class,
+    \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+    \Illuminate\Session\Middleware\StartSession::class,
 
-        ],
+    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+    \App\Http\Middleware\VerifyCsrfToken::class,
+
+    \App\Http\Middleware\DetectTenant::class,
+    \App\Http\Middleware\CheckSubd::class,
+
+    \Illuminate\Routing\Middleware\SubstituteBindings::class,
+    \App\Http\Middleware\GlobalRedirect::class, // <--- hier
+
+],
 
         'api' => [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,

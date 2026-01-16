@@ -6,8 +6,13 @@
 
     use Illuminate\Support\Facades\Auth;
     use App\Http\Controllers\GlobalController;
+    use Illuminate\Support\Facades\App;
+    use Illuminate\Support\Facades\Route;
+    use Illuminate\Support\Str;
+
     App::setLocale('de');
     $subdomain = SD(); // z.B. "foo", "bar"
+    // $sd_alt = SD();
     $pagen = SD("pn");
     $favicon = "/images/_{$subdomain}/web/alogo.png";
     $ahost = request()->getHost();
@@ -26,6 +31,7 @@
     <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title inertia>{{ CleanTable(1) }}</title>
 
@@ -50,7 +56,7 @@
     });
     </script> --}}
 
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+
         <link rel="icon" type="image/png" href="{{ $favicon }}">
 
         <script src="/js/jquery-3.6.0.min.js"></script>
@@ -95,7 +101,7 @@
     </script>
     </head>
     <body class="font-sans antialiased">
-
+        <input type="hidden" id="token" value="{{ csrf_token() }}">
 
 <script type="module">
 import { reactive } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
@@ -106,7 +112,7 @@ console.log(toastBus);
 </script>
     </script>
         @php Notify(); @endphp
-        <input type="hidden" id="token" value="{{ csrf_token() }}">
+
         @routes
         @inertia
 

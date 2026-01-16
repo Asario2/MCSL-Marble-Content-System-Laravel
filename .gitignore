@@ -23,6 +23,7 @@ vendor/
 /public/_assets/**
 /public/build/**
 # Ausnahme: bestimmte Datei tracken
+*.dat
 !vendor/laravel/jetstream/**
 !vendor/laravel/framework/src/Illuminate/Http/**
 !public/css/webfonts

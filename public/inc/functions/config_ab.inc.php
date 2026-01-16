@@ -1,5 +1,5 @@
 <?php
-defined('_frutel_new') or die('Direkter Aufruf Verboten.');
+
 $cf['snipp'] = array('|anunsun|'=> "an Asarios Blog","|bei|"=>"bei Asarios Blog",
                       "|der|"=>"von Asarios Blog","|die|"=>"Asarios Blog","|name|"=>"Paul Rieser",
                      "|Der|"=>"Von Asarios Blog","|Die|"=>"Asarios Blog",'|derr|' => "von Asarios Blog",

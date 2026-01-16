@@ -25,7 +25,7 @@ class SQLUpdateController extends Controller
         $this->opsFile = "lastmySQLOps.dat";
         if(!session_id())
         {
-            session_start();
+            // session_start();
         }
     }
     public function Ignore_Field(Request $request)

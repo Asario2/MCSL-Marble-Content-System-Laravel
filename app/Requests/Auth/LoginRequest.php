@@ -28,7 +28,7 @@ class LoginRequest extends FormRequest
     {
 
 
-    
+
         $loginInput = $this->input('email');
         $plainPassword = $this->input('password');
         $remember = $this->boolean('remember');
@@ -41,6 +41,7 @@ class LoginRequest extends FormRequest
             // Neuer Hash prüfen
             if (Hash::check($plainPassword, $user->password)) {
                 Auth::login($user, $remember);
+
                 return;
             }
 
@@ -53,6 +54,7 @@ class LoginRequest extends FormRequest
                     $user->save();
 
                     Auth::login($user, $remember);
+
                     return;
                 }
             }

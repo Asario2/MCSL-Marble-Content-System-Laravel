@@ -1,5 +1,5 @@
 <?php
-defined('_frutel_new') or die('Direkter Aufruf Verboten.');
+
 function gen_PiwikLinkActive()
 {
 global $cfg,$ln,$lang;
@@ -11,10 +11,10 @@ if(!substr_count_alt($cfg['compdom'],"localhost.d"))
 }
 
 if(!@substr_count_alt(@$_COOKIE['cookieControlPrefs'],"analytics")){
-    
+
     return $lang['cookie_off']."<br />
             ".$lang['cookie_noti']."
-           <a href='javascript:void(0);' onclick=\"ck_show()\">".$lang['cookie_link']."</a>."; 
+           <a href='javascript:void(0);' onclick=\"ck_show()\">".$lang['cookie_link']."</a>.";
 }
 if(substr_count_alt($_SERVER['HTTP_HOST'],"localhost"))
 {

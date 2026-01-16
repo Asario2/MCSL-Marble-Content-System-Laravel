@@ -29,7 +29,7 @@ use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 if(!session_id()){
-        session_start();
+        // @session_start();
     }
 
 class TablesController extends Controller
@@ -1072,7 +1072,7 @@ public function ShowTable(Request $request, $table_alt = null)
                             // 🔍 DB nur einmal prüfen
                             if (!isset($seen[$uniqueKey])) {
                                 $existsInDb = DB::connection($db)->table($table)
-                                    ->where($column, $filename)
+                                    ->where($column,"LIKE","%".$filename."%")
                                     ->exists();
 
                                 if ($existsInDb) continue;
@@ -1123,16 +1123,16 @@ public function ShowTable(Request $request, $table_alt = null)
                 }
             }
         }
-
+        file_put_contents(public_path("timespy/unused.dat"),date("Y-m-d H:i:s"));
         return Inertia::render('Admin/gallery_old', [
             'images_container' => $unus
         ]);
     }
 
         public function SetNewsl_alt(
-        string $uhash = null,
-        string $comphash = null,
-        string $email = null)
+        string $uhash = '',
+        string $comphash = '',
+        string $email = '')
         {
             $sameuser = DB::table('users')
                 ->where('uhash', $uhash)

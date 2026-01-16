@@ -24,7 +24,7 @@
             <h4
                 class="px-2 text-sm font-semibold text-layout-sun-800 dark:text-layout-night-800"
             >
-                Starter Eleven
+                Asarios Blog
             </h4>
 
             <div class="mt-3 grid space-y-3 text-sm">
@@ -42,7 +42,7 @@
                     >
                 </p>
                 <p>
-                    <a class="footer_link" :href="route('home.terms')">AGB</a>
+                    <!-- <a class="footer_link" :href="route('home.terms')">AGB</a> -->
                 </p>
             </div>
         </div>

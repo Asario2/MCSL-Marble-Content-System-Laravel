@@ -10,19 +10,24 @@ use Laravel\Fortify\Contracts\TwoFactorLoginResponse;
 use App\Support\PasswordHash;
 use App\Http\Controllers\UserConfigController;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Validator;
 
 class CustomLoginController extends Controller
 {
-    public function showLoginForm()
+    public function showLoginForm(Request $request)
     {
-        if ($request->filled('redirect')) {
-        session(['url.intended' => $request->redirect]);
-        }
+        // if ($request->filled('redirect')) {
+        // session(['url.intended' => $request->redirect]);
+        // }
+        // return "ASDd";
+        //   //Inertia::render('Auth/Login');
         return Inertia::render('Auth/Login');
+
     }
 
     public function login(Request $request)
     {
+        // dd(class_exists(\Illuminate\Support\Facades\Validator::class));
         $request->validate([
             'email' => 'required|string',
             'password' => 'required|string',
@@ -68,6 +73,7 @@ class CustomLoginController extends Controller
 
         // Kein 2FA → direkt einloggen
         Auth::login($user, $remember);
+
         UserConfigController::updateConfig(Auth::id());
 
 
@@ -139,6 +145,7 @@ class CustomLoginController extends Controller
 
         // 2FA bestanden → final einloggen
         Auth::login($user, $remember);
+
         session()->forget(['two_factor:user:id', 'two_factor:remember']);
 
         return app(TwoFactorLoginResponse::class);

@@ -30,6 +30,7 @@ class CheckSubd
             "chh"            => "chh",
             "dag"            => "dag",
             "mjs"            => "mjs",
+            "gen"            => "gen",
         ];
         $subb = $map[$subb] ?? $subb;
         // \Log::   info('Subdomain: ' . $subb . ' | Allowed: ' . implode(',', $allowed));

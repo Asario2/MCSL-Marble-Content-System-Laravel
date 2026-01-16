@@ -15,7 +15,7 @@ trait HasProfilePhoto
      * @param  string  $storagePath
      * @return void
      */
-    public function updateProfilePhoto(UploadedFile $photo, $storagePath = '')
+    public function updateProfilePhoto(UploadedFile $photo, $storagePath = 'profile-photos')
     {
         tap($this->profile_photo_path, function ($previous) use ($photo, $storagePath) {
             $this->forceFill([

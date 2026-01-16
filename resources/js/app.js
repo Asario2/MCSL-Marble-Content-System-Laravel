@@ -2,7 +2,9 @@ import "./bootstrap";
 import '../css/app.css';
 import '@fontsource/open-sans/index.css';
 import '@fontsource/ubuntu/index.css';
-
+if (typeof global === 'undefined') {
+    window.global = window;
+}
 import { createApp, h } from "vue";
 import { createInertiaApp } from "@inertiajs/vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
@@ -12,6 +14,7 @@ import { route as ziggyRoute } from 'ziggy-js';
 import { Inertia } from '@inertiajs/inertia';
 import { createPinia } from "pinia";
 import axios from "axios";
+
 // FontAwesome
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -23,15 +26,10 @@ library.add(faPencilAlt, faTrashCan, faXTwitter);
 import { toastBus } from './utils/toastBus';
 import Toast from './Application/Components/Content/Toast.vue';
 
+window.toast = (type, message, duration = 5000) => // Dauer auf realistische Zahl setzen
+    toastBus.emit({ type, message, duration });
 
-
-// toastBus.emit({ type: 'success', message: 'Toast 1' });
-// toastBus.emit({ type: 'warning', message: 'Toast 2' });
-
-window.toast = (type, message, duration = 5000000000) =>
-  toastBus.emit({ type, message, duration });
-
-// Globale Ziggy-Route
+// Sichere Ziggy-Route
 function safeRoute(...args) {
     try {
         return ziggyRoute(...args);
@@ -52,10 +50,20 @@ import { TippyPlugin } from "tippy.vue";
 // Rechte-Logik
 import { loadAllRights, hasRight, isRightsReady } from "@/utils/rights";
 
-// Axios CSRF
-axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+// Axios CSRF absichern
 
-// Rechte laden und Inertia-App starten
+const tokenMeta = document.querySelector('meta[name="csrf-token"]');
+if (!tokenMeta) {
+    console.error('CSRF token not found in meta tag');
+} else {
+    axios.defaults.headers.common['X-CSRF-TOKEN'] = tokenMeta.content;
+}
+
+// Optional: falls du Cookies/Session über Ajax sendest
+axios.defaults.withCredentials = true;
+
+
+// Rechte laden und App starten
 loadAllRights().then(() => {
     const appName = window.app_name || "Starter Eleven";
 
@@ -64,6 +72,11 @@ loadAllRights().then(() => {
         resolve: name =>
             resolvePageComponent(`./Application/${name}.vue`, import.meta.glob("./Application/**/*.vue")),
         setup({ el, App, props, plugin }) {
+            if (!el) {
+                console.error("Inertia mount Element #app nicht gefunden!");
+                return;
+            }
+
             const app = createApp({ render: () => h(App, props) });
 
             // Pinia
@@ -75,6 +88,7 @@ loadAllRights().then(() => {
                .use(i18nVue, {
                    resolve: async lang => {
                        const langs = import.meta.glob("../../lang/*.json");
+                       if (!langs[`../../lang/${lang}.json`]) return {};
                        return await langs[`../../lang/${lang}.json`]();
                    },
                })
@@ -91,7 +105,7 @@ loadAllRights().then(() => {
             // App mounten
             app.mount(el);
 
-            // === Einmaliger Reload nach Logout ===
+            // Einmaliger Reload nach Logout
             if (props.flash?.needsReload && !sessionStorage.getItem('needsReload')) {
                 sessionStorage.setItem('needsReload', '1');
                 window.location.reload();
@@ -102,15 +116,12 @@ loadAllRights().then(() => {
             // Dark Mode laden
             async function loadDarkMode() {
                 let mode = localStorage.getItem("theme") || "light";
-                if (window.darkMode) mode = window.darkMode;
-                else {
-                    try {
-                        const response = await fetch("/api/dark-mode");
-                        const data = await response.json();
-                        mode = data.darkMode || "light";
-                    } catch (error) {
-                        console.error("Fehler beim Laden des Dark Modes:", error);
-                    }
+                try {
+                    const response = await fetch("/api/dark-mode");
+                    const data = await response.json();
+                    mode = data.darkMode || mode;
+                } catch (error) {
+                    console.warn("Dark Mode API Fehler, Standard wird benutzt:", error);
                 }
                 localStorage.setItem("theme", mode);
                 document.documentElement.setAttribute("data-theme", mode);
@@ -118,19 +129,16 @@ loadAllRights().then(() => {
                     aibut.src = `/images/icons/ai-${mode}.png`;
                 });
             }
-            document.addEventListener("DOMContentLoaded", loadDarkMode);
+            loadDarkMode(); // Direkt ausführen, kein DOMContentLoaded nötig bei Vue
 
             // URL-Parameter parsen
             window.$_GET = {};
-            if (document.location.toString().includes('?')) {
-                document.location.toString()
-                    .replace(/^.*?\?/, '')
-                    .replace(/#.*$/, '')
-                    .split('&')
-                    .forEach(param => {
-                        const [key, val] = decodeURIComponent(param).split('=');
-                        window.$_GET[key] = val;
-                    });
+            const query = window.location.search.substring(1);
+            if (query) {
+                query.split('&').forEach(param => {
+                    const [key, val] = param.split('=').map(decodeURIComponent);
+                    window.$_GET[key] = val;
+                });
             }
 
             // Vor Verlassen Session aufräumen
@@ -147,3 +155,4 @@ loadAllRights().then(() => {
 }).catch(error => {
     console.error("Fehler beim Laden der Benutzerrechte: ", error);
 });
+

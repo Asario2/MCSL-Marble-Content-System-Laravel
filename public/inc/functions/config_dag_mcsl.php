@@ -1,5 +1,5 @@
 <?php
-defined('_frutel_new') or die('Direkter Aufruf Verboten.');
+
 $cf['snipp'] = array("|der|"=>"von www.monikadargies.de","|die|"=>"www.monikadargies.de",
                      "|Der|"=>"Von www.monikadargies.de","|Die|"=>"www.monikadargies.de",'|derr|' => "von www.monikadargies.de","|name|"=>"Monika Dargies",
                      "|empt|"=>"www.monikadargies.de",'|street|'=>'Schäferberg 8b','|plz|'=>'24576 Bad Bramstedt','|land|'=>'Deutschland',

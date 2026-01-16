@@ -1,5 +1,5 @@
 <?php
-defined('_frutel_new') or die('Direkter Aufruf Verboten.');
+
 function gen_privacy()
 {
     TitleName("Datenschutzerkl&auml;rung");
@@ -10,7 +10,7 @@ function gen_privacy()
     include_once "inc/functions/gen_PiwikLinkActive.php";
     global $dbg,$ln;
     rinfo_num(1);
-    
+
     $xx = "";
     $xc = "";
     $id = 1;
@@ -22,14 +22,14 @@ function gen_privacy()
            {
             $row['headline'] = (@$row['headline']);
             $row['message'] = (@$row['message']);
-            
+
             //$xc .= "<li class='priv_li'>".$id. ". <a href='#priv_$id2'>" .$row['headline'.$hassl]."</a></li>";
             $xx .= "<div class='row' id='".$row['shortz']."'>
                         <div class='twelve columns hide-for-small'>
                         <article>
                         <br><h4 class='priv'>".rinfo_num()."".$row['headline'.$hassl]."</h4>
 
-                        ".getresult(str_replace(array("fx_gen_PiwikLinkActive()","fx_gen_cont_info()"),array(gen_PiwikLinkActive(),gen_cont_info()),rinfo_code(stripcslashes(nl2br($row['message'.$hassl])))))." 
+                        ".getresult(str_replace(array("fx_gen_PiwikLinkActive()","fx_gen_cont_info()"),array(gen_PiwikLinkActive(),gen_cont_info()),rinfo_code(stripcslashes(nl2br($row['message'.$hassl])))))."
 
                         </article>
                         </div>
@@ -42,7 +42,7 @@ function gen_privacy()
 
                         </div>
                         </div>";
-                        
+
                         $id++;
                          $id2++;
                        // $xx .= gen_hiddate($row['date']);

@@ -1,5 +1,5 @@
 <?php
-defined('_frutel_new') or die('Direkter Aufruf Verboten.');
+
 $cf['snipp'] = array("|der|"=>"von MarbleFX.de","|die|"=>"MarbleFX.de",
                      "|Der|"=>"Von MarbleFX.de","|Die|"=>"MarbleFX.de",'|derr|' => "von MarbleFX.de","|name|"=>"Paul Rieser",
                      "|empt|"=>"MarbleFX.de",

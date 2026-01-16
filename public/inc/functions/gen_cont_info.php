@@ -1,5 +1,5 @@
 <?php
-defined('_frutel_new') or die('Direkter Aufruf Verboten.');
+
 function gen_cont_info($dom2='')
 {
 global $lang,$dbgg,$pref;

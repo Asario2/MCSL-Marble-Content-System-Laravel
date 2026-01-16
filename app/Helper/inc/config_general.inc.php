@@ -1,5 +1,5 @@
 <?php
-defined('_frutel_new') or die('Direkter Aufruf Verboten.');
+
 $cf['search_term'] = array('anunsun'=> "an unserem Unternehmen",
                            'bei' => "bei der Asarios Blog",
                            "derr"=>"von der Asarios Blog","der"=>"der Asarios Blog","die"=>"die Asarios Blog","Die"=>"Die Asarios Blog","Der"=>"Der Asarios Blog",

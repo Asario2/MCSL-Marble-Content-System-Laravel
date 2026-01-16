@@ -396,7 +396,7 @@ function DelLink(postId, commentId) {
         return " ";
     }
     const isConditionTrue = configElement.value == "true";
-    const csrfToken = document.getElementById("csrf-token").value;
+    const csrfToken = document.getElementById("token").value;
     if (!isConditionTrue) {
         return "";
     } else {
@@ -576,7 +576,7 @@ function initi_date() {
 }
 function createDeleteForm(postId, commentId) {
     // CSRF-Token aus dem HTML-Dokument holen
-    const csrfToken = document.getElementById("csrf-token").dataset.token;
+    const csrfToken = document.getElementById("token").dataset.token;
     const path = window.location.pathname; // Holt den Pfad der URL
     const segments = path.split("/").filter((segment) => segment); // Teilt den Pfad und entfernt leere Segmente
     table = segments[0] || "blog_posts";
@@ -736,15 +736,15 @@ function age_form(id, n, v, t) {
         // Verlasse das Feld (Blur) nach dem Speichern
         dateInput.addEventListener("blur", function () {
             const newValue = dateInput.value;
+            console.log(document.getElementById("token")); // sollte <input ...> zeigen
+            console.log(document.getElementById("token").value); // sollte den CSRF Token zeigen
 
             // AJAX-Anfrage senden
             fetch("/update-age", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document
-                        .querySelector('meta[name="csrf-token"]')
-                        .getAttribute("content"),
+                    "X-CSRF-TOKEN": document.getElementById("token").value,
                 },
                 body: JSON.stringify({
                     value: newValue,

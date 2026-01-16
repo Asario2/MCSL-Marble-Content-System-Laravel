@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Mail\MailServiceProvider;
 use Auth;
 use Illuminate\Support\Facades\Crypt;
 use App\Http\Controllers\EncryptController;
@@ -25,6 +26,9 @@ use App\Models\Settings;
 use App\Models\Table;
 use App\Models\AdminTable;
 use App\Models\UsersRight;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
 use App\Services\Inkrementierer;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Str;
@@ -32,14 +36,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 if(!session_id()){
-        session_start();
+        // session_start();
     }
 
 class MailController extends Controller
 {
     public function __construct()
     {
-        GlobalController::SetDomain();
+//        GlobalController::SetDomain();
 
     }
     public function Subscribe_Newsl(Request $request)
@@ -89,18 +93,53 @@ class MailController extends Controller
         $this->SendMail("Newsletter Anmeldung","emails.newslsub",$request->email,$request->title." ".$request->firstname." ".$request->lastname,"http://".request()->getHost()."/mail/subscribe/".$uhash."/".$request->email,$html,$uhash);
     }
 
-function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '',$comp='') {
-    if(empty($email)) return false;
+public function SendMail(
+        string $title,
+        string $template,
+        string $emmail,
+        string $nick = '',
+        string $link = '',
+        string $html = '',
+        string $uhash = '',
+        string $comp = ''
+    ): bool {
 
-    $html = str_replace('%uhash%', $uhash, $html);
-    $html = str_replace("%comp%",$comp,$html);
-    $email = $email;
-    Mail::send([], [], function ($message) use ($email, $html, $title) {
-        $message->to($email)
+        // E-Mail leer? dann abbrechen
+        if (empty($emmail)) {
+            Log::warning("SendMail abgebrochen: leere E-Mail-Adresse.");
+            return false;
+        }
+
+        // Platzhalter ersetzen
+        $html = str_replace(
+            ['%uhash%', '%comp%', '%40'],
+            [$uhash, $comp, '@'],
+            $html
+        );
+
+        try {
+            $mailPassword = env('MAIL_PASSWORD');
+            $transport = Transport::fromDsn('smtp://info@marblefx.net:$mailPassword@smtp.ionos.de:587');
+            $mailer = new Mailer($transport);
+
+            $email = (new Email())
+                ->from('no-reply@marblefx.net')
+                ->to($emmail)
                 ->subject($title)
                 ->html($html);
-    });
-}
+
+            $mailer->send($email);
+
+
+            Log::info("SendMail erfolgreich an {$email} gesendet.");
+            return true;
+
+        } catch (\Exception $e) {
+            // Fehler protokollieren, kein Absturz
+            Log::error("SendMail Fehler: {$e->getMessage()} (Empfänger: {$emmail})");
+            return false;
+        }
+    }
     function SendMail_old($title,$template,$email,$nick,$link,$html,$uhash='')
     {
         $nick = trim($nick);
@@ -289,17 +328,33 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '',$c
         foreach ($users as $rek)
         {
             if(!CheckZRights("SendMailToAll")){
-            $res = DB::table("users")->leftJoin("users_config as uc","users.id","=","uc.users_id")->where("name",$rek)->where('uc.xch_newsletter', 'LIKE', '%mail%')->select("email","uhash","name")->first();
+            $res = DB::table("users")->leftJoin("users_config as uc","users.id","=","uc.users_id")->where("name",$rek)->where('uc.xch_newsletter', 'LIKE', '%mail%')->select("email","uhash","name","id")->first();
             }
             else{
-            $res = DB::table("users")->where("name",$rek)->select("email","uhash","name")->first();
+            $res = DB::table("users")->where("name",$rek)->select("email","uhash","name","id")->first();
             }
             // dd(session('reci'));
             $uhash = @$res->uhash;
             $email = @$res->email;
             $nick = @$res->name;
+            $id = $res->id;
             // $comp = $co->comphash;
             if(!in_array($email,$sendm) && !empty($res) && !empty($email)){
+                $haspm = DB::table('users_config')
+                    ->where('users_id', $id)
+                    ->where('xch_newsletter', 'LIKE', '%pm%')
+                    ->exists();
+                if($haspm)
+                {
+                    $request->merge([
+                        'to_id' => $id,
+                        "subject"  => session('title'),
+                        "message" => ($this->clean(session('content'),$uhash,session('title'))),
+                        "uid" => "4",
+                    ]);
+                    $pm = NEW PMController();
+                    $pm->store($request);
+                }
                 $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
                 $i++;
                 $sendm[] = $email;
@@ -328,6 +383,13 @@ function SendMail($title, $template, $email, $nick, $link, $html, $uhash = '',$c
 
        return Inertia::render("Components/Social/Emails_Sended",["i"=>$i]);
 
+    }
+    function clean($txt,$uhash,$title)
+    {
+        $txt = preg_replace('/^[\s\S]*?(?=<h2>'.$title.')/', '', $txt);
+        $txt = str_replace("MCSL",'',nl2br($txt));
+        $txt = str_replace(["%uhash%","%40"],[$uhash,'@'],$txt);
+        return strip_tags($txt,"<br><h2><h3><h4><p><h5><b><i><a><strong><em>");
     }
     function SendReg(Request $request) {
         $email = "parie@gmx.de";

@@ -50,7 +50,7 @@ use App\Http\Controllers\CookieController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\RightsController;
 use App\Helpers\Settings;
-use App\Helpers;
+
 use Illuminate\Http\Request;
 use App\Mail\CommentMail;
 use App\Mail\ContactMail;
@@ -60,23 +60,44 @@ use App\Http\Controllers\CountPixelController;
 use App\Http\Controllers\Auth\GoogleController;
 
 GlobalController::SetDomain();
-GlobalController::Redirect();
+//  GlobalController::Redirect();
 
 
 // dd(class_exists(\App\Http\Middleware\CheckSubd::class)); // Sollte "true" zurückgeben
 
-if(SD() == "mfx"){
-    Route::get('/', function () {
-        return redirect('/news');
-    });
-    }
+// if(SD() == "mfx"){
+//     Route::get('/', function () {
+//         return redirect('/news');
+//     });
+//     }
 
 
 // Route::middleware(['checksubd:ab,asario'])->group(function () {
     // Route::middleware('checksubd:ab,asario')->group(function () {
         Route::get('/countpixel', [CountPixelController::class, 'track'])->name('countpixel');
         Route::get("/api/mcslpoints/{users_id?}",[MCSLPointsController::class,"GetCount"])->name("api.mcslpoints");
+Route::get('/debug-session', function () {
+    dd(
+        session()->all(),
+        auth()->check(),
+        config('session.driver'),
+        config('session.cookie')
+    );
+});
+Route::get('/create-session', function () {
+    $sessionId = \Illuminate\Support\Str::random(40);
 
+    $data = [
+        '_token' => csrf_token(),
+        'foo' => 'bar',
+    ];
+
+    file_put_contents(storage_path("framework/sessions/{$sessionId}"), serialize($data));
+
+    setcookie('laravel_session', $sessionId, time() + 3600, '/', '.asario.de', true, true) or die("NO COOKIE SET");
+    dd($_COOKIE);
+    return "Session {$sessionId} erstellt!";
+});
 
         Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
@@ -149,12 +170,15 @@ Route::get('/home/ai', [HomeController::class, 'home_AI'])->name('home.ai');
 //     AB- Asarios BLog
 //
 Route::middleware(\App\Http\Middleware\CheckSubd::class . ':ab,asario')->group(function () {
-
-    Route::get("/", [HomeController::class, "home_index"])->name("home.index");
-    Route::get('/ri', [HomeController::class, 'home_rindex'])->name('home.rindex');
+    Route::get("/       ",function(){
+        return "ASD";
+    });
+     Route::get('/', [HomeController::class, 'home_index'])->name('home.index');
     Route::get('/dashboard', function () {
-        return redirect('/admin/dashboard');
+        return redirect()->route('admin.dashboard');
     })->name('dashboard');
+    Route::get('/ri', [HomeController::class, 'home_rindex'])->name('home.rindex');
+
     Route::get('/newslToMCSLPoints/{uhash?}/{comphash?}/{email?}', [TablesController::class, 'SetNewsl_alt'])->name('newsl.to.mcsp');
     Route::post("/personal_update", [PersonalController::class, 'update'])->name("personal.update");
     Route::get('/home/QRCodaH', [HomeController::class, 'QRCodaH'])->name('home.qrcodah');
@@ -185,9 +209,8 @@ Route::middleware(\App\Http\Middleware\CheckSubd::class . ':ab,asario')->group(f
 
     // Root-Redirect
     Route::get('/', function () {
-        return redirect("/");
-    })->name("home.start");
-
+        return redirect()->route('home.index');
+    })->name('home.start');
     // Dashboard redirect
 
     // Fehlerseiten
@@ -257,16 +280,43 @@ Route::get('/home/privacy', [HomeController::class, 'home_privacy'])->name('home
 
     Route::get('/home/contacts', [HomeController::class, 'contacts'])->name('home.contacts');
     // Login absenden
-    Route::post('/login', [CustomLoginController::class, 'login']);
+    // Route::post('/login', [CustomLoginController::class, 'login']);
     Route::get('register', [RegisteredUserController::class, 'create'])
     // ->middleware(HandleSocialitePlusProviders::class)
     ->name('register');
 
-Route::get('login', [AuthenticatedSessionController::class, 'create'])
-    // ->middleware(HandleSocialitePlusProviders::class)
-    ->name('login');
+// Route::get('login', [AuthenticatedSessionController::class, 'create'])
+//     // ->middleware(HandleSocialitePlusProviders::class)
+//     ->name('login');
     Route::post('/logout', [CustomLoginController::class, 'logout'])
     ->name('logout');
+//     Route::get('/login', function () {
+//     return Inertia::render('Auth/Login');
+// })->middleware('guest')->name('login');
+//Route::get('/login', [CustomLoginController::class, 'showLoginForm'])->name('login');
+
+Route::get('/env-debug', function () {
+    return [
+        'APP_ENV' => env('APP_ENV'),
+        'APP_URL' => env('APP_URL'),
+        'SESSION_DOMAIN' => env('SESSION_DOMAIN'),
+        'SESSION_DRIVER' => env('SESSION_DRIVER'),
+        'SESSION_SECURE_COOKIE' => env('SESSION_SECURE_COOKIE'),
+        'APP_KEY' => substr(env('APP_KEY'), 0, 10) . '...',
+    ];
+});
+
+Route::get('/session-test', function () {
+    return [
+        'session_id' => session()->getId(),
+        'all' => session()->all(),
+        'cookies' => request()->cookies->all(),
+    ];
+});
+
+// Login POST
+Route::post('/login', [CustomLoginController::class, 'login'])
+    ->middleware('guest');
 
     // 2FA-Challenge
     Route::get('/two-factor-challenge', [CustomLoginController::class, 'showTwoFactorForm'])
@@ -555,7 +605,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         // Route::post('/api/AddFunc', [RightsController::class, 'AddFunction'])->name('admin.add.func');
         Route::get('/get_MCSL_Points_Preniums', [MCSLPointsController::class, 'SelectPremiums'])->name('store.mcslpoints');
         Route::get('/SubmitPremiums/{users_id}/{img_id}', [MCSLPointsController::class, 'SendMail'])->name('send.mcslpoints');
-        //  
+        //
         Route::post('/api/user/batch-rights', [TablesController::class, 'GetBatchRights'])->name("get.bash.rights");
         Route::get('/api/chkcom/{id?}', [CommentController::class, 'checkComment'])->name("comments.check");
         Route::get('/api/contacts', [TablesController::class, 'api_contacts'])->name("admin.contacts");

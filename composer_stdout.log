@@ -1,0 +1,5 @@
+Pool optimizer completed in 2.868 seconds
+Found 23,209 package versions referenced in your dependency graph. 20,576 (89%) were optimized away.
+
+  [37;41m ERROR [39;49m There are no commands defined in the "package" namespace.  
+

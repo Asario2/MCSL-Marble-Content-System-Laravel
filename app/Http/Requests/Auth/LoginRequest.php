@@ -49,6 +49,7 @@ if ($user) {
     // 1) Neuer Hash prüfen
     if (\Hash::check($plainPassword, $user->password)) {
         Auth::login($user, $remember);
+
         RateLimiter::clear($this->throttleKey());
 
         return;
@@ -65,6 +66,7 @@ if ($user) {
             $user->save();
 
             Auth::login($user, $remember);
+
             RateLimiter::clear($this->throttleKey());
             return;
         }
@@ -103,6 +105,7 @@ public function authenticate_alt()
             // 1) Neuer Hash prüfen
             if (\Hash::check($plainPassword, $user->password)) {
                 Auth::login($user, $remember);
+
                 RateLimiter::clear($this->throttleKey());
 
                 return;
@@ -119,6 +122,7 @@ public function authenticate_alt()
                     $user->save();
 
                     Auth::login($user, $remember);
+
                     RateLimiter::clear($this->throttleKey());
                     return;
                 }

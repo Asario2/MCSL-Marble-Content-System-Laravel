@@ -50,6 +50,7 @@ class LoginRequest extends FormRequest
             // 1) Neuer Hash prüfen
             if (\Hash::check($plainPassword, $user->password)) {
                 Auth::login($user, $remember);
+
                 RateLimiter::clear($this->throttleKey());
 
                 return;
@@ -66,6 +67,7 @@ class LoginRequest extends FormRequest
                     $user->save();
 
                     Auth::login($user, $remember);
+
                     RateLimiter::clear($this->throttleKey());
                     return;
                 }

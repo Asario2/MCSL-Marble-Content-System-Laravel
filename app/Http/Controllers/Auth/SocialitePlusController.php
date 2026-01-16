@@ -61,6 +61,7 @@ class SocialitePlusController extends Controller
 
         if ($existingUser) {
             Auth::login($existingUser);
+
             return redirect()->intended('/dashboard');
         }
 

@@ -28,9 +28,6 @@
 address {
     font-style: normal; /* verhindert kursiv */
 }
-.ToggleCookieLink{
-    cursor:pointer;
-}
 
 ul {
     display: block;

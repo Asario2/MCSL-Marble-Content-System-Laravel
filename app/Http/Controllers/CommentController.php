@@ -24,7 +24,7 @@ class CommentController extends Controller
     {
         $this->processedIds = session()->get('processedIds', []);
         if(!session_id()){
-            session_start();
+          //  session_start();
         }
     }
 

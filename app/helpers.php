@@ -1,5 +1,6 @@
 <?php
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
@@ -1583,7 +1584,9 @@ if(!function_exists("CheckZRights"))
     {
         if(!Auth::check())
         {
-            return redirect("login")->send();
+           //
+           //
+           //  return redirect("login")->send();
         }
         if(!Schema::hasColumn("users_rights","xkis_".$right))
         {

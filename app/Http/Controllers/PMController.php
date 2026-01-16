@@ -82,11 +82,14 @@ class PMController extends Controller
         ->insertGetId([
             'message' => encval($request->message),
         ]);
+
+        $uid = $request->uid ?? Auth::id();
+
         $ts = NOW();
         // \Log::info(["subject"=>$request->subject,"private_message_texts_id"=>$lastinsertid,"to_id"=>$request->to_id,"users_id"=>Auth::id(),"public"=>"1"]);
         // \Log::info(["subject"=>$request->subject,"private_message_texts_id"=>$lastinsertid,"to_id"=>$request->to_id,"users_id"=>Auth::id(),"public"=>"2"]);
-        DB::table("private_messages")->insert(["created_at"=>$ts,"subject"=>encval($request->subject),"private_messages_text_id"=>$lastinsertid,"to_id"=>$request->to_id,"users_id"=>Auth::id(),"public"=>"1"]);
-        DB::table("private_messages")->insert(["created_at"=>$ts,"subject"=>encval($request->subject),"private_messages_text_id"=>$lastinsertid,"to_id"=>$request->to_id,"users_id"=>Auth::id(),"public"=>"2"]);
+        DB::table("private_messages")->insert(["created_at"=>$ts,"subject"=>encval($request->subject),"private_messages_text_id"=>$lastinsertid,"to_id"=>$request->to_id,"users_id"=>$uid,"public"=>"1"]);
+        DB::table("private_messages")->insert(["created_at"=>$ts,"subject"=>encval($request->subject),"private_messages_text_id"=>$lastinsertid,"to_id"=>$request->to_id,"users_id"=>$uid,"public"=>"2"]);
 
 
     }

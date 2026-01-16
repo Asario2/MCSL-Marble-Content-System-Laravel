@@ -25,7 +25,7 @@ class CustomLoginControllerLegacy extends Controller
     {
         $request->authenticate_alt();
 
-        $request->session()->regenerate();
+
 
         return redirect()->intended('/home');
     }
