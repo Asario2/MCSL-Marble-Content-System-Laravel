@@ -2841,7 +2841,7 @@ return Inertia::render('Admin/Kontakte', [
             $slug = 'y' . substr(str_shuffle('abcdefghijklmnopqrstuvwxyz0123456789'), 0, 3);
 
             // Prüfen, ob der Slug bereits existiert
-            $exists = \DB::table($table)->where('autoslug', $slug)->exists();
+            $exists = DB::table($table)->where('autoslug', $slug)->exists();
         } while ($exists); // Wiederholen, falls der Slug bereits existiert
 
         return $slug;

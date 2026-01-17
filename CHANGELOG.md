@@ -182,3 +182,5 @@
 ![Version](https://img.shields.io/badge/version-4.24.4-orange) Feature - pub/unpub button in private messages (#337)  
 ![Version](https://img.shields.io/badge/version-4.25.6-orange) Feature - Add PM sending function (#343)  
 ![Version](https://img.shields.io/badge/version-4.26.4-orange) Hotfix - The login function doesn't work yet, but I'm on it. (#348)  
+![Version](https://img.shields.io/badge/version-4.27.2-orange) Hotfix - Mail Function doesn't works (#349)  
+![Version](https://img.shields.io/badge/version-4.28.7-orange) Bugs - have to reinstall complete project (#347)  

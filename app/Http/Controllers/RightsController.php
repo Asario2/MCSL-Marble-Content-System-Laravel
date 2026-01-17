@@ -234,7 +234,7 @@ public function allTableRights($right)
     $bin = auth()->user()->rights->$right; // z.B. "1011"
 
     // Hole alle Tabellen aus admin_tables
-    $tables = \DB::table('admin_table')->orderBy("name","ASC")->pluck('name')->toArray();
+    $tables = DB::table('admin_table')->orderBy("name","ASC")->pluck('name')->toArray();
 
     $array = [];
 

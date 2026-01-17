@@ -76,6 +76,8 @@ return [
         Illuminate\Hashing\HashServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Mail\MailServiceProvider::class,
+        Illuminate\Queue\QueueServiceProvider::class,
+
 
 
     ],

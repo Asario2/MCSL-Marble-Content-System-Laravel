@@ -9,6 +9,9 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Mail\MailServiceProvider;
 use Auth;
+use Swift_SmtpTransport;
+use Swift_Mailer;
+use Swift_Message;
 use Illuminate\Support\Facades\Crypt;
 use App\Http\Controllers\EncryptController;
 use App\Http\Controllers\Controller;
@@ -119,7 +122,7 @@ public function SendMail(
 
         try {
             $mailPassword = env('MAIL_PASSWORD');
-            $transport = Transport::fromDsn('smtp://info@marblefx.net:$mailPassword@smtp.ionos.de:587');
+            $transport = Transport::fromDsn('smtp://info@marblefx.net:'.$mailPassword.'@smtp.ionos.de:587');
             $mailer = new Mailer($transport);
 
             $email = (new Email())
@@ -131,7 +134,7 @@ public function SendMail(
             $mailer->send($email);
 
 
-            Log::info("SendMail erfolgreich an {$email} gesendet.");
+            Log::info("SendMail erfolgreich an {$emmail} gesendet.");
             return true;
 
         } catch (\Exception $e) {
@@ -139,6 +142,16 @@ public function SendMail(
             Log::error("SendMail Fehler: {$e->getMessage()} (Empfänger: {$emmail})");
             return false;
         }
+    }
+    public static function sendn(){
+$mailPassword = env('MAIL_PASSWORD');
+
+      Mail::send([], [], function ($message) {
+    $message->to('empfaenger@example.com')
+            ->subject('Test Mail')
+            ->from('no-reply@marblefx.net', 'MCSL')
+            ->setBody('<h1>Hallo Welt</h1>', 'text/html');
+});
     }
     function SendMail_old($title,$template,$email,$nick,$link,$html,$uhash='')
     {
@@ -337,7 +350,7 @@ public function SendMail(
             $uhash = @$res->uhash;
             $email = @$res->email;
             $nick = @$res->name;
-            $id = $res->id;
+            $id = @$res->id;
             // $comp = $co->comphash;
             if(!in_array($email,$sendm) && !empty($res) && !empty($email)){
                 $haspm = DB::table('users_config')

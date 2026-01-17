@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Illuminate\Validation\ValidationException; // <-- hier
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -14,26 +15,24 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->renderable(function (NotFoundHttpException $e, $request) {
-            // Für API-Anfragen JSON zurückgeben
             if ($request->is('api/*')) {
                 return response()->json([
                     'message' => 'Route not found.'
-                ], 403);
+                ], 404);
             }
 
-            // Für Web-Anfragen zur 404-Seite weiterleiten
-            return redirect('/403');
+            return redirect()->to('/403'); // oder '/404'
         });
 
-        // Allgemeiner Fallback für alle anderen Exceptions
         $this->renderable(function (Throwable $e, $request) {
             if (config('app.debug')) {
-                return null; // Debug-Modus: Zeige normale Fehlerseite
+                return null;
             }
 
             return response()->view('errors.generic', [], 500);
         });
     }
+
     protected function invalidJson($request, ValidationException $exception)
     {
         return response()->json([

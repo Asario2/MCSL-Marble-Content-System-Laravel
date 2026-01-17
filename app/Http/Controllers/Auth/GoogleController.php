@@ -3,129 +3,139 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Laravel\Socialite\Facades\Socialite;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use App\Models\Settings;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 
 class GoogleController extends Controller
 {
     /**
      * Schritt 1: Weiterleitung zu Google
-     * Mit Kontoauswahl (prompt=select_account)
      */
     public function redirectToGoogle()
     {
-        $domain = request()->getHost(); // oder SD()
+        $domain = request()->getHost();
 
-        // Socialite schon HIER dynamisch konfigurieren!
         config([
-            'services.google.redirect' => "https://{$domain}/auth/google/callback",
+            'services.google.redirect' => "http://{$domain}/auth/google/callback",
         ]);
 
         return Socialite::driver('google')
             ->scopes(['openid', 'profile', 'email'])
             ->with(['prompt' => 'select_account'])
-            ->stateless()
-            ->redirect();
+            ->redirect(); // ❗ KEIN response(), KEIN stateless()
     }
 
     /**
-     * Schritt 2: Google Callback verarbeiten
+     * Schritt 2: Callback von Google
      */
-public function handleGoogleCallback()
-{
-    $domain = request()->getHost();
+    public function handleGoogleCallback()
+    {
+        $domain = request()->getHost();
 
-    config([
-        'services.google.redirect' => "https://{$domain}/auth/google/callback",
-    ]);
+        config([
+            'services.google.redirect' => "http://{$domain}/auth/google/callback",
+        ]);
 
-    $googleUser = Socialite::driver('google')->stateless()->user();
+        $googleUser = Socialite::driver('google')->user();
 
-    $user = User::where('email', $googleUser->email)->first();
-
-    if (!$user) {
-        $user = $this->createUserIfAllowed($googleUser);
+        $user = User::where('email', $googleUser->email)->first();
 
         if (!$user) {
-            \Log::error('Unknown email address', [
-                'email' => $googleUser->email,
-                'domain' => $domain,
-            ]);
+            $user = $this->createUserIfAllowed($googleUser);
 
-            return redirect()->route('login')
-                ->withErrors(['login' => 'Email Adresse ungültig.']);
+            if (!$user) {
+                \Log::warning('Google Login abgelehnt (Domain nicht erlaubt)', [
+                    'email' => $googleUser->email,
+                    'domain' => $domain,
+                ]);
+
+                return redirect()
+                    ->route('login')
+                    ->withErrors(['login' => 'Email-Adresse nicht erlaubt.']);
+            }
         }
+
+        // Email als verifiziert markieren
+        if (!$user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+        }
+
+        Auth::login($user, true);
+
+        // Nickname fehlt?
+        if (!$user->name && !empty(Settings::$regdom[SD()] ?? null)) {
+            return redirect()->route('auth.nickname');
+        }
+
+        return redirect()->route('home.index');
     }
 
-    // ❗ Email verifiziert setzen, weil Google verified liefert
-    if (!$user->hasVerifiedEmail()) {
-        $user->markEmailAsVerified();
-    }
-
-    Auth::login($user);
-
-    // Nickname check
-    if (!$user->name && @Settings::$regdom[SD()]) {
-        return redirect()->route('auth.nickname');
-    }
-
-    return redirect()->route('home.index');
-}
-
-
-    private function createUserIfAllowed($googleUser)
+    /**
+     * User anlegen, falls erlaubt
+     */
+    private function createUserIfAllowed($googleUser): ?User
     {
-        // Registrierungs-Domain erlaubt?
-        if (!@Settings::$regdom[SD()]) {
-            return null; // Registrierung NICHT erlaubt
+        if (empty(Settings::$regdom[SD()] ?? null)) {
+            return null;
         }
-        $randomString = substr(bin2hex(openssl_random_pseudo_bytes(16)), 0, 16);
 
-
-        // Nutzer neu anlegen
         return User::create([
             'email'     => $googleUser->email,
             'google_id' => $googleUser->id,
             'name'      => null,
-            "password"  => Hash::make($randomString),
+            'password'  => Hash::make(Str::random(32)),
         ]);
     }
 
+    /**
+     * Nickname Formular anzeigen
+     */
     public function showNicknameForm()
     {
-        if (!session()->has('oauth_temp')) {
-            return redirect('/login')->with('error', 'Keine OAuth Daten vorhanden.');
-        }
-
         return view('auth.nickname');
     }
+
+    /**
+     * Nickname / Profil speichern
+     */
     public function update(Request $request)
-{
-    $request->validate([
-        'nickname' => 'required|min:3|max:30|unique:users,nickname,' . auth()->id(),
+    {
+        $request->validate([
+            'nickname'   => 'required|min:3|max:30|unique:users,nickname,' . auth()->id(),
+            'birthday'   => 'nullable|date',
+            'music'      => 'nullable|string|max:255',
+            'occupation' => 'nullable|string|max:255',
+            'interests'  => 'nullable|string|max:255',
+            'fbd'        => 'nullable|string|max:255',
+            'about'      => 'nullable|string',
+            'headline'   => 'nullable|string|max:255',
+            'website'    => 'nullable|string|max:255',
+            'aufgabe'    => 'nullable|string|max:255',
+            'location'   => 'nullable|string|max:255',
+        ]);
 
-        'birthday' => 'nullable|date',
-        'music' => 'nullable|string|max:255',
-        'occupation' => 'nullable|string|max:255',
-        'interests' => 'nullable|string|max:255',
-        'fbd' => 'nullable|string|max:255',
-        'about' => 'nullable|string',
-        'headline' => 'nullable|string|max:255',
-        'website' => 'nullable|string|max:255',
-        'aufgabe' => 'nullable|string|max:255',
-        'location' => 'nullable|string|max:255',
-    ]);
+        auth()->user()->update($request->only([
+            'nickname',
+            'birthday',
+            'music',
+            'occupation',
+            'interests',
+            'fbd',
+            'about',
+            'headline',
+            'website',
+            'aufgabe',
+            'location',
+        ]));
 
-    auth()->user()->update($request->all());
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Profil gespeichert',
-    ], 200);
-}
-
+        return response()->json([
+            'success' => true,
+            'message' => 'Profil gespeichert',
+        ]);
+    }
 }

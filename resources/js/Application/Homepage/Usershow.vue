@@ -74,7 +74,7 @@
                 <th class="pr-4">Facebook:</th>
                 <td>
                     <a v-if="users?.fbd" :href="fbid(users?.fbd)" target="_blank">
-                    <span style="background-color:#3b5998;padding:3px;padding: 3px 7px;color:#fff !important" class="lg:rounded">Zu <i class="w-[18px] h-[18px] fab fa-facebook-f"></i>acebook</span> </a>
+                    <span style="background-color:#3b5998;padding:3px;padding: 3px 7px;color:#fff !important" class="lg:rounded">Zu <i class="w-[18px] h-[18px] mr-[-7px] fab fa-facebook-f"></i>acebook</span> </a>
                     <p v-else>keine Angabe</p>
                 </td>
                 </tr>

@@ -52,14 +52,16 @@ import { loadAllRights, hasRight, isRightsReady } from "@/utils/rights";
 
 // Axios CSRF absichern
 
-const tokenMeta = document.querySelector('meta[name="csrf-token"]');
-if (!tokenMeta) {
-    console.error('CSRF token not found in meta tag');
-} else {
-    axios.defaults.headers.common['X-CSRF-TOKEN'] = tokenMeta.content;
-}
 
-// Optional: falls du Cookies/Session über Ajax sendest
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+const token = document.head.querySelector('meta[name="csrf-token"]');
+
+if (token) {
+  axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+} else {
+  console.error('CSRF token not found!');
+}
 axios.defaults.withCredentials = true;
 
 

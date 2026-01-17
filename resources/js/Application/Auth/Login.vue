@@ -176,10 +176,11 @@ export default defineComponent({
             }
             let routeLogin = "login";
             // Vorbereitung der Daten, einschließlich der Transformation des `remember`-Feldes
+            const params = new URLSearchParams(window.location.search);
             const formData = {
                 ...this.form,
                 remember: this.form.remember ? "on" : "",
-                 redirect: $_GET['redirect'],
+                redirect: params.get('redirect'),
             };
             //
             localStorage.setItem('reload_dashboard', '1');

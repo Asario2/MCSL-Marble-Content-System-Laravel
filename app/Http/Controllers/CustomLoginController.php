@@ -16,9 +16,9 @@ class CustomLoginController extends Controller
 {
     public function showLoginForm(Request $request)
     {
-        // if ($request->filled('redirect')) {
-        // session(['url.intended' => $request->redirect]);
-        // }
+        if ($request->filled('redirect')) {
+        session(['url.intended' => $request->redirect]);
+        }
         // return "ASDd";
         //   //Inertia::render('Auth/Login');
         return Inertia::render('Auth/Login');

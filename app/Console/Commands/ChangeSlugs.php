@@ -34,7 +34,7 @@ class ChangeSlugs extends Command
             $slug = 'y' . substr(str_shuffle('abcdefghijklmnopqrstuvwxyz0123456789'), 0, 3);
 
             // Prüfen, ob der Slug bereits existiert
-            $exists = \DB::table($table)->where('autoslug', "asdad")->exists();
+            $exists = DB::table($table)->where('autoslug', "asdad")->exists();
         } while ($exists); // Wiederholen, falls der Slug bereits existiert
 
         return $slug;

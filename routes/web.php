@@ -41,6 +41,8 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 
+    use App\Services\SimpleMailService;
+
 use App\Models\User;
 use App\Http\Middleware\CheckSubdomain;
 use App\Http\Controllers\TablesController;
@@ -76,29 +78,6 @@ GlobalController::SetDomain();
     // Route::middleware('checksubd:ab,asario')->group(function () {
         Route::get('/countpixel', [CountPixelController::class, 'track'])->name('countpixel');
         Route::get("/api/mcslpoints/{users_id?}",[MCSLPointsController::class,"GetCount"])->name("api.mcslpoints");
-Route::get('/debug-session', function () {
-    dd(
-        session()->all(),
-        auth()->check(),
-        config('session.driver'),
-        config('session.cookie')
-    );
-});
-Route::get('/create-session', function () {
-    $sessionId = \Illuminate\Support\Str::random(40);
-
-    $data = [
-        '_token' => csrf_token(),
-        'foo' => 'bar',
-    ];
-
-    file_put_contents(storage_path("framework/sessions/{$sessionId}"), serialize($data));
-
-    setcookie('laravel_session', $sessionId, time() + 3600, '/', '.asario.de', true, true) or die("NO COOKIE SET");
-    dd($_COOKIE);
-    return "Session {$sessionId} erstellt!";
-});
-
         Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
         // Route::get('auth/google', function () {
@@ -294,25 +273,6 @@ Route::get('/home/privacy', [HomeController::class, 'home_privacy'])->name('home
 //     return Inertia::render('Auth/Login');
 // })->middleware('guest')->name('login');
 //Route::get('/login', [CustomLoginController::class, 'showLoginForm'])->name('login');
-
-Route::get('/env-debug', function () {
-    return [
-        'APP_ENV' => env('APP_ENV'),
-        'APP_URL' => env('APP_URL'),
-        'SESSION_DOMAIN' => env('SESSION_DOMAIN'),
-        'SESSION_DRIVER' => env('SESSION_DRIVER'),
-        'SESSION_SECURE_COOKIE' => env('SESSION_SECURE_COOKIE'),
-        'APP_KEY' => substr(env('APP_KEY'), 0, 10) . '...',
-    ];
-});
-
-Route::get('/session-test', function () {
-    return [
-        'session_id' => session()->getId(),
-        'all' => session()->all(),
-        'cookies' => request()->cookies->all(),
-    ];
-});
 
 // Login POST
 Route::post('/login', [CustomLoginController::class, 'login'])
