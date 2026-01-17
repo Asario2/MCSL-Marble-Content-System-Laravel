@@ -184,3 +184,4 @@
 ![Version](https://img.shields.io/badge/version-4.26.4-orange) Hotfix - The login function doesn't work yet, but I'm on it. (#348)  
 ![Version](https://img.shields.io/badge/version-4.27.2-orange) Hotfix - Mail Function doesn't works (#349)  
 ![Version](https://img.shields.io/badge/version-4.28.7-orange) Bugs - have to reinstall complete project (#347)  
+![Version](https://img.shields.io/badge/version-4.29.7-orange) Hotfix - Add functionality to ImageUpload Script (#351)  

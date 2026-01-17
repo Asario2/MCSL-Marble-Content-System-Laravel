@@ -21,7 +21,7 @@ class GoogleController extends Controller
         $domain = request()->getHost();
 
         config([
-            'services.google.redirect' => "http://{$domain}/auth/google/callback",
+            'services.google.redirect' => "https://{$domain}/auth/google/callback",
         ]);
 
         return Socialite::driver('google')
@@ -38,7 +38,7 @@ class GoogleController extends Controller
         $domain = request()->getHost();
 
         config([
-            'services.google.redirect' => "http://{$domain}/auth/google/callback",
+            'services.google.redirect' => "https://{$domain}/auth/google/callback",
         ]);
 
         $googleUser = Socialite::driver('google')->user();

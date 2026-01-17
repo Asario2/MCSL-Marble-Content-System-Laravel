@@ -224,6 +224,9 @@
         formData.append('copyleft', this.form.copyleft);
         formData.append('Message', this.Message ? 1 : 0);
         formData.append('is_imgdir', this.finalPath);
+        for (const [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
 
         const xhr = new XMLHttpRequest();
         xhr.open('POST', `/upload-image/${this.tablex}/1`, true);
@@ -239,9 +242,12 @@
             this.uploading = false;
 
             if (xhr.status !== 200) {
-            console.error("Upload fehlgeschlagen");
+            console.error("Upload fehlgeschlagen2", {
+                status: xhr.status,
+                response: xhr.responseText
+            });
             return;
-            }
+        }
 
             const data = JSON.parse(xhr.responseText);
             if (!data.image_url) return;

@@ -41,7 +41,14 @@ class ImageUploadController extends Controller
         'hasFile' => $request->hasFile('image'),
         'Message' => $request->Message,
     ]);
-//     \Log::info("IMA: ".$request->ulpath);
+    \Log::debug('FILES', [
+    'files' => $request->files->all(),
+    'content_length' => $request->server('CONTENT_LENGTH'),
+    'post_max_size' => ini_get('post_max_size'),
+    'upload_max_filesize' => ini_get('upload_max_filesize'),
+]);
+
+    \Log::info("IMA: ".$request->ulpath);
     if (!$request->hasFile('image')) {
         return response()->json(['error' => 'Keine Datei empfangen!'], 400);
     }
@@ -330,12 +337,11 @@ class ImageUploadController extends Controller
             'email' => 'required|email|max:255',
             'photo' => 'nullable|image|max:4096',
         ]);
-
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
 
             if (!$file->isValid()) {
-                return back()->withErrors(['photo' => 'Upload fehlgeschlagen.']);
+                return back()->withErrors(['photo' => 'Upload fehlgeschlagen.3']);
             }
 
             $host = $request->getHost();
