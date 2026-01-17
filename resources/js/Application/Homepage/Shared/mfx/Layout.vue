@@ -429,11 +429,11 @@ export default {
     },
 
     checkLoadingState() {
-      console.log("🔍 checkLoadingState()", {
-        pending: this.pendingRequests,
-        imagesLoaded: this.imagesLoaded,
-        isLoading: this.isLoading,
-      });
+// //       console.log("🔍 checkLoadingState()", {
+//         pending: this.pendingRequests,
+//         imagesLoaded: this.imagesLoaded,
+//         isLoading: this.isLoading,
+//       });
 
       if (this.pendingRequests === 0 && this.imagesLoaded) {
 //         console.log("✅ Ladezustand beendet");

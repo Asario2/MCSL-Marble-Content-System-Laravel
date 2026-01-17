@@ -390,9 +390,9 @@ if(!function_exists("renderText"))
         if (!empty($filters['search'])) {
             $searchTerm = html_entity_decode(strtolower($filters['search']));
 
-            \Log::info("=== START FILTERDEBUG ===");
-            \Log::info("Searching in table: " . $table);
-            \Log::info("Search term: " . $filters['search']);
+//             \Log::info("=== START FILTERDEBUG ===");
+//             \Log::info("Searching in table: " . $table);
+//             \Log::info("Search term: " . $filters['search']);
 
             $whvals = @Settings::$searchFields[$table] ?? [];
             $subvals = @Settings::$searchFields[$table];
@@ -405,52 +405,52 @@ if(!function_exists("renderText"))
                 }
             }
 
-            \Log::info("Search fields: " . json_encode($whvals));
+//             \Log::info("Search fields: " . json_encode($whvals));
 
             // Zuerst alle anderen Felder durchsuchen
             foreach ($whvals as $whn) {
                 if(@is_array($whh[$table])) {
                     foreach($whh[$table] as $skey=>$sval){
                         $this->orWhereRaw("LOWER(`$sval`.`name`) LIKE ?", ['%' . $searchTerm . '%']);
-                        \Log::info("Added search for related table: $sval.name");
+//                         \Log::info("Added search for related table: $sval.name");
                     }
                 }
 
                 if(!substr_count($whn,".") && Schema::hasColumn($table, $whn)) {
                     $this->orWhereRaw("LOWER(`$table`.`$whn`) LIKE ?", ['%' . $searchTerm . '%']);
-                    \Log::info("Added search for column: $table.$whn");
+//                     \Log::info("Added search for column: $table.$whn");
                 }
             }
 
             $columns = Schema::getColumnListing($table);
-            \Log::info("Available columns: " . implode(', ', $columns));
+//             \Log::info("Available columns: " . implode(', ', $columns));
 
             // created_at Suche
             if(in_array("created_at",$columns)){
-                \Log::info("CREATED_AT column exists - adding search conditions");
+//                 \Log::info("CREATED_AT column exists - adding search conditions");
 
                 // Einfache LIKE-Suche
                 $this->orWhere("$table.created_at", 'like', '%'. $filters['search'] . '%');
-                \Log::info("Added simple LIKE for created_at: " . $filters['search']);
+//                 \Log::info("Added simple LIKE for created_at: " . $filters['search']);
 
                 // Debug: SQL Query vor created_at
-                \Log::info("SQL before created_at: " . $this->toSql());
-                \Log::info("Bindings before created_at: " . json_encode($this->getBindings()));
+//                 \Log::info("SQL before created_at: " . $this->toSql());
+//                 \Log::info("Bindings before created_at: " . json_encode($this->getBindings()));
             }
 
             if(in_array("date_begin",$columns)){
                 $this->orWhere("$table.date_begin", 'like', '%'. $filters['search'] . '%');
-                \Log::info("Added search for date_begin");
+//                 \Log::info("Added search for date_begin");
             }
 
             // ID als letztes hinzufügen
             $this->orWhere("$table.id", 'like', '%'. $filters['search'] . '%');
-            \Log::info("Added search for ID");
+//             \Log::info("Added search for ID");
 
             // Debug: Finale SQL Query
-            \Log::info("Final SQL: " . $this->toSql());
-            \Log::info("Final Bindings: " . json_encode($this->getBindings()));
-            \Log::info("=== END FILTERDEBUG ===");
+//             \Log::info("Final SQL: " . $this->toSql());
+//             \Log::info("Final Bindings: " . json_encode($this->getBindings()));
+//             \Log::info("=== END FILTERDEBUG ===");
         }
 
         return $this;

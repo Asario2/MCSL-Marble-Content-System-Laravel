@@ -133,8 +133,8 @@ export default {
   this.form.xch_newsletter = data.xch_newsletter;
   this.form.xis_pmtoautomail = String(data.xis_pmtoautomail);
   this.form.cnt_numrows = String(data.cnt_numrows);
-  console.log("Loaded form:", data);
-  console.log("Newsletter value:", this.form.xch_newsletter);
+//   console.log("Loaded form:", data);
+//   console.log("Newsletter value:", this.form.xch_newsletter);
     }
 };
 </script>

@@ -159,7 +159,7 @@ export default {
 
                 const url = `${window.location.origin}${window.location.pathname}${this.ssez || ''}`;
                 const url_alt = url.replace(CleanTable() + CleanTable() + "/",CleanTable()+"/");
-                console.log(url_alt);
+//                 console.log(url_alt);
 
                 shariffRef.setAttribute('data-url', url_alt);
                 new Shariff(shariffRef, {

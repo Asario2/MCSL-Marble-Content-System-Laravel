@@ -52,7 +52,7 @@ export default {
     isChecked(value) {
       const result = String(this.modelValue) === String(value);
 
-      console.log(
+//       console.log(
         `%c[RadioSet] checked?`,
         "color: #00c4ff",
         {
@@ -61,40 +61,39 @@ export default {
           optionValue: value,
           result,
         }
-      );
+
 
       return result;
     },
 
     onChange(newValue) {
-      console.log(
+//       console.log(
         `%c[RadioSet] onChange event`,
         "color: #22ff55",
         {
           name: this.name,
           newValue,
         }
-      );
 
       this.$emit("update:modelValue", newValue);
 
-      console.log(
+//       console.log(
         `%c[RadioSet] emitted update:modelValue`,
         "color: #ffaa00",
         { newValue }
-      );
+
     },
   },
 
   mounted() {
-    console.log(
+//     console.log(
       `%c[RadioSet] mounted – initial modelValue`,
       "color: #ff44cc",
       {
         name: this.name,
         modelValue: this.modelValue,
       }
-    );
+
   },
 };
 </script>

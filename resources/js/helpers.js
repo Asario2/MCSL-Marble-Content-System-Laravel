@@ -210,7 +210,7 @@ export async function GetRights(right, table) {
   try {
     const response = await axios.get(`/api/user/rights/des/${table}/${right}`);
     const result = response.data;
-    console.log("result:" + result);
+//     console.log("result:" + result);
     // In Cache speichern
     if (!cache.batchRights) {
       cache.batchRights = {};

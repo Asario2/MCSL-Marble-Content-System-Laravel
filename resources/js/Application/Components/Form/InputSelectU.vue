@@ -138,10 +138,10 @@ if (isCreatePage && !this.internalValue && this.currentUserId) {
 }
 
 if (!Array.isArray(this.options) || this.options.length === 0) {
-    console.log(`[${this.name}] Keine Props-Optionen – hole aus API`);
+//     console.log(`[${this.name}] Keine Props-Optionen – hole aus API`);
     this.getOptions();
   } else {
-    console.log(`[${this.name}] Lokale Optionen erkannt:`, this.options);
+//     console.log(`[${this.name}] Lokale Optionen erkannt:`, this.options);
   }
     }
   };

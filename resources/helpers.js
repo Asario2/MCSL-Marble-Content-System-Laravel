@@ -210,7 +210,7 @@ export async function GetRights(right, table) {
   try {
     const response = await axios.get(`/api/user/rights/des/${table}/${right}`);
     const result = response.data;
-    console.log("result:" + result);
+//     console.log("result:" + result);
     // In Cache speichern
     if (!cache.batchRights) {
       cache.batchRights = {};
@@ -246,7 +246,7 @@ export async function CheckTRights(right, table) {
     .then(({ data }) => {
       cachen.batchRights[cacheKey] = data; // Cache setzen
       delete cachen.pending[cacheKey];
-      console.log("data" + data);    // Pending entfernen
+//       console.log("data" + data);    // Pending entfernen
       return data;
     })
     .catch(err => {

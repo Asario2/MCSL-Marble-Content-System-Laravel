@@ -439,6 +439,11 @@ public static array $mariaDBs = [
     '/admin',
     '/_debug',
     '/api/',
+    '/login',
+    "/mail/",
+    '/pm/index',
+    'http:',
+    'https:',
     ];
     }
 

@@ -24,7 +24,7 @@ export async function loadAllRights() {
         //const response = await axios.get("/admin/rights/all");
         // rightsStore = response.data;        // z. B. { "view_users":1, "edit_users":1 }
         rightsLoaded = true;
-        console.log("ALLE Rechte geladen:", rightsStore);
+//         console.log("ALLE Rechte geladen:", rightsStore);
     } catch (e) {
         console.error("Fehler beim Laden der Rechte:", e);
     }

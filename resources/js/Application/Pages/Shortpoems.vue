@@ -196,7 +196,7 @@ export default {
         const response = await axios.post(route('save.shp'), {
         words: payload
         });
-        console.log("RED: " + response.data);
+//         console.log("RED: " + response.data);
         window.toastBus.emit( response.data); // ← erwartet { status: "...", message: "..." }
     },
     reset() { this.form.search = null },

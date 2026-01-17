@@ -61,7 +61,7 @@
         },
         async mounted() {
             this.rights.add = await CheckTRights("add", this.table);
-            console.log("RES:" + this.table);
+//             console.log("RES:" + this.table);
         },
         methods: {
               //     hasRight(right, table) {

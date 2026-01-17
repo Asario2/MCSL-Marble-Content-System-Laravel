@@ -55,7 +55,7 @@ class EncryptController extends Controller
         $decrypted = openssl_decrypt($decoded, self::AES_256_CBC, $this->_encryption_key, 0, $this->_iv);
 
         // 🔑 Wichtig: nie false zurückgeben, immer einen String
-        \Log::info("DC".$decoded);
+//         \Log::info("DC".$decoded);
         return $decrypted !== false && $decrypted !== '' ? $decrypted : $data;
     }
 

@@ -201,7 +201,7 @@ export default {
     },
   },
   mounted(){
-    console.log("th:" + this.comphash);
+//     console.log("th:" + this.comphash);
   },
   methods: {
     submitPreview() {

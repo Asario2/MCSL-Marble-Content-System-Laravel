@@ -605,7 +605,7 @@ import Editor from "@/Application/Components/Form/InputHtml.vue";
 
 import DialogModal from "@/Application/Components/DialogModal.vue";
 
-import { toastBus } from '@/utils/toastBus';
+// import { toastBus } from '@/utils/toastBus';
 import { reactive } from "vue";
 import PublicRadio from "@/Application/Components/Form/PublicRadio.vue";
 import { nextTick } from 'vue'
@@ -756,7 +756,7 @@ export default defineComponent({
             xsor_alt: {},
             isOpen: true,
             uploadedImageUrl: null,
-            csrfToken: document.getElementById('token').value,
+            csrfToken: document.getElementById('token')?.value,
             preview_image: {},
             ffo: { ...this.entry },
             options: {},
@@ -1347,7 +1347,7 @@ if (!editorRef) {
 } else if (typeof editorRef.validate === 'function') {
   isValid = editorRef.validate();
 } else {
-   console.log('this.$refs.editor hat keine validate()-Methode:', editorRef);
+//    console.log('this.$refs.editor hat keine validate()-Methode:', editorRef);
   // Suche nach contenteditable, textarea oder input
   const el = editorRef.$el?.querySelector?.('[contenteditable], textarea, input')
     || editorRef.$el
@@ -1357,11 +1357,11 @@ if (!editorRef) {
     .replace(/\s+/g, '')
     .trim();
 
-  console.log('Editor-Inhalt erkannt:', text);
+//   console.log('Editor-Inhalt erkannt:', text);
   isValid = text.length > 0;
 }
 if (!isValid) {
-  console.log("Fehler: Feld ist leer");
+//   console.log("Fehler: Feld ist leer");
   return;
 }
   try {

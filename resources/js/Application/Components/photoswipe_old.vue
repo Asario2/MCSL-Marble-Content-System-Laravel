@@ -137,7 +137,7 @@ export default {
     async DelFilez() {
     if (confirm("Möchten Sie alle Dateien wirklich löschen?")) {
     // Benutzer hat auf "OK" geklickt
-    console.log("Datei wird gelöscht...");
+//     console.log("Datei wird gelöscht...");
 
 
       const files = Array.from(

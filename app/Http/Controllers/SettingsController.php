@@ -38,6 +38,7 @@ class SettingsController extends Controller
             "userexcl"=> Settings::$userexcl,
             'connect_dbname'=>Settings::$connect_dbname,
             'mariaDBs'=>Settings::$mariaDBs,
+            "nostats"=>Settings::$nostats,
         ]);
     }
 }

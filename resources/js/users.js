@@ -736,8 +736,8 @@ function age_form(id, n, v, t) {
         // Verlasse das Feld (Blur) nach dem Speichern
         dateInput.addEventListener("blur", function () {
             const newValue = dateInput.value;
-            console.log(document.getElementById("token")); // sollte <input ...> zeigen
-            console.log(document.getElementById("token").value); // sollte den CSRF Token zeigen
+//             console.log(document.getElementById("token")); // sollte <input ...> zeigen
+//             console.log(document.getElementById("token").value); // sollte den CSRF Token zeigen
 
             // AJAX-Anfrage senden
             fetch("/update-age", {

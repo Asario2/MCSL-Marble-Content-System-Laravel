@@ -48,7 +48,7 @@ class PersonalController
             'xch_newsletter' => ['nullable', 'boolean'],
         ], [], [], 'updateProfileInformation');
 
-        \Log::info("✅ Empfangen:", $validated);
+//         \Log::info("✅ Empfangen:", $validated);
 
         $table = "users"; // ermittelt die Tabelle des Models
 
@@ -61,7 +61,7 @@ class PersonalController
             'updated_at' => now(),
         ]))->save();
     \Log::info("fil:".json_encode($filtered))   ;
-    \Log::info($request->birthday);
+//     \Log::info($request->birthday);
     return response()->json(["success"=>true,"Messsage"=>"Profil gespeichert"]);
     }
 

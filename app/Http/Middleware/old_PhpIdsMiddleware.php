@@ -11,7 +11,7 @@ class PhpIdsMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        \Log::info('PHPIDS Middleware reached');
+//         \Log::info('PHPIDS Middleware reached');
 
         $configPath = config_path('phpids.ini');
 
@@ -28,7 +28,7 @@ class PhpIdsMiddleware
             $request->request->all(),
             $request->cookies->all()
         );
-        \Log::info($data);
+//         \Log::info($data);
 
         $monitor = new Monitor($data, $init);
         $result = $monitor->run();

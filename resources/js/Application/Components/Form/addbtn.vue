@@ -73,7 +73,7 @@ export default {
                 return true;
             }
             const result = hasRightSync(right, table);
-            console.log(`Right check - ${right} for ${table}:`, result);
+//             console.log(`Right check - ${right} for ${table}:`, result);
             return result;
         },
 
@@ -98,7 +98,7 @@ export default {
                     }
                 });
 
-                console.log('Delete response:', response.data);
+//                 console.log('Delete response:', response.data);
                 window.toastBus.emit( response.data);
 
                 // Seite neu laden

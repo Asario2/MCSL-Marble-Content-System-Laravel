@@ -185,3 +185,4 @@
 ![Version](https://img.shields.io/badge/version-4.27.2-orange) Hotfix - Mail Function doesn't works (#349)  
 ![Version](https://img.shields.io/badge/version-4.28.7-orange) Bugs - have to reinstall complete project (#347)  
 ![Version](https://img.shields.io/badge/version-4.29.7-orange) Hotfix - Add functionality to ImageUpload Script (#351)  
+![Version](https://img.shields.io/badge/version-4.30.0-orange) Feature - summary of individual blog entries (#350)  

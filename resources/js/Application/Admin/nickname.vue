@@ -26,7 +26,7 @@ export default {
 
     created() {
        this.userData = page?.props?.user || [];
-       console.log(this.userData);
+//        console.log(this.userData);
     },
 };
 </script>

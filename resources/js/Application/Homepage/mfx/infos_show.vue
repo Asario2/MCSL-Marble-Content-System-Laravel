@@ -93,12 +93,20 @@ export default defineComponent({
         try {
             this.loadVotez();
             this.loadChangelog();
+    if (this.privacy) {
+        this.processedPrivacy = await this.processHtmlWithVcard(this.privacy);
+    }
 
+    if (this.data?.message) {
+        this.processedHtml = await this.processHtmlWithVcard(this.data.message);
+    }
 
-    const resp = await fetch('https://api.github.com/repos/Asario2/MCSL-based-on-Starter-Eleven/issues');
-    const data = await resp.json();
+    const url = 'https://api.github.com/search/issues?q=repo:Asario2/MCSL-based-on-Starter-Eleven+is:issue+state:open';
+  const resp = await fetch(url);
+  const data = await resp.json();
+
 //     console.log('GitHub Issues:', data);
-    this.todolist = data;
+    this.todolist = data.items;
   } catch (error) {
     console.error('Fehler beim Laden der Issues:', error);
     this.todolist = [];
@@ -122,7 +130,29 @@ export default defineComponent({
         .replace(/(<br\s*\/?>\s*){3,}/gi, '<br /><br />')
 
         },
+     async processHtmlWithVcard(html) {
+//         console.log("%c[processHtmlWithVcard] INPUT:", "color:cyan", html);
 
+        let processed = this.ch(html);
+//         console.log("%c[ch] →", "color:gray", processed);
+
+        processed = this.decodeHtml(rumLaut(processed));
+//         console.log("%c[decodeHtml+rumLaut] →", "color:gray", processed);
+
+        if (processed.includes("{{ vcard }}")) {
+//             console.log("%c[FOUND {{ vcard }}] ✔", "color:green;font-weight:bold");
+        } else {
+            console.warn("[WARN] {{ vcard }} wurde nicht gefunden in:", processed);
+        }
+
+        processed = processed.replace(/{{\s*vcard\s*}}/g, "__VCARD__");
+//         console.log("%c[replace → __VCARD__]:", "color:orange", processed);
+
+        processed = await this.replaceAsyncPlaceholders(processed);
+//         console.log("%c[replaceAsyncPlaceholders] →", "color:purple", processed);
+
+        return processed;
+    },
         showtodo() {
         if (!Array.isArray(this.todolist) || this.todolist.length === 0) {
             return '<p>Keine offenen Issues gefunden.</p>';
@@ -210,9 +240,33 @@ export default defineComponent({
                 'changelog()': () => this.changelogText,
                 'showtodo()': () => this.showtodo(),
                 'showprivacy()': () => this.showprivacy(),
+                'vcard': () => this.showVCard(),
             };
         },
+        async showVCard() {
+            if (!this.vcardData) return '';
 
+            const vnode = h(ContactCard, {
+                data: this.vcardData,
+                lang: {
+                    phone: 'Telefon',
+                    mobil: 'Mobil',
+                    fax: 'Fax',
+                    email: 'E-Mail'
+                }
+            });
+
+            const html = await renderToString(vnode);
+
+            return html;
+        },
+        async replaceAsyncPlaceholders(text) {
+            if (text.includes('__VCARD__')) {
+                const html = await this.showVCard();
+                text = text.replace(/__VCARD__/g, html);
+            }
+            return text;
+        },
         parseMessage(text) {
             return text.replace(/{{\s*(.*?)\s*}}/g, (match, key) => {
                 const func = this.replacements()[key];

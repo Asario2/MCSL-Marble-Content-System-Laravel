@@ -914,7 +914,7 @@ public function ShowTable(Request $request, $table_alt = null)
 
         }
         public function us_config_save(Request $request){
-            \Log::info($request->All());
+//             \Log::info($request->All());
             DB::table("users_config")->where("users_id",Auth::id())->update($request->only(['xch_newsletter', 'xis_pmtoautomail',"cnt_numrows"]));
         }
         public function remImages(Request $request)
@@ -946,7 +946,7 @@ public function ShowTable(Request $request, $table_alt = null)
             // {
             //     $dom = $dom2;
             // }
-            \Log::info($dom);
+//             \Log::info($dom);
             $files = $request->input('files', []);
 
             if (empty($files)) {
@@ -1534,7 +1534,7 @@ public function ShowTable(Request $request, $table_alt = null)
                 $table->name = ucf($table->name);
                 return $table;
             });
-        \Log::info('tab:'.json_encode($tables, JSON_PRETTY_PRINT));
+//         \Log::info('tab:'.json_encode($tables, JSON_PRETTY_PRINT));
         return Inertia::render('Admin/TableList', [
             'filters' => Request()->all('search'),
             'datarows' => $tables,
@@ -2049,7 +2049,7 @@ public function ShowTable(Request $request, $table_alt = null)
                         ->update(['position' => DB::raw('position - 1')]);
                 }
                 elseif($nn){
-                    \Log::info("posi:".$nn);
+//                     \Log::info("posi:".$nn);
                      DB::table($table)
                          ->where("position", ">=", $nn)  // Condition: only update rows where position > 0
                          ->update(['position' => DB::raw('position + 1')]);
@@ -3006,7 +3006,7 @@ return Inertia::render('Admin/Kontakte', [
 
         if($uuid != Auth::id())
         {
-            \Log::info([$uuid,Auth::id()]);
+//             \Log::info([$uuid,Auth::id()]);
             return false;
         }
         return true;
@@ -3137,7 +3137,7 @@ return Inertia::render('Admin/Kontakte', [
         // Exklusionsbedingungen anwenden
         $query = $this->applyExclWhere($table, $query);
         $q3 = json_decode($q2, true);
-        \Log::info(json_encode($q3[0]['position'], JSON_PRETTY_PRINT));
+//         \Log::info(json_encode($q3[0]['position'], JSON_PRETTY_PRINT));
 
         $this->UP_POSI($table,$q3[0]['position']);
         }

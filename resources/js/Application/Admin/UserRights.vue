@@ -643,7 +643,7 @@ export default {
       try {
         const res = await axios.get(`/admin/user-rights/get?urid=${urid}`);
 
-        console.log("RESP", res.data);
+//         console.log("RESP", res.data);
 
         // rights root (don't overwrite this.userRights or tables)
         const rights = res.data?.rights || res.data || {};

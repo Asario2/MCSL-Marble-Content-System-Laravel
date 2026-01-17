@@ -80,7 +80,7 @@ export default {
 
         let t = this.pm ? "pm" : "tables";
 
-        console.log(`DELETE: /admin/${t}/delete/${this.table}/${this.id}`);
+//         console.log(`DELETE: /admin/${t}/delete/${this.table}/${this.id}`);
 
         const response = await axios.delete(
           `/admin/${t}/delete/${this.table}/${this.id}`,

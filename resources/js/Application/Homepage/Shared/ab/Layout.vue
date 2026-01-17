@@ -529,7 +529,7 @@
         localStorage.setItem('loading', state ? state.toString():'');
         },
         reopenCookieBanner() {
-        console.log("test");
+//         console.log("test");
 //             console.log(window.LaravelCookieConsent);
 
          setTimeout(() => {

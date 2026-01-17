@@ -37,7 +37,7 @@ export default {
         const { data } = await axios.get(
           route("api.getRating",{table:CleanTable(),postId:this.postId})
         );
-        console.log(data);
+//         console.log(data);
         this.average = Number(data.average) || 0;
         this.total = Number(data.total) || 0;
       } catch (e) {

@@ -145,7 +145,7 @@ class PMController extends Controller
         $res2 = DB::table("private_messages")->where('private_messages_text_id',$iid)->count();
         $res = DB::table("private_messages")->where('id', $id)->delete();
         if(@$res2 < 2){
-            \Log::info("IID:".$iid);
+//             \Log::info("IID:".$iid);
             DB::table("private_messages_text")->where("id",$iid)->delete();
         }
 
@@ -167,7 +167,7 @@ class PMController extends Controller
         //     exit;
         // }
         $ids = explode(",",$request->ids);
-        \Log::info(["IDS:"=>$ids]);
+//         \Log::info(["IDS:"=>$ids]);
         foreach($ids as $id){
 
         $iid = DB::table("private_messages")->where("id",$id)->value("private_messages_text_id AS iid");
@@ -175,7 +175,7 @@ class PMController extends Controller
         $res2 = DB::table("private_messages")->where('private_messages_text_id',$iid)->count();
         $res = DB::table("private_messages")->where('id', $id)->delete();
         if(@$res2 < 2){
-            \Log::info("IID:".$iid);
+//             \Log::info("IID:".$iid);
             DB::table("private_messages_text")->where("id",$iid)->delete();
         }
         }

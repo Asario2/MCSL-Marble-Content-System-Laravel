@@ -20,7 +20,7 @@ configs.forEach(({ name, config }) => {
   const outFile = `public/css/tailw/${name}.css`;
   const cmd = `npx tailwindcss -c ${config} -o ${outFile} --minify`;
 
-  console.log(`?? Baue CSS für "${name}" ? ${outFile}`);
+//   console.log(`?? Baue CSS für "${name}" ? ${outFile}`);
   exec(cmd, (error, stdout, stderr) => {
     if (error) {
       console.error(`? Fehler bei "${name}":`, stderr);

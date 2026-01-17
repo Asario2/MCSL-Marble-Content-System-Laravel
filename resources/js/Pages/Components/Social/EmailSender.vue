@@ -181,7 +181,7 @@ export default {
         };
           Inertia.post('/email/preview/', formData);
 
-        console.log(formData);
+//         console.log(formData);
     },
     updateMailbody(value) {
       const selected = this.mailbodyOptions.find(mb => mb.id === value);
@@ -205,7 +205,7 @@ export default {
   },
    handleSelectedNames(names) {
     this.selectedUserNames = names;
-    console.log("Ausgewählte Benutzer:", names);
+//     console.log("Ausgewählte Benutzer:", names);
   },
   updateSigData(value) {
     this.selectedSigId = value;

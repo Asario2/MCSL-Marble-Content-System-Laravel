@@ -48,7 +48,7 @@ class ImageUploadController extends Controller
     'upload_max_filesize' => ini_get('upload_max_filesize'),
 ]);
 
-    \Log::info("IMA: ".$request->ulpath);
+//     \Log::info("IMA: ".$request->ulpath);
     if (!$request->hasFile('image')) {
         return response()->json(['error' => 'Keine Datei empfangen!'], 400);
     }

@@ -81,7 +81,7 @@ export const toastBus = reactive({
   toasts: [],
   idCounter: 0,
   emit(payload) {
-    console.log("[ToastBus] emit called:", payload);
+//     console.log("[ToastBus] emit called:", payload);
 
     const toast = {
       id: this.idCounter++,
@@ -92,7 +92,7 @@ export const toastBus = reactive({
     };
 
     this.toasts.push(toast);
-    console.log("[ToastBus] toasts after push:", this.toasts);
+//     console.log("[ToastBus] toasts after push:", this.toasts);
 
     // Auto-Hide
     if (toast.duration > 0) {
@@ -124,12 +124,12 @@ export default {
     return { toastBus };
   },
   mounted() {
-    console.log("[Toast.vue] mounted, initial toastBus:", this.toastBus);
+//     console.log("[Toast.vue] mounted, initial toastBus:", this.toastBus);
 
     // Watch für Debug
     watch(
       () => this.toastBus.toasts,
-      (newVal) => console.log("[Toast.vue] toastBus.toasts changed:", newVal),
+//       (newVal) => console.log("[Toast.vue] toastBus.toasts changed:", newVal),
       { deep: true }
     );
   },

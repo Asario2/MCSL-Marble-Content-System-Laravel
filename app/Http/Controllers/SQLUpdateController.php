@@ -128,7 +128,7 @@ class SQLUpdateController extends Controller
         $this->domset_of = $this->GetDBCon(0,$request->domain);
         $_SESSION['domain'] = $domain;
 
-        \Log::info("DOM: ".$domain);
+//         \Log::info("DOM: ".$domain);
 
         return response()->json([
             'local'  => $this->getTablesWithHash($this->domset_of,$request->domain),

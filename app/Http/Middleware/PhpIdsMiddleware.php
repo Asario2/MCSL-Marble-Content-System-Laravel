@@ -10,7 +10,7 @@ class PhpIdsMiddleware
     public function handle(Request $request, Closure $next)
     {
         // Test-Log: prüft, ob Middleware aufgerufen wird
-        \Log::info('PHPIDS Middleware reached');
+//         \Log::info('PHPIDS Middleware reached');
 
         return $next($request);
     }

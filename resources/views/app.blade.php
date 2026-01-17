@@ -108,7 +108,7 @@ import { reactive } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
 
 const toastBus = reactive({ toasts: [] });
 toastBus.toasts.push({ message: 'Hallo', type: 'success', duration: 5000 });
-console.log(toastBus);
+// console.log(toastBus);
 </script>
     </script>
         @php Notify(); @endphp

@@ -369,7 +369,7 @@
             const response = await axios.get("/api/chkcom/");
             this.checkedStatus = response.data.success;
             // console.log(this.checkedStatus);
-            console.log("response: " + JSON.stringify(response.data, null, 2));
+//             console.log("response: " + JSON.stringify(response.data, null, 2));
 
 
             } catch (error) {

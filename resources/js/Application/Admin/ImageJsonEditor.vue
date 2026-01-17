@@ -110,7 +110,7 @@
       folder: {
         immediate: true,
         handler(newFolder) {
-          console.log('🔄 Folder changed:', newFolder);
+//           console.log('🔄 Folder changed:', newFolder);
           this.fetchImages();
         }
       }

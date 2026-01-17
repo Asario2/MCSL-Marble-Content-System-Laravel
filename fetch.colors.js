@@ -22,7 +22,7 @@ async function main() {
     // Datei mit export schreiben
     const content = `export default ${JSON.stringify(colors, null, 2)};`;
     await fs.writeFile(filePath, content);
-    console.log(`? Farben für ${sub} gespeichert in ${filePath}`);
+//     console.log(`? Farben für ${sub} gespeichert in ${filePath}`);
   }
 }
 

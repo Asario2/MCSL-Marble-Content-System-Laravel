@@ -87,7 +87,7 @@ export default {
     },
 
     addSmiley(smiley) {
-      console.log('Adding smiley:', smiley, 'to editor:', this.editor);
+//       console.log('Adding smiley:', smiley, 'to editor:', this.editor);
 
       // Emit Event zur Hauptkomponente
       this.$emit('insert-smiley', smiley);
@@ -163,7 +163,7 @@ export default {
       const changeEvent = new Event('change', { bubbles: true });
       editorEl.dispatchEvent(changeEvent);
 
-      console.log('Smiley inserted successfully');
+//       console.log('Smiley inserted successfully');
     },
 
     // Alternative Methode für einfacheres Einfügen
@@ -207,7 +207,7 @@ export default {
     }
   },
   mounted() {
-    console.log('Smileys component mounted for editor:', this.editor);
+//     console.log('Smileys component mounted for editor:', this.editor);
 
     const editorEl = this.getEditorElement();
     if (!editorEl) {

@@ -225,7 +225,7 @@
         formData.append('Message', this.Message ? 1 : 0);
         formData.append('is_imgdir', this.finalPath);
         for (const [key, value] of formData.entries()) {
-            console.log(key, value);
+//             console.log(key, value);
         }
 
         const xhr = new XMLHttpRequest();

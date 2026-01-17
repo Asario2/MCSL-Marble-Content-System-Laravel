@@ -516,7 +516,7 @@ export default {
     },
 
     answer(msg) {
-      console.log('Answer function called with message:', msg);
+//       console.log('Answer function called with message:', msg);
 
       if (!msg) {
         console.error('No message provided for answer');
@@ -528,21 +528,21 @@ export default {
 
       // Empfänger-ID setzen - verschiedene mögliche Felder prüfen
       this.to_id = msg.users_id || msg.user_id || msg.from_id || msg.UID;
-      console.log('Set to_id:', this.to_id, 'from message fields:', {
-        users_id: msg.users_id,
-        user_id: msg.user_id,
-        from_id: msg.from_id,
-        UID: msg.UID
-      });
+//       console.log('Set to_id:', this.to_id, 'from message fields:', {
+    //     users_id: msg.users_id,
+    //     user_id: msg.user_id,
+    //     from_id: msg.from_id,
+    //     UID: msg.UID
+    //   });
 
       // Betreff vorbereiten
       const subj = msg.subject || "";
       this.subject = subj.startsWith("Re:") ? subj : "Re: " + subj;
-      console.log('Set subject:', this.subject);
+//       console.log('Set subject:', this.subject);
 
       // Nachricht vorbereiten
       let original = msg.message || "";
-      console.log('Original message:', original);
+//       console.log('Original message:', original);
 
       // HTML zu Text konvertieren (vereinfacht)
       if (original.includes('<') || original.includes('>')) {
@@ -554,7 +554,7 @@ export default {
           .trim();
       }
 
-      console.log('Cleaned message:', original);
+//       console.log('Cleaned message:', original);
 
       // Zitat erstellen
       const quoted = original
@@ -564,16 +564,16 @@ export default {
         .join("\n");
 
       this.message = `<blockquote>${quoted}</blockquote><br><br>`;
-      console.log('Final message set');
+//       console.log('Final message set');
 
       // Kurze Verzögerung für UI-Update
       this.$nextTick(() => {
-        console.log('UI updated, ready for input');
+//         console.log('UI updated, ready for input');
       });
     },
 
     rewrite(msg) {
-      console.log('Rewrite function called with message:', msg);
+//       console.log('Rewrite function called with message:', msg);
 
       if (!msg) return;
       this.tab = "new";
@@ -581,16 +581,16 @@ export default {
       this.subject = "";
       this.message = "";
 
-      console.log('Rewrite completed:', { to_id: this.to_id });
+//       console.log('Rewrite completed:', { to_id: this.to_id });
     },
 
     sendMessage() {
-      console.log('Sending message:', {
-        to_id: this.to_id,
-        subject: this.subject,
-        message: document.getElementById("editor_message").innerHTML,
-        message_length: this.message.length
-      });
+//       console.log('Sending message:', {
+    //     to_id: this.to_id,
+    //     subject: this.subject,
+    //     message: document.getElementById("editor_message").innerHTML,
+    //     message_length: this.message.length
+    //   });
       this.message = document.getElementById("editor_message").innerHTML;
       if (!this.message.trim()) {
         alert("Bitte gib eine Nachricht ein.");
@@ -613,7 +613,7 @@ export default {
         subject: this.subject,
       })
       .then(response => {
-        console.log('Gespeichert:', response.data);
+//         console.log('Gespeichert:', response.data);
         this.message = "";
         this.subject = '';
         this.to_id = null;
@@ -627,7 +627,7 @@ export default {
     },
 
     ShowMessage(msg) {
-      console.log('ShowMessage called with:', msg);
+//       console.log('ShowMessage called with:', msg);
       this.selectedMessage = msg;
 
       const exists = this.tabs.find(t => t.id === "read");
@@ -646,13 +646,13 @@ export default {
 
     updateFormData(value) {
       this.to_id = value;
-      console.log('Form data updated - to_id:', value);
+//       console.log('Form data updated - to_id:', value);
     },
   },
 
   watch: {
     tab(newTab) {
-      console.log('Tab changed to:', newTab);
+//       console.log('Tab changed to:', newTab);
       this.searchInbox = '';
       this.searchOutbox = '';
       this.resetPage();

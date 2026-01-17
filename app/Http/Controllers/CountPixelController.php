@@ -35,8 +35,9 @@ class CountPixelController extends Controller
     '/admin',
     '/_debug',
     '/api/',
-    "/login",
+    "login",
     "pm/index",
+    "mail/subscr",
     ];
 
     public function track(Request $request)
@@ -80,7 +81,7 @@ class CountPixelController extends Controller
              * URL bereinigen
              */
             $rawUrl = $this->SH($request->query('url')) ?? '/';
-
+            
             /**
              * 2️⃣ URL anhand Dateiendungen ausschließen
              */
@@ -143,7 +144,8 @@ class CountPixelController extends Controller
 
     public function SH($str)
     {
-        if (!$str) return '/';
+
+    if (!$str) return '/';
 
         $decoded = rawurldecode($str);
         $clean = str_replace(
@@ -151,6 +153,28 @@ class CountPixelController extends Controller
             '',
             $decoded
         );
+
+        if(substr_count($clean,"home/infos/show"))
+        {
+
+            $clean = "/home/infos_show";
+        }
+        if(substr_count($clean,"blogs/show"))
+        {
+            $clean = "/blogs_show";
+        }
+        if(substr_count($clean,"?page="))
+        {
+            $clean = str_replace("?page=".$_GET['page'],'',$clean);
+        }
+        if(substr_count($clean,"home/show/pictures/"))
+        {
+            $clean = "/picures_show";
+        }
+        // if($clean == "/home" || $cleam == "home")
+        // {
+        //     $clean = '/';
+        // }
 
         return empty($clean) ? '/' : $clean;
     }
@@ -200,9 +224,9 @@ class CountPixelController extends Controller
         $rows = $query
             ->select('url', DB::raw('LOWER(dom) as dom'), DB::raw('COUNT(*) as cnt'))
             ->groupBy('url', 'dom')
-            ->orderBy('url')
+            ->orderBy('url',"ASC")
             ->get();
-
+            \Log::info(Settings::$nostats);
             $rows = $rows->filter(function ($row) {
                 foreach (Settings::$nostats as $ignore) {
                     if ($ignore !== '' && str_contains($row->url, $ignore)) {
@@ -210,7 +234,8 @@ class CountPixelController extends Controller
                     }
                 }
                 return true;
-            })->values();
+            })->sortBy('url')
+            ->values();
 
 
         Log::info("ROWS DOMS = " . json_encode($rows->pluck('dom')->unique()->values()->all()));
@@ -292,7 +317,7 @@ class CountPixelController extends Controller
             ->table('page_views')
             ->select('url', DB::raw('COUNT(*) as views'))
             ->groupBy('url')
-            ->orderBy('views', 'DESC')
+            ->orderBy('url', 'ASC')
             ->get();
 
         return response()->json($data);

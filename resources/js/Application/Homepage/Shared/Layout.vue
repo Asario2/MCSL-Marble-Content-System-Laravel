@@ -540,7 +540,7 @@ import IconDashboard from "@/Application/Components/Icons/IconDashboard.vue";
         methods: {
     // ... andere Methoden
         reopenCookieBanner() {
-            console.log("reopenCookieBanner aufgerufen");
+//             console.log("reopenCookieBanner aufgerufen");
 
             // Prüft alle 50ms, ob CookieConsent verfügbar ist
             const interval = setInterval(() => {
@@ -555,7 +555,7 @@ import IconDashboard from "@/Application/Components/Icons/IconDashboard.vue";
                     // Banner anzeigen, nur wenn show() existiert
                     if (typeof window.LaravelCookieConsent.show === 'function') {
                         window.LaravelCookieConsent.show();
-                        console.log("Cookie-Banner angezeigt");
+//                         console.log("Cookie-Banner angezeigt");
                     } else {
                         console.error("window.LaravelCookieConsent.show() nicht gefunden");
                     }
@@ -567,11 +567,11 @@ import IconDashboard from "@/Application/Components/Icons/IconDashboard.vue";
 
 
         checkLoadingState() {
-          console.log("🔍 checkLoadingState()", {
-            pending: this.pendingRequests,
-            imagesLoaded: this.imagesLoaded,
-            isLoading: this.isLoading,
-          });
+//           console.log("🔍 checkLoadingState()", {
+        //     pending: this.pendingRequests,
+        //     imagesLoaded: this.imagesLoaded,
+        //     isLoading: this.isLoading,
+        //   });
 
           if (this.pendingRequests === 0 && this.imagesLoaded) {
 //             console.log("✅ Ladezustand beendet");
