@@ -56,10 +56,10 @@
                 Man kann sie gegen gemalte Bilder eintauschen. Echte Arbeiten. Kein Zufall.<br /><br />
                 Punkte bekommst du z. B. durch:
                 <ul class="list-disc list-inside mt-4 text-left">
-                    <li>Kommentare schreiben</li>
-                    <li>Bilder bewerten</li>
-                    <li>Wörter für Shortpoems vorschlagen</li>
-                    <li>Newsletter lesen</li>
+                    <li>Bilder bewerten <b>(1 Punkt)</b></li>
+                    <li>Kommentare schreiben <b>(3 Punkte)</b></li>
+                    <li>Wörter für Shortpoems vorschlagen <b>(5 Punkte)</b></li>
+                    <li>Newsletter lesen <b>(8 Punkte)</b></li>
                 </ul>
                 Wer mehr wissen will, findet weitere Informationen hier:<br />
                 <a class="as font-semibold" href="/about/mcs-points">MCSL-Points</a>.

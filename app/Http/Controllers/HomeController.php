@@ -647,9 +647,9 @@ return Inertia::render('Homepage/Pictures', [
             'blogarticle' => $blogarticle
         ]);
     }
-    public function home_userlist()
+    public function home_userlist(Request $request)
     {
-        $search = Request::input('search');   // ← korrekt für die Facade
+        $search = $request->input('search');   // ← korrekt für die Facade
         $users = DB::table("users")->where("pub","1")->where("xis_disabled","0")
         ->when($search, function ($query, $search) {
             return $query->where(function($q) use ($search) {
