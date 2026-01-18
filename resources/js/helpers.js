@@ -538,6 +538,7 @@ export function SD(pn = '') {
             subb = "chh";
             break;
         case "localhost":
+		case "test.mcs":
         case "241":
         case "217":
             subb = "ab";

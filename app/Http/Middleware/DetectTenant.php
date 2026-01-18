@@ -16,7 +16,7 @@ class DetectTenant {
         $tenant = Tenant::where('subdomain', $subdomain)->first();
 
         if ($tenant) {
-            Log::info('Mandant erkannt: ' . $subdomain . ' → ' . $tenant->database);
+//             Log::info('Mandant erkannt: ' . $subdomain . ' → ' . $tenant->database);
 
             // DB umschalten
             config(['database.connections.mysql.database' => $tenant->database]);

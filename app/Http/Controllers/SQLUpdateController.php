@@ -98,20 +98,22 @@ class SQLUpdateController extends Controller
             header("Location: /no-rights");
             exit;
         }
-        $cor_date = date("d.m.Y H:i:s",strtotime(file_get_contents(storage_path("/app/".$this->opsFile))));
+        $cor_date = date("d.m.Y H:i:s",strtotime(file_get_contents(public_path("/timespy/".$this->opsFile))));
         return Inertia::render('Admin/SQLUpdate',compact("cor_date"));
     }
 
     public function last()
     {
-        if (!Storage::exists($this->opsFile)) {
+        if (!File::exists(public_path("/timespy/".$this->opsFile))) {
             return response()->json([
                 'lastDate' => '1970-01-01 00:00:00',
                 'cor_date' => '01.01.1970 00:00:00'
             ]);
         }
 
-        $date = trim(Storage::get($this->opsFile));
+        $date = trim(
+    Storage::disk('public')->get("/timespy/".$this->opsFile)
+);
 
         return response()->json([
             'lastDate' => $date,
@@ -472,7 +474,13 @@ public function diffTable(string $table, string $domain)
             $this->UpdateHash($table, $hash, $con);
         }
 
-        Storage::put($this->opsFile, now()->format('Y-m-d H:i:s'));
+
+
+        Storage::disk('public')->put(
+            "/timespy/".$this->opsFile,
+            now()->format('Y-m-d H:i:s')
+        );
+
 
         return response()->json(['success' => true]);
     }

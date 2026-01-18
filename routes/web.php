@@ -152,7 +152,8 @@ Route::middleware(\App\Http\Middleware\CheckSubd::class . ':ab,asario')->group(f
     Route::get("/       ",function(){
         return "ASD";
     });
-     Route::get('/', [HomeController::class, 'home_index'])->name('home.index');
+    Route::get('/about/mcs-points', [HomeController::class, 'mcspoints'])->name('mcs.points');
+    Route::get('/', [HomeController::class, 'home_index'])->name('home.index');
     Route::get('/dashboard', function () {
         return redirect()->route('admin.dashboard');
     })->name('dashboard');
@@ -544,7 +545,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::middleware(['is_admin'])->group(function () {
 
         Route::get('/dashboard', function () {
-            return redirect('/dashboard');
+            return redirect('/admin/dashboard');
         })->name('dashboard');
         // Dashboard
         Route::get(

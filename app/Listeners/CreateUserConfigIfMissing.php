@@ -24,13 +24,13 @@ class CreateUserConfigIfMissing
 
         $userId = $event->user->id;
 
-        Log::info('CreateUserConfigIfMissing läuft', ['user_id' => $userId, 'event' => get_class($event)]);
+//         Log::info('CreateUserConfigIfMissing läuft', ['user_id' => $userId, 'event' => get_class($event)]);
 
         // Prüfen ob schon ein Eintrag existiert
         $exists = DB::table('users_config')->where('users_id', $userId)->exists();
 
         if ($exists) {
-            Log::info('users_config Eintrag existiert bereits', ['user_id' => $userId]);
+//             Log::info('users_config Eintrag existiert bereits', ['user_id' => $userId]);
             return;
         }
 
@@ -45,7 +45,7 @@ class CreateUserConfigIfMissing
                 'updated_at'        => now(),
             ]);
 
-            Log::info('users_config Eintrag erstellt', ['user_id' => $userId]);
+//             Log::info('users_config Eintrag erstellt', ['user_id' => $userId]);
         } catch (\Throwable $e) {
             Log::error('users_config Insert fehlgeschlagen', [
                 'user_id' => $userId,

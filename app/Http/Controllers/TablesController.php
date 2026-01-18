@@ -2006,7 +2006,7 @@ public function ShowTable(Request $request, $table_alt = null)
         }
 
         // Log-Eintrag für Debug-Zwecke
-        Log::info('User roles updated:', $updated);
+//         Log::info('User roles updated:', $updated);
 
         return response()->json([
             'message' => 'Benutzerrollen wurden gespeichert.',

@@ -54,7 +54,7 @@
             >
                 <template #description>
                     Deine Kontakte
-                </template>
+                </template> 
             </navigation-card>
             <navigation-card v-if="modulRights?.SendMail"
                 class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"

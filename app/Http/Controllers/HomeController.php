@@ -13,7 +13,10 @@ use App\Models\User;
 use App\Models\Image;
 use Illuminate\Support\Str;
 use Laravel\Jetstream\Jetstream;
-use Illuminate\Support\Facades\Request;
+
+
+use Illuminate\Http\Request;
+#use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
 use App\Http\Controllers\RatingController;
 use App\Models\Tenant;  // <-- hier Tenant importieren
@@ -121,6 +124,20 @@ class HomeController extends Controller
     public function home_blog_landing()
     {
         return Inertia::render('Homepage/ab/NewHome');
+    }
+    public function mcspoints()
+    {
+        $text = DB::table('texts')
+        ->where('autoslug', 'yfh7')
+        ->value('text');
+        $request = new Request();
+        $request->merge(['users_id' => Auth::id()]);
+
+
+    $mcsl = NEW MCSLPointsController();
+    $MCSL_GLOB_PTS = $mcsl->GetCount($request);
+
+        return Inertia::render('Components/Social/mcs-points-ov', ["text"=>nl2br($text),"MCSL_GLOB_PTS"=>$MCSL_GLOB_PTS]);
     }
     //
     public function home_blog_index(Request $request)

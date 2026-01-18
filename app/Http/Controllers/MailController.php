@@ -134,7 +134,7 @@ public function SendMail(
             $mailer->send($email);
 
 
-            Log::info("SendMail erfolgreich an {$emmail} gesendet.");
+//             Log::info("SendMail erfolgreich an {$emmail} gesendet.");
             return true;
 
         } catch (\Exception $e) {

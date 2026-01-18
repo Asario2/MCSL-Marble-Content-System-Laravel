@@ -423,9 +423,9 @@ public static array $image_sizes =
     8 => 'ab_users_remember_token',
 ];
 public static array $doms = [
-    "ab_lh"=>"http://ab.localhost.de",
-    "mfx_lh"=>"http://mfx.localhost.de",
-    "dag_lh"=>"http://mfx.localhost.de",
+    "ab_lh"=>"http://ab.test.mcs",
+    "mfx_lh"=>"http://mfx.test.mcs",
+    "dag_lh"=>"http://mfx.test.mcs",
     "ab_ol"=>"https://www.asario.de",
     "mfx_ol"=>"https://www.marblefx.de",
     "dag_ol"=>"https://www.monikadargies.de",

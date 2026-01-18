@@ -155,9 +155,9 @@ if (!function_exists('Notify')) {
             $lh = false;
             $host = request()->getHost();
 
-            if ($entry['type'] === 'localhost' && str_contains($host, 'localhost')) {
+            if ($entry['type'] === 'localhost' && str_contains($host, 'test.mcs')) {
                 $lh = true;
-            } elseif ($entry['type'] === 'online' && !str_contains($host, 'localhost')) {
+            } elseif ($entry['type'] === 'online' && !str_contains($host, 'test.mcs')) {
                 $lh = true;
             } elseif ($entry['type'] === 'both') {
                 $lh = true;
@@ -1202,6 +1202,9 @@ if(!function_exists("SD"))
 
             break;
             case "localhost":
+            $subb = "ab";
+            break;
+            case "test.mcs":
             $subb = "ab";
             break;
             case "241":

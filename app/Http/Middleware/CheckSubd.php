@@ -25,6 +25,7 @@ class CheckSubd
             "mjs"           => "mjs",
             "ra-c-henning"  => "chh",
             "localhost"     => "ab",
+            "test.mcs"     => "ab",
             "ab"            => "ab",
             "mfx"            => "mfx",
             "chh"            => "chh",

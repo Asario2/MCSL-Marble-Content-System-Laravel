@@ -49,6 +49,22 @@
                 <p>
                     Hier gibt’s fast alles von mir: <a class='as' href="home/pictures" itemprop="hasOccupation">Bilder</a> & <a class='as' href="home/shortpoems" itemprop="hasOccupation">Gedichte</a>.<br />
                 </p><br />
+                <p class="border border-gray-300 dark:border-gray-700 text-center max-w-xl mx-auto my-8 p-8">
+                <strong>MCSL-Points.</strong><br />
+                Registrierte Nutzer sammeln Punkte, indem sie lesen, bleiben und wiederkommen.
+                Die Punkte sind kein Spielzeug. Sie haben einen Zweck.
+                Man kann sie gegen gemalte Bilder eintauschen. Echte Arbeiten. Kein Zufall.<br /><br />
+                Punkte bekommst du z. B. durch:
+                <ul class="list-disc list-inside mt-4 text-left">
+                    <li>Kommentare schreiben</li>
+                    <li>Bilder bewerten</li>
+                    <li>Wörter für Shortpoems vorschlagen</li>
+                    <li>Newsletter lesen</li>
+                </ul>
+                Wer mehr wissen will, findet weitere Informationen hier:<br />
+                <a class="as font-semibold" href="/about/mcs-points">MCSL-Points</a>.
+                </p>
+
 
                 <div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
                     Ich lebe aktuell in <span itemprop="addressLocality">Bimöhlen</span>, <span itemprop="addressCountry">SH</span>.<br />

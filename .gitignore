@@ -17,6 +17,7 @@ vendor/
 *.bat
 !README.md
 *.sh
+*.ps1
 *.yml
 **/phpmyadmin/**
 **/new_phpmyadmin/**

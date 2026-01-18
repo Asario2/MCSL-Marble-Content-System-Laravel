@@ -16,7 +16,7 @@ class MigrateOldPassword
             $legacy = new PasswordHash(8, true);
 
             if ($legacy->CheckPassword($request->password, $user->password_old)) {
-                Log::info("Altes Passwort erfolgreich validiert → migriere!");
+//                 Log::info("Altes Passwort erfolgreich validiert → migriere!");
 
                 $user->password = Hash::make($request->password);
                 $user->password_old = null;
@@ -29,4 +29,3 @@ class MigrateOldPassword
         return $next($request);
     }
 }
-        

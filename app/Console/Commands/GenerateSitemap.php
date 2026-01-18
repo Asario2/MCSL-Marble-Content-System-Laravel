@@ -100,6 +100,6 @@ class GenerateSitemap extends Command
 
     function EXTR_LNK($url, $sd)
     {
-        return str_replace("http://localhost/", "https://" . Settings::$dom[$sd] . "/", $url);
+        return str_replace(["http://localhost/","http://test.mcs/"], "https://" . Settings::$dom[$sd] . "/", $url);
     }
 }

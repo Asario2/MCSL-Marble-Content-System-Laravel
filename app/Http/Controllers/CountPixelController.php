@@ -81,7 +81,7 @@ class CountPixelController extends Controller
              * URL bereinigen
              */
             $rawUrl = $this->SH($request->query('url')) ?? '/';
-            
+
             /**
              * 2️⃣ URL anhand Dateiendungen ausschließen
              */
@@ -196,7 +196,7 @@ class CountPixelController extends Controller
             $domm = strtolower(SD());
         }
 
-        Log::info("REQUEST DOM = {$domm}, RIS = " . ($ris ? 'true' : 'false'));
+//         Log::info("REQUEST DOM = {$domm}, RIS = " . ($ris ? 'true' : 'false'));
 
         //
         // 2) Query Grundstruktur
@@ -213,9 +213,9 @@ class CountPixelController extends Controller
         //
         if (!@CheckZRights("StatisticsAll") || $ris) {
             $query->whereRaw("LOWER(dom) = ?", [$domm]);
-            Log::info("WHERE applied: dom = {$domm}");
+//             Log::info("WHERE applied: dom = {$domm}");
         } else {
-            Log::info("NO WHERE applied – full stats allowed");
+//             Log::info("NO WHERE applied – full stats allowed");
         }
 
         //
@@ -226,7 +226,7 @@ class CountPixelController extends Controller
             ->groupBy('url', 'dom')
             ->orderBy('url',"ASC")
             ->get();
-            \Log::info(Settings::$nostats);
+//             \Log::info(Settings::$nostats);
             $rows = $rows->filter(function ($row) {
                 foreach (Settings::$nostats as $ignore) {
                     if ($ignore !== '' && str_contains($row->url, $ignore)) {
@@ -238,7 +238,7 @@ class CountPixelController extends Controller
             ->values();
 
 
-        Log::info("ROWS DOMS = " . json_encode($rows->pluck('dom')->unique()->values()->all()));
+//         Log::info("ROWS DOMS = " . json_encode($rows->pluck('dom')->unique()->values()->all()));
 
         //
         // 5) Labels sammeln
@@ -269,7 +269,7 @@ class CountPixelController extends Controller
             $doms = $rows->pluck('dom')->unique()->values()->all();
         }
 
-        Log::info("Final DOMS to display = " . json_encode($doms));
+//         Log::info("Final DOMS to display = " . json_encode($doms));
 
         //
         // 8) Dataset erzeugen
