@@ -97,6 +97,7 @@
         <div class="text-sm font-semibold text-layout-sun-800 dark:text-layout-night-800">
         <h3>Kurzinfos</h3>
         </div>
+        <span v-if="getStatus(item.status)" class="text-sm min-w-fit min-h-fit bg-primary-sun-500 text-primary-sun-900 dark:bg-primary-night-500 dark:text-primary-night-900 font-semibold px-2.5 py-0.5 rounded-lg whitespace-nowrap" v-html="getStatus(item.status)"></span>
         <div v-if="item?.Format">
         <b>Format:</b> {{ item?.Format }}
         </div>
@@ -288,7 +289,22 @@ export default {
     //   window.scrollTo({ top: y, behavior: "smooth" });
     // },
 
-
+  getStatus(str)
+  {
+    if(str == 'lost')
+    {
+        return "Verloren";
+    }
+    if(str == "sold")
+    {
+        return "Verkauft";
+    }
+    if(str == "givenaway")
+    {
+        return "Verschenkt";
+    }
+    return "";
+  },
   getHashElement() {
     const hash = window.location.hash;
 //     console.log('DEBUG: window.location.hash =', hash);

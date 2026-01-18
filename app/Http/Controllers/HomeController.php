@@ -176,7 +176,7 @@ class HomeController extends Controller
             ->where("blogs.pub","1")
             ->orWhere("blogs.pub","2")
             //
-            ->filterBlog(Request::only('search'))
+            ->filterBlog($request->only('search'))
             // ->orderBy('blogs.blog_date', 'desc')
             ->orderBy('blogs.position', 'asc')
             ->paginate(19)
@@ -209,7 +209,7 @@ class HomeController extends Controller
             // \Log::info("Test-Log-Eintrag");
 
         return Inertia::render('Homepage/BlogList', [
-            'filters' => Request::all('search'),
+            'filters' => $request->all('search'),
             'blogs' => $blogs,
         ]);
     }
@@ -233,10 +233,10 @@ class HomeController extends Controller
             $ord[0] = "created_at";
             $ord[1] = "DESC";
 //         // }
-        // \Log::info(Request::input('search')); // oder: \Log::info($request->all());
+        // \Log::info($request->input('search')); // oder: \Log::info($request->all());
 // ;
 //         $search = $request->search;
-        $search = Request::input('search');   // ← korrekt für die Facade
+        $search = $request->input('search');   // ← korrekt für die Facade
             if(empty($search))
             {
                 header("Location: /home/pictures");
@@ -318,12 +318,12 @@ return Inertia::render('Homepage/Pictures', [
             $ord[0] = "position";
             $ord[1] = "ASC";
         }
-        $search = Request::input('search');   // ← korrekt für die Facade
+        $search = $request->input('search');   // ← korrekt für die Facade
         $entries = DB::table("images")
             ->leftJoin("image_categories", "image_categories.id", "=", "images.image_categories_id")
             ->whereIn("images.pub", [1, 2])
             ->where("image_categories.slug",$slug)
-            ->select("images.created_at AS created_at", "images.*", "image_categories.slug as slug")
+            ->select("images.created_at AS created_at", "images.*",'images.status', "image_categories.slug as slug")
 
             ->when($search, function ($query, $search) {
                 return $query->where(function($q) use ($search) {
@@ -377,7 +377,7 @@ return Inertia::render('Homepage/Pictures', [
         //     $ord[0] = "position";
         //     $ord[1] = "ASC";
         // }
-        $search = Request::input('search');   // ← korrekt für die Facade
+        $search = $request->input('search');   // ← korrekt für die Facade
         $entries = DB::table("images")
             ->whereIn("images.pub", [1, 2])
             ->select("images.created_at AS created_at", "images.*")

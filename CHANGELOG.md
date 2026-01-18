@@ -187,3 +187,4 @@
 ![Version](https://img.shields.io/badge/version-4.29.7-orange) Hotfix - Add functionality to ImageUpload Script (#351)  
 ![Version](https://img.shields.io/badge/version-4.30.0-orange) Feature - summary of individual blog entries (#350)  
 ![Version](https://img.shields.io/badge/version-4.31.5-orange) Feature - Add Text about MCSL-Points on Landing Page (#342)  
+![Version](https://img.shields.io/badge/version-4.32.2-orange) Feature - PictureShow add status of images (#353)  
