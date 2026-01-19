@@ -40,7 +40,7 @@
     imageClasses() {
       return [
         this.awidth,
-        'w-full h-80 object-cover object-center transition-transform duration-300 ease-in-out hover:scale-110',
+        'w-full object-cover object-center transition-transform duration-300 ease-in-out hover:scale-110',
         {
           'grayscale opacity-50': this.grayscale,
         },
