@@ -58,7 +58,7 @@
                 <ul class="list-disc list-inside mt-4 text-left">
                     <li>Bilder bewerten <b>(1 Punkt)</b></li>
                     <li>Kommentare schreiben <b>(3 Punkte)</b></li>
-                    <li>Wörter für Shortpoems vorschlagen <b>(5 Punkte)</b></li>
+                        <li>Wörter für Shortpoems vorschlagen <b>(5 Punkte)</b></li>
                     <li>Newsletter lesen <b>(8 Punkte)</b></li>
                 </ul>
                 Wer mehr wissen will, findet weitere Informationen hier:<br />

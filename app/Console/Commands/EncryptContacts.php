@@ -14,14 +14,14 @@ class EncryptContacts extends Command
     {
         $decrypt = $this->option('decrypt');
 
-        $rows = DB::table('asarios_BLog.private_messages_text')->get();
+        $rows = DB::table('contacts')->get();
         $this->info("Gefundene Datensätze: " . $rows->count());
 
         foreach ($rows as $row) {
             $update = [];
 
             foreach ([
-                'messagep'
+                'Vorname','Nachname','Email','Telefon','Handy',"Strasse",'Plz','Geburtsdatum','ripdate','Kommentar','hasyear','hasryear'
             ] as $field) {
                 if ($decrypt) {
                     $update[$field] = decval($row->$field);
@@ -30,7 +30,7 @@ class EncryptContacts extends Command
                 }
             }
 
-            DB::table('asarios_BLog.private_messages_text')->where('id', $row->id)->update($update);
+            DB::table('contacts')->where('id', $row->id)->update($update);
         }
 
         $this->info($decrypt ? "Alle Kontakte entschlüsselt." : "Alle Kontakte verschlüsselt.");

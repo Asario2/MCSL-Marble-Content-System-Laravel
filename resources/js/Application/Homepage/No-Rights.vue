@@ -1,6 +1,6 @@
 <template class="bg-layout-sun-0 dark:bg-layout-night-0">
 <layout>
-    <MetaHeader title="EXAMPLE" />
+    <MetaHeader title="Zugriff nicht möglich" />
         <div>
         <img :src="'/images/web/mcsl_logo_only.png'" class="mx-auto" style="max-width:500px;min-width:300px;width:100%" />
         <div class="mx-auto text-center" style="max-width: 800px;">

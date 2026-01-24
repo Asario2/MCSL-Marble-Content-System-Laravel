@@ -94,44 +94,15 @@
     </section>
 
     <!-- Pagination -->
-    <div class="flex items-center justify-center flex-wrap mt-6 -mb-1 text-xs md:text-base bg-transparent text-layout-sun-700 dark:text-layout-night-700">
-      <template v-for="(link, index) in items.links" :key="index">
-        <div
-          v-if="!link.url"
-          class="flex items-center px-3 py-0.5 mx-1 mb-1 rounded-md cursor-not-allowed"
-        >
-          <span v-if="link.label === 'pagination.previous'">&laquo; Zurück</span>
-          <span v-else-if="link.label === 'pagination.next'">Weiter &raquo;</span>
-        </div>
-
-        <a
-          v-else-if="link.active"
-          href="#"
-          @click.prevent="$inertia.get(link.url)"
-          class="flex items-center px-2.5 py-0.5 mx-1 mb-1 h-7 transition-colors duration-200 transform rounded-md border border-primary-sun-500 text-primary-sun-900 dark:border-primary-night-500 dark:text-primary-night-900 hover:bg-layout-sun-200 hover:text-layout-sun-800 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-800 font-bold"
-        >
-          <span v-html="link.label"></span>
-        </a>
-
-        <a
-          v-else
-          href="#"
-          @click.prevent="$inertia.get(link.url)"
-          class="flex items-center px-2.5 py-0.5 mx-1 mb-1 h-7 transition-colors duration-200 transform rounded-md border hover:bg-layout-sun-200 hover:text-layout-sun-800 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-800"
-        >
-          <span v-if="link.label === 'pagination.previous'">&laquo; Zurück</span>
-          <span v-else-if="link.label === 'pagination.next'">Weiter &raquo;</span>
-          <span v-else v-html="link.label"></span>
-        </a>
-      </template>
-    </div>
-  </Layout>
+    <Pagination :links="items.links" basePath="shortpoems" />
+    </Layout>
 </template>
 
 <script>
 import Layout from '@/Application/Homepage/Shared/Layout.vue';
 import axios from "axios";
 import { route } from "ziggy-js";
+import Pagination from '@/Application/Components/Pagination.vue';
 import MetaHeader from '@/Application/Homepage/Shared/MetaHeader.vue';
 import newbtn from '@/Application/Components/Form/newbtn.vue';
 import SearchFilter from '@/Application/Components/Lists/SearchFilter.vue';
@@ -145,10 +116,11 @@ import pickBy from "lodash/pickBy";
 import { toastBus } from '@/utils/toastBus';
 import { throttle } from "lodash";
 
+
 export default {
     name:"ShortPoems",
   components: {
-    Layout, MetaHeader, newbtn, SearchFilter, Alert, editbtns, SocialButtons, RatingWrapper,InputFormText,
+    Layout, MetaHeader, newbtn, SearchFilter, Alert, editbtns, SocialButtons, RatingWrapper,InputFormText,Pagination,
   },
   props: {
     items: { type: Object, required: true },
@@ -175,10 +147,16 @@ export default {
       handler: throttle(function () {
         const query = pickBy(this.form, v => v != null && v !== '');
         this.$inertia.get(
-          this.route("home.shortpoems"),
-          Object.keys(query).length ? query : { remember: "forget" },
-          { preserveState: true, preserveScroll: false, replace: true }
+        this.route("home.shortpoems"),
+        query,
+        {
+            preserveState: true,
+            preserveScroll: false,
+            replace: true,
+            skipLoading: true,
+        }
         );
+
       }, 150),
       deep: true
     },

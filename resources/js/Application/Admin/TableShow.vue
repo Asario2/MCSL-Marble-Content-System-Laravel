@@ -132,7 +132,7 @@
                         :src="'/images/_' + SD() + '/users/profile_photo_path/008.jpg'"
                         class="max-w-[24px] max-h-[24px] object-cover rounded-full inline"
                     />
-                    <span class="inline">&nbsp;&nbsp;{{ data.datarow.users || data.datarow.nick }}</span>
+                    <span class="inline">&nbsp;&nbsp;{{ data.datarow.nick || data.datarow.users }}</span>
                     </nobr>
                 </div>
                 </td>

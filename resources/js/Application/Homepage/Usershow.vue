@@ -11,8 +11,8 @@
         :src="users?.profile_photo_path != null ?  '/images/_'+ SD() + '/users/profile_photo_path/' + users?.profile_photo_path.replace('/images/','') : '/images/profile-photos/008.jpg'"
         :alt="users?.name"
         width="480"
-        height="360"
-        style="max-height:380px;"
+        height="480"
+        style="max-height:480px;"
         :class="['object-cover w-full rounded lg:col-span-4 object-cover rounded bg-layout-sun-100 dark:bg-layout-night-100', users?.madewithai ? 'ai-image-corner' : '']"
 
         />
@@ -76,6 +76,15 @@
                     <a v-if="users?.fbd" :href="fbid(users?.fbd)" target="_blank">
                     <span style="background-color:#3b5998;padding:3px;padding: 3px 7px;color:#fff !important" class="lg:rounded">Zu <i class="w-[18px] h-[18px] mr-[-7px] fab fa-facebook-f"></i>acebook</span> </a>
                     <p v-else>keine Angabe</p>
+                </td>
+                </tr>
+                <tr>
+                <th class="pr-4">MCSL-Points:</th>
+                <td>
+                    <p v-if="points">
+                    {{ points }}
+                    </p>
+                    <p v-else>0</p>
                 </td>
                 </tr>
                 <tr>
@@ -150,6 +159,9 @@ export default {
             type:[Array,Object],
             default: {},
         },
+        points:{type:[String,Number],
+            default:0
+        }
     },
     methods: {
         SD,

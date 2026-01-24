@@ -137,7 +137,7 @@ export default {
         this.$inertia.get(
           this.route("home.didyouknow"),
           Object.keys(query).length ? query : { remember: "forget" },
-          { preserveState: true, preserveScroll: false, replace: true }
+          { preserveState: true, preserveScroll: false, replace: true, skipLoading:true }
         );
       }, 150),
       deep: true

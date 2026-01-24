@@ -37,6 +37,7 @@ class RatingController extends Controller
             'rating' => 'required|integer|min:1|max:5',
             'postId' => 'required|integer',
             'table' => 'required|string',
+            "email" => 'nullable|email',
         ]);
 
         $rating = $request->rating;

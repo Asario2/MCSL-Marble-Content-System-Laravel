@@ -1,136 +1,170 @@
 <template>
-        <div v-if="isLoading" id="loader" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-all" style='z-index:999999999'>
-        <div class="text-center">
-            <svg class="animate-spin h-10 w-10 text-primary-sun-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-            </svg>
-            <p class="mt-4 text-primary-sun-100 text-sm">Bitte warten...</p>
-        </div>
-        </div>
-  </template>
+  <div
+    v-if="isLoading"
+    id="loader"
+    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-all"
+    style="z-index:999999999"
+  >
+    <div class="text-center">
+      <svg
+        class="animate-spin h-10 w-10 text-primary-sun-500"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+      </svg>
+      <p class="mt-4 text-primary-sun-100 text-sm">Bitte warten...</p>
+    </div>
+  </div>
+  sdf
+</template>
 
-  <script>
-  import throttle from 'lodash/throttle';
-  import axios from "axios";
-  export default {
-    name: 'Loader',
+<script>
+console.error("🔥 LOADER FILE WIRD GELADEN 🔥");
 
-    data() {
-      return {
-        isLoading: true,
-        pendingRequests: 0,
-        imagesLoaded: false,
-      };
-    },
+import axios from "axios";
 
-    mounted() {
-        const params = new URLSearchParams(window.location.search);
-    const search = params.get("search");
+export default {
+  name: "Loader",
 
-    // Wenn search gesetzt ist, verstecke das Loading-Div
-    if (search && search.trim() !== "") {
-
-      this.isLoading = false;
-      this.loading = false;
-    }
-    else{
-        this.isLoading = true;
-    }
-      this.monitorAxios();
-      this.waitForImagesToLoad();
-//       this.isLoading = true;
-//   setTimeout(() => this.isLoading = false, 3000);
-
-    },
-    watch: {
-    form: {
-      deep: true,
-      handler: throttle(function () {
-        this.loading = true;
-
-        // Entfernt leere Werte
-        const query = pickBy(this.form, (value) => value !== "" && value !== null);
-
-        // Falls kein Wert mehr übrig ist, search explizit auf null setzen
-        const params = Object.keys(query).length
-          ? { ...query, table: this.table }
-          : { search: null, table: this.table };
-
-        // Inertia Request
-        Inertia.get(
-          this.route("admin.tables.show", params),
-          this.form,
-          { preserveState: true, replace: true }
-        );
-
-        this.loading = false;
-      }, 500), // 500ms Throttle
-    },
+  data() {
+     return {
+    isLoading: false,
+    pendingRequests: 0,
+    loadingTimer: null,
+    loaderEnabled: true, // 🔑 DAS IST DER SCHALTER
+  };
   },
 
+  mounted() {
+    console.log("🟢 Loader mounted");
+    this.monitorAxios();
 
-    methods: {
-      setLoading(state) {
-        this.isLoading = state;
-      },
+    // ⏱ Initialen Seitenload nach kurzer Zeit beenden
+    setTimeout(() => {
+    this.loaderEnabled = false;
+    this.pendingRequests = 0;
+    this.hideLoader();
+    console.log("🟢 Initial Load abgeschlossen → Loader deaktiviert");
+  }, 800);
+  },
 
-      checkLoading() {
-        if (this.pendingRequests <= 0 && this.imagesLoaded) {
-          this.setLoading(false);
-        }
-      },
+  methods: {
+    showLoaderWithDelay() {
+      if (!this.loaderEnabled) {
+        console.log("🚫 Loader blockiert (loaderEnabled = false)");
+        return;
+      }
 
-      monitorAxios() {
-        axios.interceptors.request.use((config) => {
-          this.pendingRequests++;
-          this.setLoading(true);
+      if (this.loadingTimer) return;
+
+      console.log("⏳ Loader Delay gestartet");
+
+      this.loadingTimer = setTimeout(() => {
+        console.log("🔵 Loader sichtbar");
+        this.isLoading = true;
+      }, 150);
+    },
+
+    hideLoader() {
+      console.log("🟣 Loader verstecken");
+
+      clearTimeout(this.loadingTimer);
+      this.loadingTimer = null;
+      this.isLoading = false;
+    },
+
+    setLoading(state) {
+      console.log("🔄 setLoading:", state);
+      state ? this.showLoaderWithDelay() : this.hideLoader();
+    },
+
+    checkLoading() {
+      console.log("🔍 checkLoading", this.pendingRequests);
+
+      if (this.pendingRequests <= 0) {
+        this.pendingRequests = 0;
+        this.setLoading(false);
+      }
+    },
+
+    monitorAxios() {
+      axios.interceptors.request.use((config) => {
+        console.log("⬆️ Axios Request", {
+          url: config.url,
+          skipLoading: config.skipLoading,
+          loaderEnabled: this.loaderEnabled,
+        });
+
+        // 🔕 explizit kein Loader
+        if (config.skipLoading === true) {
+          console.log("🔕 skipLoading aktiv → kein Loader");
           return config;
-        });
-
-        axios.interceptors.response.use(
-          (response) => {
-            this.pendingRequests--;
-            this.checkLoading();
-            return response;
-          },
-          (error) => {
-            this.pendingRequests--;
-            this.checkLoading();
-            return Promise.reject(error);
-          }
-        );
-      },
-
-      waitForImagesToLoad() {
-        const images = document.querySelectorAll('img');
-        const totalImages = images.length;
-        let loadedCount = 0;
-
-        if (totalImages === 0) {
-          this.imagesLoaded = true;
-          this.checkLoading();
-          return;
         }
 
-        const onImageLoad = () => {
-          loadedCount++;
-          if (loadedCount === totalImages) {
-            this.imagesLoaded = true;
+        if (!this.loaderEnabled) {
+          console.log("🚫 Loader global deaktiviert");
+          return config;
+        }
+
+        this.pendingRequests++;
+        console.log("➕ pendingRequests:", this.pendingRequests);
+
+        this.setLoading(true);
+        return config;
+      });
+
+      axios.interceptors.response.use(
+        (response) => {
+          if (!response.config?.skipLoading && this.loaderEnabled) {
+            this.pendingRequests--;
+            console.log("⬇️ Axios Response", {
+              url: response.config.url,
+              pending: this.pendingRequests,
+            });
             this.checkLoading();
           }
-        };
-
-        images.forEach((img) => {
-          if (img.complete) {
-            onImageLoad();
-          } else {
-            img.addEventListener('load', onImageLoad);
-            img.addEventListener('error', onImageLoad);
+          return response;
+        },
+        (error) => {
+          if (!error.config?.skipLoading && this.loaderEnabled) {
+            this.pendingRequests--;
+            console.log("❌ Axios Error", {
+              url: error.config?.url,
+              pending: this.pendingRequests,
+            });
+            this.checkLoading();
           }
-        });
-      },
-    }
-  };
-  </script>
+          return Promise.reject(error);
+        }
+      );
+    },
+        monitorInertia() {
+      console.log("🟣 monitorInertia aktiviert");
 
+      Inertia.on("start", (event) => {
+        const skip = event.detail?.visit?.skipLoading;
+        console.log("🚀 Inertia start", { skip });
+
+        if (skip || !this.initialLoadDone) return;
+
+        this.pendingRequests++;
+        this.showLoaderWithDelay();
+      });
+
+      Inertia.on("finish", (event) => {
+        const skip = event.detail?.visit?.skipLoading;
+        console.log("🏁 Inertia finish", { skip });
+
+        if (skip || !this.initialLoadDone) return;
+
+        this.pendingRequests--;
+        this.checkLoading();
+      });
+    },
+
+  },
+};
+</script>

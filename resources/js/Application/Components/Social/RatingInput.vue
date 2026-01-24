@@ -13,7 +13,7 @@
         <IconStar wi="24" he="24" />
       </span>
     </div>
-
+    <NoLogin v-if="!AID" v-model="form"></NoLogin>
     <p v-if="rating > 0">Du hast {{ rating }} Sterne bewertet</p>
   </div>
 </template>
@@ -22,13 +22,17 @@
 import axios from "axios";
 import IconStar from "@/Application/Components/Icons/IconStar.vue";
 import { CleanTable } from "@/helpers";
+import  NoLogin  from '@/Application/Components/Social/NoLogin.vue';
 import { toastBus } from "@/utils/toastBus";
 import { ratingBus } from "@/utils/ratingBus";
 import { route } from "ziggy-js";
 
 export default {
   name: "RatingInput",
-  components: { IconStar },
+  components: { IconStar,
+
+    NoLogin,
+   },
 
   props: {
     postId: { type: Number, required: true },
@@ -39,29 +43,53 @@ export default {
     return {
       rating: 0,
       hoverRating: 0,
+      AID: true,
+      form: {
+      name: null,
+      email: null,
+      password: null
+    },
+     emailValid: true,
+
     };
   },
-
+  mounted(){
+    this.AID = window.authid ?? true;
+    console.log("em:" + this?.form?.email);
+    console.log(this);
+  },
   methods: {
     async setRating(star) {
-      this.rating = star;
-      await this.saveRating(star);
-    },
+    this.rating = star;
 
-    async saveRating(star) {
-        try {
-            const res = await axios.post("/save-rating", {
-            rating: star,
-            postId: this.postId,
-            table: CleanTable(),
-            },
-            {
-                requiresAuth: true, // <- Hier richtig in config
-            }, {
-  headers: {
-    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-  }
-        });
+    // Validation:
+    if (!this.validateEmail(this.form.email)) {
+        this.emailValid = false;
+        window.toastBus.emit({message:"Bitte gib eine gültige Email ein, bevor du bewertest.",type:"error"});
+        return;
+    }
+
+    this.emailValid = true;
+    await this.saveRating(star);
+    },
+    validateEmail(email) {
+    if (!email) return false;
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  },
+
+async saveRating(star) {
+  try {
+    const res = await axios.post("/save-rating", {
+      rating: star,
+      postId: this.postId,
+      table: CleanTable(),
+      email: this.form.email   // <-- hier
+    }, {
+      requiresAuth: true,
+      headers: {
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      }
+    });
         // 🔁 Rating neu laden (andere Komponenten)
         ratingBus.emit("rating-updated", {
         postId: this.postId,
@@ -82,10 +110,7 @@ export default {
     } catch (e) {
         // 🔐 NICHT EINGELOGGT
         if (e.response?.status === 401) {
-        const currentUrl = window.location.href;
 
-        window.location.href =
-            route("login") + "?redirect=" + encodeURIComponent(currentUrl);
         return;
         }
 

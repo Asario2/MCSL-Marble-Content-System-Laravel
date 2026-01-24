@@ -103,6 +103,8 @@ GlobalController::SetDomain();
         Route::get('/auth/nickname', function () {
             return inertia('Admin/nickname');
         })->name('auth.nickname');
+
+        Route::post('/api/login-silent', [CustomLoginController::class, 'loginSilent']);
         Route::get("/admin/mcslpoints/{users_id?}",[MCSLPointsController::class,"admin_index"])->name("admin.mcslpoints");
         Route::get("/api/user/rights",[RightsController::class,"GetRights_all"])->name("GetRights_all");
         Route::post('/api/contact/send',[CommentController::class,"sendmc"]);
@@ -453,8 +455,9 @@ Route::get('/GetUserNull', [TablesController::class, 'GetUserNull'])->name('GetU
 
 Route::post('/save-image/{table}', [ImageUploadController::class, 'save'])->name('save.image');
 Route::get('/comments/{table}/{postId}', [CommentController::class, 'fetchComments'])->name('comments.fetch');
+Route::post('/save-rating', [RatingController::class, 'saveRating']);
 Route::middleware(['auth'])->group(function () {
-    Route::post('/save-rating', [RatingController::class, 'saveRating'])->middleware('auth');
+
 });
 Route::get('/get-rating/{table}/{postId}', [RatingController::class, 'getStars']);
 Route::get('/get-average-rating/{table}/{postId}', [RatingController::class, 'getAverageRating']);
@@ -492,6 +495,9 @@ Route::get('/devmod', function () {
     Route::post('/toggle-pub', [TablesController::class, 'togglePub'])->name('toggle.pub');
     Route::get('tables/{table}/create', [TablesController::class, 'createEntryForm'])->name('tables.create-table');
     Route::post('/comments/store/{table}/{postId}', [CommentController::class, 'store_alt'])->name('comments.store_alt');
+
+
+
     Route::post('/comments/{table}/{id}', [CommentController::class, 'store'])->name('comments.store');
 
     Route::get('/api/admin_table_positions', [RightsController::class,"GetTables_posi"])->name("GetTablesPosi");
@@ -626,7 +632,12 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         // Laravel-Log-Datei
         // =================
         // Display Log-Datei
-        Route::get('/admin/laravel_log', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index'])->name('admin.laravel_log');
+        Route::middleware(['auth', 'right:LogViewer'])->group(function () {
+            Route::get(
+                '/admin/laravel_log',
+                [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']
+            )->name('admin.laravel_log');
+        });
         // ========
         // Handbook
         // ========
@@ -705,8 +716,9 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 
         Route::get('/admin', function () {
-            return Redirect::route('admin.dashboard');
+            return redirect()->route('admin.dashboard');
         })->name('admin.redirect.route');
+
         Route::get('/hasCreated/{table}',[RightsController::class,"HasCreated"])->name('hasCreated');
 
 

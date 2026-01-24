@@ -65,6 +65,25 @@ if (token) {
 axios.defaults.withCredentials = true;
 
 
+
+let pendingRequests = 0;
+
+const showLoader = () => window.dispatchEvent(new CustomEvent("loader:show"));
+const hideLoader = () => window.dispatchEvent(new CustomEvent("loader:hide"));
+
+Inertia.on("start", (event) => {
+  const skip = event.detail?.visit?.skipLoading;
+  if (skip) return;
+  window.dispatchEvent(new CustomEvent("loader:show"));
+});
+
+Inertia.on("finish", (event) => {
+  const skip = event.detail?.visit?.skipLoading;
+  if (skip) return;
+  window.dispatchEvent(new CustomEvent("loader:hide"));
+});
+
+
 // Rechte laden und App starten
 loadAllRights().then(() => {
     const appName = window.app_name || "Starter Eleven";

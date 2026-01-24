@@ -96,9 +96,9 @@ class CommentController extends Controller
         $user = DB::table("users")->where("id",Auth()->id())->select("email","name")->first();
         // Kommentar erstellen und in der Datenbank speichern
         // \Log::info("USAH".json_encode($user));
-        if (!auth()->check()) {
-            return response()->json(['redirect' => route('login')]);
-        }
+        // if (!auth()->check()) {
+        //     return response()->json(['redirect' => route('login')]);
+        // }
         $pgo = $table;
         if($table == "pictures")
         {
@@ -120,20 +120,22 @@ class CommentController extends Controller
         $comment->content = $request->input('comment2') ?? $request->comment;
         $comment->content = strip_tags($comment->content, '<br>');
         $comment->admin_table_id = $this->GetTid($table_alt);
-        $comment->users_id = auth()->id(); // Beispiel für Benutzer-ID
+        $comment->users_id = auth()->id() ?? "7"; // Beispiel für Benutzer-ID
 
         $comment->created_at = $now;
         $comment->updated_at = $now;
-        $comment->email = @$user->email;
-        $comment->nick = Auth::user()->name;
+        $comment->email = @$request->email ?? $user->email;
+        $comment->nick = Auth::user()->name ?? $request->name;
         $comment->post_id = $request->post_id;
         $comment->save();
         $gnow = DB::table($table)->where("id",$request->post_id)->pluck("created_at");
         $gnow = str_replace(array('["','"]'),'',$gnow);
         $cid = $comment->id;
         $nick = '';
-        $nick = $user->name;
+        \Log::info($request->all());
+        $nick = $comment->nick;
         $content = '';
+
         $content = $comment->content;
         // $MailHelper = NEW MailHelper();
         Mail::to('parie@gmx.de')->send(
@@ -156,7 +158,7 @@ class CommentController extends Controller
             'id' => $cid,
             'author' => $nick,
             'content' => $content,   // 👈 wichtig: gleiche Benennung wie im Frontend
-            "profile_photo_path" => Auth::user()->profile_photo_path,
+            "profile_photo_path" => Auth::user()->profile_photo_path ?? "008.jpg",
             'created_at' => $now,
         ]
     ]);
@@ -250,9 +252,9 @@ class CommentController extends Controller
     }
      public function store(Request $request,$table='')
     {
-        if (!auth()->check()) {
-            return response()->json(['redirect' => route('login')]);
-        }
+        // if (!auth()->check()) {
+        //     return response()->json(['redirect' => route('login')]);
+        // }
         // Validierung des Eingabewerts
         $request->validate([
             'comment' => 'required|string|max:1000', // Maximale Länge kann angepasst werden
@@ -537,7 +539,7 @@ class CommentController extends Controller
         DB::enableQueryLog();
             $comments = Comment::where('post_id', $postId)
             ->leftJoin('users', 'comments.users_id', '=', 'users.id')
-            ->select("comments.*", "users.profile_photo_path", "users.name as author")
+            ->select("comments.*", "users.profile_photo_path", "comments.nick as author")
             ->where("admin_table_id",$this->GetTid($table_alt))
             ->orderBy("id","DESC")->latest()->get();
             // \Log::info(DB::getQueryLog());

@@ -17,7 +17,7 @@
         <div class="flex-1 pr-14">
           <p class="text-sm flex items-center gap-2 mxy">
             {{ comment?.author ?? comment?.nick}}
-            <span @click="confirmDelete(comment?.id)" class="text-red-500 cursor-pointer hover:text-red-700">
+            <span v-if="AID" @click="confirmDelete(comment?.id)" class="text-red-500 cursor-pointer hover:text-red-700">
               <IconTrash class="w-4 h-4" />
             </span>
           </p>
@@ -47,7 +47,7 @@
     :name="postId"
     @update:comment="newComment = $event"
     />
-
+    <NoLogin v-if="!AID" v-model="form" :nick="false"></NoLogin>
     <button
       @click="submitComment"
       class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
@@ -59,192 +59,233 @@
 </div>
 
 
-            </template>
+        </template>
 
-            <script>
-            import axios from "axios";
-            import { useLoadingStore } from '@/loading';
+        <script>
+        import axios from "axios";
+        import { useLoadingStore } from '@/loading';
 
-            import IconComment from "@/Application/Components/Icons/IconComment.vue";
-            import SmiliesBox from "@/Application/Components/Social/SmiliesBox.vue";
-            import IconTrash from "@/Application/Components/Icons/Trash.vue";
-            import { toastBus } from '@/utils/toastBus';
+        // import IconComment from "@/Application/Components/Icons/IconComment.vue";
+        import SmiliesBox from "@/Application/Components/Social/SmiliesBox.vue";
+        import IconTrash from "@/Application/Components/Icons/Trash.vue";
+        import  NoLogin  from '@/Application/Components/Social/NoLogin.vue';
 
-            import { CleanTable_alt, replaceSmilies,SD } from '@/helpers';
-            export default {
+        import { CleanTable_alt, replaceSmilies,SD } from '@/helpers';
+        export default {
 
-                components: {
-                IconComment,
-                IconTrash,
-                SmiliesBox,
+        components: {
+        NoLogin,
+        IconTrash,
+        SmiliesBox,
 
-            },
+        },
 
 
-                props: {
-                    showComments: Number,
-                postId: Number,
-                table: String,
-                // Die ID des Posts, zu dem Kommentare geladen werden
-                },
-                setup() {
-                    const loadingStore = useLoadingStore();
+        props: {
+        showComments: Number,
+        postId: Number,
+        table: String,
+        // Die ID des Posts, zu dem Kommentare geladen werden
+        },
+        setup() {
+        const loadingStore = useLoadingStore();
 
-                    async function loadComments() {
-                    loadingStore.setLoading(true);
-                    // Simuliere Ladevorgang
-                    await new Promise(resolve => setTimeout(resolve, 0));
-                    loadingStore.setLoading(false);
-                    }
+        async function loadComments() {
+        loadingStore.setLoading(true);
+        // Simuliere Ladevorgang
+        await new Promise(resolve => setTimeout(resolve, 0));
+        loadingStore.setLoading(false);
+        }
 
-                    return {
-                    loadComments,
-                    };
-                },
+        return {
+        loadComments,
+        };
+        },
+        data() {
+        return {
+        form: {
+        name: null,
+        email: null,
+        password: null,
+        },
+        logged:false,
+        comments: [],
+        newComment: "", // Eingabefeld für neuen Kommentar
+        defaultAvatar: "/images/default_avatar.png", // Fallback-Profilbild
+        comment: "",
+        AID: true,
+        };
+        },
+        async mounted() {
+        this.logged = await this.loginSilent();
+        this.AID = window.authid ?? true;
+        this.LoadCom();
+        await this.fetchComments();
+        document.querySelectorAll("textarea").forEach((textarea) => {
+        textarea.addEventListener("click", function(event) {
+        event.stopPropagation(); // Verhindert, dass der Link ausgelöst wird
+        });
 
-                data() {
-                return {
-                    comments: [],
-                    newComment: "", // Eingabefeld für neuen Kommentar
-                    defaultAvatar: "/images/default_avatar.png", // Fallback-Profilbild
-                    comment: "",
-                };
-                },
-                async mounted() {
-                    this.LoadCom();
-                await this.fetchComments();
-                document.querySelectorAll("textarea").forEach((textarea) => {
-                textarea.addEventListener("click", function(event) {
-                    event.stopPropagation(); // Verhindert, dass der Link ausgelöst wird
-                });
+        textarea.addEventListener("keydown", function(event) {
+        event.stopPropagation();
+        if (event.key === "Enter") {
+        event.preventDefault(); // Verhindert Absenden mit Enter
+        }
+        });
+        });
+        },
+        methods: {
+        SD,
+        handleEnter() {
+        this.$nextTick(() => {
+            this.submitComment();
+        });
+        },
+        smilies(text){
+        return replaceSmilies(this.nl2br(text));
+        },
+        nl2br(text){
+        return text?.replace(/\n/g,"<br />");
+        },
+        LoadCom(){
+        localStorage.setItem("loading", "true");
+        },
+        insertNewline(event) {
+        // Erlaubt Zeilenumbruch bei Shift+Enter
+        const textarea = event.target;
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        this.newComment =
+        this.newComment.substring(0, start) +
+        "\n" +
+        this.newComment.substring(end);
+        this.$nextTick(() => {
+        textarea.selectionStart = textarea.selectionEnd = start + 1;
+        });
+        },
 
-                textarea.addEventListener("keydown", function(event) {
-                    event.stopPropagation();
-                    if (event.key === "Enter") {
-                        event.preventDefault(); // Verhindert Absenden mit Enter
-                    }
-                });
-                });
-                },
-                methods: {
-                    SD,
-                    handleEnter() {
-                        this.$nextTick(() => {
-                            this.submitComment();
-                        });
-                    },
-                    smilies(text){
-                        return replaceSmilies(this.nl2br(text));
-                    },
-                nl2br(text){
-                    return text?.replace(/\n/g,"<br />");
-                },
-                LoadCom(){
-                    localStorage.setItem("loading", "true");
-                },
-            insertNewline(event) {
-                // Erlaubt Zeilenumbruch bei Shift+Enter
-                const textarea = event.target;
-                const start = textarea.selectionStart;
-                const end = textarea.selectionEnd;
-                this.newComment =
-                    this.newComment.substring(0, start) +
-                    "\n" +
-                    this.newComment.substring(end);
-                this.$nextTick(() => {
-                    textarea.selectionStart = textarea.selectionEnd = start + 1;
-                });
-            },
+        async confirmDelete(commentId) {
+        if (!confirm("Möchtest du diesen Kommentar wirklich löschen?")) return;
 
-                    async confirmDelete(commentId) {
-                        if (!confirm("Möchtest du diesen Kommentar wirklich löschen?")) return;
+        try {
+        await axios.delete(`/comments/delete/${commentId}`);
+        this.comments = this.comments.filter(comment => comment.id !== commentId); // Kommentar aus Liste entfernen
+        } catch (error) {
+        console.error("Fehler beim Löschen des Kommentars:", error);
+        }
+        },
+        cleanPath() {
+        const searchableTables = ["images", "blogs", "didyouknow","shortpoems"]; // Dein `Settings::$searchable`
+        const parts = window.location.pathname.split("/"); // Teile die URL in Segmente auf
 
-                        try {
-                        await axios.delete(`/comments/delete/${commentId}`);
-                        this.comments = this.comments.filter(comment => comment.id !== commentId); // Kommentar aus Liste entfernen
-                        } catch (error) {
-                        console.error("Fehler beim Löschen des Kommentars:", error);
-                        }
-                    },
-                    cleanPath() {
-                        const searchableTables = ["images", "blogs", "didyouknow","shortpoems"]; // Dein `Settings::$searchable`
-                        const parts = window.location.pathname.split("/"); // Teile die URL in Segmente auf
+        let table = null;
+        let table_alt = null;
 
-                        let table = null;
-                        let table_alt = null;
+        for (const ta of searchableTables) {
+            if (parts.includes(ta)) {
+                table = ta;
+                table_alt = ta;
 
-                        for (const ta of searchableTables) {
-                            if (parts.includes(ta)) {
-                                table = ta;
-                                table_alt = ta;
+                // GET-Parameter setzen
+                const urlParams = new URLSearchParams(window.location.search);
 
-                                // GET-Parameter setzen
-                                const urlParams = new URLSearchParams(window.location.search);
+                // console.log("Gefunden:", table);
+                return table;
+            }
+        }
 
-                                // console.log("Gefunden:", table);
-                                return table;
-                            }
-                        }
+        },
 
-                    },
+        // Beispiel
+        // const path = "/admin/tables/show/Example/123/create/456/search";
+        // const cleanedPath = cleanPath(path);
 
-                    // Beispiel
-                    // const path = "/admin/tables/show/Example/123/create/456/search";
-                    // const cleanedPath = cleanPath(path);
+        // console.log(cleanedPath); // Ausgabe: "/Example"
 
-                    // console.log(cleanedPath); // Ausgabe: "/Example"
-
-                    async fetchComments() {
-                        try {
-                            var table = CleanTable_alt() || "blogs";
-                            const response = await axios.get(`/comments/${table}/${this.postId}`);
-    //                         console.log("fetchComments Antwort:", response.data);
-                            this.comments = Array.isArray(response.data) ? response.data : [];
-                        } catch (error) {
-                            console.error("Fehler beim Laden der Kommentare:", error);
-                        }
-                    },
+        async fetchComments() {
+        try {
+            var table = CleanTable_alt() || "blogs";
+            const response = await axios.get(`/comments/${table}/${this.postId}`);
+        //                         console.log("fetchComments Antwort:", response.data);
+            this.comments = Array.isArray(response.data) ? response.data : [];
+        } catch (error) {
+            console.error("Fehler beim Laden der Kommentare:", error);
+        }
+        },
         toggleCommentBox(){
             this.showComments = !this.showComments;
             this.imageRemove(this.postId);
         },
-
-        async submitComment() {
-        const content = this.newComment.trim();
-
-        if (!content) return; // jetzt auch nur Smiley-Codes funktionieren
-
-        try {
-            const table = CleanTable_alt() || "blogs";
-            const response = await axios.post(`/comments/store/${table}/${this.postId}`, {
-            post_id: this.postId,
-            comment: content,
-            _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            });
-
-            if (response.data.status === "success") {
-            // Kommentar in Liste anzeigen
-            this.comments.unshift(response.data.comment);
-
-            // Textarea leeren
-            this.newComment = "";
-            document.getElementById("editor_" + this.postId).value = "";
-            }
-            window.toastBus.emit( {
-                    status: 'points',          // success, info, warning, error
-                    message: 'Du hast 3 MCSL Points gesammelt'
-                });
-            if (response.data.redirect) {
-            window.location.href = response.data.redirect;
+async loginSilent() {
+    try {
+        if(!this.form.password){
             return;
-
-            }
-        } catch (error) {
-            console.error("Fehler beim Speichern des Kommentars:", error);
         }
-        },
+      const res = await axios.post('/api/login-silent', {
+        email: this.form.email,
+        password: this.form.password
+      }, {
+        withCredentials: true // <-- VERY IMPORTANT
+      });
 
-        },
+      this.users_id = res.data.user_id;
+      return true;
+    } catch (e) {
+      console.error('Login failed', e);
+      return false;
+    }
+  },
+  addToast(){
+
+        window.toastBus.emit({
+        status: 'points',
+        message: 'Du hast 3 MCSL Points gesammelt',
+    })
+
+  },
+       async submitComment() {
+        const loggedIn = await this.loginSilent();
+        console.log(loggedIn);
+  const content = this.newComment.trim()
+  if (!content) return
+
+  try {
+    // Silent Login nur wenn Passwort gesetzt
+    if (this.form.password) {
+      await axios.post('/api/login-silent', {
+        email: this.form.email,
+        password: this.form.password,
+      });
+      this.fetchComments();
+      this.addToast();
+    }
+
+    const table = CleanTable_alt() || 'blogs'
+
+    const response = await axios.post(`/comments/store/${table}/${this.postId}`, {
+      post_id: this.postId,
+      comment: content,
+      name: this.form.name,      // <-- hier jetzt name
+      email: this.form.email,
+      _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+    })
+
+    if (response.data.status === 'success') {
+      this.comments.unshift(response.data.comment)
+      this.newComment = ''
+      const editor = document.getElementById('editor_' + this.postId)
+      if (editor) editor.value = ''
+    }
+      if (response.data.redirect) {
+      window.location.href = response.data.redirect
+      return
+    }
+  } catch (error) {
+    console.error('Fehler beim Login oder Speichern des Kommentars:', error)
+  }
+
+}
+                }
         };
             </script>
     <style scoped>

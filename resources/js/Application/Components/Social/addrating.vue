@@ -20,11 +20,14 @@
 
  <script>
   import axios from "axios";
-  import { CleanTable, checkAuthAndRedirect,GetAuth } from '@/helpers';
-  import { toastBus } from '@/utils/toastBus';
-  import {route} from 'ziggy-js';
+  import { CleanTable,
+     //checkAuthAndRedirect,
+     GetAuth } from '@/helpers';
+//   import { toastBus } from '@/utils/toastBus';
+//   import {route} from 'ziggy-js';
   import IconStar from "@/Application/Components/Icons/IconStar.vue";
   export default {
+    name: "AddRating",
     components: {
 
     IconStar,
@@ -44,11 +47,13 @@
       // Bewertung setzen und speichern
       async setRating(star) {
         this.rating = star;
+
         await this.saveRating(star);
       },
 
       // Bewertung in die Datenbank speichern
       async saveRating(star) {
+
         try {
              if(GetAuth() !== true)
              {
@@ -57,26 +62,26 @@
                 // return;
              }
 
-            if (await checkAuthAndRedirect() === "login") {
+             if(GetAuth === true || this.email){
 
-                // location.href = route('login');
-                // return;
-            } else {
+
                 const table = CleanTable();
                 await axios.post("/save-rating", {
                     rating: star,
                     postId: this.postId,
                     table: table,
+                    email: this.email,
                     _token: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
                 });
                 //window.location.hash = '#st' + this.postId;
 
-            }
+
             window.toastBus.emit( {
                     status: 'points',          // success, info, warning, error
                     message: 'Du hast 1 MCSL Point gesammelt'
                 });
                 // window.location.reload();
+                }
 
         } catch (error) {
           console.error("Fehler beim Speichern der Bewertung:", error.response?.data || error);
@@ -109,6 +114,7 @@
 },
     mounted() {
       this.fetchRating(); // Abrufen der vorhandenen Bewertung beim Laden der Seite
+      console.log("em:" + this.email);
     },
   };
   </script>

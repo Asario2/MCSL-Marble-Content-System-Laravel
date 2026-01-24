@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Pagination\Paginator;
 use Auth;
 use ZipArchive;
 use App\Http\Controllers\Controller;
@@ -562,7 +563,9 @@ public function ShowTable(Request $request, $table_alt = null)
             $selects[] = "{$table}.{$col}";
         }
     }
-
+        Paginator::currentPageResolver(function () use ($request) {
+            return $request->input('page', 1);
+        });
     $query = DB::table($table)->select($selects);
 
     foreach ($joins as $relatedTable => $join) {
@@ -1668,6 +1671,9 @@ public function ShowTable(Request $request, $table_alt = null)
         {
             $perPage = $_GET['page']*$perPage;
         }
+          Paginator::currentPageResolver(function () use ($request) {
+            return $request->input('page', 1);
+        });
         $data = DB::table($table)->select($columns)->orderBy($ord[0], $ord[1])->paginate($perPage);
         $tables = DB::table('admin_table')->select('name', 'description')->orderby("position","ASC")->get();
 
@@ -2438,7 +2444,7 @@ $data = DB::table('contacts')
     ->get()
     ->map(function ($item) {
         foreach ($item as $key => $value) {
-            $item->$key = decval($value); // 🔐 jede Spalte entschlüsseln
+            $item->$key = decval(decval($value)); // 🔐 jede Spalte entschlüsseln
         }
         return $item;
     });

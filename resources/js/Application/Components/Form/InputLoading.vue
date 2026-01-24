@@ -9,7 +9,7 @@
                 role="status"
                 class="mr-2 min-w-8 min-h-8 w-8 h-8 text-blue-400 dark:text-sky-700 animate-spin fill-sky-800 dark:fill-sky-200"
                 viewBox="0 0 100 100"
-               
+
                 xmlns="http://www.w3.org/2000/svg"
             >
                 <path
@@ -21,7 +21,7 @@
                     fill="currentFill"
                 />
             </svg>
-            <div class="ml-2">{{ loadingText }}</div>
+            <div class="ml-2">{{ loadingText }}dsfsds</div>
         </div>
     </div>
 </template>

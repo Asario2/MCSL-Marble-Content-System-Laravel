@@ -18,6 +18,7 @@ vendor/
 !README.md
 *.sh
 *.ps1
+**/dataset/**
 *.yml
 **/phpmyadmin/**
 **/new_phpmyadmin/**

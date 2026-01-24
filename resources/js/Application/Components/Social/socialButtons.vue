@@ -1,4 +1,4 @@
-<template>
+f<template>
     <div :class="['w-full h-full mt-2',big ? 'zi2' : '']" style="z-index:1000 !important;">
         <table :class="['w-full border-collapse mx-auto justify-center rounded-lg shadow-sm table-class', nostars ? 'NSMaTable' : 'MaTable']" style="max-width:300px;margin-bottom:0px;z-index:1000;" @click.stop>
             <tbody>

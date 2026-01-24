@@ -9,6 +9,7 @@
         "devrabiul/laravel-cookie-consent": "^1.1",
         "inertiajs/inertia-laravel": "^1.0",
         "intervention/image": "^3.11",
+        "jenssegers/imagehash": "^0.11.0",
         "laravel/framework": "^11.0",
         "laravel/jetstream": "^5.0",
         "laravel/sanctum": "^4.0",

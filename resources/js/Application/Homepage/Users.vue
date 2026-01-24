@@ -60,41 +60,7 @@
     </div>
 </div> <!-- ← das ist die einzig notwendige schließende div -->
 
-                <!-- Pagination -->
-                <div class="flex items-center justify-center flex-wrap mt-6 -mb-1 text-xs md:text-base bg-transparent text-layout-sun-700 dark:text-layout-night-700">
-                    <template v-for="(link, index) in users.links" :key="index">
-                        <!-- Deaktivierte Links -->
-                        <div
-                            v-if="!link.url"
-                            class="flex items-center px-3 py-0.5 mx-1 mb-1 rounded-md cursor-not-allowed"
-                        >
-                            <span v-if="link.label === 'pagination.previous'">&laquo; Zurück</span>
-                            <span v-else-if="link.label === 'pagination.next'">Weiter &raquo;</span>
-                            <span v-else v-html="link.label"></span>
-                        </div>
-
-                        <!-- Aktive Seite -->
-                        <a
-                            v-else-if="link.active"
-                            :href="link.url"
-                            class="flex items-center px-2.5 py-0.5 mx-1 mb-1 h-7 transition-colors duration-200 transform rounded-md border border-primary-sun-500 text-primary-sun-900 dark:border-primary-night-500 dark:text-primary-night-900 hover:bg-layout-sun-200 hover:text-layout-sun-800 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-800 font-bold"
-                        >
-                            <span v-html="link.label"></span>
-                        </a>
-
-                        <!-- Normale Links -->
-                        <a
-                            v-else
-                            :href="link.url"
-                            class="flex items-center px-2.5 py-0.5 mx-1 mb-1 h-7 transition-colors duration-200 transform rounded-md border hover:bg-layout-sun-200 hover:text-layout-sun-800 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-800"
-                        >
-                            <span v-if="link.label === 'pagination.previous'">&laquo; Zurück</span>
-                            <span v-else-if="link.label === 'pagination.next'">Weiter &raquo;</span>
-                            <span v-else v-html="link.label"></span>
-                        </a>
-                    </template>
-                </div>
-
+<Pagination :links="users.links" :basePath="'users/'"/>
 
         </section>
     </layout>
@@ -105,7 +71,7 @@ import { defineComponent } from "vue";
 import newbtn from "@/Application/Components/Form/newbtn.vue";
 import Layout from "@/Application/Homepage/Shared/Layout.vue";
 import PageTitle from "@/Application/Components/Content/PageTitle.vue";
-import BlogPreviewBig from "@/Application/Homepage/Shared/BlogPreviewBig.vue";
+// import BlogPreviewBig from "@/Application/Homepage/Shared/BlogPreviewBig.vue";
 import UserPreviewSmall from "@/Application/Homepage/Shared/UserPreviewSmall.vue";
 import SearchFilter from "@/Application/Components/Lists/SearchFilter.vue";
 import Alert from "@/Application/Components/Content/Alert.vue";
@@ -113,14 +79,15 @@ import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import mapValues from "lodash/mapValues";
 import pickBy from "lodash/pickBy";
 import throttle from "lodash/throttle";
-
+import Pagination from "@/Application/Components/Pagination.vue";
 export default defineComponent({
     name: "Homepage_BlogList",
 
     components: {
         Layout,
         PageTitle,
-        BlogPreviewBig,
+        // BlogPreviewBig,
+        Pagination,
         UserPreviewSmall,
         SearchFilter,
         Alert,
@@ -170,6 +137,7 @@ export default defineComponent({
                     {
                         preserveState: true,
                         replace: true,
+                        skipLoading: true,
                     },
                 );
             }, 150),
@@ -178,17 +146,7 @@ export default defineComponent({
         },
     },
     mounted() {
-        const params = new URLSearchParams(window.location.search);
-    const search = params.get("search");
 
-    // Wenn search gesetzt ist, verstecke das Loading-Div
-    if (search && search.trim() !== "") {
-
-      this.isLoading = false;
-    }
-    else{
-        this.isLoading = true;
-    }
 },
     methods: {
         reset() {

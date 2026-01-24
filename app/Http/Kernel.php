@@ -67,6 +67,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'cookie.domain' => \App\Http\Middleware\SetCookieConsentDomain::class,
         'is_admin' => \App\Http\Middleware\IsAdmin::class,
+         'right' => \App\Http\Middleware\CheckRight::class,
 
     ];
     protected $middlewareAliases = [

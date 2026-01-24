@@ -122,39 +122,8 @@
 </div>
 
 <!-- Pagination -->
-<div class="flex items-center justify-center flex-wrap mt-6 -mb-1 text-xs md:text-base bg-transparent text-layout-sun-700 dark:text-layout-night-700">
-                    <template v-for="(link, index) in entries.links" :key="index">
-                        <!-- Deaktivierte Links -->
-                        <div
-                            v-if="!link.url"
-                            class="flex items-center px-3 py-0.5 mx-1 mb-1 rounded-md cursor-not-allowed"
-                        >
-                            <span v-if="link.label === 'pagination.previous'">&laquo; Zurück</span>
-                            <span v-else-if="link.label === 'pagination.next'">Weiter &raquo;</span>
-                            <span v-else v-html="link.label"></span>
-                        </div>
+<Pagination :links="entries.links" :basePath="this.ocont.slug + '/'"/>
 
-                        <!-- Aktive Seite -->
-                        <a
-                            v-else-if="link.active"
-                            :href="link.url"
-                            class="flex items-center px-2.5 py-0.5 mx-1 mb-1 h-7 transition-colors duration-200 transform rounded-md border border-primary-sun-500 text-primary-sun-900 dark:border-primary-night-500 dark:text-primary-night-900 hover:bg-layout-sun-200 hover:text-layout-sun-800 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-800 font-bold"
-                        >
-                            <span v-html="link.label"></span>
-                        </a>
-
-                        <!-- Normale Links -->
-                        <a
-                            v-else
-                            :href="link.url + '&search=' + searchterm"
-                            class="flex items-center px-2.5 py-0.5 mx-1 mb-1 h-7 transition-colors duration-200 transform rounded-md border hover:bg-layout-sun-200 hover:text-layout-sun-800 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-800"
-                        >
-                            <span v-if="link.label === 'pagination.previous'">&laquo; Zurück</span>
-                            <span v-else-if="link.label === 'pagination.next'">Weiter &raquo;</span>
-                            <span v-else v-html="link.label"></span>
-                        </a>
-                    </template>
-                </div>
 </div>
 
     </layout>
@@ -164,7 +133,7 @@
 import Layout from "@/Application/Homepage/Shared/Layout.vue";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import PhotoSwipeLightbox from 'photoswipe/dist/photoswipe-lightbox.esm.js';
-// import PhotoSwipe from 'photoswipe/dist/photoswipe.esm.js';
+import Pagination from "@/Application/Components/Pagination.vue";
 import 'photoswipe/dist/photoswipe.css'
 import {stripTags} from "@/helpers";
 import ZoomImage from "@/Application/Components/Content/ZoomImage.vue";
@@ -195,6 +164,7 @@ export default {
   components: {
     Layout,
     MetaHeader,
+    Pagination,
     ZoomImage,
     SocialButtons,
     RatingWrapper,
@@ -247,21 +217,38 @@ export default {
     };
   },
   watch: {
-    form: {
-      handler: throttle(function () {
-        const query = pickBy(this.form);
+  'form.search': throttle(function () {
+    this.$inertia.get(
+      this.route('home.images.gallery', {
+        slug: this.ocont.slug,
+    }),
+      { search: this.form.search },
+      {
+        preserveState: true,
+        replace: true,
+        skipLoading:true,
+      }
+    );
+  }, 300),
 
-        this.$inertia.get(
-          this.route('home.images.gallery', { slug: this.CleanTable() }),
-          query,
-          {
-            preserveState: true,
-            replace: true,
-          }
-        );
-      }, 150),
-      deep: true,
-    },
+
+//   'form.search': throttle(function (val) {
+//     this.$inertia.get(
+//       this.route('home.images.gallery'),
+//       {
+//         slug: this.ocont.slug,
+//         search: val?.trim() || null,
+//       },
+//       {
+//         preserveState: true,
+//         replace: true,
+//       }
+//     );
+//   }, 500),
+
+
+
+
 
       entries: {
     deep: true,
@@ -276,20 +263,7 @@ export default {
   },
 },
   methods: {
-
-    CleanTable,
-    //     scrollToHashAnchor() {
-    //   const hash = window.location.hash;
-    //   if (!hash) return;
-
-    //   const el = document.getElementById(hash.replace("#", ""));
-    //   if (!el) return;
-
-    //   const y = el.getBoundingClientRect().top + window.scrollY - 134;
-    //   window.scrollTo({ top: y, behavior: "smooth" });
-    // },
-
-  getStatus(str)
+    getStatus(str)
   {
     if(str == 'lost')
     {
@@ -305,16 +279,29 @@ export default {
     }
     return "";
   },
+    CleanTable,
+    //     scrollToHashAnchor() {
+    //   const hash = window.location.hash;
+    //   if (!hash) return;
+
+    //   const el = document.getElementById(hash.replace("#", ""));
+    //   if (!el) return;
+
+    //   const y = el.getBoundingClientRect().top + window.scrollY - 134;
+    //   window.scrollTo({ top: y, behavior: "smooth" });
+    // },
+
+
   getHashElement() {
     const hash = window.location.hash;
-//     console.log('DEBUG: window.location.hash =', hash);
+    console.log('DEBUG: window.location.hash =', hash);
 
     if (!hash) return null;
 
     // erlaubt: #st123 ODER #123
     const raw = hash.replace('#', '');
     const el = document.getElementById(raw) || document.getElementById(`st${raw}`);
-//     console.log('DEBUG: target element =', el);
+    console.log('DEBUG: target element =', el);
     return el;
   },
 
@@ -322,12 +309,12 @@ export default {
     const el = this.getHashElement();
     if (!el) return;
 
-//     console.log('DEBUG: scrolling to element', el);
+    console.log('DEBUG: scrolling to element', el);
 
     const scroll = () => {
         const y = el.getBoundingClientRect().top + window.pageYOffset - 134;
         window.scrollTo({ top: y, behavior: 'smooth' });
-//         console.log('DEBUG: scrolling to y =', y);
+        console.log('DEBUG: scrolling to y =', y);
     };
 
     // Prüfe, ob Bilder noch laden
@@ -436,18 +423,7 @@ export default {
       showHideAnimationType: "zoom",
       galleryUID: "photoswipe-gallery",
     });
-    const params = new URLSearchParams(window.location.search);
-    const search = params.get("search");
 
-    // Wenn search gesetzt ist, verstecke das Loading-Div
-    if (search && search.trim() !== "") {
-
-      this.isLoading = false;
-      this.loading = false;
-    }
-    else{
-        this.isLoading = true;
-    }
     this.lightbox.init();
     // this.scrollToHashAnchor();
 },

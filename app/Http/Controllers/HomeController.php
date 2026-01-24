@@ -13,8 +13,7 @@ use App\Models\User;
 use App\Models\Image;
 use Illuminate\Support\Str;
 use Laravel\Jetstream\Jetstream;
-
-
+use Illuminate\Pagination\Paginator;
 use Illuminate\Http\Request;
 #use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
@@ -155,6 +154,9 @@ class HomeController extends Controller
 
         $zeitpunkt = Carbon::now();
         //
+            esolver(function () {
+            return request()->input('page', 1);
+        });
         $blogs = Blog::select(
             'blogs.id as id',
             'blogs.blog_date as blog_date',
@@ -298,47 +300,58 @@ class HomeController extends Controller
         "entries"=>$data, // falls du Bewertungen dazupackst
         "filters" => request()->only('search'),
     ]);          // ← dann paginierenp
-// \Log::info(json_encode($entries));
+
 return Inertia::render('Homepage/Pictures', [
     'entries' => $entries,
     'filters' => ['search' => $search],
     'ratings' => RatingController::getTotalRating('images'),
 ]);
 }
-    public function home_images(Request $request,$slug)
+    public function home_images(Request $request, $slug)
     {
-        if($slug != "Alphabet")
-        {
-
+        if ($slug != "Alphabet") {
             $ord[0] = "created_at";
             $ord[1] = "DESC";
-        }
-        else{
-
+        } else {
             $ord[0] = "position";
             $ord[1] = "ASC";
         }
-        $search = $request->input('search');   // ← korrekt für die Facade
+
+        $search = $request->input('search');
+
+        Paginator::currentPageResolver(function () {
+            return request()->input('page', 1);
+        });
+
+        \Log::info('PAGE PARAM: ' . $request->input('page'));
+
+        DB::enableQueryLog();
+        Paginator::currentPageResolver(function () {
+            return request()->input('page', 1);
+        });
         $entries = DB::table("images")
             ->leftJoin("image_categories", "image_categories.id", "=", "images.image_categories_id")
             ->whereIn("images.pub", [1, 2])
-            ->where("image_categories.slug",$slug)
-            ->select("images.created_at AS created_at", "images.*",'images.status', "image_categories.slug as slug")
-
+            ->where("image_categories.slug", $slug)
+            ->select("images.created_at AS created_at", "images.*", "images.status", "image_categories.slug as slug")
             ->when($search, function ($query, $search) {
-                return $query->where(function($q) use ($search) {
+                return $query->where(function ($q) use ($search) {
                     $q->where("images.name", "like", "%{$search}%")
-                      ->orWhere("images.message", "like", "%{$search}%")
-                      ->orWhere("images.created_at", "like", "%{$search}%");
+                    ->orWhere("images.message", "like", "%{$search}%")
+                    ->orWhere("images.created_at", "like", "%{$search}%");
                 });
             })
-            ->orderBy($ord[0],$ord[1])
-            ->paginate(20);
+            ->orderBy($ord[0], $ord[1])
+            ->paginate(20)      // <-- hier korrekt
 
-        // \Log::info("cr:".CheckRights(Auth::id(),"images","date"));
+            ->withQueryString();
+
+
+        \Log::info(DB::getQueryLog());
+
         $rat = RatingController::getTotalRating("images");
-        // \Log::info("en:" . json_encode([$rat]));
-        $ocont = DB::table("image_categories")->where("slug",$slug)->first();
+        $ocont = DB::table("image_categories")->where("slug", $slug)->first();
+
         return Inertia::render('Homepage/Pictures', [
             'entries' => $entries,
             'ocont' => $ocont,
@@ -346,6 +359,7 @@ return Inertia::render('Homepage/Pictures', [
             'ratings' => $rat,
         ]);
     }
+
     public function home_images_show_mfx($id)
     {
         $images = DB::table('images')
@@ -378,6 +392,9 @@ return Inertia::render('Homepage/Pictures', [
         //     $ord[1] = "ASC";
         // }
         $search = $request->input('search');   // ← korrekt für die Facade
+          Paginator::currentPageResolver(function () {
+            return request()->input('page', 1);
+        });
         $entries = DB::table("images")
             ->whereIn("images.pub", [1, 2])
             ->select("images.created_at AS created_at", "images.*")
@@ -566,7 +583,9 @@ return Inertia::render('Homepage/Pictures', [
             $ord[1] = "ASC";
         }
 
-        DB::enableQueryLog();
+  Paginator::currentPageResolver(function () {
+            return request()->input('page', 1);
+        });
         $entries = DB::table("images")
         ->leftJoin("camera", "images.camera_id", "=", "camera.id")
         ->leftJoin("image_categories", "image_categories.id", "=", "images.image_categories_id")
@@ -649,6 +668,9 @@ return Inertia::render('Homepage/Pictures', [
     }
     public function home_userlist(Request $request)
     {
+        Paginator::currentPageResolver(function () {
+            return request()->input('page', 1);
+        });
         $search = $request->input('search');   // ← korrekt für die Facade
         $users = DB::table("users")->where("pub","1")->where("xis_disabled","0")
         ->when($search, function ($query, $search) {
@@ -798,6 +820,9 @@ public function imprint_dag()
         $success = 'Herzlichen Willkommen im Laravel-Template Starter Eleven';
         Session::flash('toast.info', $success);
         //
+        Paginator::currentPageResolver(function () {
+            return request()->input('page', 1);
+        });
         $news = DB::table("news")->orderBy("id", "DESC")->paginate(10);
         $text = DB::table("texts")->where("autoslug","mfx_welcome")->select("headline","text")->first();
         // dd($text);
@@ -918,8 +943,15 @@ public function imprint_dag()
             $users = DB::table("users")->where("name",$nick)->where("pub","1")->where("xis_disabled","0")->select("users.*", "users.xis_aiImage as madewithai")->first();
 //         \Log::info("HU:".json_encode($users,JSON_PRETTY_PRINT));
         }
+        $mcs = NEW MCSLPointsController();
+        $request = new Request();
+        $request->merge(['users_id' => $id]);
+
+        $points = $mcs->GetCount($request);
+
         return Inertia::render('Homepage/Usershow', [
             'users' => $users, // statt 'data'
+            "points" => $points,
         ]);
     }
     public function home_about()

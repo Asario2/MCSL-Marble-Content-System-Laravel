@@ -87,7 +87,7 @@
 
                     </table>
                     <!-- Pagination -->
-                    <pagination :links="pag?.links" v-if="numberOfRows > 0" />
+                    <pagination :links="pag?.links" v-if="numberOfRows > 0" basePath="show" />
                     <div v-else class="np-dl-td-no-entries">
                         <alert type="info">{{ noEntries }}</alert>
                     </div>
@@ -100,7 +100,7 @@
     import { Link } from "@inertiajs/vue3";
     import { toastBus } from '@/utils/toastBus';
     import SearchFilter from "@/Application/Components/Lists/SearchFilter.vue";
-    import Pagination from "@/Application/Components/Lists/Pagination.vue";
+    import Pagination from "@/Application/Components/Pagination.vue";
     import ButtonGroup from "@/Application/Components/Form/ButtonGroup.vue";
     import InputIconHyperlink from "@/Application/Components/Form/InputIconHyperlink.vue";
     import ErrorList from "@/Application/Components/Form/ErrorList.vue";

@@ -24,8 +24,9 @@
   </template>
 
   <script>
-  import axios from "axios";
-
+    import axios from "axios";
+    import { Inertia } from '@inertiajs/inertia';
+    import {route} from 'ziggy-js';
   export default {
     props: {
       table: String, // Übergibt die Tabelle, in der gesucht wird
@@ -44,11 +45,11 @@
           return;
         }
 
-        this.loading = true;
+        //this.loading = true;
         try {
             Inertia.get(route('admin.tables.show'),
   { search: this.searchQuery, table: this.table },
-  { preserveState: true, replace: true });
+  { preserveState: false, replace: true,skipLoading:true });
 
 
         // this.results = response.data;

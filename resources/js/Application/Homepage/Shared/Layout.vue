@@ -226,16 +226,7 @@
             </nav>
 
             <!-- Loading -->
-            <div v-if="isLoading || loadingStore.isLoading" id="loader" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-all" style='z-index:999999999'>
-            <div class="text-center">
-                <svg class="animate-spin h-10 w-10 text-primary-sun-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                </svg>
-                <p class="mt-4 text-primary-sun-100 text-sm">Bitte warten...</p>
-            </div>
-            </div>
-
+            <Loader />
             <!-- Content -->
             <div class="container mx-auto max-w-6xl min-h-screen py-32 px-2">
             <!-- Toast -->
@@ -251,7 +242,7 @@
         </section>
 
         <!-- Footer -->
-        <footer class="foot bg-layout-sun-50 text-layout-sun-900 dark:bg-layout-night-50 dark:text-layout-night-900 border-t border-layout-sun-200 dark:border-layout-night-200" aria-labelledby="footer-heading">
+        <footer class="foot bg-layout-sun-50 text-layout-sun-900 dark:bg-layout-night-50 dark:text-layout-night-900 border-t border-layout-sun-200 dark:border-layout-night-200" style="z-index:1001" aria-labelledby="footer-heading">
             <div class="container mx-auto max-w-6xl">
             <h2 id="footer-heading" class="sr-only">Footer</h2>
             <div class="px-1 md:px-4 lg:px-8 pb-8 pt-8">
@@ -358,6 +349,8 @@
     import Toast from "@/Application/Components/Content/Toast.vue";
     import ButtonChangeMode from "@/Application/Components/ButtonChangeMode.vue";
     import { SD,GetProfileImagePath,CheckTRights } from "@/helpers";
+    // import { Inertia } from "@inertiajs/inertia";
+    import Loader from "@/Application/Components/Loader.vue";
     import NewsletterSubscribe from "@/Application/Components/Social/NewsletterSubscribe.vue";
     import JrightArrow from "@/Application/Components/Icons/JrightArrow.vue";
     import IconStar_thin from "@/Application/Components/Icons/IconStar_thin.vue";
@@ -380,6 +373,7 @@ import IconDashboard from "@/Application/Components/Icons/IconDashboard.vue";
         IconLogout,
         IconProfile,
         IconPM,
+        Loader,
         IconContacts_alt,
         IconStar_thin,
         IconDashboard,
@@ -427,20 +421,19 @@ import IconDashboard from "@/Application/Components/Icons/IconDashboard.vue";
       },
 
       async mounted() {
-        const params = new URLSearchParams(window.location.search);
-    const search = params.get("search");
 
+window.addEventListener("loader:show", () => {
+    this.isLoading = true;
+  });
+
+  window.addEventListener("loader:hide", () => {
+    this.isLoading = false;
+  });
     // MCS POINTS
     this.loadmcslpoints(); // initial
 
     // Wenn search gesetzt ist, verstecke das Loading-Div
-    if (search && search.trim() !== "") {
 
-      this.isLoading = false;
-    }
-    else{
-        this.isLoading = true;
-    }
     this.rights.edit = await CheckTRights("edit", 'private_messages');
     this.rights.delete = await CheckTRights("delete", 'private_messages');
         const shouldReload = localStorage.getItem("reload_dashboard");
@@ -537,7 +530,7 @@ import IconDashboard from "@/Application/Components/Icons/IconDashboard.vue";
             });
 
         },
-        methods: {
+
     // ... andere Methoden
         reopenCookieBanner() {
 //             console.log("reopenCookieBanner aufgerufen");
@@ -561,7 +554,7 @@ import IconDashboard from "@/Application/Components/Icons/IconDashboard.vue";
                     }
                 }
             }, 50);
-        },
+
     },
 
 

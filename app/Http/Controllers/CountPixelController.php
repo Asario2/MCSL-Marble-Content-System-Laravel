@@ -165,7 +165,11 @@ class CountPixelController extends Controller
         }
         if(substr_count($clean,"?page="))
         {
-            $clean = str_replace("?page=".$_GET['page'],'',$clean);
+            $clean = str_replace("?page=".@$_GET['page'],'',$clean);
+        }
+        if(substr_count($clean,"?search="))
+        {
+            $clean = str_replace("?search=".@$_GET['search'],'',$clean);
         }
         if(substr_count($clean,"home/show/pictures/"))
         {

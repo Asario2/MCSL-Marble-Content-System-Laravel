@@ -188,3 +188,5 @@
 ![Version](https://img.shields.io/badge/version-4.30.0-orange) Feature - summary of individual blog entries (#350)  
 ![Version](https://img.shields.io/badge/version-4.31.5-orange) Feature - Add Text about MCSL-Points on Landing Page (#342)  
 ![Version](https://img.shields.io/badge/version-4.32.2-orange) Feature - PictureShow add status of images (#353)  
+![Version](https://img.shields.io/badge/version-4.33.7-orange) Feature: There should be no loading spinner in the search field. (#359)  
+![Version](https://img.shields.io/badge/version-4.34.7-orange) Bug - have to fix an evil bug in pagination (#355)  

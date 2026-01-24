@@ -24,7 +24,19 @@ class CustomLoginController extends Controller
         return Inertia::render('Auth/Login');
 
     }
+    public function loginSilent(Request $request)
+    {
+    $credentials = $request->only('email', 'password');
 
+    if (!Auth::attempt($credentials)) {
+        return response()->json(['message' => 'Invalid credentials'], 401);
+    }
+
+    return response()->json([
+        'message' => 'Logged in',
+        'user_id' => Auth::id()
+    ]);
+    }
     public function login(Request $request)
     {
         // dd(class_exists(\Illuminate\Support\Facades\Validator::class));

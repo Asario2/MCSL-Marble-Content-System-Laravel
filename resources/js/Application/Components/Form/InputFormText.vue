@@ -8,7 +8,7 @@ x<template>
         <slot name="label">Label</slot>
       </label>
       <input
-        type="text"
+        :type="type ?? 'text'"
         :id="id"
         :name="name"
         :placeholder="placeholder"

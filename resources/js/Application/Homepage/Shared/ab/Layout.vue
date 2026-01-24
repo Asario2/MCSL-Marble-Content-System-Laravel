@@ -243,7 +243,7 @@
             </nav>
 
             <!-- Loading -->
-            <div v-if="isLoading || loadingStore.isLoading" id="loader" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-all" style='z-index:999999999'>
+            <!-- <div v-if="isLoading || loadingStore.isLoading" id="loader" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-all" style='z-index:999999999'>
             <div class="text-center">
                 <svg class="animate-spin h-10 w-10 text-primary-sun-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -251,8 +251,8 @@
                 </svg>
                 <p class="mt-4 text-primary-sun-100 text-sm">Bitte warten...</p>
             </div>
-            </div>
-
+            </div> -->
+            <Loader />
             <!-- Content -->
             <div class="container mx-auto max-w-6xl min-h-screen py-32 px-2">
             <!-- Toast -->
@@ -268,7 +268,7 @@
         </section>
 
         <!-- Footer -->
-        <footer class="foot bg-layout-sun-50 text-layout-sun-900 dark:bg-layout-night-50 dark:text-layout-night-900 border-t border-layout-sun-200 dark:border-layout-night-200" aria-labelledby="footer-heading">
+        <footer class="foot bg-layout-sun-50 text-layout-sun-900 dark:bg-layout-night-50 dark:text-layout-night-900 border-t border-layout-sun-200 dark:border-layout-night-200" style="z-index:1001" aria-labelledby="footer-heading">
             <div class="container mx-auto max-w-6xl">
             <h2 id="footer-heading" class="sr-only">Footer</h2>
             <div class="px-1 md:px-4 lg:px-8 pb-8 pt-8">
@@ -375,6 +375,7 @@
     import IconPM from "@/Application/Components/Icons/IconPM.vue";
     import IconDashboard from "@/Application/Components/Icons/IconDashboard.vue";
     import BrandFooter from "@/Application/Shared/BrandFooter.vue";
+    import Loader from "@/Application/Components/Loader.vue";
     import LinkFooter from "@/Application/Shared/LinkFooter.vue";
     import { Inertia } from '@inertiajs/inertia';
     import IconMenu from "@/Application/Components/Icons/Menu.vue"
@@ -395,6 +396,7 @@
         LinkFooter,
         Toast,
         IconLogout,
+        Loader,
         IconProfile,
         IconPM,
         IconContacts_alt,

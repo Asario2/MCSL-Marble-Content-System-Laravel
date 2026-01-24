@@ -1595,6 +1595,13 @@ if(!function_exists("CheckZRights"))
         {
             return false;
         }
+
+    if(!Auth::id())
+    {
+        return false;
+    }
+
+
         $user = DB::table("users")->where("id",Auth::id())->select("users_rights_id")->first();
         $rights = DB::table("users_rights")->where("id",$user->users_rights_id)->select("xkis_".$right)->first();
         // vde($rights);

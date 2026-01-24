@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "39b5c5c90e00f86319b71bba6f1cd6d6",
+    "content-hash": "9726d4a2ece42453fe5067dcbad13568",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -1487,6 +1487,79 @@
                 }
             ],
             "time": "2025-12-17T13:38:29+00:00"
+        },
+        {
+            "name": "jenssegers/imagehash",
+            "version": "v0.11.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jenssegers/imagehash.git",
+                "reference": "87ba7051d2fca2edc718091f052424474dedfeae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jenssegers/imagehash/zipball/87ba7051d2fca2edc718091f052424474dedfeae",
+                "reference": "87ba7051d2fca2edc718091f052424474dedfeae",
+                "shasum": ""
+            },
+            "require": {
+                "intervention/image": "^3.3",
+                "php": "^8.2"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.0",
+                "phpunit/phpunit": "^11.5.3"
+            },
+            "suggest": {
+                "ext-gd": "GD or ImageMagick is required",
+                "ext-gmp": "GMP results in faster comparisons",
+                "ext-imagick": "GD or ImageMagick is required"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jenssegers\\ImageHash\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jens Segers",
+                    "homepage": "https://jenssegers.com"
+                },
+                {
+                    "name": "Kenneth Rapp"
+                }
+            ],
+            "description": "Perceptual image hashing for PHP",
+            "homepage": "https://github.com/jenssegers/imagehash",
+            "keywords": [
+                "ahash",
+                "dhash",
+                "hash",
+                "image hash",
+                "imagehash",
+                "perceptual",
+                "phash"
+            ],
+            "support": {
+                "issues": "https://github.com/jenssegers/imagehash/issues",
+                "source": "https://github.com/jenssegers/imagehash/tree/v0.11.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/jenssegers",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/jenssegers/imagehash",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2025-09-17T09:15:58+00:00"
         },
         {
             "name": "laravel/fortify",
