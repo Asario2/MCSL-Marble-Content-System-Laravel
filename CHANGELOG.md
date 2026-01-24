@@ -190,3 +190,4 @@
 ![Version](https://img.shields.io/badge/version-4.32.2-orange) Feature - PictureShow add status of images (#353)  
 ![Version](https://img.shields.io/badge/version-4.33.7-orange) Feature: There should be no loading spinner in the search field. (#359)  
 ![Version](https://img.shields.io/badge/version-4.34.7-orange) Bug - have to fix an evil bug in pagination (#355)  
+![Version](https://img.shields.io/badge/version-4.35.2-orange) Feature - Add Python workflow for checking of watermarks (#360)  

@@ -16,6 +16,9 @@ vendor/
 **/tmp/**
 *.bat
 !README.md
+info.php
+**/DATAFILES/**
+**/images_gallerys/**
 *.sh
 *.ps1
 **/dataset/**

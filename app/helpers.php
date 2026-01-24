@@ -1214,7 +1214,7 @@ if(!function_exists("SD"))
                 $subb = "ab";
             break;
             default:
-            $subb = $subb;
+            $subb = "ab";
             break;
         }
         if( substr_count(@$_SERVER['REQUEST_URI'],"/admin/"))

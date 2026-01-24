@@ -31,7 +31,7 @@ class ImageUploadController extends Controller
         return $this->upload($request, $table, $iswatermark, 1);
     }
 
-    public function upload(Request $request, string $table, string $iswatermark = '1', string|int $oripath = '0'): JsonResponse
+    public function upload(Request $request, string $table, string $iswatermark = '1', string|int $oripath = '0',    $orifileName=false): JsonResponse
 {
     \Log::debug('UPLOAD DEBUG', [
         'table'   => $request->table,
@@ -72,8 +72,15 @@ class ImageUploadController extends Controller
     $column = $request->column;
 
     // WICHTIG: MD5 Name VOR table-Zuweisung generieren
-    $imageName = md5($image->getClientOriginalName() . "_" . Auth::id()) . "." . $image->getClientOriginalExtension();
-    $filename = basename($imageName);
+    if(!$orifileName)
+    {
+        $imageName = md5($image->getClientOriginalName() . "_" . Auth::id()) . "." . $image->getClientOriginalExtension();
+    }
+    else
+    {
+        $imageName = $image->getClientOriginalName().".". $image->getClientOriginalExtension();
+    }
+    $fileName = basename($imageName);
 
     $sizes = [1200]; // default
     $tmpname = $image->getRealPath();
@@ -87,7 +94,7 @@ class ImageUploadController extends Controller
         $sizes = [1200];
     } elseif (!array_key_exists($table_ori, Settings::$impath)) {
         // Nur orig Ordner erstellen wenn nicht Message und nicht special table
-        $IMOpath = public_path("images/_{$subdomain}/{$table}/{$column}/{$is_imgdir}/orig/" . $filename);
+        $IMOpath = public_path("images/_{$subdomain}/{$table}/{$column}/{$is_imgdir}/orig/" . $fileName);
         if (!File::exists(dirname($IMOpath))) {
             File::makeDirectory(dirname($IMOpath), 0777, true, true);
         }
@@ -122,16 +129,16 @@ class ImageUploadController extends Controller
         // KORRIGIERTE Pfad-Logik
         if ($Message) {
             // Für Messages: einfacher Pfad
-            $resizedPath = public_path("/images/_{$subdomain}/messages/{$filename}");
+            $resizedPath = public_path("/images/_{$subdomain}/messages/{$fileName}");
         } elseif ($oripath && $is_imgdir) {
             // Mit oripath und imgdir
-            $resizedPath = public_path("/images/_{$subdomain}/{$table_ori}/{$column}/{$is_imgdir}/{$big[$size]}{$filename}");
+            $resizedPath = public_path("/images/_{$subdomain}/{$table_ori}/{$column}/{$is_imgdir}/{$big[$size]}{$fileName}");
         } elseif ($is_imgdir) {
             // Nur imgdir
-            $resizedPath = public_path("/images/_{$subdomain}/{$table_ori}/{$column}/{$is_imgdir}/{$big[$size]}{$filename}");
+            $resizedPath = public_path("/images/_{$subdomain}/{$table_ori}/{$column}/{$is_imgdir}/{$big[$size]}{$fileName}");
         } else {
             // Standard
-            $resizedPath = public_path("/images/_{$subdomain}/{$table_ori}/{$column}/{$big[$size]}{$filename}");
+            $resizedPath = public_path("/images/_{$subdomain}/{$table_ori}/{$column}/{$big[$size]}{$fileName}");
         }
         $rp = basename($is_imgdir);
 
@@ -187,23 +194,23 @@ class ImageUploadController extends Controller
 
     // JSON für imgdir hinzufügen (nur wenn nicht Message)
     if ($is_imgdir && !$Message) {
-        $this->AddJson($path . "/" . $is_imgdir, $filename);
+        $this->AddJson($path . "/" . $is_imgdir, $fileName);
     }
 
     // KORRIGIERTE Response Pfad-Erstellung
     if ($Message) {
-        $fullPath = "/images/_{$subdomain}/messages/{$filename}";
+        $fullPath = "/images/_{$subdomain}/messages/{$fileName}";
     } elseif ($is_imgdir) {
         $fullPath = basename($rp);
     } else {
-        $fullPath = $filename; //"/images/_{$subdomain}/{$table_ori}/{$column}/{$filename}";
+        $fullPath = $fileName; //"/images/_{$subdomain}/{$table_ori}/{$column}/{$fileName}";
     }
 
     \Log::info('Upload completed successfully', [
-        'filename' => $filename,
+        'fileName' => $fileName,
         'fullPath' => $fullPath,
         'Message' => $Message,
-        'final_filename' => $filename // Sollte MD5 sein
+        'final_fileName' => $fileName // Sollte MD5 sein
     ]);
 
     return response()->json([
@@ -211,7 +218,7 @@ class ImageUploadController extends Controller
         'image_url' => $fullPath,
         "img_x" => $width,
         "img_y" => $height,
-        "debug_filename" => $filename // Zur Kontrolle
+        "debug_fileName" => $fileName // Zur Kontrolle
     ]);
 }
 
@@ -268,12 +275,12 @@ class ImageUploadController extends Controller
             $last = end($array);
             $lastPosition = $last->position ?? 0;
         }
-        $filenames = array_map(fn($item) => $item->filename, $array);
+        $fileNames = array_map(fn($item) => $item->fileName, $array);
 
-        if (!in_array($fn, $filenames)) {
+        if (!in_array($fn, $fileNames)) {
             $array[] = (object)[
                 'position' => $lastPosition + 1,
-                'filename' => $fn,
+                'fileName' => $fn,
                 'label' => '',
                 'width' => $w,
                 'height' => $h,
@@ -299,7 +306,7 @@ class ImageUploadController extends Controller
     protected function deleteImageByPosition(array $images, int $deletePosition, string $path): array
     {
         if (count($images) === 1 && ($images[0]['position'] ?? null) == $deletePosition) {
-            $file = $images[0]['filename'];
+            $file = $images[0]['fileName'];
             @unlink($path . "thumbs/" . $file);
             @unlink($path . "orig/" . $file);
             @unlink($path . "big/" . $file);
@@ -310,7 +317,7 @@ class ImageUploadController extends Controller
 
         $images = array_filter($images, function ($item) use ($deletePosition, $path) {
             if (($item['position'] ?? null) === $deletePosition) {
-                $file = $item['filename'];
+                $file = $item['fileName'];
                 @unlink($path . "thumbs/" . $file);
                 @unlink($path . "orig/" . $file);
                 @unlink($path . "big/" . $file);
@@ -358,10 +365,17 @@ class ImageUploadController extends Controller
                     File::delete($oldPath);
                 }
             }
+            if(!$orifileName)
+            {
+                $fileName = md5($file->getClientOriginalName() . "_" . Auth::id()) . "." . $file->getClientOriginalExtension();
+            }
+            else
+            {
+                $fileName = $file->getClientOriginalName().".". $file->getClientOriginalExtension();
+            }
 
-            $filename = md5($file->getClientOriginalName() . "_" . Auth::id()) . "." . $file->getClientOriginalExtension();
-            $file->move($folder, $filename);
-            $user->profile_photo_path = $filename;
+            $file->move($folder, $fileName);
+            $user->profile_photo_path = $fileName;
         }
 
         $user->name = $request->input('name');
