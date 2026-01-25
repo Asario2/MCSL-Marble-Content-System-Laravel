@@ -166,7 +166,7 @@
 ![Version](https://img.shields.io/badge/version-4.08.5-orange) Hotfix - Fixed Bugs in Tablesow.vue (#313)  
 ![Version](https://img.shields.io/badge/version-4.09.6-orange) Bug - Had to change share functions (#314)  
 ![Version](https://img.shields.io/badge/version-4.10.5-orange) Hotfix - Bug in Birthday cron job (#316)  
-![Version](https://img.shields.io/badge/version-4.11.2-orange) Feature - Added <Title>'s (#317)  
+![Version](https://img.shields.io/badge/version-4.11.2-orange) Feature - Added Title's (#317)  
 ![Version](https://img.shields.io/badge/version-4.12.6-orange) Feature - Icons for user navigation (#318)  
 ![Version](https://img.shields.io/badge/version-4.13.0-orange) Hotfix - Loader Imageupload (#319)  
 ![Version](https://img.shields.io/badge/version-4.14.6-orange) Hotfix - There was an issue with the Smilies function. (#320)  
