@@ -228,7 +228,7 @@
               <p><strong>Betreff:</strong> {{ selectedMessage.subject }}</p>
               <p><strong>Datum:</strong> {{ formatDate(selectedMessage.created_at) }}</p>
               <hr class="my-3 border-gray-300 dark:border-gray-600"/>
-              <span v-html="nl2br(rumLaut(nl2br(selectedMessage.message)))"></span>
+              <span v-html="(rumLaut(selectedMessage.message))"></span>
             </div>
 
             <!-- Rechter Bereich: Benutzerinfos -->

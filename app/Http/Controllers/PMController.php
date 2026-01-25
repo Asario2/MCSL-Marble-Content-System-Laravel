@@ -80,7 +80,7 @@ class PMController extends Controller
         }
         $lastinsertid = DB::table("private_messages_text")
         ->insertGetId([
-            'message' => encval($request->message),
+            'message' => encval($this->rembr($request->message)),
         ]);
 
         $uid = $request->uid ?? Auth::id();
@@ -97,9 +97,20 @@ class PMController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function rembr(string $text)
     {
         //
+        $text = str_replace(["<br />","<br>","<br/>","<br >"],"\n",$text);
+        $content = ltrim($text);
+        $text = preg_replace('/^(<br\s*\/?>)+/i', '', $content);
+
+        $text = str_replace(str_repeat("<br />\n",3),"<br />",nl2br($text));
+        $text = str_replace(
+            ["\r", "\n", "\t"],
+            ["\\r", "\\n", "\\t"],
+            $text
+        );
+        return str_replace(str_repeat("<br>\n",6),'',$text);
     }
 
     /**

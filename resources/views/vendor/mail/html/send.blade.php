@@ -26,7 +26,13 @@ width: 100% !important;
 </style>
 </head>
 <body>
-    <style>BODY{
+    <style>
+    P{
+    margin:0;
+    margin-block-start:0;
+    margin-block-end: 0;
+}
+    BODY{
         font-family:Tahoma;
         line-height:30px;
         font-size:20px;
@@ -92,4 +98,3 @@ width: 100% !important;
 </div>
 </body>
 </html>
-            

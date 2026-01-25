@@ -421,6 +421,7 @@ public static array $image_sizes =
     6 => 'ab_users_last_login_at',
     7 => 'ab_users_updated_at',
     8 => 'ab_users_remember_token',
+    9 => 'ab_users_rights_xkis_UnusedImages',
 ];
 public static array $doms = [
     "ab_lh"=>"http://ab.test.mcs",

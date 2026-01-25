@@ -194,3 +194,4 @@
 ![Version](https://img.shields.io/badge/version-4.36.6-orange) Hotfix - remove styles from mailsend to pm (#358)  
 ![Version](https://img.shields.io/badge/version-4.37.0-orange) Feature - Add subject from form to mail submit (#357)  
 ![Version](https://img.shields.io/badge/version-4.38.5-orange) Hotfix - Repaired Loading Spinner in axios Requests (#361)  
+![Version](https://img.shields.io/badge/version-4.39.4-orange) Hotfix - Formatting in newsletters and pm (#362)  

@@ -17,16 +17,17 @@ class SQLUpdateController extends Controller
 
     public function __construct()
     {
-        $_SESSION['domain'] ?? "ab";
+        if(!session_id())
+        {
+            session_start();
+        }
+        $_SESSION['domain'] = $_SESSION['domain'] ?? "ab";
         $this->domset  = $this->GetDBCon(1,@$_SESSION['domain']);
         $this->domset_of = $this->GetDBCon(0,@$_SESSION['domain']);
         $this->adb = $this->GetDBBase();
         $this->KTables = ["cleo_","ffrog_","monxx_"];
         $this->opsFile = "lastmySQLOps.dat";
-        if(!session_id())
-        {
-            // session_start();
-        }
+
     }
     public function Ignore_Field(Request $request)
     {
@@ -98,22 +99,20 @@ class SQLUpdateController extends Controller
             header("Location: /no-rights");
             exit;
         }
-        $cor_date = date("d.m.Y H:i:s",strtotime(file_get_contents(public_path("/timespy/".$this->opsFile))));
+        $cor_date = date("d.m.Y H:i:s",strtotime(file_get_contents(storage_path("/app/".$this->opsFile))));
         return Inertia::render('Admin/SQLUpdate',compact("cor_date"));
     }
 
     public function last()
     {
-        if (!File::exists(public_path("/timespy/".$this->opsFile))) {
+        if (!Storage::exists($this->opsFile)) {
             return response()->json([
                 'lastDate' => '1970-01-01 00:00:00',
                 'cor_date' => '01.01.1970 00:00:00'
             ]);
         }
 
-        $date = trim(
-    Storage::disk('public')->get("/timespy/".$this->opsFile)
-);
+        $date = trim(Storage::get($this->opsFile));
 
         return response()->json([
             'lastDate' => $date,
@@ -130,7 +129,7 @@ class SQLUpdateController extends Controller
         $this->domset_of = $this->GetDBCon(0,$request->domain);
         $_SESSION['domain'] = $domain;
 
-//         \Log::info("DOM: ".$domain);
+        \Log::info("DOM: ".$domain);
 
         return response()->json([
             'local'  => $this->getTablesWithHash($this->domset_of,$request->domain),
@@ -474,13 +473,7 @@ public function diffTable(string $table, string $domain)
             $this->UpdateHash($table, $hash, $con);
         }
 
-
-
-        Storage::disk('public')->put(
-            "/timespy/".$this->opsFile,
-            now()->format('Y-m-d H:i:s')
-        );
-
+        Storage::put($this->opsFile, now()->format('Y-m-d H:i:s'));
 
         return response()->json(['success' => true]);
     }

@@ -248,7 +248,7 @@ $mailPassword = env('MAIL_PASSWORD');
 
 
 
-    $content  = $this->replink($content,$title,$email,$nick,$link,@$chash);
+    $content  = $this->replink($this->subquote($content),$title,$email,$nick,$link,@$chash);
 
     $signatur2 = $signatur.$this->subm_btn();
         $content_alt = $content.$signatur;
@@ -261,7 +261,7 @@ $mailPassword = env('MAIL_PASSWORD');
             compact('title', 'link', 'nick', 'content_alt', 'template', 'signatur'))->render()
     ));
     // $html2 = str_replace("%uhash%",$uhash,$html2);
-    session(['signatur' => $signatur,"reci"=>$request->recipients, "content"=>html_entity_decode($html2), "title"=>$title,"email"=>$email,"nick"=>$nick,"template"=>$template]);
+    session(['signatur' => $signatur,"reci"=>$request->recipients, "content"=>$this->subquote(html_entity_decode($html2)), "title"=>$title,"email"=>$email,"nick"=>$nick,"template"=>$template]);
     return $html;
 
 
@@ -363,7 +363,7 @@ $mailPassword = env('MAIL_PASSWORD');
                     $request->merge([
                         'to_id' => $id,
                         "subject"  => session('title'),
-                        "message" => ($this->clean(session('content'),$uhash,session('title'))),
+                        "message" => $this->clean((session('content')),$uhash,session('title')),
                         "uid" => "4",
                     ]);
                     $pm = NEW PMController();
@@ -401,17 +401,27 @@ $mailPassword = env('MAIL_PASSWORD');
     function clean($txt,$uhash,$title)
     {
         $txt = preg_replace('/^[\s\S]*?(?=<h2>' . preg_quote($title, '/') . ')/', '', $txt);
-        $txt = str_replace("MCSL",'',nl2br($txt));
+        $txt = nl2br($txt);
+        $pos = strpos($txt, "MCSL");
+
+        if ($pos !== false) {
+            $txt = substr_replace($txt, "", $pos, strlen("MCSL"));
+        }
+
         $txt = str_replace(["%uhash%","%40"],[$uhash,'@'],$txt);
-        $txt = preg_replace('/(<br\s*\/?>\s*){17,25}/i', '', $txt);
-        $txt = str_replace("<br />","\n",$txt);
+        $txt = preg_replace('/(<br\s*\/?>\s*){12,25}/siU', '', $txt);
+        // $txt = str_replace("<br />","\n",$txt);
         $txt = preg_replace(
             "#<div\s+id=['\"]remst['\"]>\s*</div>.*?<div\s+id=['\"]remen['\"]>\s*</div>#si",
             "",
             $txt
         );
-
-        return strip_tags($txt,"<br><h2><h3><h4><p><h5><b><i><a><strong><em><h6><hr>");
+        return strip_tags($txt,"<br><h2><h3><h4><h5><b><i><a><strong><em><h6><hr>");
+    }
+    function subquote($txt)
+    {
+        // return str_replace(["<p>","</p>"],"",$txt);
+        return $txt;                
     }
     function SendReg(Request $request) {
         $email = "parie@gmx.de";
