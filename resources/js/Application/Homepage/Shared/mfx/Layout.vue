@@ -23,6 +23,7 @@
       <section class="relative bg-layout-sun-50 text-layout-sun-900 dark:bg-layout-night-50 dark:text-layout-night-900 transition-colors duration-1000"  style='z-index:50;'>
         <!-- Header -->
         <nav class="fixed top-0 left-0 right-0 z-30 bg-layout-night-50 bggrad text-layout-sun-900 dark:bg-layout-night-50 dark:text-layout-night-900 border-b border-layout-sun-200 dark:border-layout-night-1060"  style='z-index:50;'>
+
           <div class="container mx-auto max-w-6xl p-6 lg:flex lg:items-center lg:justify-between trans" style='z-index:50;'>
             <div class="flex items-center justify-between ">
               <!-- <brand-header :route-name="route('home.index')" :brand_1="$page.props.applications.brand_name_1" :brand_2="$page.props.applications.brand_name_2" :app-name="$page.props.applications.app_name"></brand-header> -->
@@ -39,34 +40,34 @@
             <!-- Mobile Menu open: "block", Menu closed: "hidden" -->
             <div :class="[isOpen_Menu ? 'translate-x-0 opacity-100 ' : 'opacity-0 -translate-x-full']" style='z-index:10000000;' class="absolute inset-x-0 mt-6 w-full px-6 py-4 shadow-md transition-all duration-300 ease-in-out bg-layout-trans dark:bg-primary-night-200 lg:relative lg:top-0 lg:mt-0 lg:flex lg:w-auto lg:translate-x-0 lg:items-center lg:bg-transparent lg:p-0 lg:opacity-100 lg:shadow-none lg:dark:bg-transparent">
               <div class="flex flex-col items-center space-y-1 lg:mt-0 lg:flex-row lg:space-y-0 lg:space-x-0 trans2 border border-layout-sun-1000 dark:border-layout-night-1050 lg:rounded-lg" style='z-index:10000000;'>
-                <link-header :route-name="route('home.index')" name="News"></link-header>
-                <link-header :route-name="route('home.infos.mfx')" name="Infos"></link-header>
-                <!--<link-header :route-name="route('home.pricing')" name="Preise"></link-header>-->
-                <!-- <link-header :route-name="route('home.blog.index')" name="Blog"></link-header> -->
-                <link-header :route-name="route('home.projects.mfx')" name="Projects"></link-header>
-                <link-header :route-name="route('home.images.cat.mfx')" name="Images"></link-header>
-                <link-header :route-name="route('home.people.mfx')" name="People"></link-header>
-                <link-header :route-name="route('home.contacts.mfx')" name="Contact"></link-header>
+                <link-header_mfx :route-name="route('home.index')" name="News"></link-header_mfx>
+                <link-header_mfx :route-name="route('home.infos.mfx')" name="Infos"></link-header_mfx>
+                <!--<link-header_mfx :route-name="route('home.pricing')" name="Preise"></link-header_mfx>-->
+                <!-- <link-header_mfx :route-name="route('home.blog.index')" name="Blog"></link-header_mfx> -->
+                <link-header_mfx :route-name="route('home.projects.mfx')" name="Projects"></link-header_mfx>
+                <link-header_mfx :route-name="route('home.images.cat.mfx')" name="Images"></link-header_mfx>
+                <link-header_mfx :route-name="route('home.people.mfx')" name="People"></link-header_mfx>
+                <link-header_mfx :route-name="route('home.contacts.mfx')" name="Contact"></link-header_mfx>
                 <template v-if="!$page.props.userdata.user_id">
-                  <link-header :route-name="route('login')" name="Login"></link-header>
+                  <link-header_mfx :route-name="route('login')" name="Login"></link-header_mfx>
                 </template>
                 <div v-else-if="$page.props.auth.user" class="block md:hidden">
 
-                <link-header :route-name="route('admin.dashboard')" name="Dashboard" /><br />
-                <link-header :route-name="route('admin.profile')" name="Profil">
+                <link-header_mfx :route-name="route('admin.dashboard')" name="Dashboard" /><br />
+                <link-header_mfx :route-name="route('admin.profile')" name="Profil">
                 <img
                     id="prof_pic"
-                    class="h-8 w-8 rounded-full object-cover"
+                    class="h-8 w-8 rounded-full object-cover mr-[4px] pr-[4px]"
                     :src="`/images/_${SD()}/users/profile_photo_path/` +
                                                 $page.props.auth.user?.profile_photo_url.replace('public','').replace('http://localhost/images/','').replace('images/images/','images/') || '/images/profile-photos/008.jpg'
                                                     "
                     :alt="$page.props.userdata.full_name"
-                /></link-header><br />
+                /></link-header_mfx><br />
                 <hr />
-                <link-header :route-name="route('logout')" name="Abmelden" />
+                <link-header_mfx :route-name="route('logout')" name="Abmelden" />
                 </div>
                 <template v-if="$page.props.userdata.user_id">
-                  <!-- <link-header :route-name="route('applicationswitch')" name="Dashboard"></link-header> -->
+                  <!-- <link-header_mfx :route-name="route('applicationswitch')" name="Dashboard"></link-header_mfx> -->
                 </template>
 
                <!-- <button-change-mode :mode="mode" @changeMode="changeMode"></button-change-mode>-->
@@ -89,7 +90,7 @@
                                         >
                                             <img
                                             id="prof_pic"
-                                            class="h-8 w-8 rounded-full object-cover"
+                                            class="h-8 w-8 rounded-full object-cover mr-6"
 
                                                :src="'/images/_' + SD() + '/users/profile_photo_path/'+ $page.props.auth.user.profile_photo_url.replace('public','')
                                                 "
@@ -308,7 +309,7 @@ import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import BrandHeader from "@/Application/Shared/BrandHeader.vue";
 import Dropdown from "@/Application/Components/Content/Dropdown.vue";
 import DropdownLink from "@/Application/Components/Content/DropdownLink.vue";
-import LinkHeader from "@/Application/Shared/LinkHeader.vue";
+import LinkHeader_mfx from "@/Application/Shared/LinkHeader_mfx.vue";
 import BrandFooter from "@/Application/Shared/BrandFooter.vue";
 import LinkFooter from "@/Application/Shared/LinkFooter.vue";
 import IconMenu from "@/Application/Components/Icons/Menu.vue";
@@ -323,7 +324,7 @@ export default {
   components: {
     MetaHeader,
     BrandHeader,
-    LinkHeader,
+    LinkHeader_mfx,
     BrandFooter,
     LinkFooter,
     Toast,

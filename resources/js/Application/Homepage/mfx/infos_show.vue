@@ -49,7 +49,7 @@ import { defineComponent } from "vue";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 import Layout from "@/Application/Homepage/Shared/mfx/Layout.vue";
 import { marked } from 'marked';
-import { selectionHelper, GetSettings, rumLaut } from "@/helpers";
+import { selectionHelper, GetSettings, rumLaut, nl2br } from "@/helpers";
 import PageContent from "@/Application/Components/Content/PageContent.vue";
 import PageTitle from "@/Application/Components/Content/PageTitle.vue";
 import PageParagraph from "@/Application/Components/Content/PageParagraph.vue";
@@ -136,7 +136,7 @@ export default defineComponent({
         let processed = this.ch(html);
 //         console.log("%c[ch] →", "color:gray", processed);
 
-        processed = this.decodeHtml(rumLaut(processed));
+        processed = this.decodeHtml(rumLaut(nl2br(processed)));
 //         console.log("%c[decodeHtml+rumLaut] →", "color:gray", processed);
 
         if (processed.includes("{{ vcard }}")) {
@@ -222,7 +222,7 @@ export default defineComponent({
 
             let result = this.ch(html);
             // 1. HTML-Entities wie &lt; &gt; wieder zu < und > machen
-            result = this.decodeHtml(rumLaut(html));
+            result = this.decodeHtml(rumLaut(nl2br(html)));
 
             // 2. Zeilenumbrüche (\n oder \r\n) in <br> konvertieren
             // result = result.replace(/(\r\n|\n|\r)/g, '<br />');
@@ -236,7 +236,7 @@ export default defineComponent({
 
         replacements() {
             return {
-                'votez()': () => rumLaut(this.voteHtml),
+                'votez()': () => rumLaut(nl2br(this.voteHtml)),
                 'changelog()': () => this.changelogText,
                 'showtodo()': () => this.showtodo(),
                 'showprivacy()': () => this.showprivacy(),

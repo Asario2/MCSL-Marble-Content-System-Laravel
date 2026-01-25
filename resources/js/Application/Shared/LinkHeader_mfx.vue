@@ -1,8 +1,9 @@
 <template>
 <template v-if="routeName">
     <a
-        class="pad cursor-pointer inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm text-layout-sun-700 hover:bg-layout-sun-200 hover:text-layout-sun-900 dark:text-layout-night-1050 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-1000"
+        class="pad cursor-pointer inline-flex items-center gap-2 rounded-lg px-4 py-2 text-layout-sun-700 hover:bg-layout-sun-200 hover:text-layout-sun-900 dark:text-layout-night-1050 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-1000"
         :href="routeName"
+        style="font-family:Alfredo;"
     >
         <slot></slot>
         <span>{{ name }}</span>
@@ -10,7 +11,8 @@
 </template>
     <template v-else>
         <div
-            class="cursor-pointer ckoo font-bold inline-block rounded-lg px-2 py-1 text-sm text-layout-sun-700 hover:bg-layout-sun-200 hover:text-layout-sun-900 dark:text-layout-night-1050 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-1000"
+            class="cursor-pointer inline-flex items-center gap-2 rounded-lg px-3 py-3 text-layout-sun-700 hover:bg-layout-sun-200 hover:text-layout-sun-900 dark:text-layout-night-1050 dark:hover:bg-layout-night-200 dark:hover:text-layout-night-1000"
+            style="font-family:Alfredo;"
         >
             <slot></slot>
         </div>
@@ -20,7 +22,7 @@
 <script>
 //
 export default {
-    name: "Shared_LinkHeader",
+    name: "LinkHeader_mfx",
     //
     props: {
         routeName: {

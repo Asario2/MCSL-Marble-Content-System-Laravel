@@ -400,7 +400,7 @@ $mailPassword = env('MAIL_PASSWORD');
     }
     function clean($txt,$uhash,$title)
     {
-        $txt = preg_replace('/^[\s\S]*?(?=<h2>'.$title.')/', '', $txt);
+        $txt = preg_replace('/^[\s\S]*?(?=<h2>' . preg_quote($title, '/') . ')/', '', $txt);
         $txt = str_replace("MCSL",'',nl2br($txt));
         $txt = str_replace(["%uhash%","%40"],[$uhash,'@'],$txt);
         $txt = preg_replace('/(<br\s*\/?>\s*){17,25}/i', '', $txt);

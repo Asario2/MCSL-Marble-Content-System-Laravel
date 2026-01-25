@@ -33,7 +33,7 @@
 
                         <!-- Textcontainer -->
                         <div
-                            class="flex flex-col justify-start text-layout-sun-1000 dark:text-layout-night-1000 p-2 sm:gap-0"
+                            class="flex flex-col justify-start text-layout-sun-1000 dark:text-layout-night-1000 p-2 pl-4        sm:gap-0"
                         >
                             <div class="flex items-center dark:text-layout-night-1050 text-layout-sun-1000">
                             <span class="font-bold mt-[-2px]" v-html="cleanHtml(item.headline)"></span>
@@ -138,10 +138,11 @@ export default defineComponent({
 .nor_border{
     border-top-right-radius:0;
     border-bottom-right-radius:0;
-    max-height:100px;
-    min-width:125px;
-    max-width:110% !important;
-    margin-right:0px;
+    max-height:120px;
+    margin-right: -5px !important;
+    min-width:156px !important;
+    max-width:150px !important;
+
 }
 .lha{
 line-height:1.3rem !important;

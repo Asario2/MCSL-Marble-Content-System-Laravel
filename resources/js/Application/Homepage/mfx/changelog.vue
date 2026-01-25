@@ -2,7 +2,7 @@
 <template>
     <div class="prose max-w-none p-4">
       <div v-if="loading">Lade Changelog...</div>
-      <div v-else v-html="changelogHtml"></div>
+      <div v-else v-html="stripTagsKeepImgAndA(changelogHtml)"></div>
     </div>
   </template>
 
@@ -43,6 +43,38 @@
         linkit(str)
         {
             return str.replace(/(?<!&)#(\d+)/g, "<a href='https://github.com/Asario2/MCSL-based-on-Starter-Eleven/issues/$1'>#$1</a>");
+        },
+        quote(str)
+        {
+            return str.replace("<title>","title");
+        },
+        stripTagsKeepImgAndA(html) {
+        const doc = new DOMParser().parseFromString(html, "text/html");
+
+        const walker = document.createTreeWalker(
+            doc.body,
+            NodeFilter.SHOW_ELEMENT,
+            null
+        );
+
+        const nodesToRemove = [];
+
+        while (walker.nextNode()) {
+            const node = walker.currentNode;
+            if (node.tagName !== "IMG" && node.tagName !== "A") {
+            nodesToRemove.push(node);
+            }
+        }
+
+        for (const node of nodesToRemove) {
+            const parent = node.parentNode;
+            while (node.firstChild) {
+            parent.insertBefore(node.firstChild, node);
+            }
+            parent.removeChild(node);
+        }
+
+        return doc.body.innerHTML;
         }
     }
   };
