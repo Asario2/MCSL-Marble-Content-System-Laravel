@@ -192,3 +192,4 @@
 ![Version](https://img.shields.io/badge/version-4.34.7-orange) Bug - have to fix an evil bug in pagination (#355)  
 ![Version](https://img.shields.io/badge/version-4.35.2-orange) Feature - Add Python workflow for checking of watermarks (#360)  
 ![Version](https://img.shields.io/badge/version-4.36.6-orange) Hotfix - remove styles from mailsend to pm (#358)  
+![Version](https://img.shields.io/badge/version-4.37.0-orange) Feature - Add subject from form to mail submit (#357)  

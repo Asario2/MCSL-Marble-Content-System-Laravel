@@ -286,7 +286,7 @@ $mailPassword = env('MAIL_PASSWORD');
         $users = [];
         // $to = DB::table("newsletter")
 
-
+        \Log::info($request);
 
         foreach($entries as $key=>$val){
             if(substr_count($val,"{")){
@@ -311,6 +311,7 @@ $mailPassword = env('MAIL_PASSWORD');
             ->get();
 
         }
+
         foreach ($ugroups as $regro)
         {
             $uhash = @$regro->uhash;
@@ -402,7 +403,7 @@ $mailPassword = env('MAIL_PASSWORD');
         $txt = preg_replace('/^[\s\S]*?(?=<h2>'.$title.')/', '', $txt);
         $txt = str_replace("MCSL",'',nl2br($txt));
         $txt = str_replace(["%uhash%","%40"],[$uhash,'@'],$txt);
-        $txt = preg_replace('/(<br\s*\/?>\s*){17,}/i', '', $txt);
+        $txt = preg_replace('/(<br\s*\/?>\s*){17,25}/i', '', $txt);
         $txt = str_replace("<br />","\n",$txt);
         $txt = preg_replace(
             "#<div\s+id=['\"]remst['\"]>\s*</div>.*?<div\s+id=['\"]remen['\"]>\s*</div>#si",
@@ -410,7 +411,7 @@ $mailPassword = env('MAIL_PASSWORD');
             $txt
         );
 
-        return strip_tags($txt,"<br><h2><h3><h4><p><h5><b><i><a><strong><em><h6>");
+        return strip_tags($txt,"<br><h2><h3><h4><p><h5><b><i><a><strong><em><h6><hr>");
     }
     function SendReg(Request $request) {
         $email = "parie@gmx.de";

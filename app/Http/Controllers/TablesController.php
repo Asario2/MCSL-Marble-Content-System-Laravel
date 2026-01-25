@@ -909,9 +909,9 @@ public function ShowTable(Request $request, $table_alt = null)
 
 
         // dd($content);
+        \Log::info("asd:".json_encode($request));
 
-
-        return $ma->PrevMail($request,SD(1)." Newsletter","emails.newsletter",$email,$nick,$link,$content,$signatur,$uhash='',$chash='');
+        return $ma->PrevMail($request,$title,"emails.newsletter",$email,$nick,$link,$content,$signatur,$uhash='',$chash='');
 
 
 
