@@ -285,7 +285,7 @@ $mailPassword = env('MAIL_PASSWORD');
         $contacts = [];
         $users = [];
         // $to = DB::table("newsletter")
-        // dd($request->all());
+
 
 
         foreach($entries as $key=>$val){
@@ -402,7 +402,15 @@ $mailPassword = env('MAIL_PASSWORD');
         $txt = preg_replace('/^[\s\S]*?(?=<h2>'.$title.')/', '', $txt);
         $txt = str_replace("MCSL",'',nl2br($txt));
         $txt = str_replace(["%uhash%","%40"],[$uhash,'@'],$txt);
-        return strip_tags($txt,"<br><h2><h3><h4><p><h5><b><i><a><strong><em>");
+        $txt = preg_replace('/(<br\s*\/?>\s*){17,}/i', '', $txt);
+        $txt = str_replace("<br />","\n",$txt);
+        $txt = preg_replace(
+            "#<div\s+id=['\"]remst['\"]>\s*</div>.*?<div\s+id=['\"]remen['\"]>\s*</div>#si",
+            "",
+            $txt
+        );
+
+        return strip_tags($txt,"<br><h2><h3><h4><p><h5><b><i><a><strong><em><h6>");
     }
     function SendReg(Request $request) {
         $email = "parie@gmx.de";

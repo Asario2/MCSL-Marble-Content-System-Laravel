@@ -29,6 +29,7 @@ info.php
 /public/build/**
 # Ausnahme: bestimmte Datei tracken
 *.dat
+!resources/views/**
 !vendor/laravel/jetstream/**
 !vendor/laravel/framework/src/Illuminate/Http/**
 !public/css/webfonts
