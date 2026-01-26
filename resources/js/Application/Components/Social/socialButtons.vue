@@ -62,7 +62,7 @@ f<template>
                 <!-- Bewertung -->
                 <tr v-if="showStarBox[postId]">
                     <td colspan="3" class="p-4">
-                        <RatingInput :postId="postId" :table="tablex" />
+                        <RatingInput :postId="postId" :table="tablex"  @update-email="email = $event"/>
                     </td>
                 </tr>
             </tbody>

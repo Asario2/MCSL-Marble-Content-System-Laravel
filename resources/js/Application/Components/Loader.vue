@@ -53,13 +53,13 @@ export default {
   },
 
   mounted() {
-    console.log("🟢 Loader mounted");
+//     console.log("🟢 Loader mounted");
 
     // Axios Interceptors nur EINMAL
     if (!axios.__LOADER_INSTALLED__) {
       axios.__LOADER_INSTALLED__ = true;
       this.monitorAxios();
-      console.log("✅ Axios Loader Interceptor installiert");
+//       console.log("✅ Axios Loader Interceptor installiert");
     }
 
     // Inertia Events
@@ -70,7 +70,7 @@ export default {
       this.initialLoadDone = true;
       this.pendingRequests = 0;
       this.hideLoader();
-      console.log("🟢 Initial Load abgeschlossen");
+//       console.log("🟢 Initial Load abgeschlossen");
     }, 800);
   },
 
@@ -78,16 +78,16 @@ export default {
     showLoaderWithDelay() {
       if (this.loadingTimer || this.isLoading) return;
 
-      console.log("⏳ Loader Delay gestartet");
+//       console.log("⏳ Loader Delay gestartet");
 
       this.loadingTimer = setTimeout(() => {
         this.isLoading = true;
-        console.log("🔵 Loader sichtbar");
+//         console.log("🔵 Loader sichtbar");
       }, 150);
     },
 
     hideLoader() {
-      console.log("🟣 Loader verstecken");
+//       console.log("🟣 Loader verstecken");
 
       clearTimeout(this.loadingTimer);
       this.loadingTimer = null;
@@ -95,7 +95,7 @@ export default {
     },
 
     checkLoading() {
-      console.log("🔍 checkLoading", this.pendingRequests);
+//       console.log("🔍 checkLoading", this.pendingRequests);
 
       if (this.pendingRequests <= 0) {
         this.pendingRequests = 0;
@@ -105,18 +105,18 @@ export default {
 
     monitorAxios() {
       axios.interceptors.request.use((config) => {
-        console.log("⬆️ Axios Request", {
-          url: config.url,
-          skipLoading: config.skipLoading,
-        });
+        // console.log("⬆️ Axios Request", {
+        //   url: config.url,
+        //   skipLoading: config.skipLoading,
+        // });
 
         if (config.skipLoading === true) {
-          console.log("🔕 skipLoading aktiv → kein Loader");
+//           console.log("🔕 skipLoading aktiv → kein Loader");
           return config;
         }
 
         this.pendingRequests++;
-        console.log("➕ pendingRequests:", this.pendingRequests);
+//         console.log("➕ pendingRequests:", this.pendingRequests);
 
         this.showLoaderWithDelay();
         return config;
@@ -126,10 +126,10 @@ export default {
         (response) => {
           if (!response.config?.skipLoading) {
             this.pendingRequests--;
-            console.log("⬇️ Axios Response", {
-              url: response.config.url,
-              pending: this.pendingRequests,
-            });
+            // console.log("⬇️ Axios Response", {
+            //   url: response.config.url,
+            //   pending: this.pendingRequests,
+            // });
             this.checkLoading();
           }
           return response;
@@ -149,11 +149,11 @@ export default {
     },
 
     monitorInertia() {
-      console.log("🟣 monitorInertia aktiviert");
+//       console.log("🟣 monitorInertia aktiviert");
 
       Inertia.on("start", (event) => {
         const skip = event.detail?.visit?.skipLoading;
-        console.log("🚀 Inertia start", { skip });
+//         console.log("🚀 Inertia start", { skip });
 
         if (skip || !this.initialLoadDone) return;
 
@@ -163,7 +163,7 @@ export default {
 
       Inertia.on("finish", (event) => {
         const skip = event.detail?.visit?.skipLoading;
-        console.log("🏁 Inertia finish", { skip });
+//         console.log("🏁 Inertia finish", { skip });
 
         if (skip || !this.initialLoadDone) return;
 

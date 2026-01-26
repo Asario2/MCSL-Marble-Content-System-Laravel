@@ -47,11 +47,15 @@ class RatingController extends Controller
         $rating = $validated['rating'];
         $postId = $validated['postId'];
         $table = $validated["table"];
+        $email = $validated["email"] ?? Auth::user()->email;
+        \Log::info($validated);
 
-
-            $userId = Auth::id();
-
-            $existingRate = $this->GetExistingRate($table,$postId);
+            $userId = Auth::id() ?? '7';
+            if($userId != "7")
+            {
+                $email = DB::table("users")->where("id",$userId)->value("email");
+            }
+            $existingRate = $this->GetExistingRate($table,$postId,$email);
             $id = is_object($existingRate) ? $existingRate->id : $existingRate;
             if(!$id && $userId)
             {
@@ -61,6 +65,7 @@ class RatingController extends Controller
                         "rating" => $rating,
                         "images_id" => $postId,
                         "users_id" => $userId,
+                        "email"=> $email,
                         "created_at" => now(),
                         "updated_at" => now(),
                     ]);
@@ -111,9 +116,21 @@ class RatingController extends Controller
 
         return response()->json(['status' => 'success']);
     }
-    public function GetExistingRate($table,$postId)
+    public function GetExistingRate($table,$postId,$email)
     {
-        $id = DB::table("ratings")->where("table",$table)->where("users_id",Auth::id())->where("images_id",$postId)->select("id")->first();
+        // $uss = DB::table("ratings")
+        //     ->leftJoin("users", "ratings.users_id", "=", "users.id")
+        //     ->select("users.email", "ratings.users_id")
+        //     ->get();
+
+        // foreach ($uss as $val) {
+        //     DB::table("ratings")
+        //         ->where("users_id", $val->users_id)
+        //         ->update([
+        //             "email" => $val->email
+        //         ]);
+        // }
+        $id = DB::table("ratings")->where("table",$table)->where("images_id",$postId)->where("users_id",Auth::id())->orWhere("email",$email)->select("id")->first();
         $id = !$id ? null : $id;
         return $id;
     }

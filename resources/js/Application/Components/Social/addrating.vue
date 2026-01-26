@@ -36,11 +36,13 @@
     props: {
       postId: Number, // Post ID wird als Prop übergeben
       table: String,  // Table-Name wird als Prop übergeben
+      email:String,
     },
     data() {
       return {
         rating: 0, // Bewertung aus der DB
         hoverRating: 0, // Hover-Effekt
+
       };
     },
     methods: {
@@ -60,6 +62,7 @@
 
                 // location.href=route("login");
                 // return;
+                console.log(this.email);
              }
 
              if(GetAuth === true || this.email){
