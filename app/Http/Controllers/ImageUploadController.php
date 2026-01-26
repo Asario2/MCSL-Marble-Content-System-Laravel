@@ -78,7 +78,7 @@ class ImageUploadController extends Controller
     }
     else
     {
-        $imageName = $image->getClientOriginalName().".". $image->getClientOriginalExtension();
+        $imageName = $image->getClientOriginalName();
     }
     $fileName = basename($imageName);
 
