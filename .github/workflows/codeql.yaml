@@ -14,8 +14,12 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
@@ -24,10 +28,13 @@ jobs:
           build-mode: none
           config: |
             paths-ignore:
-              - public/**
-              - resources/js/vendor/**
-              - node_modules/**
-              - **/*.min.js
+              - "public/**"
+              - "resources/js/vendor/**"
+              - "vendor/**"
+              - "node_modules/**"
+              - "storage/**"
+              - "bootstrap/**"
+              - "**/*.min.js"
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v4
