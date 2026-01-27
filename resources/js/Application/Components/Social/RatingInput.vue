@@ -91,6 +91,7 @@ console.log("⭐ Stern geklickt:", star);
       window.toastBus.emit({
         status: "error",
         message: "Bitte gib eine Email-Adresse ein.",
+        duration: 12000,
       });
       return;
     }
@@ -101,6 +102,7 @@ console.log("⭐ Stern geklickt:", star);
         window.toastBus.emit({
         status: "error",
         message: "Bitte gib eine gültige Email-Adresse ein.",
+        duration: 12000,
       });
       return;
     }
@@ -136,11 +138,12 @@ console.log("⭐ Stern geklickt:", star);
           average: res.data.average,
           total: res.data.total,
         });
-
+        console.log(res);
         // ✅ Erfolg
         window.toastBus.emit({
-          status: "points",
-          message: "Du hast 1 MCSL Point gesammelt",
+          status: res.data.status,
+          message: res.data.message,
+          duration: res.data.duration,
         });
       } catch (e) {
         if (e.response?.status === 401) {

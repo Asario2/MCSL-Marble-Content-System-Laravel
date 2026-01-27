@@ -105,11 +105,12 @@ class PMController extends Controller
         $text = preg_replace('/^(<br\s*\/?>)+/i', '', $content);
 
         $text = str_replace(str_repeat("<br />\n",3),"<br />",nl2br($text));
-        $text = str_replace(
-            ["\r", "\n", "\t"],
-            ["\\r", "\\n", "\\t"],
-            $text
-        );
+        // $text = str_replace(
+        //     ["\r", "\n", "\t"],
+        //     ["\\r", "\\n", "\\t"],
+        //     $text
+        // );
+        $text = nl2br($text);
         return str_replace(str_repeat("<br>\n",6),'',$text);
     }
 

@@ -23,7 +23,7 @@ class MCSLPointsController extends Controller
         $this->scnt = 1;
         // Newsletter read
         $this->ncnt = 8;
-        $this->SPcnt = 7;
+        $this->SPcnt = 5;
     }
     function SendMail(Request $request)
     {

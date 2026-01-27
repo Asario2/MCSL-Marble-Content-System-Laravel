@@ -278,15 +278,16 @@ $mailPassword = env('MAIL_PASSWORD');
     }
     function send_newsletter(Request $request){
         $i = 0;
+        $pma = 0;
         $sendm = [];
+        $sendpm = [];
         $entries = explode(", ",session("reci"));
         $groups = [];
         $ugroups = [];
         $contacts = [];
         $users = [];
+        $pm = NEW PMController();
         // $to = DB::table("newsletter")
-
-        \Log::info($request);
 
         foreach($entries as $key=>$val){
             if(substr_count($val,"{")){
@@ -306,8 +307,7 @@ $mailPassword = env('MAIL_PASSWORD');
             ->join('users_rights', 'users.users_rights_id', '=', 'users_rights.id')
             ->leftJoin('newsletter_blacklist', 'newsletter_blacklist.mail', '=', 'users.email')
             ->where('users_rights.name', $ug)
-            ->whereNull('newsletter_blacklist.mail') // => Nur wenn NICHT in Blacklist
-            ->select('users.email', 'users.uhash', 'users.name')
+            ->select('users.email', 'users.uhash', 'users.name','newsletter_blacklist.mail as bmail')
             ->get();
 
         }
@@ -318,8 +318,34 @@ $mailPassword = env('MAIL_PASSWORD');
             $email = @$regro->email;
             $nick = @$regro->name;
             $sendm[] = $email;
-            $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
-            $i++;
+            $id2 = DB::table('users_config')
+                    ->leftJoin("users","users_config.users_id","=","users.id")
+                    ->where('users.email', $email)
+                    ->where('xch_newsletter', 'LIKE', '%pm%')
+                    ->value("users.id");
+            if($id2)
+            {
+                $request->merge([
+                    'to_id' => $id2,
+                    "subject"  => session('title'),
+                    "message" => $this->clean((session('content')),$uhash,session('title')),
+                    "uid" => "4",
+                ]);
+
+                if(!in_array($id2,$sendpm))
+                {
+                    $pm->store($request);
+                    $pma++;
+                    $sendpm[] = $id2;
+                }
+            }
+            if(!$regro->bmail)
+            {
+                $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
+                $i++;
+                $sendm[] = $email;
+            }
+
         }
         foreach($contacts as $con)
         {
@@ -331,7 +357,14 @@ $mailPassword = env('MAIL_PASSWORD');
             $res_alt = DB::table('contacts')->where('email_hash', hash('sha256', $email))->select("uhash","email")->first();
 
             $uhash = $res_alt->uhash;
-            $email = $res_alt->email;
+            $email = decval($res_alt->email);
+
+            $isBlackListed = DB::table("newsletter_blacklist")->where("mail",$email)->exists();
+            if($isBlackListed)
+            {
+                $sendm[] = $email;
+            }
+
             if(!in_array($email,$sendm) && !empty($email)){
                 $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
                 $i++;
@@ -352,26 +385,36 @@ $mailPassword = env('MAIL_PASSWORD');
             $email = @$res->email;
             $nick = @$res->name;
             $id = @$res->id;
+            $isBlackListed = DB::table("newsletter_blacklist")->where("mail",$email)->exists();
+            if($isBlackListed)
+            {
+                $sendm[] = $email;
+            }
             // $comp = $co->comphash;
             if(!in_array($email,$sendm) && !empty($res) && !empty($email)){
-                $haspm = DB::table('users_config')
-                    ->where('users_id', $id)
-                    ->where('xch_newsletter', 'LIKE', '%pm%')
-                    ->exists();
-                if($haspm)
-                {
-                    $request->merge([
-                        'to_id' => $id,
-                        "subject"  => session('title'),
-                        "message" => $this->clean((session('content')),$uhash,session('title')),
-                        "uid" => "4",
-                    ]);
-                    $pm = NEW PMController();
-                    $pm->store($request);
-                }
+
                 $this->SendMail(session('title'),session('template'),$email,$nick,'',html_entity_decode(session('content')),$uhash);
                 $i++;
                 $sendm[] = $email;
+            }
+            $haspm = DB::table('users_config')
+                    ->where('users_id', $id)
+                    ->where('xch_newsletter', 'LIKE', '%pm%')
+                    ->exists();
+            if($haspm)
+            {
+                $request->merge([
+                    'to_id' => $id,
+                    "subject"  => session('title'),
+                    "message" => $this->clean((session('content')),$uhash,session('title')),
+                    "uid" => "4",
+                ]);
+                if(!in_array($id,$sendpm))
+                {
+                    $pm->store($request);
+                    $pma++;
+                    $sendpm[] = $id;
+                }
             }
 
         }
@@ -395,7 +438,7 @@ $mailPassword = env('MAIL_PASSWORD');
 
 
 
-       return Inertia::render("Components/Social/Emails_Sended",["i"=>$i]);
+       return Inertia::render("Components/Social/Emails_Sended",["i"=>$i,"pm"=>$pma]);
 
     }
     function clean($txt,$uhash,$title)
@@ -421,7 +464,7 @@ $mailPassword = env('MAIL_PASSWORD');
     function subquote($txt)
     {
         // return str_replace(["<p>","</p>"],"",$txt);
-        return $txt;                
+        return $txt;
     }
     function SendReg(Request $request) {
         $email = "parie@gmx.de";

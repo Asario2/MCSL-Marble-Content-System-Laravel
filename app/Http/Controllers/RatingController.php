@@ -55,8 +55,11 @@ class RatingController extends Controller
             {
                 $email = DB::table("users")->where("id",$userId)->value("email");
             }
-            $existingRate = $this->GetExistingRate($table,$postId,$email);
+
+            $existingRate = $this->GetExistingRate($table,$postId,$email,$userId);
             $id = is_object($existingRate) ? $existingRate->id : $existingRate;
+            \Log::info("ID: ".$id);
+            $duration = 5000;
             if(!$id && $userId)
             {
                 DB::table("ratings")->insert(
@@ -69,10 +72,17 @@ class RatingController extends Controller
                         "created_at" => now(),
                         "updated_at" => now(),
                     ]);
-            }
-            elseif(!$userId)
-            {
-                redirect()->intended('/');
+                    if($userId != "7")
+                    {
+                        $status = 'points';
+                        $message = 'Du hast 1 MCSL Point gesammelt';
+                    }
+                    else
+                    {
+                        $status = "success";
+                        $message = "Deine Bewertung wurde gespeichert";
+                    }
+
             }
             else{
                 DB::table("ratings")->where("id",$id)->update(
@@ -81,42 +91,20 @@ class RatingController extends Controller
                         "updated_at" => now(),
                     ]
                     );
-
+                    $status = "info";
+                    $message = "Wir haben deine Punkte aktualisiert";
                 }
 
 
 
 
-            return response()->json(['status' => 'success']);
+            return response()->json(['status' => $status, "message"=>$message,"duration"=>$duration]);
 
 
-        // Speichern der Bewertung, z.B. in einer Rating-Datenbank-Tabelle
-        // Rating::create([...]);
-        // $existingRate = $this->GetExistingRate($table, $postId);
-        //     $id = is_object($existingRate) ? $existingRate->id : $existingRate;
-        // if(!$id)
-        // {
-        //     DB::table("ratings")
-        //     ->insert(["image_id"=>$postId,
-        //     "rating"=>$rating,
-        //     "table"=>$table,
-        //     "users_id"=>Auth::id(),
-        //     "created_at"=>now(),
-        //     "updated_at"=>now()]);
-        // }
-        // else{
-
-        //     DB::table("ratings")->where("id",$id)
-        //     ->update(["image_id"=>$postId,
-        //     "rating"=>$rating,
-        //     "table"=>$table,
-        //     "users_id"=>Auth::id(),
-        //     "updated_at"=>now()]);
-        // }
 
         return response()->json(['status' => 'success']);
     }
-    public function GetExistingRate($table,$postId,$email)
+    public function GetExistingRate($table,$postId,$email,$users_id)
     {
         // $uss = DB::table("ratings")
         //     ->leftJoin("users", "ratings.users_id", "=", "users.id")
@@ -130,7 +118,8 @@ class RatingController extends Controller
         //             "email" => $val->email
         //         ]);
         // }
-        $id = DB::table("ratings")->where("table",$table)->where("images_id",$postId)->where("users_id",Auth::id())->orWhere("email",$email)->select("id")->first();
+        $id = DB::table("ratings")->where("table",$table)->where("images_id",$postId)->where("users_id",$users_id)->where("email",$email)->select("id")->first();
+        \Log::info("idnew:".json_encode([$table,Auth::id(),$postId,$email]));
         $id = !$id ? null : $id;
         return $id;
     }
