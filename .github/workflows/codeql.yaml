@@ -1,11 +1,33 @@
-- name: Initialize CodeQL
-  uses: github/codeql-action/init@v4
-  with:
-    languages: javascript
-    build-mode: none
-    config: |
-      paths-ignore:
-        - public/**
-        - resources/js/vendor/**
-        - node_modules/**
-        - **/*.min.js
+name: "CodeQL"
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+
+    permissions:
+      security-events: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript
+          build-mode: none
+          config: |
+            paths-ignore:
+              - public/**
+              - resources/js/vendor/**
+              - node_modules/**
+              - **/*.min.js
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
