@@ -26,12 +26,12 @@ class CustomLoginController extends Controller
     }
     public function loginSilent(Request $request)
     {
+    \Log::info('LOGIN-SILENT HIT');
     $credentials = $request->only('email', 'password');
 
     if (!Auth::attempt($credentials)) {
         return response()->json(['message' => 'Invalid credentials'], 401);
     }
-
     return response()->json([
         'message' => 'Logged in',
         'user_id' => Auth::id()

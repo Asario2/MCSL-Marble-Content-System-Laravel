@@ -1,5 +1,5 @@
 <template>
-    <div class="dark" id="app-layout-start">
+    <div :class="mode" id="app-layout-start">
         <Head :title="title"></Head>
 
         <div
@@ -33,28 +33,28 @@
                             <div
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                             >
-                            <NavLink
-                                    :routeName="route('home.index')"
-                                    :active="route().current('home.index')"
-                                    label="Home"
-                                >
-                                </NavLink>
-                            <NavLink
+                                <NavLink
                                     :routeName="route('admin.dashboard')"
                                     :active="route().current('admin.dashboard')"
                                     label="Dashboard"
+                                >
+                                </NavLink>
+                                <NavLink
+                                    :routeName="route('admin.handbook')"
+                                    label="Handbuch"
+                                    target="_blank"
                                 >
                                 </NavLink>
                             </div>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
-                            <!-- <div class="mr-1">
+                            <div class="mr-1">
                                 <button-change-mode
                                     :mode="mode"
                                     @changeMode="changeMode"
                                 ></button-change-mode>
-                            </div> -->
+                            </div>
                             <!-- Settings Dropdown -->
                             <div class="ms-3 relative">
                                 <Dropdown align="right" width="72">
@@ -69,13 +69,14 @@
                                             <img
                                                 class="h-8 w-8 rounded-full object-cover"
                                                 :src="
-                                                GetProfileImagePath($page.props.auth.user?.profile_photo_url)"
+                                                    $page.props.userdata
+                                                        .profile_photo_url
+                                                "
                                                 :alt="
                                                     $page.props.userdata
                                                         .full_name
                                                 "
                                             />
-
                                         </button>
 
                                         <span
@@ -94,9 +95,10 @@
                                                 <svg
                                                     class="ms-2 -me-0.5 h-4 w-4"
                                                     xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
                                                     viewBox="0 0 24 24"
                                                     stroke-width="1.5"
-                                                    stroke="currentColor" fill="none"
+                                                    stroke="currentColor"
                                                 >
                                                     <path
                                                         stroke-linecap="round"
@@ -116,7 +118,7 @@
                                             <span
                                                 v-if="
                                                     $page.props.userdata
-                                                        .application_count > 100
+                                                        .application_count > 1
                                                 "
                                                 >Anwendung wechseln</span
                                             >
@@ -126,17 +128,17 @@
                                             :with-icon="false"
                                             :with-route="true"
                                             :route-name="
-                                                route('admin.dashboard')
+                                                route('central.dashboard')
                                             "
                                         >
                                             <span
                                                 v-if="
                                                     $page.props.userdata
-                                                        .application_count > 100
+                                                        .application_count > 1
                                                 "
                                                 >Anwendung wechseln</span
                                             >
-                                            <span v-else>zum Dashboard</span>
+                                            <span v-else>zur Startseite</span>
                                         </dropdown-link>
 
                                         <!-- Account Management -->
@@ -154,25 +156,19 @@
                                             Profil
                                         </dropdown-link>
 
-                                          <dropdown-link v-if="modulRights?.PrivateMessages"
-                                                :with-icon="false"
-                                                :with-route="true"
-                                                :route-name="
-                                                    route('pm.index')
-                                                ">
-
-                                            Private Nachrichten
-                                            </dropdown-link>
-                                        <dropdown-link  v-if="modulRights?.Contacts"
-                                                :with-icon="false"
-                                                :with-route="true"
-                                                :route-name="
-                                                    route('admin.kontakte')
-                                                ">
-
-                                            Kontakte
-                                            </dropdown-link>
-
+                                        <dropdown-link
+                                            v-if="
+                                                $page.props.jetstream
+                                                    .hasApiFeatures
+                                            "
+                                            :with-icon="false"
+                                            :with-route="true"
+                                            :route-name="
+                                                route('admin.api_tokens.index')
+                                            "
+                                        >
+                                            API-Token
+                                        </dropdown-link>
 
                                         <div
                                             class="my-2 border-t border-layout-sun-200 dark:border-layout-night-200"
@@ -199,8 +195,8 @@
                             >
                                 <svg
                                     class="h-6 w-6"
-                                    stroke="currentColor" fill="none"
-
+                                    stroke="currentColor"
+                                    fill="none"
                                     viewBox="0 0 24 24"
                                 >
                                     <path
@@ -239,18 +235,14 @@
                 >
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink
-                            :href="route('home.index')"
-                            target="_self"
-                        >
-                            Home
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
                             :href="route('admin.dashboard')"
                             :active="route().current('admin.dashboard')"
                         >
                             Dashboard
                         </ResponsiveNavLink>
-
+                        <ResponsiveNavLink :href="route('admin.handbook')" target="_blank">
+                            Handbuch
+                        </ResponsiveNavLink>
                         <ResponsiveNavLink as="button">
                             <button-change-mode
                                 :mode="mode"
@@ -272,7 +264,9 @@
                             >
                                 <img
                                     class="h-10 w-10 rounded-full object-cover"
-                                    :src="GetProfileImagePath($page.props.auth.user?.profile_photo_url)"
+                                    :src="
+                                        $page.props.auth.user.profile_photo_url
+                                    "
                                     :alt="$page.props.userdata.full_name"
                                 />
                             </div>
@@ -281,17 +275,16 @@
                                 <div
                                     class="font-medium text-base text-gray-800 dark:text-gray-200"
                                 >
-                                    {{ $page.props.auth.user?.first_name }}
-                                    {{ $page.props.auth.user?.name }}
+                                    {{ $page.props.auth.user.first_name }}
+                                    {{ $page.props.auth.user.last_name }}
                                 </div>
                                 <div class="font-medium text-sm text-gray-500">
-                                    {{ $page.props.auth.user?.email }}
+                                    {{ $page.props.auth.user.email }}
                                 </div>
                             </div>
                         </div>
 
                         <div class="mt-3 space-y-1">
-
                             <ResponsiveNavLink
                                 :href="route('admin.profile')"
                                 :active="route().current('admin.profile')"
@@ -299,9 +292,18 @@
                                 Profil
                             </ResponsiveNavLink>
 
+                            <ResponsiveNavLink
+                                v-if="$page.props.jetstream.hasApiFeatures"
+                                :href="route('admin.api_tokens.index')"
+                                :active="
+                                    route().current('admin.api_tokens.index')
+                                "
+                            >
+                                API-Token
+                            </ResponsiveNavLink>
+
                             <!-- Authentication -->
                             <form method="POST" @submit.prevent="logoutUser">
-
                                 <ResponsiveNavLink as="button">
                                     Abmelden
                                 </ResponsiveNavLink>
@@ -320,12 +322,11 @@
                     <slot name="header" />
                 </div>
             </header>
-            <!-- Loader for Content -->
-            <Loader />
+
             <!-- Page Content -->
             <main>
                 <div class="min-h-screen">
-                    <div class="w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                         <!-- Toast -->
                         <div>
                             <toast></toast>
@@ -357,16 +358,15 @@
 import { Head } from "@inertiajs/vue3";
 
 import BrandHeader from "@/Application/Shared/BrandHeader.vue";
+
 import Toast from "@/Application/Components/Content/Toast.vue";
 import ButtonChangeMode from "@/Application/Components/ButtonChangeMode.vue";
-import { toastBus } from '@/utils/toastBus';
-import Loader from "@/Application/Components/Loader.vue";
+
 import Dropdown from "@/Application/Components/Content/Dropdown.vue";
 import DropdownLink from "@/Application/Components/Content/DropdownLink.vue";
-import { SD,GetProfileImagePath,loadRights } from "@/helpers";
 import NavLink from "@/Application/Components/Content/NavLink.vue";
 import ResponsiveNavLink from "@/Application/Components/Content/ResponsiveNavLink.vue";
-import { router } from '@inertiajs/vue3';
+
 import FooterGrid from "@/Application/Components/Content/FooterGrid.vue";
 
 export default {
@@ -382,7 +382,6 @@ export default {
         NavLink,
         ResponsiveNavLink,
         FooterGrid,
-        Loader,
     },
 
     props: {
@@ -394,53 +393,13 @@ export default {
 
     data() {
         return {
-            mode: "dark",
-            isOpen: false,   // ✅ jetzt im data statt props
+            mode: localStorage.theme ? localStorage.theme : "",
+            isOpen: false,
             year: new Date().getFullYear(),
-            modulRights: null,
-            rightsData: {},
-            rightsReady: false,
         };
     },
 
-    async mounted() {
-        this.modulRights = await loadRights();
-        let shouldReload = localStorage.getItem('reload_dashboard');
-        if (shouldReload) {
-            localStorage.removeItem('reload_dashboard');
-            window.location.reload();
-        }
-
-        const params = new URLSearchParams(window.location.search);
-        const search = params.get("search");
-
-            // Wenn search gesetzt ist, verstecke das Loading-Div
-            if (search && search.trim() !== "") {
-        this.isLoading = false
-        this.loading = false
-        } else {
-        this.isLoading = false  // Loader auch deaktivieren wenn kein search
-        }
-
-    },
-
     methods: {
-        SD,
-        GetProfileImagePath,
-        async getServer() {
-            try {
-                const response = await axios.get('/api/GetLastAct');
-                if (response.data.includes("admin/dashboard")) {
-                    // this.$inertia.reload();
-                }
-            } catch (error) {
-                toastBus.emit('toast', {
-                    status: 'error',
-                    message: error.response?.data?.message || 'Fehler beim Laden.',
-                });
-            }
-        },
-
         changeMode(value) {
             this.mode = value;
             this.isOpen = false;
@@ -452,13 +411,10 @@ export default {
         },
 
         logoutUser() {
-    this.$inertia.post(this.route('logout'), {
-        _token: document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-    });
-}
-
+            let routeLogout = "logout";
+            //
+            this.$inertia.post(this.route(routeLogout));
+        },
     },
 };
 </script>
-
-

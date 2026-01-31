@@ -155,7 +155,7 @@ export default defineComponent({
             let routeResetPassword = "password.store"
             //
 
-            this.loading = true;
+            // this.loading = true;
             this.loadingText = "Das neue Kennwort wird gespeichert!";
             //
             // console.log(this.form);

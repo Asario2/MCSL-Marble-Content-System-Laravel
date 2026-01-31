@@ -264,8 +264,11 @@
                         </li>
                         <li>
                             <!-- <link-footer @click="reopenCookieBanner"><b>Cookie-Einstellungen</b></link-footer> -->
-<a class="ToggleCookieLink text-layout-sun-600 dark:text-layout-night-900 cursor-pointer inline-block rounded-lg px-2 py-1 text-sm text-layout-sun-700 hover:bg-primary-sun-300 hover:text-layout-sun-900 dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900" onclick="showHideToggleCookiePreferencesModal()"><span>Cookie Einstellungen</span></a>
+                            <a class="ToggleCookieLink text-layout-sun-600 dark:text-layout-night-900 cursor-pointer inline-block rounded-lg px-2 py-1 text-sm text-layout-sun-700 hover:bg-primary-sun-300 hover:text-layout-sun-900 dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900" onclick="showHideToggleCookiePreferencesModal()"><span>Cookie Einstellungen</span></a>
 
+                        </li>
+                        <li>
+                            <button class="ToggleCookieLink text-layout-sun-600 dark:text-layout-night-900 cursor-pointer inline-block rounded-lg px-2 py-1 text-sm text-layout-sun-700 hover:bg-primary-sun-300 hover:text-layout-sun-900 dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900 font-bold" @click.prevent="copyUrl"><span>Newsfeed abonieren</span></button>
                         </li>
                         <li>
                             <link-footer name="Kontakt" :route-name="route('home.contacts')"></link-footer>
@@ -397,8 +400,8 @@ import IconDashboard from "@/Application/Components/Icons/IconDashboard.vue";
       },
 
       setup() {
-        const loadingStore = useLoadingStore();
-        return { loadingStore };
+        // const loadingStore = useLoadingStore();
+        // return { loadingStore };
       },
 
       data() {
@@ -407,10 +410,10 @@ import IconDashboard from "@/Application/Components/Icons/IconDashboard.vue";
           isOpen_Menu: false,
           year: new Date().getFullYear(),
           pendingRequests: 0,
-          isLoading: localStorage.getItem("loading") === "true",
+        //   isLoading: localStorage.getItem("loading") === "true",
           search: "",
           searchval: false,
-          imagesLoaded: false,
+        //   imagesLoaded: false,
           searchTimeout: null,
           rights: {
             edit: null,
@@ -423,11 +426,11 @@ import IconDashboard from "@/Application/Components/Icons/IconDashboard.vue";
       async mounted() {
 
 window.addEventListener("loader:show", () => {
-    this.isLoading = true;
+   // this.isLoading = true;
   });
 
   window.addEventListener("loader:hide", () => {
-    this.isLoading = false;
+    //this.isLoading = false;
   });
     // MCS POINTS
     this.loadmcslpoints(); // initial
@@ -495,7 +498,74 @@ window.addEventListener("loader:show", () => {
       methods: {
         GetProfileImagePath,
         SD,
+        checkLoadingState() {
+        if (this.pendingRequests === 0 && this.imagesLoaded) {
+            this.setLoadingState(false);
+        }
+        },
+
+        waitForImagesToLoad() {
+        const images = document.querySelectorAll('img');
+        const totalImages = images.length;
+        let imagesLoadedCount = 0;
+
+        if (totalImages === 0) {
+            this.imagesLoaded = true;
+            this.checkLoadingState();
+            return;
+        }
+
+        images.forEach((img) => {
+            if (img.complete) {
+            imagesLoadedCount++;
+            } else {
+            img.addEventListener('load', () => {
+                imagesLoadedCount++;
+                if (imagesLoadedCount === totalImages) {
+                this.imagesLoaded = true;
+                this.checkLoadingState();
+                }
+            });
+            }
+        });
+
+        if (imagesLoadedCount === totalImages) {
+            this.imagesLoaded = true;
+            this.checkLoadingState();
+        }
+        },
         CheckTRights,
+        copyUrl() {
+            const url = window.location.origin + '/rss.xml';
+
+            // ✅ Moderne Clipboard API verfügbar?
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url)
+                .then(() => {
+                    alert('✅ RSS-Link wurde in die Zwischenablage kopiert');
+                })
+                .catch(() => {
+                    this.fallbackCopy(url);
+                });
+            } else {
+                // ❌ Kein Clipboard → Fallback
+                this.fallbackCopy(url);
+            }
+        },
+        fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.setAttribute('readonly', '');
+            textarea.style.position = 'absolute';
+            textarea.style.left = '-9999px';
+
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            alert('✅ RSS-Link wurde in die Zwischenablage kopiert');
+        },
         async loadmcslpoints() {
         try {
                 const { data } = await axios.get('/api/mcslpoints/');
@@ -559,50 +629,50 @@ window.addEventListener("loader:show", () => {
 
 
 
-        checkLoadingState() {
-//           console.log("🔍 checkLoadingState()", {
-        //     pending: this.pendingRequests,
-        //     imagesLoaded: this.imagesLoaded,
-        //     isLoading: this.isLoading,
-        //   });
+//         checkLoadingState() {
+// //           console.log("🔍 checkLoadingState()", {
+//         //     pending: this.pendingRequests,
+//         //     imagesLoaded: this.imagesLoaded,
+//         //     isLoading: this.isLoading,
+//         //   });
 
-          if (this.pendingRequests === 0 && this.imagesLoaded) {
-//             console.log("✅ Ladezustand beendet");
-            this.setLoadingState(false);
-          }
-        },
+//           if (this.pendingRequests === 0 && this.imagesLoaded) {
+// //             console.log("✅ Ladezustand beendet");
+//             this.setLoadingState(false);
+//           }
+//         },
 
-        waitForImagesToLoad() {
-          const images = document.querySelectorAll("img");
-          const totalImages = images.length;
-          let imagesLoadedCount = 0;
+//         waitForImagesToLoad() {
+//           const images = document.querySelectorAll("img");
+//           const totalImages = images.length;
+//           let imagesLoadedCount = 0;
 
-//           console.log("📸 Images gefunden:", totalImages);
+// //           console.log("📸 Images gefunden:", totalImages);
 
-          if (totalImages === 0) {
-            this.imagesLoaded = true;
-            this.checkLoadingState();
-            return;
-          }
+//           if (totalImages === 0) {
+//             this.imagesLoaded = true;
+//             this.checkLoadingState();
+//             return;
+//           }
 
-          const markImageDone = () => {
-            imagesLoadedCount++;
-//             console.log(`📸 Bild ${type}:`, src, `${imagesLoadedCount}/${totalImages}`);
-            if (imagesLoadedCount === totalImages) {
-              this.imagesLoaded = true;
-              this.checkLoadingState();
-            }
-          };
+//           const markImageDone = () => {
+//             imagesLoadedCount++;
+// //             console.log(`📸 Bild ${type}:`, src, `${imagesLoadedCount}/${totalImages}`);
+//             if (imagesLoadedCount === totalImages) {
+//               this.imagesLoaded = true;
+//               this.checkLoadingState();
+//             }
+//           };
 
-          images.forEach((img) => {
-            if (img.complete) {
-              markImageDone(img.src, "complete");
-            } else {
-              img.addEventListener("load", () => markImageDone(img.src, "load"));
-              img.addEventListener("error", () => markImageDone(img.src, "error"));
-            }
-          });
-        },
+//           images.forEach((img) => {
+//             if (img.complete) {
+//               markImageDone(img.src, "complete");
+//             } else {
+//               img.addEventListener("load", () => markImageDone(img.src, "load"));
+//               img.addEventListener("error", () => markImageDone(img.src, "error"));
+//             }
+//           });
+//         },
 
         toggleNavbar() {
           this.isOpen_Menu = !this.isOpen_Menu;
@@ -622,7 +692,7 @@ window.addEventListener("loader:show", () => {
           clearTimeout(this.searchTimeout);
           this.searchTimeout = setTimeout(() => {
             if (this.search.trim() !== "") {
-              this.setLoadingState(true);
+                //   this.setLoadingState(true);
             }
           }, 3000);
         },

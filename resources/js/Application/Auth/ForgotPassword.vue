@@ -138,7 +138,7 @@ export default defineComponent({
         forgotPasswordUser() {
             let routeForgotPassword = "password.email";
             //
-            this.loading = true;
+            // this.loading = true;
             this.loadingText =
                 "Die Mail wird vorbereitet und an Sie versendet!";
             //

@@ -68,31 +68,39 @@ class RightsController extends Controller
     // Rückgabe des einzelnen Bits
     return response()->json(intval($rightString[$tableid]));
 }
-public function GetRights($table,$right){
+public function GetRights($table, $right)
+{
     if (!Auth::check()) {
-return false;
-} else {
+        return response()->json(0);
+    }
+
     $userId = Auth::id();
+
+    $rightfe = DB::table("users")
+        ->where("users.id", $userId)
+        ->leftJoin(
+            "users_rights",
+            "users.users_rights_id",
+            "=",
+            "users_rights.id"
+        )
+        ->select("users_rights.".$right."_table as posi")
+        ->first();
+
+    $pos = DB::table("admin_table")
+        ->where("name", $table)
+        ->value("position");
+
+    if ($pos === null || !isset($rightfe->posi)) {
+        return response()->json(0);
+    }
+
+    // Binärrecht auslesen
+    $rf = substr($rightfe->posi, $pos, 1);
+
+    return response()->json((int) $rf);
 }
 
-$rightfe = DB::table("users")
-    ->where("users.id", $userId)
-    ->leftJoin("users_rights", "users.users_rights_id", "=", "users_rights.id")
-    ->select("users_rights.".$right."_table as posi")
-    ->first();
-
-$pos = DB::table("admin_table")
-    ->where("name", $table)
-    ->value("position");
-
-// RICHTIG: Position nutzen!
-$rf = substr(@$rightfe->posi, ($pos), 1);
-if(!$pos && $pos !== "0"){
-$rf = "0";
-}
-// \Log::info("R:".$right."POSS:".($pos-1)."V:".$rf);
-    return response()->json($rf);
-}
 // public function AddFunction(Request $request)
 // {
 

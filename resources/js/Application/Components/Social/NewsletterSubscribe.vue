@@ -161,7 +161,7 @@ export default {
         return;
       }
 
-      this.loading = true;
+      // this.loading = true;
 
       try {
         // Wenn du Ziggy NICHT nutzt, ersetze das hier durch: await axios.post('/newsletter/store', this.form)

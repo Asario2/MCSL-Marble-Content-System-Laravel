@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use League\CommonMark\CommonMarkConverter;
 if(!session_id())
 {
-    ///session_start();
+    session_start();
 }
 class HomeController_mfx extends Controller
 {

@@ -197,3 +197,4 @@
 ![Version](https://img.shields.io/badge/version-4.39.4-orange) Hotfix - Formatting in newsletters and pm (#362)  
 ![Version](https://img.shields.io/badge/version-4.42.3-orange) Feature - public posting for stars & Comments (#321)  
 ![Version](https://img.shields.io/badge/version-4.43.1-orange) Feature - Changed Mail Script (#363)  
+![Version](https://img.shields.io/badge/version-4.44.7-orange) Hotfix - Fix functions in Layout..vue (#364)  

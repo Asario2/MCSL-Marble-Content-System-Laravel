@@ -24,7 +24,7 @@ class CommentController extends Controller
     {
         $this->processedIds = session()->get('processedIds', []);
         if(!session_id()){
-          //  session_start();
+            session_start();
         }
     }
 
@@ -196,55 +196,55 @@ class CommentController extends Controller
                 "message" => "Eintrag exisitiert bereits",
             ]);
     }
-    public function sendmc(Request $request)
-        {
-            // Eingeloggte User brauchen kein Captcha & kein "accepted"
-            if (Auth::check()) {
-                $request->validate([
-                    'name'    => 'required|string|max:255',
-                    'email'   => 'required|email|max:255',
-                    'subject' => 'required|string|max:255',
-                    'message' => 'required|string',
-                ]);
-            } else {
-                // Gäste brauchen Captcha + akzeptierte AGB
-                $request->validate([
-                    'name'    => 'required|string|max:255',
-                    'email'   => 'required|email|max:255',
-                    'subject' => 'required|string|max:255',
-                    'message' => 'required|string',
-                    'captcha' => 'required|string',
-                    'accepted'=> 'accepted',
-                ]);
+public function sendmc(Request $request)
+    {
+        // Eingeloggte User brauchen kein Captcha & kein "accepted"
+        if (Auth::check()) {
+            $request->validate([
+                'name'    => 'required|string|max:255',
+                'email'   => 'required|email|max:255',
+                'subject' => 'required|string|max:255',
+                'message' => 'required|string',
+            ]);
+        } else {
+            // Gäste brauchen Captcha + akzeptierte AGB
+            $request->validate([
+                'name'    => 'required|string|max:255',
+                'email'   => 'required|email|max:255',
+                'subject' => 'required|string|max:255',
+                'message' => 'required|string',
+                'captcha' => 'required|string',
+                'accepted'=> 'accepted',
+            ]);
 
-                // Captcha prüfen
-                if (@$_SESSION['captcha_text'] !== $request->captcha) {
-                    return response()->json(['error' => 'Captcha falsch'], 422);
-                }
-                unset($_SESSION['captcha_text']);
+            // Captcha prüfen
+            if (@$_SESSION['captcha_text'] !== $request->captcha) {
+                return response()->json(['error' => 'Captcha falsch'], 422);
             }
-
-            // Mail versenden
-            try {
-                Mail::to(config('mail.maintainer'))->send(new ContactMail(
-                    $request->getHost(),
-                    $request->name,
-                    $request->email,
-                    $request->subject,
-                    $request->message
-                ));
-
-                return response()->json("1", 200);
-
-            } catch (\Exception $e) {
-                \Log::error('Fehler beim Mailversand', [
-                    'error' => $e->getMessage(),
-                    'request' => $request->all()
-                ]);
-
-                return response()->json(['error' => 'Mail konnte nicht gesendet werden'], 500);
-            }
+            unset($_SESSION['captcha_text']);
         }
+
+        // Mail versenden
+        try {
+            Mail::to(config('mail.maintainer'))->send(new ContactMail(
+                $request->getHost(),
+                $request->name,
+                $request->email,
+                $request->subject,
+                $request->message
+            ));
+
+            return response()->json("1", 200);
+
+        } catch (\Exception $e) {
+            \Log::error('Fehler beim Mailversand', [
+                'error' => $e->getMessage(),
+                'request' => $request->all()
+            ]);
+
+            return response()->json(['error' => 'Mail konnte nicht gesendet werden'], 500);
+        }
+    }
 
 
     public function SendMailContent(Request $request){
@@ -281,15 +281,15 @@ class CommentController extends Controller
         $comment->content = strip_tags($comment->content, '<br>');
         $comment->admin_table_id = $this->GetTid($table);
         $comment->users_id = auth()->id(); // Beispiel für Benutzer-ID
-        $comment->nick = Auth::user()->name;
+        $comment->nick = Auth::user()->name ?? $request->name;
         $now = now();
         $comment->created_at = $now;
         $comment->updated_at = $now;
-        $comment->email = $user->email;
-        $comment->tablename = $table;
+        $comment->email = $user->email ?? $request->email;
+        $comment->admin_table_id = DB::table("admin_table")->where("name",$table)->value("id");
         $comment->post_id = $request->post_id;
         $comment->save();
-        $nick = $user->name;
+        $nick = $user->name ?? $request->name;
         $comment = $comment->content;
         $content = $comment;
         // $MailHelper = NEW MailHelper();
@@ -306,7 +306,11 @@ class CommentController extends Controller
 
 
 
-        return redirect()->back()->with('success', 'Kommentar erfolgreich gepostet!');
+return response()->json([
+    'status' => 'success',
+    'message' => 'Kommentar erfolgreich gepostet!',
+    'comment' => $comment
+]);
     }
     // public function checkComment(Request $request){
     //     $id = $request->id;

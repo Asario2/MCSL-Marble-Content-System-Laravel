@@ -199,7 +199,7 @@ export default defineComponent({
         registerUser() {
             let routeRegister = "register";
             //
-            this.loading = true;
+            // this.loading = true;
             this.loadingText = "Die Registierung wird durchgeführt!";
             //
             this.$inertia.post(this.route(routeRegister), this.form, {

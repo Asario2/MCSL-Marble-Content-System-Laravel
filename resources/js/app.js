@@ -53,17 +53,16 @@ import { loadAllRights, hasRight, isRightsReady } from "@/utils/rights";
 // Axios CSRF absichern
 
 
-axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+axios.defaults.withCredentials = true;
+axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
-const token = document.head.querySelector('meta[name="csrf-token"]');
+const token = document
+    .querySelector('meta[name="csrf-token"]')
+    ?.getAttribute("content");
 
 if (token) {
-  axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-} else {
-  console.error('CSRF token not found!');
+    axios.defaults.headers.common["X-CSRF-TOKEN"] = token;
 }
-axios.defaults.withCredentials = true;
-
 
 
 let pendingRequests = 0;

@@ -1,7 +1,7 @@
 function JumpMenu() {
     var l = document.getElementById("jmenu").value;
     if (document.getElementById("Loading_Layer")) {
-        document.getElementById("Loading_Layer").style.display = "block";
+        // document.getElementById("Loading_Layer").style.display = "block";
     }
     location.href = l;
 }
@@ -290,8 +290,8 @@ function scrollComments(postId2) {
         //console.log("Lade Kommentare f�r Post-ID:", postId); // Debugging
 
         if (isLoading) return; // Verhindert parallele Ladevorg�nge
-        isLoading = true;
-        document.getElementById("loading-" + postId).style.display = "block"; // Ladeanzeige sichtbar machen
+        isLoading = false;
+        // document.getElementById("loading-" + postId).style.display = "block"; // Ladeanzeige sichtbar machen
         try {
             take[postId] = take[postId] ?? 0;
             // Anfrage an den Server, um Kommentare zu laden
@@ -348,7 +348,7 @@ function scrollComments(postId2) {
             console.error("Fehler beim Laden der Kommentare:", error);
         } finally {
             // Ladeanzeige ausblenden und den Ladezustand zur�cksetzen
-            document.getElementById("loading-" + postId).style.display = "none";
+            // document.getElementById("loading-" + postId).style.display = "none";
             isLoading = false;
         }
     }

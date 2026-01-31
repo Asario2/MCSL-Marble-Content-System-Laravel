@@ -45,7 +45,7 @@
           return;
         }
 
-        //this.loading = true;
+        //// this.loading = true;
         try {
             Inertia.get(route('admin.tables.show'),
   { search: this.searchQuery, table: this.table },

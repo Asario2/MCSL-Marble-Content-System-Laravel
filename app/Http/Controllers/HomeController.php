@@ -154,9 +154,9 @@ class HomeController extends Controller
 
         $zeitpunkt = Carbon::now();
         //
-            esolver(function () {
-            return request()->input('page', 1);
-        });
+        //     esolver(function () {
+        //     return request()->input('page', 1);
+        // });
         $blogs = Blog::select(
             'blogs.id as id',
             'blogs.blog_date as blog_date',
@@ -323,7 +323,7 @@ return Inertia::render('Homepage/Pictures', [
             return request()->input('page', 1);
         });
 
-        // \Log::info('PAGE PARAM: ' . $request->input('page'));
+        \Log::info('PAGE PARAM: ' . $request->input('page'));
 
         DB::enableQueryLog();
         Paginator::currentPageResolver(function () {
@@ -347,7 +347,7 @@ return Inertia::render('Homepage/Pictures', [
             ->withQueryString();
 
 
-        //\Log::info(DB::getQueryLog());
+        \Log::info(DB::getQueryLog());
 
         $rat = RatingController::getTotalRating("images");
         $ocont = DB::table("image_categories")->where("slug", $slug)->first();

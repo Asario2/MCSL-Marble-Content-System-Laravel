@@ -66,6 +66,7 @@
 
         <!-- Edit Button -->
         <td class="np-dl-td-edit" v-if="CleanTable() != ''">
+
     <editbtns :table="CleanTable()" :id="row.id"></editbtns>
         </td>
         <!-- <td v-else-if="hasRight('view', row.full_name)" class="np-dl-td-edit"></td>
@@ -176,11 +177,11 @@
         // Wenn search gesetzt ist, verstecke das Loading-Div
         if (search && search.trim() !== "") {
 
-        this.isLoading = false;
-        this.loading = false;
+        // this.isLoading = false;
+        // this.loading = false;
         }
         else{
-            this.isLoading = true;
+            // this.isLoading = true;
         }
     this.pstate();
     //  this.$emit('status-changed', this.checkedStatus);
@@ -253,7 +254,7 @@
         deep: true,
         handler: throttle(function () {
         // Loader sofort aktivieren
-        this.loading = true;
+        //// this.loading = true;
 
         // Leere Werte filtern
         const query = pickBy(this.form, (v) => v !== "" && v !== null);
@@ -278,7 +279,7 @@
             preserveState: true,
             replace: true,
             onFinish: () => {
-                this.loading = false; // Loader ausblenden nach Inertia-Finish
+                //this.loading = false; // Loader ausblenden nach Inertia-Finish
             },
             }
         );

@@ -383,7 +383,7 @@ export default {
     },
 
     async syncToAll() {
-  this.loading = true;
+  // this.loading = true;
   this.syncStatus = "Starte SyncToAll…";
 
   try {

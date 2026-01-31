@@ -21,6 +21,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\NameBindingsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HandbookController;
+use App\Http\Controllers\RssController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\TwoFactorController;
@@ -103,11 +104,19 @@ GlobalController::SetDomain();
         Route::get('/auth/nickname', function () {
             return inertia('Admin/nickname');
         })->name('auth.nickname');
+        Route::post('/login-silent', [CustomLoginController::class, 'loginSilent'])
+        ->middleware('web');
+//         dd(
+//     Auth::getDefaultDriver(),
+//     Auth::guard()->check(),
+//     session()->isStarted()
+// );
 
-        Route::post('/api/login-silent', [CustomLoginController::class, 'loginSilent']);
+
+
         Route::get("/admin/mcslpoints/{users_id?}",[MCSLPointsController::class,"admin_index"])->name("admin.mcslpoints");
         Route::get("/api/user/rights",[RightsController::class,"GetRights_all"])->name("GetRights_all");
-        Route::post('/api/contact/send',[CommentController::class,"sendmc"]);
+        Route::post('/contact/send', [CommentController::class, 'sendmc']);
         Route::get('/api/pageviews', [CountPixelController::class, 'stats']);
     Route::get('/home/impressum', [HomeController::class, 'imprint_gen'])->name('home.imprint.gen');
         // Route::get('/allroutes', function () {
@@ -145,6 +154,7 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::post("/newsl_subscribe", [MailController::class, "Subscribe_Newsl"])->name("mail.subscribe_newsl");
 Route::get("/unsubscribe/{uhash}/{email}", [MailController::class, "UnSubscribe_Newsl"])->name("mail.unsubscribe_newsl");
+Route::get('/rss.xml', [RssController::class, 'feed']);
 Route::get("/mail/subscribe/{uhash}/{email}",[TablesController::class, "newsletter_save"])->name("mail.savenewsletter");
 Route::get('/home/ai', [HomeController::class, 'home_AI'])->name('home.ai');
 //
@@ -494,11 +504,11 @@ Route::get('/devmod', function () {
     // Route::post('/toggle-darkmode', [App\Http\Controllers\DarkModeController::class, 'toggle'])->name('toggle.darkmode');
     Route::post('/toggle-pub', [TablesController::class, 'togglePub'])->name('toggle.pub');
     Route::get('tables/{table}/create', [TablesController::class, 'createEntryForm'])->name('tables.create-table');
-    Route::post('/comments/store/{table}/{postId}', [CommentController::class, 'store_alt'])->name('comments.store_alt');
+    // Route::post('/comments/store/{table}/{postId}', [CommentController::class, 'store_alt'])->name('comments.store_alt');
 
 
 
-    Route::post('/comments/{table}/{id}', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('/comments/store/{table}/{id}', [CommentController::class, 'store'])->name('comments.store');
 
     Route::get('/api/admin_table_positions', [RightsController::class,"GetTables_posi"])->name("GetTablesPosi");
     // Route::get('/{table}/{cat?}#headline_{id}', [PostController::class, 'show'])->name('posts.show');

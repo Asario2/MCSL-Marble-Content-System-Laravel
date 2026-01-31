@@ -62,11 +62,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function ($middleware) {
-    $middleware->alias([
-        'right' => CheckRight::class,
-    ]);
-})
-
+        $middleware->alias([
+            'right' => CheckRight::class,
+        ]);
+    })
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->validateCsrfTokens(except: [
+            '/login-silent',
+            '/comments/store/*/*',
+        ]);
+    })
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,

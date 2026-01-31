@@ -37,7 +37,7 @@
     methods: {
       async togglePub() {
         if (this.loading) return;
-        //this.loading = true;
+        //// this.loading = true;
 
         const newStatus = this.isPublished ? 0 : 1;
 

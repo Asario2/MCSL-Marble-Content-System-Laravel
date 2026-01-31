@@ -6,7 +6,7 @@ use App\Http\Controllers\FormController;
 use App\Http\Controllers\TablesController;
 use App\Http\Controllers\RightsController;
 use App\Http\Controllers\SQLUpdateController;
-
+use App\Http\Controllers\CommentController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -32,4 +32,6 @@ Route::prefix('mysqlops')->group(function () {
     Route::post('/sync-to-all', [SQLUpdateController::class, 'syncToAll']);
 
 });
+
+
 

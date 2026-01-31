@@ -1,176 +1,172 @@
 <template>
-  <div
-    v-if="isLoading"
+<div
+    v-if="state.isLoading"
     id="loader"
-    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-all"
+    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity"
     style="z-index:999999999"
-  >
+>
     <div class="text-center">
-      <svg
+    <svg
         class="animate-spin h-10 w-10 text-primary-sun-500 mx-auto"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
-      >
+    >
         <circle
-          class="opacity-25"
-          cx="12"
-          cy="12"
-          r="10"
-          stroke="currentColor"
-          stroke-width="4"
+        class="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        stroke-width="4"
         />
         <path
-          class="opacity-75"
-          fill="currentColor"
-          d="M4 12a8 8 0 018-8v8H4z"
+        class="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8v8H4z"
         />
-      </svg>
+    </svg>
 
-      <p class="mt-4 text-primary-sun-100 text-sm">
+    <p class="mt-4 text-primary-sun-100 text-sm">
         Bitte warten...
-      </p>
+    </p>
     </div>
-  </div>
+</div>
 </template>
 
 <script>
+console.log("🔥 LOADER FILE LOADED succ");
 import axios from "axios";
 import { Inertia } from "@inertiajs/inertia";
-
-console.error("🔥 LOADER FILE WIRD GELADEN 🔥");
+import { loaderState } from "@/utils/globalLoader";
 
 export default {
-  name: "Loader",
+name: "Loader",
 
-  data() {
+data() {
     return {
-      isLoading: false,
-      pendingRequests: 0,
-      loadingTimer: null,
-      initialLoadDone: false,
+    state: loaderState,
+    showDelay: 150,
+    minVisible: 400,
     };
-  },
+},
 
-  mounted() {
-//     console.log("🟢 Loader mounted");
-
-    // Axios Interceptors nur EINMAL
-    if (!axios.__LOADER_INSTALLED__) {
-      axios.__LOADER_INSTALLED__ = true;
-      this.monitorAxios();
-//       console.log("✅ Axios Loader Interceptor installiert");
+mounted() {
+    console.log("Loader mounted", this._uid);
+    if (!window.__LOADER_INITIALIZED__) {
+        window.__LOADER_INITIALIZED__ = true;
+        console.log("Initializing Axios & Inertia interceptors");
+        this.installAxios();
+        this.installInertia();
     }
+},
 
-    // Inertia Events
-    this.monitorInertia();
+methods: {
+    update() {
+        const shouldShow = this.state.inertiaLoading || this.state.pendingRequests > 0;
 
-    // ⏱ Initialen Seitenload sauber beenden
-    setTimeout(() => {
-      this.initialLoadDone = true;
-      this.pendingRequests = 0;
-      this.hideLoader();
-//       console.log("🟢 Initial Load abgeschlossen");
-    }, 800);
-  },
+        console.log("update() called | shouldShow:", shouldShow, "state:", JSON.stringify(this.state));
 
-  methods: {
-    showLoaderWithDelay() {
-      if (this.loadingTimer || this.isLoading) return;
+        if (shouldShow) {
+            if (this.state.hideTimer) {
+                clearTimeout(this.state.hideTimer);
+                console.log("Cleared hideTimer");
+                this.state.hideTimer = null;
+            }
 
-//       console.log("⏳ Loader Delay gestartet");
+            if (this.state.isLoading) {
+                console.log("Loader already visible, skipping show");
+                return;
+            }
 
-      this.loadingTimer = setTimeout(() => {
-        this.isLoading = true;
-//         console.log("🔵 Loader sichtbar");
-      }, 150);
-    },
-
-    hideLoader() {
-//       console.log("🟣 Loader verstecken");
-
-      clearTimeout(this.loadingTimer);
-      this.loadingTimer = null;
-      this.isLoading = false;
-    },
-
-    checkLoading() {
-//       console.log("🔍 checkLoading", this.pendingRequests);
-
-      if (this.pendingRequests <= 0) {
-        this.pendingRequests = 0;
-        this.hideLoader();
-      }
-    },
-
-    monitorAxios() {
-      axios.interceptors.request.use((config) => {
-        // console.log("⬆️ Axios Request", {
-        //   url: config.url,
-        //   skipLoading: config.skipLoading,
-        // });
-
-        if (config.skipLoading === true) {
-//           console.log("🔕 skipLoading aktiv → kein Loader");
-          return config;
+            if (!this.state.showTimer) {
+                console.log("Starting showTimer for", this.showDelay, "ms");
+                this.state.showTimer = setTimeout(() => {
+                    this.state.isLoading = true;
+                    console.log("Loader is now VISIBLE");
+                    this.state.showTimer = null;
+                }, this.showDelay);
+            }
+            return;
         }
 
-        this.pendingRequests++;
-//         console.log("➕ pendingRequests:", this.pendingRequests);
-
-        this.showLoaderWithDelay();
-        return config;
-      });
-
-      axios.interceptors.response.use(
-        (response) => {
-          if (!response.config?.skipLoading) {
-            this.pendingRequests--;
-            // console.log("⬇️ Axios Response", {
-            //   url: response.config.url,
-            //   pending: this.pendingRequests,
-            // });
-            this.checkLoading();
-          }
-          return response;
-        },
-        (error) => {
-          if (!error.config?.skipLoading) {
-            this.pendingRequests--;
-            console.log("❌ Axios Error", {
-              url: error.config?.url,
-              pending: this.pendingRequests,
-            });
-            this.checkLoading();
-          }
-          return Promise.reject(error);
+        // Hide logic
+        if (this.state.showTimer) {
+            clearTimeout(this.state.showTimer);
+            console.log("Cleared showTimer because no longer should show");
+            this.state.showTimer = null;
         }
-      );
+
+        if (!this.state.isLoading) {
+            console.log("Loader already hidden, skipping hide");
+            return;
+        }
+
+        if (!this.state.hideTimer) {
+            console.log("Starting hideTimer for", this.minVisible, "ms");
+            this.state.hideTimer = setTimeout(() => {
+                this.state.isLoading = false;
+                console.log("Loader is now HIDDEN");
+                this.state.hideTimer = null;
+            }, this.minVisible);
+        }
     },
 
-    monitorInertia() {
-//       console.log("🟣 monitorInertia aktiviert");
-
-      Inertia.on("start", (event) => {
-        const skip = event.detail?.visit?.skipLoading;
-//         console.log("🚀 Inertia start", { skip });
-
-        if (skip || !this.initialLoadDone) return;
-
-        this.pendingRequests++;
-        this.showLoaderWithDelay();
-      });
-
-      Inertia.on("finish", (event) => {
-        const skip = event.detail?.visit?.skipLoading;
-//         console.log("🏁 Inertia finish", { skip });
-
-        if (skip || !this.initialLoadDone) return;
-
-        this.pendingRequests--;
-        this.checkLoading();
-      });
+    inc() {
+        this.state.pendingRequests++;
+        console.log("inc() called, pendingRequests:", this.state.pendingRequests);
+        this.update();
     },
-  },
+
+    dec() {
+        this.state.pendingRequests--;
+        if (this.state.pendingRequests < 0) this.state.pendingRequests = 0;
+        console.log("dec() called, pendingRequests:", this.state.pendingRequests);
+        this.update();
+    },
+
+    installAxios() {
+        axios.interceptors.request.use((config) => {
+            if (config.skipLoading) return config;
+            console.log("Axios request -> inc");
+            this.inc();
+            return config;
+        });
+
+        axios.interceptors.response.use(
+            (res) => {
+                if (!res.config?.skipLoading) {
+                    console.log("Axios response -> dec");
+                    this.dec();
+                }
+                return res;
+            },
+            (err) => {
+                if (!err.config?.skipLoading) {
+                    console.log("Axios error -> dec");
+                    this.dec();
+                }
+                return Promise.reject(err);
+            }
+        );
+    },
+
+    installInertia() {
+        Inertia.on("start", (e) => {
+            if (e.detail?.visit?.skipLoading) return;
+            console.log("Inertia start -> setting inertiaLoading = true");
+            this.state.inertiaLoading = true;
+            this.update();
+        });
+
+        Inertia.on("finish", (e) => {
+            if (e.detail?.visit?.skipLoading) return;
+            console.log("Inertia finish -> setting inertiaLoading = false");
+            this.state.inertiaLoading = false;
+            this.update();
+        });
+    },
+},
+
 };
 </script>

@@ -213,6 +213,16 @@
 
         public static array $dom = ["ab"=>'www.asario.de','mfx'=>"www.marblefx.net",'dag'=>"www.monikadargies.de",'chh'=>"www.ra-c-henning.de",'mjs'=>"mjs.marblefx.net"];
 
+        //
+        // RSS FEEDS
+        //
+        public static $rss_fields = [
+            "blogs"=>["title","content"],
+            "images"=>["name","message"],
+            "didyouknow"=>["headline","answer"],
+            "shortpoems"=>["headline","story"],
+        ];
+
         public static array $headline =
         [
             "admin_table" => 'name',

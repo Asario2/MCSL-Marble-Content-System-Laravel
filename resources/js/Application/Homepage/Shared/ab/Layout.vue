@@ -530,6 +530,42 @@
         this.isLoading = state;
         localStorage.setItem('loading', state ? state.toString():'');
         },
+        checkLoadingState() {
+        if (this.pendingRequests === 0 && this.imagesLoaded) {
+            this.setLoadingState(false);
+        }
+        },
+
+        waitForImagesToLoad() {
+        const images = document.querySelectorAll('img');
+        const totalImages = images.length;
+        let imagesLoadedCount = 0;
+
+        if (totalImages === 0) {
+            this.imagesLoaded = true;
+            this.checkLoadingState();
+            return;
+        }
+
+        images.forEach((img) => {
+            if (img.complete) {
+            imagesLoadedCount++;
+            } else {
+            img.addEventListener('load', () => {
+                imagesLoadedCount++;
+                if (imagesLoadedCount === totalImages) {
+                this.imagesLoaded = true;
+                this.checkLoadingState();
+                }
+            });
+            }
+        });
+
+        if (imagesLoadedCount === totalImages) {
+            this.imagesLoaded = true;
+            this.checkLoadingState();
+        }
+        },
         reopenCookieBanner() {
 //         console.log("test");
 //             console.log(window.LaravelCookieConsent);

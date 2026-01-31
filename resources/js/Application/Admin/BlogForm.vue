@@ -396,7 +396,7 @@ export default defineComponent({
         deleteBlog() {
             this.confirmingBlogDeletion = false;
             //
-            this.loading = true;
+            // this.loading = true;
             this.loadingText = "Der Blogartikel wird gelöscht!";
             //
             this.$inertia.delete(
@@ -417,7 +417,7 @@ export default defineComponent({
         },
 
         createBlogData() {
-            this.loading = true;
+            // this.loading = true;
             this.loadingText = "Der neue Blogarikel wird gespeichert!";
             //
             this.$inertia.post(this.route("admin.blog.store"), this.form, {
@@ -431,7 +431,7 @@ export default defineComponent({
         },
 
         updateBlogData() {
-            this.loading = true;
+            // this.loading = true;
             this.loadingText =
                 "Die geänderten Daten des Blogartikels werden jetzt gespeichert!";
             //

@@ -157,7 +157,7 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN','.asario.de'),
+    'domain' => env('SESSION_DOMAIN','.test.mcs'),
 
     /*
     |--------------------------------------------------------------------------
@@ -170,7 +170,7 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE',true),
+    'secure' => env('SESSION_SECURE_COOKIE',false),
 
     /*
     |--------------------------------------------------------------------------

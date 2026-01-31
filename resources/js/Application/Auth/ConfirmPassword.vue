@@ -118,7 +118,7 @@ export default defineComponent({
         confirmPasswordUser() {
             let routeConfirmPassword = "password.update";
             //
-            this.loading = true;
+            // this.loading = true;
             this.loadingText = "Das Kennwort wird geprüft!";
             //
             this.$inertia.post(this.route(routeConfirmPassword), this.form, {
