@@ -267,15 +267,23 @@
                             <a class="ToggleCookieLink text-layout-sun-600 dark:text-layout-night-900 cursor-pointer inline-block rounded-lg px-2 py-1 text-sm text-layout-sun-700 hover:bg-primary-sun-300 hover:text-layout-sun-900 dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900" onclick="showHideToggleCookiePreferencesModal()"><span>Cookie Einstellungen</span></a>
 
                         </li>
-                        <li>
-                            <button class="ToggleCookieLink text-layout-sun-600 dark:text-layout-night-900 cursor-pointer inline-block rounded-lg px-2 py-1 text-sm text-layout-sun-700 hover:bg-primary-sun-300 hover:text-layout-sun-900 dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900 font-bold" @click.prevent="copyUrl"><span>Newsfeed abonieren</span></button>
-                        </li>
+
                         <li>
                             <link-footer name="Kontakt" :route-name="route('home.contacts')"></link-footer>
                         </li>
+                        <li>
+                            <button
+                            class="ToggleCookieLink flex items-center gap-2 text-layout-sun-600 dark:text-layout-night-900 cursor-pointer rounded-lg px-2 py-1 text-sm font-bold
+                                    hover:bg-primary-sun-300 hover:text-layout-sun-900 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900 ml-[-5px]"
+                            @click.prevent="copyUrl"
+                            >
+                            <IconRSS width="18" height="18" />
+                            <span style="color:#fb9d3a;">Newsfeed abonnieren</span>
+                            </button>
+                        </li>
                     </ul>
                     <br />
-                    <NewsletterSubscribe class="ml-[4px] mb-[-2px]" />
+                    <NewsletterSubscribe class="ml-[8px] mb-[-2px]" />
                     </div>
                     <div class="text-center md:text-left">
                     <h3 class="text-sm font-semibold leading-6 px-2">
@@ -340,6 +348,7 @@
     <script>
     import axios from "axios";
     import { useLoadingStore } from "@/loading";
+    import IconRSS from "@/Application/Components/Icons/rss.vue";
     import IconMCSL from "@/Application/Components/Icons/IconMCSL.vue";
     import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
     import BrandHeader from "@/Application/Shared/BrandHeader.vue";
@@ -372,6 +381,7 @@ import IconDashboard from "@/Application/Components/Icons/IconDashboard.vue";
         MetaHeader,
         BrandHeader,
         LinkHeader,
+        IconRSS,
         BrandFooter,
         IconLogout,
         IconProfile,

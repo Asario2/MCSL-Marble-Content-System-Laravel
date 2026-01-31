@@ -6,7 +6,7 @@
             text-layout-sun-700 hover:bg-primary-sun-300 hover:text-layout-sun-900 ml-[-10px]
             dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900"
     >
-        <IconMail lcol="#ffc800" wi="18" he="18" />
+        <IconMail lcol="#ffc800" wi="20" he="20" />
         <span class="font-sans ora">Newsletter abonnieren</span>
     </button>
 
