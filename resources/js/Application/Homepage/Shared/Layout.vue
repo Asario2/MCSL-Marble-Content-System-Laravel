@@ -552,7 +552,7 @@ window.addEventListener("loader:show", () => {
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(url)
                 .then(() => {
-                    alert('✅ RSS-Link wurde in die Zwischenablage kopiert');
+                    alert("✅ RSS-Link wurde in die Zwischenablage kopiert.\n Füge diesen Code in deinem Feedreader ein.");
                 })
                 .catch(() => {
                     this.fallbackCopy(url);
@@ -574,7 +574,7 @@ window.addEventListener("loader:show", () => {
             document.execCommand('copy');
             document.body.removeChild(textarea);
 
-            alert('✅ RSS-Link wurde in die Zwischenablage kopiert');
+            alert("✅ RSS-Link wurde in die Zwischenablage kopiert.\n Füge diesen Code in deinem Feedreader ein.");
         },
         async loadmcslpoints() {
         try {

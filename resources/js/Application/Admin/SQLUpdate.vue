@@ -266,6 +266,7 @@
 
 <script>
 import axios from "axios";
+import { toastBus } from '@/utils/toastBus';
 import IconMagni from "@/Application/Components/Icons/IconMagni.vue";
 import ErrorSVG from "@/Application/Components/Icons/ErrorSVG.vue";
 import { SD } from "@/helpers";
@@ -280,6 +281,7 @@ export default {
     IconMagni,
     ErrorSVG,
     MetaHeader,
+    toastBus,
 
   },
   props:{
@@ -327,6 +329,8 @@ export default {
         this.localTables = res.data.local;
         this.onlineTables = res.data.online;
       } catch (e) {
+        const q = e     + " <a href='/admin/laravel_log'>Zum Log</a>";
+        window.toastBus.emit({type:'error',message: q, duration:30000 });
         console.error("Fehler beim Laden:", e);
       }
     },

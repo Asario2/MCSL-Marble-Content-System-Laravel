@@ -840,6 +840,104 @@ export default defineComponent({
                 handleRefreshPreview() {
                     this.getPreviewImagez();
                 },
+                async submitForm() {
+
+       const editorRef = this.$refs.editor;
+
+let isValid = true;
+
+if (!editorRef) {
+  console.error('Kein Editor-Ref gefunden');
+} else if (Array.isArray(editorRef)) {
+  isValid = editorRef.every(ref => ref && typeof ref.validate === 'function' ? ref.validate() : true);
+} else if (typeof editorRef.validate === 'function') {
+  isValid = editorRef.validate();
+} else {
+   console.log('this.$refs.editor hat keine validate()-Methode:', editorRef);
+  // Suche nach contenteditable, textarea oder input
+  const el = editorRef.$el?.querySelector?.('[contenteditable], textarea, input')
+    || editorRef.$el
+    || editorRef;
+
+  const text = (el?.innerText || el?.textContent || el?.value || '')
+    .replace(/\s+/g, '')
+    .trim();
+
+  console.log('Editor-Inhalt erkannt:', text);
+  isValid = text.length > 0;
+}
+if (!isValid) {
+  console.log("Fehler: Feld ist leer");
+  return;
+}
+  try {
+    // Editor-Validierung mit Null-Checks
+    const editors = this.$refs.editor;
+    if (editors) {
+      const editorList = Array.isArray(editors) ? editors : [editors];
+
+      for (const editor of editorList) {
+        if (!editor) continue;
+
+        // Sicherer Zugriff auf Editor-Inhalt
+        const content = editor.content || editor.modelValue || '';
+        const isValid = content.trim().length > 0;
+
+        if (editor.required && !isValid) {
+          const el = editor.$el?.querySelector?.('[contenteditable], textarea, input');
+          if (el) el.focus();
+          return false;
+        }
+    }
+}
+            // FormData vorbereiten
+            this.formData = this.formData || {};
+
+            // localFfo sicher verwenden
+            if (this.localFfo?.original) {
+                Object.entries(this.localFfo.original).forEach(([key, field]) => {
+                    if (field && typeof field === 'object') {
+                        const element = document.getElementById(field.name);
+                        const element_alt = document.getElementById(field.name + "_alt");
+
+                        if (element_alt?.value) {
+                            this.formData[field.name] = element_alt.value
+                                .replace(/\[/g, '%5B')
+                                .replace(/\]/g, '%5D').replace(/\n/g,"<br />");
+                        } else if (element?.value) {
+                            this.formData[field.name] = element.value
+                                .replace(/\[/g, '%5B')
+                                .replace(/\]/g, '%5D').replace(/\n/g,"<br />");
+                        } else if (field.value) {
+                            this.formData[field.name] = field.value;
+                        }
+                    }
+                });
+            }
+
+            // Formular abschicken
+            const path = window.location.pathname;
+            const segments = path.split("/");
+            console.log("Daten, die gesendet werden:",this.formData);
+
+            if(segments[segments.length - 2] == "create") {
+                const response = await axios.post(`/admin/tables/store/${CleanTable()}`, {
+                    formData: this.formData
+                });
+                window.toastBus.emit(response.data);
+            } else {
+                const xid = CleanId();
+                const tablex = CleanTable();
+                const response = await axios.post(`/admin/tables/update/${tablex}/${xid}`, {
+                    formData: this.formData,
+                });
+                window.toastBus.emit(response.data);
+            }
+
+        } catch (error) {
+            console.error("Fehler beim Absenden:", error);
+        }
+    },
                 async getPreviewImagez() {
                     // Spinner aktivieren
                     this.loadingPreview = true;
@@ -1016,6 +1114,9 @@ export default defineComponent({
                     }
                     return input;
                 },
+                  confirmTableDeletion() {
+            this.confirmingTableDeletion = true;
+        },
                 setFormField(field) {
                     if (field.name == "reading_time") this.formData['reading_time'] = this.readingTime;
                     if (field.type == "IID") this.formData[field.name] = this.ref2;

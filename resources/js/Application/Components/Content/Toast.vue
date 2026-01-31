@@ -78,17 +78,17 @@ import IconClose from "@/Application/Components/Icons/Close.vue";
 
 // Vollständiger globaler ToastBus
 export const toastBus = reactive({
-  toasts: [],
-  idCounter: 0,
-  emit(payload) {
+toasts: [],
+idCounter: 0,
+emit(payload) {
 //     console.log("[ToastBus] emit called:", payload);
 
     const toast = {
-      id: this.idCounter++,
-      message: payload.message ?? "",
-      type: payload.type || payload.status || "info",
-      duration: payload.duration ?? 400000,
-      show: true,
+    id: this.idCounter++,
+    message: payload.message ?? "",
+    type: payload.type || payload.status || "info",
+    duration: payload.duration ?? 30000,
+    show: true,
     };
 
     this.toasts.push(toast);
@@ -96,49 +96,49 @@ export const toastBus = reactive({
 
     // Auto-Hide
     if (toast.duration > 0) {
-      setTimeout(() => {
+    setTimeout(() => {
         this.removeToast(toast.id);
-      }, toast.duration);
+    }, toast.duration);
     }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
-  },
-  removeToast(id) {
+},
+removeToast(id) {
     const index = this.toasts.findIndex((t) => t.id === id);
     if (index !== -1) this.toasts[index].show = false;
 
     // Entferne nach Animation
     setTimeout(() => {
-      this.toasts = this.toasts.filter((t) => t.id !== id);
+    this.toasts = this.toasts.filter((t) => t.id !== id);
     }, 4000);
-  },
+},
 });
 
 // Alte Emit Calls global verfügbar
 window.toastBus = toastBus;
 
 export default {
-  name: "Toast",
-  components: { IconDone, IconExclamation, IconClose },
-  data() {
+name: "Toast",
+components: { IconDone, IconExclamation, IconClose },
+data() {
     return { toastBus };
-  },
-  mounted() {
+},
+mounted() {
 //     console.log("[Toast.vue] mounted, initial toastBus:", this.toastBus);
 
     // Watch für Debug
     watch(
-      () => this.toastBus.toasts,
+    () => this.toastBus.toasts,
 //       (newVal) => console.log("[Toast.vue] toastBus.toasts changed:", newVal),
-      { deep: true }
+    { deep: true }
     );
-  },
-  methods: {
+},
+methods: {
     removeToast(id) {
-      this.toastBus.removeToast(id);
+    this.toastBus.removeToast(id);
     },
     determineAlertClass(type) {
-      switch (type) {
+    switch (type) {
         case "success":
             return "border border-green-200 dark:border-green-800";
         case "points":
@@ -153,18 +153,18 @@ export default {
             return "border border-layout-sun-200 dark:border-layout-night-200";
     }
     },
-  },
+},
 };
 </script>
 
 <style scoped>
 .toast-enter-active,
 .toast-leave-active {
-  transition: all 0.2s ease;
+transition: all 0.2s ease;
 }
 .toast-enter-from,
 .toast-leave-to {
-  opacity: 0;
-  transform: translateY(-10px);
+opacity: 0;
+transform: translateY(-10px);
 }
 </style>
