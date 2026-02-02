@@ -200,3 +200,4 @@
 ![Version](https://img.shields.io/badge/version-4.44.7-orange) Hotfix - Fix functions in Layout..vue (#364)  
 ![Version](https://img.shields.io/badge/version-4.45.7-orange) Hotfix - Fixed email captcha bug (#365)  
 ![Version](https://img.shields.io/badge/version-4.52.7-orange) Feature - Newsfeed asario.de (#344)  
+![Version](https://img.shields.io/badge/version-4.53.3-orange) Feature - public posting for stars & Comments (#321) now finished
