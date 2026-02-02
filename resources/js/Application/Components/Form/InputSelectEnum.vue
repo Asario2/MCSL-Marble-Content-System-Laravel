@@ -190,7 +190,7 @@
 
             getOptions() {
 //                 console.log('🔹 Loading options for:', this.tablex, this.name);
-                // this.isLoading = true;
+                //  this.isLoading = true;
 
                 const table = this.tablex || 'default';
                 const url = `/tables/sort-enum/${table}/${this.name}`;

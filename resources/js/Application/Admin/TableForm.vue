@@ -853,7 +853,7 @@ if (!editorRef) {
 } else if (typeof editorRef.validate === 'function') {
   isValid = editorRef.validate();
 } else {
-   console.log('this.$refs.editor hat keine validate()-Methode:', editorRef);
+//    console.log('this.$refs.editor hat keine validate()-Methode:', editorRef);
   // Suche nach contenteditable, textarea oder input
   const el = editorRef.$el?.querySelector?.('[contenteditable], textarea, input')
     || editorRef.$el
@@ -863,11 +863,11 @@ if (!editorRef) {
     .replace(/\s+/g, '')
     .trim();
 
-  console.log('Editor-Inhalt erkannt:', text);
+//   console.log('Editor-Inhalt erkannt:', text);
   isValid = text.length > 0;
 }
 if (!isValid) {
-  console.log("Fehler: Feld ist leer");
+//   console.log("Fehler: Feld ist leer");
   return;
 }
   try {
@@ -918,6 +918,7 @@ if (!isValid) {
             // Formular abschicken
             const path = window.location.pathname;
             const segments = path.split("/");
+
             console.log("Daten, die gesendet werden:",this.formData);
 
             if(segments[segments.length - 2] == "create") {

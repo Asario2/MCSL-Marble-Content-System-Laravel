@@ -27,17 +27,33 @@ class CustomLoginController extends Controller
     public function loginSilent(Request $request)
     {
     \Log::info('LOGIN-SILENT HIT');
-    $credentials = $request->only('email', 'password');
-
-    if (!Auth::attempt($credentials)) {
-        return response()->json(['message' => 'Invalid credentials'], 401);
-    }
-    return response()->json([
-        'message' => 'Logged in',
-        'user_id' => Auth::id()
+    if(empty($request->password))
+    {
+        return response()->json([
+        'type'=>'info',
+        'message' => 'Kein Login möglich',
+        'user_id' => 7,
+        "full_name"=>"Gast",
+        "profile_photo_url"=>"008.jpg"
     ]);
     }
-    public function login(Request $request)
+    $credentials = $request->only('email', 'password');
+
+    if (!$this->login($request,true)) {
+        return response()->json(['message' => 'Invalid credentials'], 401);
+    }
+    if(Auth::id() && Auth::id() != 7)
+    {
+    return response()->json([
+        'type'=>'success',
+        'message' => 'Sie wurden erfolgreich eingeloggt',
+        'user_id' => Auth::id(),
+        "full_name"=>Auth::user()->first_name ?? "Gast",
+        "profile_photo_url"=>Auth::user()->profile_photo_path ?? "008.jpg",
+    ]);
+    }
+    }
+    public function login(Request $request,$silent=false)
     {
         // dd(class_exists(\Illuminate\Support\Facades\Validator::class));
         $request->validate([
@@ -75,7 +91,7 @@ class CustomLoginController extends Controller
 
 
         // Wenn 2FA aktiv, in Session speichern und weiterleiten
-        if ($user->two_factor_secret && $user->two_factor_enabled) {
+        if ($user->two_factor_secret && $user->two_factor_enabled && !$silent) {
             session([
                 'two_factor:user:id' => $user->id,
                 'two_factor:remember' => $remember,
@@ -90,10 +106,13 @@ class CustomLoginController extends Controller
 
 
         $redirect = $request->input('redirect'); // POST oder GET
-        if ($redirect) {
+        if ($redirect && !$silent) {
             return Inertia::location($redirect . '?re=1');
         }
-
+        if($silent)
+        {
+            return true;
+        }
 
         return app(LoginResponse::class);
     }

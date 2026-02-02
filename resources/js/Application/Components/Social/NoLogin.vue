@@ -1,4 +1,5 @@
 <template>
+    <div v-if="!hidden">
   <div class="mt-4 space-y-3">
     <InputFormText
       v-if="!nick"
@@ -16,10 +17,10 @@
       name="email"
       type="email"
       v-model="localForm.email"
-      placeholder="Email"
+      :placeholder="em"
       :required="true"
     >
-      <template #label>Email</template>
+      <template #label>{{em}}</template>
     </InputFormText>
 
     <div v-if="emailError" class="text-red-500 text-sm">
@@ -35,6 +36,7 @@
     >
       <template #label>Passwort (Optional)</template>
     </InputFormText>
+  </div>
   </div>
 </template>
 
@@ -63,12 +65,32 @@ export default {
       type: [Boolean, Number],
       default: true,
     },
+    bothnicks:
+    {
+        type:[Boolean,Number],
+        default:false,
+    },
+     hidden:
+    {
+        type:[Boolean,Number],
+        default:false,
+    },
   },
 
   emits: ["update:modelValue"],
 
   computed: {
     // 🔁 v-model Bridge
+      em()
+      {
+        if(this?.bothnicks)
+        {
+            return "Email/Nickname";
+        }
+        else{
+            return "Email";
+        }
+      },
     localForm: {
       get() {
         return this.modelValue;
@@ -76,6 +98,7 @@ export default {
       set(value) {
         this.$emit("update:modelValue", value);
       },
+
     },
 
     emailError() {
@@ -83,7 +106,8 @@ export default {
       if (!email) return null;
 
       const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-      return valid ? null : "Bitte eine gültige Email eingeben";
+      // valid ? null : "Bitte eine gültige Email eingeben";
+      return null;
     },
   },
 

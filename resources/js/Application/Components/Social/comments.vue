@@ -62,10 +62,13 @@
         </template>
 <script>
 import axios from "axios";
+import $ from 'jquery';
+window.$ = window.jQuery = $;
 import { CleanTable_alt, replaceSmilies, SD } from '@/helpers';
 import SmiliesBox from "@/Application/Components/Social/SmiliesBox.vue";
 import IconTrash from "@/Application/Components/Icons/Trash.vue";
 import NoLogin from '@/Application/Components/Social/NoLogin.vue';
+import { userStore } from "@/utils/userStore";
 
 export default {
 name: "CommentsComponent",
@@ -88,6 +91,7 @@ data() {
         name: null,
         email: null,
         password: null,
+        users_id: 7,
     },
     logged: false,
     comments: [],
@@ -100,7 +104,8 @@ data() {
 async mounted() {
     // Prüfe, ob User bereits authid hat
     this.logged = !!window.authid;
-    this.AID = window.authid ?? true;
+    this.AID = window.authid ? Number(window.authid) : null;
+
 
     await this.fetchComments();
 
@@ -148,42 +153,92 @@ methods: {
     }
     },
 
-    async ensureLogin() {
-    // schon eingeloggt
-    if (this.logged) return true;
+ async loadmcslpoints() {
+        try {
+            const { data } = await axios.get('/api/mcslpoints/');
+            this.mcslpoints = Number(data); // aktuelle Punkte
+        } catch (err) {
+            console.error('Fehler beim Laden der MCSL Points:', err);
+        }
+    },
 
-    // KEIN Passwort → anonym erlauben
-    if (!this.form.password) {
-        return true;
+    async addMcslPoints(additionalPoints = 5) {
+        try {
+            const { data } = await axios.get('/api/mcslpoints/');
+            const total = Number(data);
+
+            this.mcslpoints = total; // Template reactive update
+            userStore.user.mcsl_points = total; // global reactive Store
+
+            return total;
+        } catch (err) {
+            console.error('Fehler beim Hinzufügen der MCSL Points:', err);
+            return null;
+        }
+    },
+async ensureLogin() {
+  if (this.logged) return true;
+
+  try {
+    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    const { data } = await axios.post('/login-silent', {
+      email: this.form.email,
+      password: this.form.password,
+    }, {
+      withCredentials: true,
+      headers: { 'X-CSRF-TOKEN': token },
+    });
+
+    // 🔥 Reaktive Updates
+    if(data?.user_id && data?.user_id != "7" && !window.authid)
+    {
+    userStore.user.user_id = data.user_id;
+    userStore.user.full_name = data.full_name;
+    userStore.user.profile_photo_url = data.profile_photo_url;
+    userStore.user.is_admin = data.is_admin;
+    userStore.user.mcsl_points = await this.loadmcslpoints();
+
+    this.logged = true;
+    if(data.user_id != 7)
+    {
+        this.AID = true;
     }
 
-    // Passwort vorhanden → Silent Login
-    try {
-        const token = document
-            .querySelector('meta[name="csrf-token"]')
-            .getAttribute('content');
+    window.toastBus.emit({type:"success",message:"Du wurdest erfolgreich eingeloggt"});
+    }
 
-        await axios.post('/login-silent', {
-            email: this.form.email,
-            password: this.form.password,
-        }, {
-            withCredentials: true,
-            headers: { 'X-CSRF-TOKEN': token },
+    return true;
+  } catch (e) {
+    console.error("Silent login failed", e);
+    return false;
+  }
+},
+
+
+
+refreshNav() {
+    // Holt die aktuelle Seite via AJAX und ersetzt nur den #navid
+    axios.get(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(response => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(response.data, 'text/html');
+            const newNav = doc.querySelector('#navid');
+            if (newNav) {
+                const currentNav = document.querySelector('#navid');
+                currentNav.replaceWith(newNav);
+            }
+        })
+        .catch(err => {
+            console.error('Fehler beim Aktualisieren der Navbar:', err);
         });
-
-        this.logged = true;
-        return true;
-    } catch (e) {
-        console.error("Silent login failed", e);
-        return false;
-    }
 },
 
 async submitComment() {
     if (!this.newComment.trim()) return;
 
     const loggedIn = await this.ensureLogin();
-    if (!loggedIn) return;
+     if (!loggedIn) return;
 
     const table = CleanTable_alt() || 'blogs';
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -195,6 +250,7 @@ async submitComment() {
                 post_id: this.postId,
                 comment: this.newComment,
                 name: this.form.name,
+                id: this.form.user_id,
                 email: this.form.email,
             },
             {
@@ -202,10 +258,22 @@ async submitComment() {
                 withCredentials: true
             }
         );
+        if (response.data.status === 'error') {
+            this.newComment = '';
 
+
+
+            window.toastBus.emit({type:'error',message: response.data.message});
+
+        }
         if (response.data.status === 'success') {
             this.newComment = '';
             await this.fetchComments(); // 🔥 DAS ist der fehlende Punkt
+            await this.addMcslPoints(3);
+            if(this.logged)
+            {
+                window.toastBus.emit({type:'points',message:"Du hast 3 MCSL-Points gesammelt"});
+            }
         }
     } catch (error) {
         console.error('Fehler beim Speichern des Kommentars:', error);

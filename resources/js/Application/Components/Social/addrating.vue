@@ -62,7 +62,7 @@
 
                 // location.href=route("login");
                 // return;
-                console.log(this.email);
+//                 console.log(this.email);
              }
 
              if(GetAuth === true || this.email){
@@ -117,7 +117,7 @@
 },
     mounted() {
       this.fetchRating(); // Abrufen der vorhandenen Bewertung beim Laden der Seite
-      console.log("em:" + this.email);
+//       console.log("em:" + this.email);
     },
   };
   </script>

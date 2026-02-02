@@ -110,7 +110,7 @@
 <script>
 
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
-import Layout from "@/Application/Homepage/Shared/ab/Layout.vue";
+import Layout from "@/Application/Homepage/Shared/Layout.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 import { nl2br } from "@/helpers";
 
@@ -146,7 +146,7 @@ export default {
     };
   },
   mounted(){
-    console.log(this.text);
+//     console.log(this.text);
   },
   method:{
     nl2br,

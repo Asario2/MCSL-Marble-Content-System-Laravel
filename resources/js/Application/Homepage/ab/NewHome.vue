@@ -34,7 +34,7 @@
 
                 <p>
                     Ich, <span itemprop="name">Paul Rieser</span>, baue seit 1998 an Webseiten herum und liebe es, spannende Projekte umzusetzen.<br />
-                    Mein bisher größtes Abenteuer: <a class='as' href="https://www.asario.de" itemprop="url">www.asario.de</a> bei <span itemprop="affiliation"><a href='https://www.marblefx.net'>MarbleFX</a></span>.<br />
+                    Mein bisher größtes Abenteuer: <a class='as' href="https://www.asario.de" itemprop="url">www.asario.de</a> bei <span itemprop="affiliation"><a class='as' href='https://www.marblefx.net'>MarbleFX</a></span>.<br />
                 </p><br />
 
                 <p>

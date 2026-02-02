@@ -178,7 +178,7 @@ toastBus.toasts.push({ message: 'Hallo', type: 'success', duration: 5000 });
         </script>
         <script>
 document.addEventListener('DOMContentLoaded', function () {
-    if (window.toastBus) {
+    if (window?.toastBus) {
         @php
             echo Notify();
         @endphp

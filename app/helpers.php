@@ -200,7 +200,7 @@ if (!function_exists('Notify')) {
                 }
                 $status = $entry['status'];
                 $seconds = $entry['seconds'];
-                $xx .= 'window.toastBus.emit({ message: "'.$output.'", type: "'.$status.'", duration: '.$seconds.' })';
+                $xx .= 'window.toastBus.emit({ message: "'.$output.'", type: "'.$status.'", duration: '.$seconds.' });';
 
 
                 // ⏱️ Zeitpunkt speichern

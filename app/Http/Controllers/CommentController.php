@@ -274,13 +274,21 @@ public function sendmc(Request $request)
             $table = "blogs";
         }
         $user = DB::table("users")->where("id",Auth()->id())->select("email",'name')->first();
+        $nick_exists = DB::table("users")->where('name',$request->name)->exists();
+        if(!$user && $nick_exists)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Nickname bereits vorhanden, bitte Passwort ausfüllen oder einloggen',
+            ]);
+        }
         $adtabid = DB::table("admin_table")->where("name",$table)->pluck("id")->first();
         // Kommentar erstellen und in der Datenbank speichern
         $comment = new Comment();
         $comment->content = $request->input('comment2') ?? $request->comment;
         $comment->content = strip_tags($comment->content, '<br>');
         $comment->admin_table_id = $this->GetTid($table);
-        $comment->users_id = auth()->id(); // Beispiel für Benutzer-ID
+        $comment->users_id = auth()->id() ?? "7"; // Beispiel für Benutzer-ID
         $comment->nick = Auth::user()->name ?? $request->name;
         $now = now();
         $comment->created_at = $now;

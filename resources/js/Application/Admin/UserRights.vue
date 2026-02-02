@@ -475,7 +475,7 @@ export default {
 
       axios.post('/api/save-user-role', payload)
         .then(res => {
-          window.toastBus.emit( { message: res.data?.message || 'Rolle gespeichert!', type: 'success' });
+         
           u.selectedRoleIcon = `/images/icons/ugr/${u.selectedRoleName}.gif`;
           u.hoverIcon = u.selectedRoleIcon;
         })

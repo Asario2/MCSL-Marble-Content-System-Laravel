@@ -184,7 +184,7 @@ export default defineComponent({
             };
             //
             localStorage.setItem('reload_dashboard', '1');
-            // this.loading = true;
+            this.loading = true;
             this.loadingText = "Die Anmeldung wird durchgeführt!";
             //s
             this.$inertia.post(this.route(routeLogin), formData, {

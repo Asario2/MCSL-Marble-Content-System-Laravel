@@ -126,7 +126,7 @@ export default defineComponent({
         search: this.form.search?.trim() || null, // NUR hier trimmen
       };
 
-      console.log('before:', JSON.stringify(this.form.search));
+//       console.log('before:', JSON.stringify(this.form.search));
 
       this.$inertia.visit(this.route("home.blog.index"), {
         method: "get",
@@ -138,7 +138,7 @@ export default defineComponent({
           this.loading = false;
         },
       });
-    console.log('after:', JSON.stringify(this.form.search));
+//     console.log('after:', JSON.stringify(this.form.search));
     }, 500),
 
 

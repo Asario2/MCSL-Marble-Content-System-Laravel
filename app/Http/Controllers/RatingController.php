@@ -33,12 +33,14 @@ class RatingController extends Controller
     public function saveRating(Request $request)
     {
         // Beispielhafte Validierung und Speicherung
-        $validated = $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'postId' => 'required|integer',
-            'table' => 'required|string',
-            "email" => 'nullable|email',
-        ]);
+            $validated = $request->validate([
+                'rating' => 'required|integer|min:1|max:5',
+                'postId' => 'required|integer',
+                'table' => 'required|string',
+                "email" => 'nullable|string',
+                'password'=> 'nullable|string|min:6'
+
+            ]);
 
         $rating = $request->rating;
         $postId = $request->postId;
@@ -56,10 +58,19 @@ class RatingController extends Controller
                 $email = DB::table("users")->where("id",$userId)->value("email");
             }
 
+            $nick_exists = DB::table("users")->where('name',$validated['email'])->orWhere("email",$validated['email'])->exists();
+            if($userId == "7" && $nick_exists)
+            {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Nickname bereits vorhanden, bitte Passwort ausfüllen oder einloggen',
+                ]);
+            }
+
             $existingRate = $this->GetExistingRate($table,$postId,$email,$userId);
             $id = is_object($existingRate) ? $existingRate->id : $existingRate;
             \Log::info("ID: ".$id);
-            $duration = 5000;
+            $duration = 30000;
             if(!$id && $userId)
             {
                 DB::table("ratings")->insert(

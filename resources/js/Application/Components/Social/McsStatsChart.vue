@@ -153,7 +153,7 @@
 <script>
 import { Chart,  CategoryScale, ArcElement, Tooltip, Legend, PieController, LinearScale,    BarController,  DoughnutController,BarElement } from "chart.js";
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
-import Layout from "@/Application/Homepage/Shared/ab/Layout.vue";
+import Layout from "@/Application/Homepage/Shared/Layout.vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 import { CleanId } from "@/helpers"
 Chart.register(ArcElement, Tooltip, Legend,  CategoryScale, LinearScale, PieController, DoughnutController, BarController,  BarElement);

@@ -18,7 +18,7 @@ class MCSLPointsController extends Controller
     function __construct()
     {
         // Comments
-        $this->ccnt = 5;
+        $this->ccnt = 3;
         // Stars/Rating
         $this->scnt = 1;
         // Newsletter read

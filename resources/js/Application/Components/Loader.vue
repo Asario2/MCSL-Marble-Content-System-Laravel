@@ -35,7 +35,7 @@
 </template>
 
 <script>
-console.log("🔥 LOADER FILE LOADED succ");
+// console.log("🔥 LOADER FILE LOADED succ");
 import axios from "axios";
 import { Inertia } from "@inertiajs/inertia";
 import { loaderState } from "@/utils/globalLoader";
@@ -52,10 +52,10 @@ data() {
 },
 
 mounted() {
-    console.log("Loader mounted", this._uid);
+//     console.log("Loader mounted", this._uid);
     if (!window.__LOADER_INITIALIZED__) {
         window.__LOADER_INITIALIZED__ = true;
-        console.log("Initializing Axios & Inertia interceptors");
+//         console.log("Initializing Axios & Inertia interceptors");
         this.installAxios();
         this.installInertia();
     }
@@ -65,25 +65,25 @@ methods: {
     update() {
         const shouldShow = this.state.inertiaLoading || this.state.pendingRequests > 0;
 
-        console.log("update() called | shouldShow:", shouldShow, "state:", JSON.stringify(this.state));
+//         console.log("update() called | shouldShow:", shouldShow, "state:", JSON.stringify(this.state));
 
         if (shouldShow) {
             if (this.state.hideTimer) {
                 clearTimeout(this.state.hideTimer);
-                console.log("Cleared hideTimer");
+//                 console.log("Cleared hideTimer");
                 this.state.hideTimer = null;
             }
 
             if (this.state.isLoading) {
-                console.log("Loader already visible, skipping show");
+//                 console.log("Loader already visible, skipping show");
                 return;
             }
 
             if (!this.state.showTimer) {
-                console.log("Starting showTimer for", this.showDelay, "ms");
+//                 console.log("Starting showTimer for", this.showDelay, "ms");
                 this.state.showTimer = setTimeout(() => {
                     this.state.isLoading = true;
-                    console.log("Loader is now VISIBLE");
+//                     console.log("Loader is now VISIBLE");
                     this.state.showTimer = null;
                 }, this.showDelay);
             }
@@ -93,20 +93,20 @@ methods: {
         // Hide logic
         if (this.state.showTimer) {
             clearTimeout(this.state.showTimer);
-            console.log("Cleared showTimer because no longer should show");
+//             console.log("Cleared showTimer because no longer should show");
             this.state.showTimer = null;
         }
 
         if (!this.state.isLoading) {
-            console.log("Loader already hidden, skipping hide");
+//             console.log("Loader already hidden, skipping hide");
             return;
         }
 
         if (!this.state.hideTimer) {
-            console.log("Starting hideTimer for", this.minVisible, "ms");
+//             console.log("Starting hideTimer for", this.minVisible, "ms");
             this.state.hideTimer = setTimeout(() => {
                 this.state.isLoading = false;
-                console.log("Loader is now HIDDEN");
+//                 console.log("Loader is now HIDDEN");
                 this.state.hideTimer = null;
             }, this.minVisible);
         }
@@ -114,21 +114,21 @@ methods: {
 
     inc() {
         this.state.pendingRequests++;
-        console.log("inc() called, pendingRequests:", this.state.pendingRequests);
+//         console.log("inc() called, pendingRequests:", this.state.pendingRequests);
         this.update();
     },
 
     dec() {
         this.state.pendingRequests--;
         if (this.state.pendingRequests < 0) this.state.pendingRequests = 0;
-        console.log("dec() called, pendingRequests:", this.state.pendingRequests);
+//         console.log("dec() called, pendingRequests:", this.state.pendingRequests);
         this.update();
     },
 
     installAxios() {
         axios.interceptors.request.use((config) => {
             if (config.skipLoading) return config;
-            console.log("Axios request -> inc");
+//             console.log("Axios request -> inc");
             this.inc();
             return config;
         });
@@ -136,14 +136,14 @@ methods: {
         axios.interceptors.response.use(
             (res) => {
                 if (!res.config?.skipLoading) {
-                    console.log("Axios response -> dec");
+//                     console.log("Axios response -> dec");
                     this.dec();
                 }
                 return res;
             },
             (err) => {
                 if (!err.config?.skipLoading) {
-                    console.log("Axios error -> dec");
+//                     console.log("Axios error -> dec");
                     this.dec();
                 }
                 return Promise.reject(err);
@@ -154,14 +154,14 @@ methods: {
     installInertia() {
         Inertia.on("start", (e) => {
             if (e.detail?.visit?.skipLoading) return;
-            console.log("Inertia start -> setting inertiaLoading = true");
+//             console.log("Inertia start -> setting inertiaLoading = true");
             this.state.inertiaLoading = true;
             this.update();
         });
 
         Inertia.on("finish", (e) => {
             if (e.detail?.visit?.skipLoading) return;
-            console.log("Inertia finish -> setting inertiaLoading = false");
+//             console.log("Inertia finish -> setting inertiaLoading = false");
             this.state.inertiaLoading = false;
             this.update();
         });

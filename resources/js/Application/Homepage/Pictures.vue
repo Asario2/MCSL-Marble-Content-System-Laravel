@@ -1,3 +1,4 @@
+
 <template>
     <Layout>
         <MetaHeader :title="'Bilder - ' + ocont?.slug || 'Suchergebnisse'" />
@@ -294,14 +295,14 @@ export default {
 
   getHashElement() {
     const hash = window.location.hash;
-    console.log('DEBUG: window.location.hash =', hash);
+//     console.log('DEBUG: window.location.hash =', hash);
 
     if (!hash) return null;
 
     // erlaubt: #st123 ODER #123
     const raw = hash.replace('#', '');
     const el = document.getElementById(raw) || document.getElementById(`st${raw}`);
-    console.log('DEBUG: target element =', el);
+//     console.log('DEBUG: target element =', el);
     return el;
   },
 
@@ -309,12 +310,12 @@ export default {
     const el = this.getHashElement();
     if (!el) return;
 
-    console.log('DEBUG: scrolling to element', el);
+//     console.log('DEBUG: scrolling to element', el);
 
     const scroll = () => {
         const y = el.getBoundingClientRect().top + window.pageYOffset - 134;
         window.scrollTo({ top: y, behavior: 'smooth' });
-        console.log('DEBUG: scrolling to y =', y);
+//         console.log('DEBUG: scrolling to y =', y);
     };
 
     // Prüfe, ob Bilder noch laden
