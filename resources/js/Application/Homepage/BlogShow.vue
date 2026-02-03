@@ -38,4 +38,9 @@ export default defineComponent({
     },
 });
 </script>
-
+<style>
+A:link,A:visited:link
+{
+    color:#fff !important;
+}
+</style>

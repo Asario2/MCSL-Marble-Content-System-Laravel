@@ -179,6 +179,7 @@ toastBus.toasts.push({ message: 'Hallo', type: 'success', duration: 5000 });
         <script>
 document.addEventListener('DOMContentLoaded', function () {
     if (window?.toastBus) {
+        // Notify Banner
         @php
             echo Notify();
         @endphp

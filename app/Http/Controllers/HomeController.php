@@ -141,23 +141,11 @@ class HomeController extends Controller
     //
     public function home_blog_index(Request $request)
     {
-    //     $host = request()->getHost();
-    //     $subdomain = explode('.', $host)[0];
-    //     $tenant = Tenant::where('subdomain', $subdomain)->firstOrFail();
-
-    //     // Dynamische DB-Verbindung setzen
-    //     config(['database.connections.mysql.database' => $tenant->database]);
-    //     DB::purge('mysql');
-    //     DB::reconnect('mysql');
-    //     // \Log::info('Subdomain gefunden: ' . $subdomain);
-    //     // \Log::info('Tenant gefunden: ' . $tenant->database);
-
         $zeitpunkt = Carbon::now();
-        //
-        //     esolver(function () {
-        //     return request()->input('page', 1);
-        // });
-        $blogs = Blog::select(
+        \Log::info('[HomeController] Zeitpunk: ' . $zeitpunkt);
+        $page = $request->input('page', 1);
+        // Base Query
+        $query = Blog::select(
             'blogs.id as id',
             'blogs.blog_date as blog_date',
             'blogs.title as title',
@@ -169,52 +157,81 @@ class HomeController extends Controller
             'blog_authors.name as author_name',
             'blogs.image_path as url',
             'blog_categories.name as category_name',
-            "blogs.xis_aiImage as madewithai"
-            )
-            ->join('blog_authors', 'blog_authors.id', '=', 'blogs.blog_authors_id')
-            ->join('blog_categories', 'blog_categories.id', '=', 'blogs.blog_categories_id')
-            //
-            ->whereDate('blog_date', '<=', $zeitpunkt)
-            ->where("blogs.pub","1")
-            ->orWhere("blogs.pub","2")
-            //
-            ->filterBlog($request->only('search'))
-            // ->orderBy('blogs.blog_date', 'desc')
-            ->orderBy('blogs.position', 'asc')
-            ->paginate(19)
-            ->withQueryString();
-        //
+            'blogs.xis_aiImage as madewithai'
+        )
+        ->leftJoin('blog_authors', 'blog_authors.id', '=', 'blogs.blog_authors_id')
+        ->leftJoin('blog_categories', 'blog_categories.id', '=', 'blogs.blog_categories_id')
+        ->whereDate('blog_date', '<=', $zeitpunkt)
+        ->whereIn('blogs.pub', [1, 2]);
+
+        \Log::info('[HomeController] Base Query erstellt: ' . $query->toSql(), $query->getBindings());
+
+        // Optional: Search Filter
+        if ($search = $request->input('search')) {
+            $query->where(function($q) use ($search) {
+                $q->where('blogs.title', 'like', "%{$search}%")
+                ->orWhere('blogs.summary', 'like', "%{$search}%");
+            });
+            \Log::info('[HomeController] Filter applied: search=' . $search);
+        }
+
+        // Ordering
+        $query->orderBy('blogs.position', 'asc');
+
+        // Pagination
+        $blogs = $query
+    ->distinct('blogs.id')
+    ->paginate(19, ['*'], 'page', $page)
+    ->withQueryString();
+
+        \Log::info('[HomeController] Pagination erstellt', [
+            'current_page' => $blogs->currentPage(),
+            'last_page' => $blogs->lastPage(),
+            'per_page' => $blogs->perPage(),
+            'total' => $blogs->total(),
+        ]);
+
+        // Transform data
         $blogs->getCollection()->transform(function ($blog) {
             $blog->summary = KILLMD($blog->summary);
-            return $blog;
-        });
-        $blogs->getCollection()->transform(function ($blog) {
             $blog->title = RUMLAUT($blog->title);
-            return $blog;
-        });
-
-        $blogs->getCollection()->transform(function ($blog) {
             $blog->title = html_entity_decode($blog->title);
             return $blog;
         });
+        \Log::info('[HomeController] Blogs transformiert: Anzahl=' . $blogs->count());
 
-        $table = "blogs";
-        $blogs->aiOverlayImage = "ai-".@$_SESSION['dm'].".png";
-        // foreach ($blogs as $blog) {
-        //     $blog->editRights = CheckRights(Auth::id(), $table, "edit");
-        //     $blog->viewRights = CheckRights(Auth::id(), $table, "view");
-        //     $blog->deleteRights = CheckRights(Auth::id(), $table, "delete");
-        //     $blog->addRights = CheckRights(Auth::id(), $table, "add");
-        //     $blog->date_tableRights = CheckRights(Auth::id(), $table, "date_table");
-        // }
-            // \Log::info(json_encode($blogs, JSON_PRETTY_PRINT));
-            // \Log::info("Test-Log-Eintrag");
+        // Optional: AI Overlay
+        $blogs->aiOverlayImage = "ai-".(@$_SESSION['dm'] ?? 'default').".png";
+        \Log::info('[HomeController] AI Overlay gesetzt: ' . $blogs->aiOverlayImage);
 
+        // Pagination Array für Vue/Inertia
+        $pagination = [
+            'current_page' => $blogs->currentPage(),
+            'last_page'    => $blogs->lastPage(),
+            'per_page'     => $blogs->perPage(),
+            'total'        => $blogs->total(),
+            'from'         => $blogs->firstItem(),
+            'to'           => $blogs->lastItem(),
+            'data'         => $blogs->items(),
+            'links'        => collect($blogs->linkCollection())->map(function ($link) {
+                return [
+                    'url'    => $link['url'],
+                    'label'  => $link['label'],
+                    'active' => $link['active'],
+                ];
+            }),
+        ];
+        \Log::info('[HomeController] Pagination Array erstellt', $pagination);
+
+        // Return to Inertia
+        \Log::info('[HomeController] Return Inertia render gestartet');
         return Inertia::render('Homepage/BlogList', [
-            'filters' => $request->all('search'),
-            'blogs' => $blogs,
+            'filters'    => $request->only('search'),
+            'blogs'      => $blogs,
+            'pagination' => $pagination,
         ]);
     }
+
     public function home_images_index()
     {
         $table = "image_categories";
@@ -437,7 +454,7 @@ return Inertia::render('Homepage/Pictures', [
     {
         $rat = RatingController::getTotalRating("shortpoems");
         $perPage = 25;
-
+        $page = $request->input('page', 1);
         $query = ShortPoem::published()
             ->when(request('search'), function ($query) {
                 $query->where(function ($q) {
@@ -446,7 +463,7 @@ return Inertia::render('Homepage/Pictures', [
             })
             ->orderBy('created_at', 'desc');
 
-        $paginated = $query->paginate($perPage);
+        $paginated = $query->paginate(19, ['*'], 'page', $page);
 
         $data = [
             'data' => $paginated->items(), // die aktuellen Items
@@ -496,7 +513,7 @@ return Inertia::render('Homepage/Pictures', [
             'ratings' => $rat,
         ]);
     }
-    public function home_didyouknow()
+    public function home_didyouknow(Request $request)
     {
         // $ord[0] = "created_at";
         // $ord[1] = "DESC";
@@ -521,7 +538,7 @@ return Inertia::render('Homepage/Pictures', [
         // ->orderBy('created_at', 'desc')
         // ->paginate(25);
         $perPage = 25;
-
+        $page = $request->input('page', 1);
         $query = DidYouKnow::published()
             ->when(request('search'), function ($query) {
                 $query->where(function ($q) {
@@ -530,7 +547,7 @@ return Inertia::render('Homepage/Pictures', [
             })
             ->orderBy('created_at', 'desc');
 
-        $paginated = $query->paginate($perPage);
+        $paginated = $query->paginate(19, ['*'], 'page', $page);
 
         $data = [
             'data' => $paginated->items(), // die aktuellen Items

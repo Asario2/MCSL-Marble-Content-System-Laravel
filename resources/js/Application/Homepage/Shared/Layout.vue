@@ -255,27 +255,36 @@
                         </h3>
                         <ul role="list" class="mt-6 space-y-4 list-none">
                             <li>
-                            <link-footer name="Benutzer" :href="route('home.userlist')"></link-footer>
+                            <link-footer name="Benutzer" :href="route('home.userlist')"><IconUsers  width="26" height="18"  /></link-footer>
                             </li>
                             <li>
-                            <link-footer name="Impressum" :route-name="route('home.imprint')"></link-footer>
+                            <link-footer name="Impressum" :route-name="route('home.imprint')"><span style='font-size:20px' class="ml-[8px]">§</span></link-footer>
                             </li>
                             <li>
-                            <link-footer name="Datenschutzerklärung" :route-name="route('home.privacy')"></link-footer>
+                            <link-footer name="Datenschutzerklärung" :route-name="route('home.privacy')"><IconPrivacy  width="18" height="18"/></link-footer>
                             </li>
                             <li>
                                 <!-- <link-footer @click="reopenCookieBanner"><b>Cookie-Einstellungen</b></link-footer> -->
-                                <a class="ToggleCookieLink text-layout-sun-600 dark:text-layout-night-900 cursor-pointer inline-block rounded-lg px-2 py-1 text-sm text-layout-sun-700 hover:bg-primary-sun-300 hover:text-layout-sun-900 dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900" onclick="showHideToggleCookiePreferencesModal()"><span>Cookie Einstellungen</span></a>
+                                <a
+                                class="ToggleCookieLink cursor-pointer inline-flex items-center gap-2
+                                        rounded-lg px-2 py-1 text-sm
+                                        text-layout-sun-700 hover:bg-primary-sun-300 hover:text-layout-sun-900
+                                        dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900"
+                                onclick="showHideToggleCookiePreferencesModal()"
+                                >
+                                <IconCookies width="18" height="18" class="mr-[-4px]" color="#e8c456"/>
+                                <span>Cookie Einstellungen</span>
+                                </a>
 
                             </li>
 
                             <li>
-                                <link-footer name="Kontakt" :route-name="route('home.contacts')"></link-footer>
+                                <link-footer name="Kontakt" :route-name="route('home.contacts')"><IconContactsPublic width="18" height="18"/></link-footer>
                             </li>
                             <li>
                                 <button
-                                class="ToggleCookieLink flex items-center gap-2 text-layout-sun-600 dark:text-layout-night-900 cursor-pointer rounded-lg px-2 py-1 text-sm font-bold
-                                        hover:bg-primary-sun-300 hover:text-layout-sun-900 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900 ml-[-5px]"
+                                class="ToggleCookieLink cursor-pointer inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm
+                                text-layout-sun-700 hover:bg-primary-sun-300 hover:text-layout-sun-900 dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900 ml-[-5px]"
                                 @click.prevent="copyUrl"
                                 >
                                 <IconRSS width="18" height="18" />
@@ -331,7 +340,7 @@
 
                         <div class="w-full flex flex-col md:flex-row flex-1 items-center justify-between gap-4">
                         <div class="text-xs leading-6">
-                            &copy; {{ year }} Starter Eleven/MCSL. Ein Template von Oliver Reinking / Asario.
+                            &copy; {{ year }} Asario. Template von <a href='https://reinkingconsulting.de/'>Oliver Reinking</a> / <a href='/home/aboutme'>Asario</a>.
                         </div>
 
                         <div class="text-xs leading-6">
@@ -348,7 +357,7 @@
         </template>
         <script>
         import axios from "axios";
-        import { useLoadingStore } from "@/loading";
+        // import { useLoadingStore } from "@/loading";
         import IconRSS from "@/Application/Components/Icons/rss.vue";
         import IconMCSL from "@/Application/Components/Icons/IconMCSL.vue";
         import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
@@ -362,6 +371,9 @@
         import Toast from "@/Application/Components/Content/Toast.vue";
         import ButtonChangeMode from "@/Application/Components/ButtonChangeMode.vue";
         import { SD,GetProfileImagePath,CheckTRights } from "@/helpers";
+        import IconUsers from "@/Application/Components/Icons/IconUsers.vue";
+        import IconContactsPublic from "@/Application/Components/Icons/IconContactsPublic.vue";
+        import IconPrivacy from "@/Application/Components/Icons/IconPrivacy.vue";
         // import { Inertia } from "@inertiajs/inertia";
         import Loader from "@/Application/Components/Loader.vue";
         import NewsletterSubscribe from "@/Application/Components/Social/NewsletterSubscribe.vue";
@@ -373,9 +385,8 @@
         import IconPM from "@/Application/Components/Icons/IconPM.vue";
         import IconDashboard from "@/Application/Components/Icons/IconDashboard.vue";
         import { userStore } from "@/utils/userStore";
-
-
-
+        import IconCookies from "@/Application/Components/Icons/IconCookies.vue";
+        import IconClose from "@/Application/Components/Icons/Close.vue"
 
         export default {
         name: "Homepage_Shared_Layout",
@@ -391,6 +402,10 @@
             IconPM,
             Loader,
             IconContacts_alt,
+            IconCookies,
+            IconPrivacy,
+            IconContactsPublic,
+            IconUsers,
             IconStar_thin,
             IconDashboard,
             JrightArrow,
@@ -398,6 +413,7 @@
             Toast,
             IconMenu,
             IconMCSL,
+            IconClose,
             Dropdown,
             DropdownLink,
             ButtonChangeMode,
@@ -734,6 +750,12 @@
         }
         A#em{
             color:yellow;
+        }
+        a:link,a:visited{
+            color:#0ea5e9 !important
+        }
+        Footer A:link,Footer A:visited, NAV A:link,NAV A:visited{
+            color:rgb(209 213 219) !important;
         }
         @media screen and (max-width: 1024px) {
         #arrow2{

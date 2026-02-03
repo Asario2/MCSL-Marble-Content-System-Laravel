@@ -133,7 +133,12 @@ class CountPixelController extends Controller
 
         return $this->pixelResponse();
     }
-
+    public static function o404()
+    {
+        $path = request()->getPathInfo  ();
+        DB::table("genxlo.xgen_page_views")->where("url",$path)->where("visited_at",">",now()->subMinutes(2))->delete();
+        DB::statement('ALTER TABLE xgen_page_views AUTO_INCREMENT = 1');
+    }
     protected function pixelResponse()
     {
         $pixel = base64_decode(
@@ -162,6 +167,10 @@ class CountPixelController extends Controller
         if(substr_count($clean,"blogs/show"))
         {
             $clean = "/blogs_show";
+        }
+        if(substr_count($clean,"images/show/"))
+        {
+            $clean = "images_show";
         }
         if(substr_count($clean,"?page="))
         {

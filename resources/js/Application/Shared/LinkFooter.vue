@@ -1,29 +1,54 @@
 <template>
     <template v-if="routeName">
         <a
-            class="text-layout-sun-600 dark:text-layout-night-900 cursor-pointer inline-block rounded-lg px-2 py-1 text-sm text-layout-sun-700 hover:bg-primary-sun-300 hover:text-layout-sun-900 dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900"
+            class="cursor-pointer inline-block rounded-lg px-2 py-1 text-sm
+                   text-layout-sun-700 hover:bg-primary-sun-300 hover:text-layout-sun-900
+                   dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900"
             :href="routeName"
         >
-            <span>{{ name }}</span>
+            <span class="inline-flex items-center gap-1">
+                <span class="text-[#3b82f6]">
+                    <slot />
+                </span>
+                <span>
+                    {{ name }}
+                </span>
+            </span>
         </a>
     </template>
+
     <template v-else-if="href">
         <a
-            class="cursor-pointer inline-block rounded-lg px-2 py-1 text-sm text-layout-sun-700 hover:bg-primary-sun-300 hover:text-layout-sun-900 dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900"
+            class="cursor-pointer inline-block rounded-lg px-2 py-1 text-sm
+                   text-layout-sun-700 hover:bg-primary-sun-300 hover:text-layout-sun-900
+                   dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900"
             :href="href"
         >
-            <span>{{ name }}</span>
+            <span class="inline-flex items-center gap-1">
+                <span class="text-[#3b82f6]">
+                    <slot />
+                </span>
+                <span>
+                    {{ name }}
+                </span>
+            </span>
         </a>
     </template>
+
     <template v-else>
         <div
             :style="{ color: linkColor }"
-            class="ckoo myDiv cursor-pointer inline-block rounded-lg px-2 py-1 text-sm text-layout-sun-700 hover:bg-primary-sun-300 hover:text-layout-sun-900 dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900"
+            class="cursor-pointer inline-block rounded-lg px-2 py-1 text-sm
+                   hover:bg-primary-sun-300 hover:text-layout-sun-900
+                   dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900"
         >
-            <slot></slot>
+            <span class="text-[#3b82f6]">
+                <slot />
+            </span>
         </div>
     </template>
 </template>
+
 
 <script>
 export default {
@@ -66,5 +91,9 @@ export default {
 A.twda:link,A.twda:visited{
     color:rgb(155,155,155) !important;
 } */
+  .slot-text {
+  color: #3b82f6;
+  margin-right: 0.25rem;
+}
 </style>
 

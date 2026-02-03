@@ -56,6 +56,9 @@
   }
 
     },
+    mounted(){
+        console.log(this.entries);
+    },
     methods: {
       emitPosition() {
         this.$emit("position-changed", this.selectedPosition);

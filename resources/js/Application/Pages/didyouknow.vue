@@ -67,38 +67,7 @@
       </div>
     </section>
 
-    <!-- Pagination -->
-    <div class="flex items-center justify-center flex-wrap mt-6 -mb-1 text-xs md:text-base">
-      <template v-for="(link, index) in items.links" :key="index">
-        <div v-if="!link.url" class="flex items-center px-3 py-0.5 mx-1 mb-1 rounded-md cursor-not-allowed">
-          <span v-if="link.label === 'pagination.previous'">&laquo; Zurück</span>
-          <span v-else-if="link.label === 'pagination.next'">Weiter &raquo;</span>
-          <span v-else v-html="link.label"></span>
-        </div>
-
-        <a
-          v-else-if="link.active"
-          href="#"
-          @click.prevent="$inertia.get(link.url)"
-          class="flex items-center px-2.5 py-0.5 mx-1 mb-1 h-7 transition-colors transform rounded-md border font-bold"
-        >
-                  <span v-if="link.label === 'pagination.previous'">&laquo; Zurück</span>
-          <span v-else-if="link.label === 'pagination.next'">Weiter &raquo;</span>
-          <span v-else v-html="link.label"></span>
-        </a>
-
-        <a
-          v-else
-          href="#"
-          @click.prevent="$inertia.get(link.url)"
-          class="flex items-center px-2.5 py-0.5 mx-1 mb-1 h-7 transition-colors transform rounded-md border"
-        >
-                  <span v-if="link.label === 'pagination.previous'">&laquo; Zurück</span>
-          <span v-else-if="link.label === 'pagination.next'">Weiter &raquo;</span>
-          <span v-else v-html="link.label"></span>
-        </a>
-      </template>
-    </div>
+    <Pagination :links="items.links" basePath="didyouknow" />
   </Layout>
 </template>
 
@@ -113,10 +82,11 @@ import SocialButtons from "@/Application/Components/Social/socialButtons.vue";
 import RatingWrapper from "@/Application/Components/Social/RatingWrapper.vue";
 import pickBy from "lodash/pickBy";
 import { throttle } from "lodash";
+import Pagination from "@/Application/Components/Pagination.vue";
 
 export default {
   name:"DidYouKnow",
-  components: { Layout, MetaHeader, newbtn, SearchFilter, Alert, editbtns, SocialButtons, RatingWrapper },
+  components: { Pagination, Layout, MetaHeader, newbtn, SearchFilter, Alert, editbtns, SocialButtons, RatingWrapper },
   props: {
     items: { type: Object, required: true },
     ratings: { type: [Array, Object], default: () => ({}) },

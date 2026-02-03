@@ -456,6 +456,9 @@ public static array $mariaDBs = [
     '/pm/index',
     'http:',
     'https:',
+    "/unsubscribe/",
+    "/mail/",
+    
     ];
     }
 

@@ -833,6 +833,7 @@ Route::get('/tables/sort-enumis/{table}/{name}', [TablesController::class, 'getO
 
         Route::get('/ri', [HomeController::class, 'home_rindex'])->name('home.rindex');
         Route::fallback(function () {
+            CountPixelController::o404();
             return Inertia::render('Homepage/NoPageFound_'.SD());
         });
 

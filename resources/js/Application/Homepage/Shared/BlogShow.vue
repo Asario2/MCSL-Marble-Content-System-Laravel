@@ -306,6 +306,9 @@ width:90%;
     min-width:101% !important;
     border-radius:0px !important;
 }
+a:link,A:visited{
+    color:#fff !important;
+}
 /* .w-full{
 
     width:99%;

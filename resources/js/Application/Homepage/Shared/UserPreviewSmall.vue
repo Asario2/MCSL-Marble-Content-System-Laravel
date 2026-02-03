@@ -3,7 +3,7 @@
     <div class="blog-container w-full max-w-sm mx-auto group rounded hover:no-underline focus:no-underline bg-layout-sun-100 dark:bg-layout-night-100">
         <Link
             :href="'/home/users/show/' + user.name + '/' + user.id"
-            class="block text-layout-sun-600 dark:text-layout-night-900"
+            class="block text-layout-sun-600 dark:text-layout-night-900 twi"
         >
 
             <div class="relative flex justify-center divvy">
@@ -20,7 +20,7 @@
 
             </div>
 
-            <div class="p-6 space-y-2">
+            <div class="p-6 space-y-2 twi">
 
                 <h2 class="text-2xl font-semibold font-title group-hover:underline group-focus:underline">
                     {{ user.title }}
@@ -260,6 +260,9 @@ margin-left:-7px;
     height:200px;
     width: 200px;
     border-radius:50%;
+}
+.twi{
+    color:#fff !important;
 }
 </style>
 

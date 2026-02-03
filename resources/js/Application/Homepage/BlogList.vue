@@ -11,7 +11,7 @@
                     Zurzeit liegen keine Blogartikel vor!
                 </alert>
             </div>
-
+<pre>{{ pag }}</pre>
             <div class="p-2 md:p-4">
                 <page-title>
                     <template #title> Asarios Blog </template>
@@ -51,7 +51,8 @@
                 </div>
 
                 <!-- Pagination -->
-              <Pagination :links="blogs.links" :basePath="'blogs' + '/'"/>
+              <Pagination :links="pagination.links" :basePath="'blogs' + '/'"/>
+              {{ pagination }}
             </div>
         </section>
     </layout>
@@ -105,7 +106,12 @@ export default defineComponent({
             type: String,
             default: "Keine Einträge gefunden",
         },
+        pagination:{
+            type:[Object,Array],
+
+        },
     },
+
 
     data() {
         return {

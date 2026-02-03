@@ -694,10 +694,6 @@ public function fetchComments_alt2(Request $request)
         return response()->json(['comments' => $comments]); // Gebe die geladenen Kommentare zurück
     }
 }
-public function SetOffset(Request $request)
-{
-
-}
 public function com_loadMore(Request $request,$tid='')
     {
        // \Log::info("req:".json_encode($tid));
