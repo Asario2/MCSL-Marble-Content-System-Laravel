@@ -141,9 +141,25 @@ class HomeController extends Controller
     //
     public function home_blog_index(Request $request)
     {
-        $zeitpunkt = Carbon::now();
-        \Log::info('[HomeController] Zeitpunk: ' . $zeitpunkt);
-        $page = $request->input('page', 1);
+    if (!$request->has('page')) {
+        Paginator::currentPageResolver(fn () => 1);
+    }
+    $zeitpunkt = Carbon::now();
+        \Log::info('[HomeController] Zeitpunkt: ' . $zeitpunkt);
+
+        // Nur gültige Page-Nummer akzeptieren
+        $page = (int) $request->input('page', 1);
+        if ($page < 1) $page = 1;
+
+        // Zusätzlich: nie größer als lastPage
+        $totalItems = Blog::whereDate('blog_date', '<=', $zeitpunkt)
+            ->whereIn('pub', [1,2])->count();
+        $lastPage = ceil($totalItems / 19);
+        if ($page > $lastPage) $page = 1;
+
+        \Log::info('[HomeController] Requested Page after validation: ' . $page);
+
+
         // Base Query
         $query = Blog::select(
             'blogs.id as id',
@@ -164,9 +180,7 @@ class HomeController extends Controller
         ->whereDate('blog_date', '<=', $zeitpunkt)
         ->whereIn('blogs.pub', [1, 2]);
 
-        \Log::info('[HomeController] Base Query erstellt: ' . $query->toSql(), $query->getBindings());
-
-        // Optional: Search Filter
+        // Optional: search filter
         if ($search = $request->input('search')) {
             $query->where(function($q) use ($search) {
                 $q->where('blogs.title', 'like', "%{$search}%")
@@ -178,11 +192,10 @@ class HomeController extends Controller
         // Ordering
         $query->orderBy('blogs.position', 'asc');
 
-        // Pagination
-        $blogs = $query
-    ->distinct('blogs.id')
-    ->paginate(19, ['*'], 'page', $page)
-    ->withQueryString();
+        // Pagination: Page explizit übergeben
+        $blogs = $query->distinct('blogs.id')
+            ->paginate(19, ['*'], 'page', $page);
+
 
         \Log::info('[HomeController] Pagination erstellt', [
             'current_page' => $blogs->currentPage(),
@@ -200,37 +213,33 @@ class HomeController extends Controller
         });
         \Log::info('[HomeController] Blogs transformiert: Anzahl=' . $blogs->count());
 
-        // Optional: AI Overlay
+        // AI Overlay
         $blogs->aiOverlayImage = "ai-".(@$_SESSION['dm'] ?? 'default').".png";
         \Log::info('[HomeController] AI Overlay gesetzt: ' . $blogs->aiOverlayImage);
 
-        // Pagination Array für Vue/Inertia
-        $pagination = [
-            'current_page' => $blogs->currentPage(),
-            'last_page'    => $blogs->lastPage(),
-            'per_page'     => $blogs->perPage(),
-            'total'        => $blogs->total(),
-            'from'         => $blogs->firstItem(),
-            'to'           => $blogs->lastItem(),
-            'data'         => $blogs->items(),
-            'links'        => collect($blogs->linkCollection())->map(function ($link) {
-                return [
-                    'url'    => $link['url'],
-                    'label'  => $link['label'],
-                    'active' => $link['active'],
-                ];
-            }),
-        ];
-        \Log::info('[HomeController] Pagination Array erstellt', $pagination);
-
-        // Return to Inertia
-        \Log::info('[HomeController] Return Inertia render gestartet');
         return Inertia::render('Homepage/BlogList', [
-            'filters'    => $request->only('search'),
-            'blogs'      => $blogs,
-            'pagination' => $pagination,
+            'filters' => $request->only('search'),
+            'blogs'   => $blogs,
+            'pagination' => [
+                'current_page' => $blogs->currentPage(),
+                'last_page'    => $blogs->lastPage(),
+                'per_page'     => $blogs->perPage(),
+                'total'        => $blogs->total(),
+                'from'         => $blogs->firstItem(),
+                'to'           => $blogs->lastItem(),
+                'links'        => collect($blogs->linkCollection())->map(function ($link) {
+                    return [
+                        'url'    => $link['url'],
+                        'label'  => $link['label'],
+                        'active' => $link['active'],
+                    ];
+                }),
+            ],
+        ])->withViewData([
+        'key' => md5($request->fullUrl()),
         ]);
     }
+
 
     public function home_images_index()
     {

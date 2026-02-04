@@ -21,7 +21,7 @@
                     fill="currentFill"
                 />
             </svg>
-            <div class="ml-2">{{ loadingText }}dsfsds</div>
+            <div class="ml-2">{{ loadingText }}</div>
         </div>
     </div>
 </template>

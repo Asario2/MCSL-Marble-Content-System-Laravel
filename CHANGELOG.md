@@ -201,3 +201,5 @@
 ![Version](https://img.shields.io/badge/version-4.45.7-orange) Hotfix - Fixed email captcha bug (#365)  
 ![Version](https://img.shields.io/badge/version-4.52.7-orange) Feature - Newsfeed asario.de (#344)  
 ![Version](https://img.shields.io/badge/version-4.53.3-orange) Feature - public posting for stars & Comments (#321) now finished![Version](https://img.shields.io/badge/version-4.54.4-orange) Hotfix - Fixed bug in blogs pagination (#378)  
+![Version](https://img.shields.io/badge/version-4.55.9-orange) Hotfix - Change the statistics without crawling unnecessary URLs. (#377)  
+![Version](https://img.shields.io/badge/version-4.56.6-orange) Feature - Change Linkcolor to blue (#376)  

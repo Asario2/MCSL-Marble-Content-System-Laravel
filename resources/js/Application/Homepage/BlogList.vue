@@ -11,7 +11,7 @@
                     Zurzeit liegen keine Blogartikel vor!
                 </alert>
             </div>
-<pre>{{ pag }}</pre>
+<pre>{{ paginatíon }}</pre>
             <div class="p-2 md:p-4">
                 <page-title>
                     <template #title> Asarios Blog </template>
@@ -51,8 +51,8 @@
                 </div>
 
                 <!-- Pagination -->
-              <Pagination :links="pagination.links" :basePath="'blogs' + '/'"/>
-              {{ pagination }}
+              <Pagination :links="pagination.links" basePath="blogs/"/>
+              <!-- {{ pagination }} -->
             </div>
         </section>
     </layout>

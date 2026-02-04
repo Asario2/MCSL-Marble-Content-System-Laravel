@@ -32,24 +32,41 @@ export default {
 
   },
   methods: {
-    go(link) {
-      if (!link.url) return;
+go(link) {
+  if (!link.url) return;
 
-      // basePath z.B. "/home/show/pictures/acryl"
-      // link.url z.B. "/?page=2"
-        const params = new URLSearchParams(window.location.search);
-        const search = params.get('search');
-if(search)
-{
-    this.searchString = '&search=' + search;
+  const url = new URL(link.url, window.location.origin);
+
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('search')) {
+    url.searchParams.set('search', params.get('search'));
+  }
+
+  this.$inertia.visit(this.basePath + url.pathname + url.search, {
+    preserveState: false,
+  });
 }
-        const url = this.basePath + link.url + this.searchString;
+    //     go(link) {
+//       if (!link.url) return;
 
-      this.$inertia.visit(url, {
-        preserveState: false,
-        replace: true,
-      });
-    },
+//       // basePath z.B. "/home/show/pictures/acryl"
+//       // link.url z.B. "/?page=2"
+//         const params = new URLSearchParams(window.location.search);
+//         const search = params.get('search');
+// if(search)
+// {
+//     this.searchString = '&search=' + search;
+// }
+// else{
+//     this.searchString = '';
+// }
+//         const url = this.basePath + link.url + this.searchString;
+
+//       this.$inertia.visit(url, {
+//         preserveState: false,
+//         replace: false,
+//       });
+//     },
   },
 };
 </script>

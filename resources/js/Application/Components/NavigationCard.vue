@@ -14,7 +14,7 @@
             <h2
                 class="ms-3 text-xl font-semibold text-layout-sun-900 dark:text-layout-night-900"
             >
-                <a :href="routeName" class="text-layout-sun-600 dark:text-layout-night-900">{{ title }}</a>
+                <a :href="routeName" class="text-layout-sun-600 dark:text-layout-night-900 twi">{{ title }}</a>
             </h2>
         </div>
         <p

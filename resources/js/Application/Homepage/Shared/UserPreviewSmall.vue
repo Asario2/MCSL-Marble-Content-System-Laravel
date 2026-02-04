@@ -22,14 +22,12 @@
 
             <div class="p-6 space-y-2 twi">
 
-                <h2 class="text-2xl font-semibold font-title group-hover:underline group-focus:underline">
-                    {{ user.title }}
+                <h2
+                        class="text-xl font-semibold sm:text-2xl font-title group-hover:underline group-focus:underline"
+                    >
+                    {{ user.name }}
                 </h2>
-
-
-
                 <p>
-                    Nickname: {{user.name}}<br />
                     Vorname: {{ user.first_name }}<br />
                     Registriert seit {{ formatDate(user.created_at) }}&nbsp;&nbsp;<editbtns  :id="user.id" table="users"></editbtns>
                 </p>
