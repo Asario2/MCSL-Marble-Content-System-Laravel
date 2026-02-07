@@ -206,3 +206,4 @@
 ![Version](https://img.shields.io/badge/version-4.57.8-orange) Hotfix - page var not wanted (#380)  
 ![Version](https://img.shields.io/badge/version-4.58.0-orange) Hotfix - Repaired sign in with google (#382)  
 ![Version](https://img.shields.io/badge/version-4.59.0-orange) Feature - Add Icons on PM status (#383)  
+![Version](https://img.shields.io/badge/version-4.60.4-orange) Feature - Add icons before login & register link in footer (#381)  
