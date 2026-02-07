@@ -20,7 +20,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\TrustProxies::class,
         \Illuminate\Http\Middleware\HandleCors::class,
-        \App\Http\Middleware\IntrusionDetectionMiddleware::class,
+        \App\Http\Middleware\RequestInspectionMiddleware::class,
 
     ];
 
@@ -68,6 +68,7 @@ class Kernel extends HttpKernel
         'cookie.domain' => \App\Http\Middleware\SetCookieConsentDomain::class,
         'is_admin' => \App\Http\Middleware\IsAdmin::class,
          'right' => \App\Http\Middleware\CheckRight::class,
+         'inspect.request' => \App\Http\Middleware\RequestInspectionMiddleware::class,
 
     ];
     protected $middlewareAliases = [

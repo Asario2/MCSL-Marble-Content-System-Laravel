@@ -213,28 +213,40 @@ export default {
     });
   },
 
-  groupedContacts() {
-    const grouped = {};
+ groupedContacts() {
+  const grouped = {};
 
-    this.filteredContacts.forEach(contact => {
-      const firstLetter = contact.Name?.charAt(0).toUpperCase() ?? "#";
+  this.filteredContacts.forEach(contact => {
+    const firstLetter = contact.Name?.charAt(0).toUpperCase() ?? "#";
 
-      if (!grouped[firstLetter]) grouped[firstLetter] = [];
-      grouped[firstLetter].push(contact);
+    if (!grouped[firstLetter]) grouped[firstLetter] = [];
+    grouped[firstLetter].push(contact);
+  });
+
+  // Optional: Kontakte innerhalb eines Buchstaben segments alphabetisch sortieren
+  Object.keys(grouped).forEach(letter => {
+    grouped[letter].sort((a, b) => {
+      return (a.Name ?? "").localeCompare(b.Name ?? "", 'de');
     });
+  });
 
-    return grouped;
-  },
+  return grouped;
+},
   UID(){
       return window.authid;
     },
-  sortedLetters() {
-if (!this.groupedContacts || typeof this.groupedContacts !== "object") {
+sortedLetters() {
+  if (!this.groupedContacts || typeof this.groupedContacts !== "object") {
     return [];
   }
 
-  return Object.keys(this.groupedContacts).sort();
-}
+  // Nur erste Buchstaben, keine Duplikate
+  const letters = Object.keys(this.groupedContacts)
+    .map(l => l.toUpperCase()) // alles groß
+    .sort((a, b) => a.localeCompare(b, 'de')); // deutsche Sortierung optional
+
+  return letters;
+},
   },
   methods: {
 //       contactDetails(contact) {
