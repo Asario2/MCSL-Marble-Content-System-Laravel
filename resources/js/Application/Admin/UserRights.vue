@@ -183,7 +183,7 @@
         <th class="px-4 py-3 text-left">Profil</th>
         <th class="px-4 py-3 text-left">Benutzer</th>
         <th class="px-4 py-3 text-left">Rolle</th>
-        <th class="px-4 py-3 text-left">PM Status</th>
+        <th class="px-4 py-3 text-center">Newsletter Status</th>
         <th class="px-4 py-3 text-left">
           <button
             @click="toggleDisabledSelection"
@@ -261,8 +261,8 @@
             </div>
           </div>
         </td>
-        <td class="px-4 py-3 text-left">
-        <img :src="'/images/icons/pmstat/' + u.xch_newsletter + '.png'" class="w-6 h-6" />
+        <td class="px-4 py-3 text-left text-center">
+        <img :src="'/images/icons/pmstat/' + u.xch_newsletter + '.png'" class="w-6 h-6  mx-auto" />
         </td>
         <!-- Checkbox -->
         <td class="px-4 py-3 text-left">

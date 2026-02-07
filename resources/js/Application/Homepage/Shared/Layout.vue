@@ -301,10 +301,10 @@
                         </h3>
                         <ul role="list" class="mt-6 space-y-4 list-none">
                             <li>
-                            <link-footer name="Login" :route-name="route('login')"></link-footer>
+                            <link-footer name="Login" :route-name="route('login')"><IconLogin  width="26" height="18"  /></link-footer>
                             </li>
                             <li>
-                            <link-footer name="Registrierung" :route-name="route('register')"></link-footer>
+                            <link-footer name="Registrierung" :route-name="route('register')"><IconRegister  width="26" height="18"  /></link-footer>
                             </li>
                         </ul>
                         </div>
@@ -366,6 +366,7 @@
         import DropdownLink from "@/Application/Components/Content/DropdownLink.vue";
         import LinkHeader from "@/Application/Shared/LinkHeader.vue";
         import BrandFooter from "@/Application/Shared/BrandFooter.vue";
+
         import LinkFooter from "@/Application/Shared/LinkFooter.vue";
         import IconMenu from "@/Application/Components/Icons/Menu.vue";
         import Toast from "@/Application/Components/Content/Toast.vue";
@@ -387,6 +388,9 @@
         import { userStore } from "@/utils/userStore";
         import IconCookies from "@/Application/Components/Icons/IconCookies.vue";
         import IconClose from "@/Application/Components/Icons/Close.vue"
+import IconRegister from "@/Application/Components/Icons/IconRegister.vue";
+import IconLogin from "@/Application/Components/Icons/IconLogin.vue";
+
 
         export default {
         name: "Homepage_Shared_Layout",
@@ -418,6 +422,8 @@
             DropdownLink,
             ButtonChangeMode,
             NewsletterSubscribe,
+            IconRegister,
+            IconLogin,
 
         },
 
