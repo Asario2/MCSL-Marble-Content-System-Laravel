@@ -204,3 +204,5 @@
 ![Version](https://img.shields.io/badge/version-4.55.9-orange) Hotfix - Change the statistics without crawling unnecessary URLs. (#377)  
 ![Version](https://img.shields.io/badge/version-4.56.6-orange) Feature - Change Linkcolor to blue (#376)  
 ![Version](https://img.shields.io/badge/version-4.57.8-orange) Hotfix - page var not wanted (#380)  
+![Version](https://img.shields.io/badge/version-4.58.0-orange) Hotfix - Repaired sign in with google (#382)  
+![Version](https://img.shields.io/badge/version-4.59.0-orange) Feature - Add Icons on PM status (#383)  

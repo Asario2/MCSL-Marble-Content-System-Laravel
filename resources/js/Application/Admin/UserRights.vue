@@ -183,6 +183,7 @@
         <th class="px-4 py-3 text-left">Profil</th>
         <th class="px-4 py-3 text-left">Benutzer</th>
         <th class="px-4 py-3 text-left">Rolle</th>
+        <th class="px-4 py-3 text-left">PM Status</th>
         <th class="px-4 py-3 text-left">
           <button
             @click="toggleDisabledSelection"
@@ -242,7 +243,7 @@
             </button>
 
             <!-- Dropdown -->
-            <div
+                <div
               v-if="u.showDropdown"
               class="absolute left-0 mt-1 w-[calc(100%+2rem)] bg-white dark:bg-gray-900 border dark:border-gray-700 rounded shadow-md z-50"
             >
@@ -260,7 +261,9 @@
             </div>
           </div>
         </td>
-
+        <td class="px-4 py-3 text-left">
+        <img :src="'/images/icons/pmstat/' + u.xch_newsletter + '.png'" class="w-6 h-6" />
+        </td>
         <!-- Checkbox -->
         <td class="px-4 py-3 text-left">
           <input-checkbox v-model="selectedUsers[u.id]"  @change="toggleDisabled(u)"/>
@@ -475,7 +478,7 @@ export default {
 
       axios.post('/api/save-user-role', payload)
         .then(res => {
-         
+
           u.selectedRoleIcon = `/images/icons/ugr/${u.selectedRoleName}.gif`;
           u.hoverIcon = u.selectedRoleIcon;
         })

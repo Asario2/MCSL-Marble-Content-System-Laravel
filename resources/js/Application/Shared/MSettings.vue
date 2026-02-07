@@ -125,6 +125,7 @@ export default {
     {
         const res = await axios.get("/api/GetUsConf");
         const data = res.data.form[0];
+        console.log(res);
         this.form.setData({
             xis_pmtoautomail: String(data.xis_pmtoautomail ?? "0"),
             cnt_numrows: String(data.cnt_numrows ?? "10"),

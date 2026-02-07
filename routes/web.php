@@ -2,7 +2,7 @@
 
 use Inertia\Inertia;
 
-
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Route;

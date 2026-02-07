@@ -1,5 +1,7 @@
 <template>
+
     <layout title="Profil">
+        <MetaHeader title="Profil"></MetaHeader>
         <template #header>
             <breadcrumb
                 :application-name="$page.props.applications.app_admin_name"
@@ -16,7 +18,7 @@
 
 <script>
 import { defineComponent } from "vue";
-
+import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue";
 // import Layout from "@/Application/Admin/Shared/Layout" + SD()  +".vue";
 import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 import Profile from "@/Application/Shared/Profile.vue";
@@ -30,6 +32,7 @@ export default defineComponent({
 
         Breadcrumb,
         Profile,
+        MetaHeader,
         Layout: defineAsyncComponent(() =>
         import(`@/Application/Admin/Shared/${SD()}/Layout.vue`)
     )

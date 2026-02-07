@@ -235,7 +235,7 @@
             <div class="w-full md:w-64 flex-shrink-0 bg-gray-100 dark:bg-gray-800 p-4 rounded-xl text-center self-start">
 
               <a :href="'/home/users/show/' + selectedMessage.user + '/' + selectedMessage.users_id">
-                <img :src="GetProfileImagePath(selectedMessage.avatar || 'default.jpg')" class="mx-auto w-24 h-24 rounded-full object-cover mb-2" />
+                <img :src="GetProfileImagePath(selectedMessage.avatar || '008.jpg')" class="mx-auto w-24 h-24 rounded-full object-cover mb-2" />
               </a>
               <h4 class="font-semibold mb-1">Über {{ selectedMessage.user }}</h4>
               <p>Vorname: {{ selectedMessage.first_name }}</p>

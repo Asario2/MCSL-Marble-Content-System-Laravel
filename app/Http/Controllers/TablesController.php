@@ -3021,10 +3021,12 @@ return Inertia::render('Admin/Kontakte', [
     {
     $res = DB::table('users')
         ->leftJoin('users_rights', 'users.users_rights_id', '=', 'users_rights.id')
+        ->leftJoin('users_config as uc', 'uc.users_id', '=', 'users.id')
         ->select(
             'users.id',
             'users.name as name',
             'users_rights.name as rights_name',
+            "uc.xch_newsletter",
             'users.users_rights_id',
             'users.xis_disabled',
             'users.profile_photo_path'
