@@ -18,16 +18,15 @@ class GoogleController extends Controller
      */
     public function redirectToGoogle()
     {
-        $domain = request()->getHost();
+        $redirectUri = $this->getRedirectUri();
 
-        config([
-            'services.google.redirect' => "https://{$domain}/auth/google/callback",
-        ]);
+        // Dynamisch Redirect setzen
+        config(['services.google.redirect' => $redirectUri]);
 
         return Socialite::driver('google')
             ->scopes(['openid', 'profile', 'email'])
             ->with(['prompt' => 'select_account'])
-            ->redirect(); // ❗ KEIN response(), KEIN stateless()
+            ->redirect();
     }
 
     /**
@@ -35,13 +34,15 @@ class GoogleController extends Controller
      */
     public function handleGoogleCallback()
     {
-        $domain = request()->getHost();
+        $redirectUri = $this->getRedirectUri();
+        config(['services.google.redirect' => $redirectUri]);
 
-        config([
-            'services.google.redirect' => "https://{$domain}/auth/google/callback",
-        ]);
-
-        $googleUser = Socialite::driver('google')->user();
+        try {
+            $googleUser = Socialite::driver('google')->user();
+        } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
+            return redirect()->route('login')
+                ->withErrors(['login' => 'Google-Login fehlgeschlagen. Bitte Browser-Cache prüfen.']);
+        }
 
         $user = User::where('email', $googleUser->email)->first();
 
@@ -51,11 +52,10 @@ class GoogleController extends Controller
             if (!$user) {
                 \Log::warning('Google Login abgelehnt (Domain nicht erlaubt)', [
                     'email' => $googleUser->email,
-                    'domain' => $domain,
+                    'domain' => request()->getHost(),
                 ]);
 
-                return redirect()
-                    ->route('login')
+                return redirect()->route('login')
                     ->withErrors(['login' => 'Email-Adresse nicht erlaubt.']);
             }
         }
@@ -73,23 +73,6 @@ class GoogleController extends Controller
         }
 
         return redirect()->route('home.index');
-    }
-
-    /**
-     * User anlegen, falls erlaubt
-     */
-    private function createUserIfAllowed($googleUser): ?User
-    {
-        if (empty(Settings::$regdom[SD()] ?? null)) {
-            return null;
-        }
-
-        return User::create([
-            'email'     => $googleUser->email,
-            'google_id' => $googleUser->id,
-            'name'      => null,
-            'password'  => Hash::make(Str::random(32)),
-        ]);
     }
 
     /**
@@ -136,6 +119,44 @@ class GoogleController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Profil gespeichert',
+        ]);
+    }
+
+    /**
+     * Hilfsmethode: Redirect URI dynamisch ermitteln
+     */
+    private function getRedirectUri(): string
+    {
+        $host = request()->getHost();
+        $scheme = request()->getScheme(); // https oder http
+        $allowedHosts = [
+            'www.marblefx.de',
+            'www.marblefx.net',
+            'www.asario.de',
+            'www.monikadargies.de',
+        ];
+
+        if (!in_array($host, $allowedHosts)) {
+            abort(403, "Domain für Google Login nicht erlaubt: {$host}");
+        }
+
+        return "{$scheme}://{$host}/auth/google/callback";
+    }
+
+    /**
+     * User anlegen, falls erlaubt
+     */
+    private function createUserIfAllowed($googleUser): ?User
+    {
+        if (empty(Settings::$regdom[SD()] ?? null)) {
+            return null;
+        }
+
+        return User::create([
+            'email'     => $googleUser->email,
+            'google_id' => $googleUser->id,
+            'name'      => null,
+            'password'  => Hash::make(Str::random(32)),
         ]);
     }
 }

@@ -19,7 +19,7 @@
         >
             <div
                 v-if="toast.type === 'success'"
-                class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg text-layout-sun-900 bg-layout-sun-0 dark:text-layout-night-900 dark:bg-layout-night-0"
+                class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg text-layout-sun-900 bg-layout-sun-0 dark:text-layout-night-900 dark:bg-layout-night-0 bg-text-green-500"
             >
                 <icon-done class="w-5 h-5"></icon-done>
             </div>
@@ -34,7 +34,7 @@
 
             <div
                 v-if="toast.type === 'info'"
-                class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg text-layout-sun-900 bg-layout-sun-0 dark:text-layout-night-900 dark:bg-layout-night-0"
+                class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg text-layout-sun-900 bg-layout-sun-0 dark:text-layout-night-900  bg-text-blue-500"
             >
                 <icon-done class="w-5 h-5" fill="currentColor"></icon-done>
             </div>

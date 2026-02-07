@@ -21,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+
+
         // Globaler Domain-Switch (z. B. für Multi-Tenant)
         if (app()->runningInConsole()) {
             return; // Verhindere Ausführung bei Artisan-Commands

@@ -14,7 +14,7 @@
             <h2
                 class="ms-3 text-xl font-semibold text-layout-sun-900 dark:text-layout-night-900"
             >
-                <a :href="routeName" class="text-layout-sun-600 dark:text-layout-night-900 twi">{{ title }}</a>
+                <a :href="routeName" class="text-layout-sun-600 dark:text-layout-night-900 twi nul">{{ title }}</a>
             </h2>
         </div>
         <p
@@ -27,7 +27,7 @@
                 v-if="routeName && linkName"
                 :href="routeName"
                 :target="target"
-                class="py-1.5 px-2 rounded-lg inline-flex items-center font-semibold text-primary-sun-700 dark:text-primary-night-700 hover:bg-layout-sun-200 dark:hover:bg-layout-night-200"
+                class="py-1.5 px-2 rounded-lg inline-flex items-center font-semibold text-primary-sun-700 dark:text-primary-night-700 hover:bg-layout-sun-200 dark:hover:bg-layout-night-200 ncl"
             >
                 {{ linkName }}
                 <icon-arrow-long-right
@@ -37,7 +37,7 @@
             <a
                 v-if="routeName2 && linkName2"
                 :href="routeName2"
-                class="py-1.5 px-2 rounded-lg inline-flex items-center font-semibold text-primary-sun-700 dark:text-primary-night-700 hover:bg-layout-sun-200 dark:hover:bg-layout-night-200"
+                class="py-1.5 px-2 rounded-lg inline-flex items-center font-semibold text-primary-sun-700 dark:text-primary-night-700 hover:bg-layout-sun-200 dark:hover:bg-layout-night-200 ncl"
             >
                 {{ linkName2 }}
                 <icon-arrow-long-right

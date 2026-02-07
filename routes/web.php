@@ -97,10 +97,10 @@ GlobalController::SetDomain();
         // GOOGLE AUTH
         //
         Route::get('/api/delTempz/{path}', [TablesController::class, 'RemoveTempFiles'])->name('remove.temp');
-        Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name("ggle.login");
-        Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
-        Route::get('/register/nickname', [GoogleController::class, 'showNicknameForm']);
-        Route::post('/register/nickname', [GoogleController::class, 'saveNickname']);
+        Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name("ggle.login")->middleware('web');
+        Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']) ->middleware('web');
+        Route::get('/register/nickname', [GoogleController::class, 'showNicknameForm'])->middleware('web');
+        Route::post('/register/nickname', [GoogleController::class, 'saveNickname'])->middleware('web');
         Route::get('/auth/nickname', function () {
             return inertia('Admin/nickname');
         })->name('auth.nickname');

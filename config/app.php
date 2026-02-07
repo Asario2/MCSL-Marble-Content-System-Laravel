@@ -77,6 +77,15 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Mail\MailServiceProvider::class,
         Illuminate\Queue\QueueServiceProvider::class,
+        Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
+        Illuminate\Notifications\NotificationServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
+
+
+        /*
+        * Package Service Providers...
+        */
+
 
 
 

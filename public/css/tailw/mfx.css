@@ -1,7 +1,6 @@
 .dark\:text-layout-night-1050:is(.dark *){
     color:#ffa200 !important;
 }
-
 .dark\:bg-layout-night-0:is(.dark *){
     color:#fff !important;
 }
@@ -705,4 +704,20 @@ a{
     font-display: swap;
 }
 
-
+a.nul_wh SPAN{
+    color:inherit;
+    }
+    a.nul_bla SPAN{
+        color:inherit;
+    }
+DIV.bg-text-blue-500{
+        color:#fff!important;
+        background-color:#075783 !important;
+    }
+    .shariff-button SPAN{
+        color:#fff !important;
+    }
+    .bg-text-green-500{
+        color:#fff!important;
+        background-color:#166334 !important;
+    }

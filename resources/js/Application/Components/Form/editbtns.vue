@@ -88,8 +88,8 @@ export default {
           `/admin/${t}/delete/${this.table}/${this.id}`,
           { params: { edit: "blogposts.index" } }
         );
-
-        toastBus.emit("toast", response.data);
+        console.log(response.data);
+        window.toastBus.emit(response.data);
         this.$inertia.reload();
       } catch (err) {
         console.error("Fehler beim Löschen:", err);

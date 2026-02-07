@@ -3,7 +3,7 @@
     <div class="blog-container w-full max-w-sm mx-auto group rounded hover:no-underline focus:no-underline bg-layout-sun-100 dark:bg-layout-night-100">
         <Link
             :href="route('home.blog.show', blog.autoslug)"
-            class="block text-layout-sun-600 dark:text-layout-night-900 twi"
+            class="block text-layout-sun-600 dark:text-layout-night-900 twi nul"
         >
 
             <div class="relative">
@@ -21,7 +21,7 @@
                 </div>
             </div>
 
-            <div class="p-6 space-y-2">
+            <div class="px-6 space-y-2">
             <div class="flex items-center justify-between w-full">
                 <!-- Blog-Titel -->
                 <h2

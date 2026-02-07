@@ -1,5 +1,6 @@
 <template>
-    <Layout title="Login">
+<div id="bl_links">
+<Layout title="Login">
         <template #logo>
             <favicon class="h-16" />
         </template>
@@ -55,10 +56,13 @@
                         ></input-element>
                          <input-error :message="errors.password" />
                     </input-container>
-                    <input-container :full-width="true">
-                   <a href="/auth/google" class="flex items-center gap-2"><GoogleSVG he="22" wi="22"/>Mit Google anmelden</a>
-
-
+                    <input-container :full-width="true"  style='display:inline;'>
+                     <a
+                        href="/auth/google"
+                        class="blink inline-flex items-center gap-2 text-sm font-medium hover:opacity-90"
+                    >
+                        <GoogleSVG he="22" wi="22" />&nbsp;Mit Google anmelden
+                    </a>
                     </input-container>
                     <input-container :full-width="true">
                         <input-checkbox name="remember" v-model="form.remember">
@@ -70,6 +74,7 @@
                         <display-hyperlink
                             :href="route('password.request')"
                             display-type="display"
+
                         >
                             Kennwort vergessen?</display-hyperlink
                         >
@@ -95,6 +100,7 @@
             </template>
         </section-form>
     </Layout>
+    </div>
 </template>
 <script>
 import { defineComponent } from "vue";

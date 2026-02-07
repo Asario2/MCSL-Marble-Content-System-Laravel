@@ -22,6 +22,13 @@
         import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
         library.add(faPencilAlt, faTrashCan, faXTwitter);
 
+        if (window.trustedTypes) {
+            window.trustedTypes.createPolicy('default', {
+                createScript: (input) => input,
+                createScriptURL: (input) => input
+            });
+        }
+
         // ToastBus
         import { toastBus } from './utils/toastBus';
         import Toast from './Application/Components/Content/Toast.vue';

@@ -11,11 +11,51 @@
 
 
     }
+    DIV#bl_links A:link,DIV#bl_links A:visited{
+        color:#222 !important;
+
+    }
+    DIV#bl_links DIV.bluecontainer a:link,DIV#bl_links DIV.bluecontainer a:visited{
+        color:#0994df !important;
+
+    }
     a.twi:link,a.twi:visited{
         color: #fff  !important;
     }
     A:link,a:visited{
         color: #fff !important;
+    }
+    a.button_text_case_border:link:hover,a.button_text_case_border:visited:hover{
+        color:#fff !important;
+        text-decoration: none;
+    }
+    a.ncl:link,a.ncl:visited
+    {
+        color:rgb(125 211 252 / var(--tw-text-opacity, 1)) !important;
+    }
+    .bg-text-blue-500{
+        color:#fff!important;
+        background-color:#075783 !important;
+    }
+    a.nul:link:hover,a.nul:visited:hover{
+        text-decoration: none;
+    }
+    A.button_text_case_border:link:hover DIV,A.button_text_case_border:visited:hover DIV{
+        color:#fff !important;
+    }
+    a.nul_wh SPAN{
+    color:inherit;
+    }
+    a.nul_bla SPAN{
+        color:inherit;
+    }
+
+    .shariff-button SPAN{
+        color:#fff !important;
+    }
+    .bg-text-green-500{
+        color:#fff!important;
+        background-color:#166334 !important;
     }
 .button-primary {
   background-color: #222;
@@ -92,10 +132,13 @@ a.as:link:hover,a.as:visited:hover,a.as:active:hover{
     text-decoration: underline;
     color:#0ea5e9 !important;
 }
-
+a:link:hover,a:visited:hover
+{
+    text-decoration: underline;
+}
 a.as:link,a.as:visited,a.as:active{
 
-    color:#0ea5e9 !important;
+    color:rgb(125 211 252 / var(--tw-text-opacity, 1)) !important;
 }
 
 a.tb,.tb{color:#000 !important;}

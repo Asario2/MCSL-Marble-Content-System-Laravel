@@ -102,9 +102,9 @@ export default {
         return {
 
             form: useForm({
-                xis_pmtoautomail: "",
-                cnt_numrows: "",
-                      xch_newsletter: "",
+                xis_pmtoautomail: "0",
+                cnt_numrows: "10",
+                xch_newsletter: "0",
             }),
         };
     },
@@ -125,18 +125,13 @@ export default {
     },
     async mounted()
     {
-             const res = await axios.get("/api/GetUsConf");
-  const data = res.data.form[0];
+              const res = await axios.get("/api/GetUsConf");
+    const data = res.data.form[0];
 
-  // Setze nur die Werte innerhalb von useForm
-  this.form.current_password = "";
-  this.form.password = "";
-  this.form.password_confirmation = "";
-  this.form.xch_newsletter = data.xch_newsletter;
-  this.form.xis_pmtoautomail = String(data.xis_pmtoautomail);
-  this.form.cnt_numrows = String(data.cnt_numrows);
-//   console.log("Loaded form:", data);
-//   console.log("Newsletter value:", this.form.xch_newsletter);
+    // Nur bestehende Felder von useForm setzen
+    this.form.xch_newsletter = data.xch_newsletter ?? "";
+    this.form.xis_pmtoautomail = String(data.xis_pmtoautomail ?? "0");
+    this.form.cnt_numrows = String(data.cnt_numrows ?? "0");
     }
 };
 </script>

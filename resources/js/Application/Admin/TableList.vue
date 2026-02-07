@@ -35,7 +35,7 @@
         <template #datarow="data" >
           <td class="np-dl-td-normal" v-if="rights.view[data.datarow.full_name] == '1'">
             <a :href="route('admin.tables.show', data.datarow.full_name)"
-               class="text-blue-600 dark:text-blue-600 hover:underline">
+               class="!text-blue-600 !dark:text-blue-600 hover:underline as">
               {{ data.datarow.name }}
             </a>
           </td>
