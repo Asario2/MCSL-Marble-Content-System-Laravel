@@ -1,6 +1,6 @@
 <template>
     <div v-if="GetSd() === 'ab'">
-        <Link :href="routeName" class="flex items-center">
+        <Link :href="routeName" class="flex items-center nul">
             <div>
                 <favicon class="h-10 w-10 mr-4"></favicon>
             </div>

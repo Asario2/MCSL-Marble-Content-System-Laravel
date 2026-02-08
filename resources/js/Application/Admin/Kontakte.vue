@@ -231,7 +231,7 @@ export default {
   });
 
   return grouped;
-},
+}       ,
   UID(){
       return window.authid;
     },

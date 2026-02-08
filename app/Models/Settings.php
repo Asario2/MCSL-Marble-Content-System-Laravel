@@ -161,6 +161,7 @@
         'SQLUpdate' => 'Datenbank Synchronisieren',
         'test dzads' => 'asdasd',
         'UnusedImages' => 'Unbenutzte Bilder Galerie',
+        'Hlog' => 'Hacking Log',
     ];
     public static array $regdom =   ['ab'=>true];
     public static array $connect_dbname = ["ab"=>"mariadb","dag"=>"mariadb_dag","mfx"=>"mariadb_mfx"];

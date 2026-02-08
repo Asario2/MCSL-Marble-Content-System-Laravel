@@ -1,5 +1,5 @@
 _work/*
-
+/bootstrap/cache/
 /.phpunit.cache
 /node_modules
 **/connnfi/**

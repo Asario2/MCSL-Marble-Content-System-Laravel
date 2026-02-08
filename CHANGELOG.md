@@ -208,3 +208,4 @@
 ![Version](https://img.shields.io/badge/version-4.59.0-orange) Feature - Add Icons on PM status (#383)  
 ![Version](https://img.shields.io/badge/version-4.60.4-orange) Feature - Add icons before login & register link in footer (#381)  
 ![Version](https://img.shields.io/badge/version-4.61.9-orange) Feature - Order of Contacts changed (#384)  
+![Version](https://img.shields.io/badge/version-4.62.0-orange) Hotfix - Removed Bug in UserRights (#386)  

@@ -108,9 +108,9 @@ public function GetRights($table, $right)
 // }
 public function AddFunction(Request $request)
 {
-    if(!CheckZRights("Users_Rights"))
+    if(!CheckZRights("UserRights"))
     {
-        return redirect("/no-rights");
+       return redirect("/no-rights");
     }
     $new = $request->name;   // z.B. "neuer eintrag"
     $column = 'xkis_' .str_replace(' ', '_', $new);
@@ -127,17 +127,17 @@ public function AddFunction(Request $request)
 
     // Alphabetisch sortieren
     sort($xkisColumns, SORT_NATURAL);
-
+    \Log::info("cols:".json_encode($xkisColumns,JSON_PRETTY_PRINT)."col:".$column);
     // 2) Prüfen, ob Spalte schon existiert
     if (in_array($column, $xkisColumns)) {
         return response()->json(['message' => "Feld $column existiert bereits"], 400);
     }
     // Connection_GET
     $sqlu = NEW SQLUpdateController();
-    $this->onl_con = $sqlu->GetDBCon(1,SD());
+    $this->onl_con = $sqlu->GetDBCon(0,SD());
 
 
-    $this->addColumn($request);
+    // $this->addColumn($request);
     // 3) Alphabetische Position finden
     $insertAfter = null;
     foreach ($xkisColumns as $col) {
@@ -162,7 +162,7 @@ public function AddFunction(Request $request)
     }
 
     // 5) Spalte erzeugen
-    DB::statement($sql);
+    // DB::statement($sql);
 
     DB::connection($this->onl_con)->statement($sql);
 

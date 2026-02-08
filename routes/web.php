@@ -11,6 +11,7 @@ use App\Http\Controllers\CustomLoginController;
 use App\Http\Controllers\PersonalController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\MCSLPointsController;
+use App\Http\Controllers\Hlog;
 use App\Http\Controllers\PMController;
 use App\Http\Controllers\UserConfigController;
 use App\Http\Controllers\BlogPostController;
@@ -106,6 +107,15 @@ GlobalController::SetDomain();
         })->name('auth.nickname');
         Route::post('/login-silent', [CustomLoginController::class, 'loginSilent'])
         ->middleware('web');
+
+        // routes/web.php
+        Route::get('/logtest', function () {
+            \Log::warning('LOG TEST OK');
+            return 'ok';
+        });
+
+
+
 //         dd(
 //     Auth::getDefaultDriver(),
 //     Auth::guard()->check(),
@@ -572,6 +582,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 ### ============== API ISADMIN QI ================ ###
 
         Route::get("/admin/get_unused_imgz/{dom?}", [TablesController::class,"getunused"])->name("admin.getunused");
+        Route::get("/admin/Hlog", [Hlog::class,"show"])->name("admin.hlog");
         Route::post('/admin/zip-images/{dom?}', [TablesController::class, 'zipImages'])->name("zip.images");
         Route::post('/admin/removeFiles', [TablesController::class, 'remImages'])->name("rem.images");
         Route::get("/admin/SQLUpdate", [SQLUpdateController::class,"index"])->name("SQL.index");
@@ -579,7 +590,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/userx/update-config/{id}', [UserConfigController::class, 'updateConfig'])->name('usconfi');
         Route::get('/dboard/data', [CountPixelController::class, 'dboard'])->name('dboard.data');
         Route::get('/admin/Statistics', [HomeController::class, 'plot_gfx'])->name('stats');
-        // Route::post('/api/AddFunc', [RightsController::class, 'AddFunction'])->name('admin.add.func');
+        Route::post('/api/AddFunc', [RightsController::class, 'AddFunction'])->name('admin.add.func');
         Route::get('/get_MCSL_Points_Preniums', [MCSLPointsController::class, 'SelectPremiums'])->name('store.mcslpoints');
         Route::get('/SubmitPremiums/{users_id}/{img_id}', [MCSLPointsController::class, 'SendMail'])->name('send.mcslpoints');
         //

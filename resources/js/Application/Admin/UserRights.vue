@@ -290,7 +290,7 @@
 </template>
 
 <script>
-import { toastBus } from '@/utils/toastBus';
+// import { toastBus } from '@/utils/toastBus';
 import { GetSettings } from "@/helpers";
 import axios from "axios";
 import InputFormText from "@/Application/Components/Form/InputFormText.vue";
@@ -359,36 +359,42 @@ export default {
       this.addF = !this.addF;
     },
 
-    async addfsubm() {
-      try {
-        const res = await axios.post('/api/AddFunc', {
-          name: this.addedF,
-          desc: this.fdesc,
-        });
+    async addfsubm(event) {
+  if (event) event.preventDefault(); // optional, @click.prevent reicht eigentlich
 
-        window.toastBus.emit( {
-          message: res.data?.message,
-          type: 'success'
-        });
+  try {
+    const res = await axios.post('/api/AddFunc', {
+      name: this.addedF,
+      desc: this.fdesc,
+    });
+    console.log("res:", res);
+    console.log("res.data:", res.data);
+    // Toast richtig benutzen
+    window.toastBus.emit({
+      message: res.data?.message || 'Funktion hinzugefügt!2',
+      type: 'success'
+    });
 
-        // Eingabe zurücksetzen
-        this.addedF = "";
-        this.fdesc = "";
-        this.addF = false;
+    // Eingabe zurücksetzen
+    this.addedF = '';
+    this.fdesc = '';
+    this.addF = false;
 
-        // Settings neu laden (damit descriptions aus Settings sichtbar werden)
-        await this.reloadSettings();
+    // Settings neu laden (damit descriptions sichtbar werden)
+    await this.reloadSettings();
 
-        // Funktionen neu laden (sichtbar + reaktiv)
-        await this.loadFunctions(this.selected);
-      } catch (err) {
-        console.error(err);
-        window.toastBus.emit( {
-          message: 'Fehler beim Aktualisieren des Status!',
-          type: 'error'
-        });
-      }
-    },
+    // Funktionen neu laden (sichtbar + reaktiv)
+    await this.loadFunctions(this.selected);
+
+  } catch (err) {
+    console.error(err);
+    window.toastBus.emit({
+      message: 'Fehler beim Hinzufügen der Funktion!' + err,
+      type: 'error'
+    });
+  }
+},
+
 
     // reload Settings helper
     async reloadSettings() {
@@ -627,7 +633,8 @@ export default {
     },
 
     saveRights() {
-      const payload = {};
+      console.log("PAYLOAD");
+        const payload = {};
       // tables
       for (const [key, value] of Object.entries(this.rights)) payload[key] = value.map(v => v ? '1' : '0').join('');
 
@@ -636,6 +643,7 @@ export default {
         payload[k] = v ? "1" : "0";
       }
 
+
       axios.post('/api/admin/user-rights/save?urid=' + this.selected, payload)
         .then(r => window.toastBus.emit( { message: r.data?.message || 'Gespeichert', type: 'success' }))
         .catch(e => console.error(e));
@@ -643,35 +651,45 @@ export default {
 
     // --- Funktionen ---
     async loadFunctions(urid) {
-      try {
-        const res = await axios.get(`/admin/user-rights/get?urid=${urid}`);
+  try {
+    const res = await axios.get(`/admin/user-rights/get?urid=${urid}`);
 
-//         console.log("RESP", res.data);
+    // 🛡️ Safety fallback
+    const data = res.data || {};
 
-        // rights root (don't overwrite this.userRights or tables)
-        const rights = res.data?.rights || res.data || {};
+    // 🔑 Rechte-Root
+    const rights = data.rights ?? data ?? {};
 
-        // Only xkis_ keys (functions)
-        const functions = Object.entries(rights).filter(([k]) => k.startsWith("xkis_"));
+    // 🎯 NUR Funktionsrechte
+    const functions = Object.entries(rights)
+      .filter(([key]) => key.startsWith("xkis_"))
+      .sort((a, b) => a[0].localeCompare(b[0]));
 
-        functions.sort((a, b) => a[0].localeCompare(b[0]));
+    // 📦 reine Anzeige-Map (nicht editierbar)
+    this.lf = Object.fromEntries(functions);
 
-        this.lf = Object.fromEntries(functions);
+    // 🏷️ Labels (nur wenn vorhanden)
+    if (data.labels) {
+      this.labels = data.labels;
+    }
 
-        // labels from API (descriptions)
-        this.labels = res.data?.labels || this.labels || {};
+    // ✏️ EDITIERBARE Kopie (deep + reaktiv)
+    const local = {};
+    for (const [key, value] of functions) {
+      local[key] = Number(value); // wichtig: 0 / 1 erzwingen
+    }
 
-        // set localFunc only to the functions (deep copy for reactivity)
-        const newLocal = {};
-        for (const [k, v] of functions) {
-          newLocal[k] = v;
-        }
-        this.localFunc = JSON.parse(JSON.stringify(newLocal));
+    this.localFunc = local;
 
-      } catch (e) {
-        console.error(e);
-      }
-    },
+    // 🧠 optional: Debug
+    // console.log("LF", this.lf);
+    // console.log("LOCALFUNC", this.localFunc);
+
+  } catch (e) {
+    console.error("loadFunctions failed", e);
+  }
+}
+,
 
     handleClickOutside(event) {
       this.users.forEach(u => {
