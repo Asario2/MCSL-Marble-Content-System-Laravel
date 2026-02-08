@@ -54,7 +54,7 @@
             >
                 <template #description>
                     Deine Kontakte
-                </template> 
+                </template>
             </navigation-card>
             <navigation-card v-if="modulRights?.SendMail"
                 class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
@@ -106,9 +106,10 @@
                 :withIcon="true"
                 icon="IconSync"
             >
-                <!-- DB updaten -->
+
                 <template #description> Datenbanken Synchronisieren </template>
             </navigation-card>
+            <!-- Unused Images -->
             <navigation-card v-if="modulRights?.UnusedImages"
                 class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
                 title="Unbenutzte Bilder"
@@ -118,9 +119,24 @@
                 :withIcon="true"
                 icon="IconUnImg"
             >
-                <!-- DB updaten -->
+
                 <template #description> Ungenutzte Bilder </template>
             </navigation-card>
+            <!-- Hacklog -->
+            <navigation-card v-if="modulRights?.Hlog"
+                class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
+                title="MCSL IDS"
+                :routeName="route('admin.hlog')"
+                linkName="HackLog"
+                target="_self"
+                :withIcon="true"
+                icon="IconHlog"
+            >
+
+                <template #description> Ungenutzte Bilder </template>
+            </navigation-card>
+
+            <!-- User Rights -->
             <navigation-card v-if="modulRights?.UserRights"
                 class="navigation_card p-4 rounded-md bg-layout-sun-100 dark:bg-layout-night-100"
                 title="Rechte"

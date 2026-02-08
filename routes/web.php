@@ -427,6 +427,7 @@ Route::get('/mail-test', function () {
 
 Route::get("/api/user/rights/des/{table}/{right}",[RightsController::class,"GetRights"])->name("GetRights");
 
+
 Route::get("/api/user/rights/des-all/{right}",[RightsController::class,"allTableRights"])->name("allRights");
 
 
@@ -581,6 +582,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 ### ============== API ISADMIN QI ================ ###
 
+        Route::delete("/api/remlog/{id}",[RightsController::class,"remLog"])->name("remlogg");
         Route::get("/admin/get_unused_imgz/{dom?}", [TablesController::class,"getunused"])->name("admin.getunused");
         Route::get("/admin/Hlog", [Hlog::class,"show"])->name("admin.hlog");
         Route::post('/admin/zip-images/{dom?}', [TablesController::class, 'zipImages'])->name("zip.images");

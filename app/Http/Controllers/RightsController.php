@@ -68,6 +68,32 @@ class RightsController extends Controller
     // Rückgabe des einzelnen Bits
     return response()->json(intval($rightString[$tableid]));
 }
+public function remLog($id)
+{
+    if(!CheckZRights("Hlog"))
+    {
+        header("Location: /no-rights");
+        exit;
+    }
+    try {
+        DB::table("genxlo.xgen_hlog")->where("id", $id)->delete();
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Datensatz erfolgreich gelöscht',
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error("Unable to delete HLog ID $id: " . $e->getMessage());
+
+        return response()->json([
+            'status'  => 'error',
+            'message' => 'Datensatz konnte nicht gelöscht werden',
+        ], 500);
+    }
+
+
+}
 public function GetRights($table, $right)
 {
     if (!Auth::check()) {
@@ -162,16 +188,16 @@ public function AddFunction(Request $request)
     }
 
     // 5) Spalte erzeugen
-    // DB::statement($sql);
+    DB::statement($sql);
 
-    DB::connection($this->onl_con)->statement($sql);
+    // DB::connection($this->onl_con)->statement($sql);
 
 
     // 6) UserRights ID 1 bekommt automatisch Wert = 1
     DB::table($table)->where('id', 1)->update([$column => 1]);
     DB::connection($this->onl_con)->table($table)->where('id', 1)->update([$column => 1]);
         return response()->json([
-            'message' => "Feld $column erfolgreich hinzugefügt",
+            'message' => "Feld <b>".str_replace("xkis_",'',$column)."</b> erfolgreich hinzugefügt",
             'insert_after' => $insertAfter,
             'new_column' => $column
         ]);

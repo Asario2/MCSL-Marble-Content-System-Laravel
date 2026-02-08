@@ -36,6 +36,8 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\HandleCors::class,
             \Illuminate\Foundation\Http\Middleware\TrimStrings::class,
             \Illuminate\Http\Middleware\TrustProxies::class,
+            App\Http\Middleware\BlockBannedIPs::class,
+
 
 
             // 🔐 IDS / Inspection

@@ -4,71 +4,53 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Hlog;
+use App\Services\HlogService;
 
 class RequestInspectionMiddleware
 {
-    protected int $blockThreshold = 25;
+    protected int $maxScore = 25; // Score ab dem gebannt wird
+    protected HlogService $hlogService;
 
     protected array $patterns = [
         // XSS
-        '/<script\b/i'           => 15,
-        '/javascript:/i'         => 10,
-        '/on\w+\s*=/i'           => 8,
+        '/<script\b/i'   => 15,
+        '/javascript:/i' => 10,
+        '/on\w+\s*=/i'   => 8,
 
-        // SQLi
-        '/union\s+select/i'      => 12,
-        '/select\s+.*\s+from/i'  => 8,
-        '/or\s+1=1/i'            => 10,
+        // SQL Injection
+        '/union\s+select/i' => 12,
+        '/select\s+.*\s+from/i' => 8,
+        '/or\s+1=1/i'         => 10,
 
         // Command Injection
         '/;\s*(rm|cat|wget|curl)\s+/i' => 20,
         '/\$\(/'                       => 15,
 
         // Path Traversal
-        '/\.\.\//'               => 10,
-        '/\.\.\\\\/'             => 10,
+        '/\.\.\//'      => 10,
+        '/\.\.\\\\/'    => 10,
     ];
+
+    public function __construct(HlogService $hlogService)
+    {
+        $this->hlogService = $hlogService;
+    }
 
     public function handle(Request $request, Closure $next)
     {
-        $score   = 0;
+        $score = 0;
         $matches = [];
 
-        /**
-         * 🔥 WICHTIG:
-         * RAW Querystring + decoded prüfen
-         */
-        $rawQuery = urldecode($request->getQueryString() ?? '');
-
+        // Alle GET/POST/JSON Inputs prüfen
         $inputs = array_merge(
             $request->query(),
             $request->post(),
             is_array($request->json()?->all()) ? $request->json()->all() : []
         );
 
-        // RAW QUERYSTRING prüfen
-        if ($rawQuery) {
-            foreach ($this->patterns as $pattern => $points) {
-                if (preg_match($pattern, $rawQuery)) {
-                    $score += $points;
-                    $matches[] = [
-                        'source'  => 'raw_query',
-                        'pattern' => $pattern,
-                        'value'   => mb_substr($rawQuery, 0, 200),
-                    ];
-                }
-            }
-        }
-
-        // Normale Inputs prüfen
         foreach ($inputs as $key => $value) {
-            if (is_array($value)) {
-                $value = json_encode($value);
-            }
-
-            $value = urldecode((string) $value);
+            if (is_array($value)) $value = json_encode($value);
+            $value = urldecode((string)$value);
 
             foreach ($this->patterns as $pattern => $points) {
                 if (preg_match($pattern, $value)) {
@@ -82,23 +64,79 @@ class RequestInspectionMiddleware
             }
         }
 
-        // 🔍 LOGGEN
-        if ($score > 0) {
-            HLog::save([
-                'ip'      => $request->ip(),
-                'url'     => $request->fullUrl(),
-                'method'  => $request->method(),
-                'score'   => $score,
-                'matches' => $matches,
-                'agent'   => $request->userAgent(),
-            ]);
+        // RAW QueryString prüfen
+        $raw = urldecode($request->getQueryString() ?? '');
+        if ($raw) {
+            foreach ($this->patterns as $pattern => $points) {
+                if (preg_match($pattern, $raw)) {
+                    $score += $points;
+                    $matches[] = [
+                        'source'  => 'raw_query',
+                        'pattern' => $pattern,
+                        'value'   => mb_substr($raw, 0, 200),
+                    ];
+                }
+            }
         }
 
-        // ⛔ BLOCKIEREN
-        if ($score >= $this->blockThreshold) {
-            abort(403, 'Request blocked due to suspicious activity.');
+        // 🔔 Immer loggen, wenn Score > 0
+        $banUntil = null;
+        if ($score > 0) {
+            $banUntil = $this->hlogService->logHit(
+                $request->ip(),
+                $request,
+                $score,
+                $matches
+            );
+        }
+
+        // 🚨 Ban sofort, wenn Score >= maxScore
+        if ($score >= $this->maxScore && $banUntil) {
+            abort(403, "Request blocked. IP banned until {$banUntil->toDateTimeString()}");
         }
 
         return $next($request);
+    }
+    function getScore($ip,$request)
+    {
+              // Alle GET/POST/JSON Inputs prüfen
+              $score = 0;
+        $inputs = array_merge(
+            $request->query(),
+            $request->post(),
+            is_array($request->json()?->all()) ? $request->json()->all() : []
+        );
+
+        foreach ($inputs as $key => $value) {
+            if (is_array($value)) $value = json_encode($value);
+            $value = urldecode((string)$value);
+
+            foreach ($this->patterns as $pattern => $points) {
+                if (preg_match($pattern, $value)) {
+                    $score += $points;
+                    $matches[] = [
+                        'source'  => $key,
+                        'pattern' => $pattern,
+                        'value'   => mb_substr($value, 0, 200),
+                    ];
+                }
+            }
+        }
+
+        // RAW QueryString prüfen
+        $raw = urldecode($request->getQueryString() ?? '');
+        if ($raw) {
+            foreach ($this->patterns as $pattern => $points) {
+                if (preg_match($pattern, $raw)) {
+                    $score += $points;
+                    $matches[] = [
+                        'source'  => 'raw_query',
+                        'pattern' => $pattern,
+                        'value'   => mb_substr($raw, 0, 200),
+                    ];
+                }
+            }
+        }
+        return $score;
     }
 }

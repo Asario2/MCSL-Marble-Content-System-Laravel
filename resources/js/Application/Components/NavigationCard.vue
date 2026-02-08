@@ -73,6 +73,7 @@ import IconLogs from "@/Application/Components/Icons/IconLogs.vue";
 import IconStory from "@/Application/Components/Icons/IconStory.vue";
 import IconDidyou from "@/Application/Components/Icons/IconDidyou.vue";
 import IconComment_bl from "@/Application/Components/Icons/IconComment_bl.vue";
+import IconHlog from "@/Application/Components/Icons/IconHlog.vue";
 
 export default {
     name: "Components_NavigationCard",
@@ -83,6 +84,7 @@ export default {
         IconProjects,
         IconProjectsSheets,
         IconDB,
+        IconHlog,
         IconSync,
         IconMail,
         IconUnImg,
@@ -149,6 +151,7 @@ export default {
                 IconLogs,
                 IconDidyou,
                 texts,
+                IconHlog,
                 IconInfos,
                 IconProjects,
                 IconProjectsSheets,

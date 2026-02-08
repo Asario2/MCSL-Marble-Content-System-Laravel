@@ -1,17 +1,6 @@
 <template>
   <div class="whitespace-nowrap editbtn-container">
-    <span
-      v-if="(rights.edit == 1 && !noedit) || (users_id && users_id == page.props.user.id && CleanTable() == 'contacts')"
-    >
-      <a :href="'/admin/tables/edit/' + id + '/' + table" @click.stop>
-        <IconPencil
-          class="sm-pencil cursor-pointer text-layout-sun-600 dark:text-layout-night-900"
-        />
-      </a>
-      &nbsp;&nbsp;
-    </span>
-
-    <span v-if="rights.delete == 1">
+    <span>
       <form @submit.prevent="deletePost" style="display:inline">
         <button @click.stop.prevent="confirmDelete" type="button">
           <IconTrash class="sm-pencil cursor-pointer" />
@@ -86,10 +75,9 @@ console.log(this.table);
 //         console.log(`DELETE: /admin/${t}/delete/${this.table}/${this.id}`);
 
         const response = await axios.delete(
-          `/admin/${t}/delete/${this.table}/${this.id}`,
-          { params: { edit: "blogposts.index" } }
+          `/api/remlog/${this.id}`
         );
-        console.log(response.data);
+
         window.toastBus.emit(response.data);
         this.$inertia.reload();
       } catch (err) {
