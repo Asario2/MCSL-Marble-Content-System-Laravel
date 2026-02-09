@@ -8,7 +8,7 @@ use Illuminate\Routing\Exceptions\InvalidSignatureException;
 
 use App\Http\Middleware\CheckRight;
 use App\Http\Middleware\RequestInspectionMiddleware;
-use App\Http\Middleware\DetectTenant;
+// use App\Http\Middleware\DetectTenant;
 use App\Http\Middleware\CheckSubd;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -52,7 +52,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
 
-            DetectTenant::class,
+            // DetectTenant::class,
             CheckSubd::class,
 
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -63,7 +63,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // 🏷 Route Middleware Aliases
         $middleware->alias([
             'right'        => CheckRight::class,
-            'tenant'       => DetectTenant::class,
+            // 'tenant'       => DetectTenant::class,
             'inspect'      => RequestInspectionMiddleware::class,
             'is_admin'     => \App\Http\Middleware\UserIsAdmin::class,
             'is_employee'  => \App\Http\Middleware\UserIsEmployee::class,

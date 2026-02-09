@@ -590,7 +590,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get("/admin/SQLUpdate", [SQLUpdateController::class,"index"])->name("SQL.index");
         Route::get('/api/admin-tables', [TablesController::class, 'GetDBTables'])->name("get.db.tables");
         Route::get('/userx/update-config/{id}', [UserConfigController::class, 'updateConfig'])->name('usconfi');
-        Route::get('/dboard/data', [CountPixelController::class, 'dboard'])->name('dboard.data');
+        Route::get('/dboard/data/{dom?}/{month}', [CountPixelController::class, 'dboard'])->name('dboard.data');
         Route::get('/admin/Statistics', [HomeController::class, 'plot_gfx'])->name('stats');
         Route::post('/api/AddFunc', [RightsController::class, 'AddFunction'])->name('admin.add.func');
         Route::get('/get_MCSL_Points_Preniums', [MCSLPointsController::class, 'SelectPremiums'])->name('store.mcslpoints');

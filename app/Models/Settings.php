@@ -459,7 +459,10 @@ public static array $mariaDBs = [
     'https:',
     "/unsubscribe/",
     "/mail/",
-    
+    "/forgot-password",
+    "/reset-password",
+    "/newsl",
+    "/?test",
     ];
     }
 

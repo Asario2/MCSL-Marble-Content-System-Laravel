@@ -1,7 +1,8 @@
 <template>
+    <MetaHeader title="HackLog" />
   <Layout>
     <div class="p-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">
-      <h2 class="text-xl font-semibold mb-4">Request Logs</h2>
+      <h2 class="text-xl font-semibold mb-4">HackLog</h2>
 
       <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
         <table class="min-w-full text-sm">
@@ -29,7 +30,17 @@
               <td class="px-3 py-2 whitespace-nowrap">{{ row.created_at }}</td>
               <td class="px-3 py-2 font-mono">{{ row.dom }}</td>
               <td class="px-3 py-2 font-mono">{{ row.ip }}</td>
-              <td class="px-3 py-2 truncate max-w-xs">{{ row.url }}</td>
+              <td class="px-3 py-2 truncate max-w-xs">
+                <button
+                    v-if="row.url"
+                    @click="openModal('URL', row.url)"
+                    class="text-indigo-600 dark:text-indigo-400 hover:underline text-left"
+                >
+                    {{ row.url }}
+                </button>
+                <span v-else class="text-gray-400">–</span>
+              </td>
+
               <td class="px-3 py-2 whitespace-nowrap">{{ row.banned_until }}</td>
               <td class="px-3 py-2">{{ row.method }}</td>
               <td class="px-3 py-2 font-semibold" :class="row.score > 0 ? 'text-red-500' : ''">
@@ -91,11 +102,14 @@
 <script>
 import Layout from "@/Application/Admin/Shared/ab/Layout.vue";
 import delhlog from "@/Application/Admin/Shared/delhlog.vue"
+import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue"
 export default {
   name: 'RequestLogTable',
   components: {
     Layout,
     delhlog,
+    MetaHeader,
+
   },
   props: {
     data: {
@@ -121,6 +135,7 @@ export default {
             : content
         } catch (e) {
           // fallback: leave as string
+            this.asd = e;
         }
         this.modalContent = JSON.stringify(content, null, 2)
       } else {

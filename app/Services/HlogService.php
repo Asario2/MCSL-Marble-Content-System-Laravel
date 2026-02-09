@@ -58,19 +58,24 @@ class HlogService
     {
         return now();
     }
-    // Immer einen neuen Eintrag machen
+    if($score > $this->maxScore)
+    {
+        \Log::info("SC:".$score."MS:".$this->maxScore);
     DB::table('genxlo.xgen_hlog')->insert([
-        'ip'           => $ip,
-        'dom'          => SD(),
-        'url'          => $request->fullUrl(),
-        'method'       => $request->method(),
-        'score'        => $score,
-        'matches'      => json_encode($matches, JSON_PRETTY_PRINT),
-        'agent'        => $request->userAgent(),
-        'violations'   => $violations,
-        'banned_until' => $banUntil,
-        'created_at'   => $now,
-    ]);
+            'ip'           => $ip,
+            'dom'          => SD(),
+            'url'          => $request->fullUrl(),
+            'method'       => $request->method(),
+            'score'        => $score,
+            'matches'      => json_encode($matches, JSON_PRETTY_PRINT),
+            'agent'        => $request->userAgent(),
+            'violations'   => $violations,
+            'banned_until' => $banUntil,
+            'created_at'   => $now,
+        ]);
+    }
+    // Immer einen neuen Eintrag machen
+
 
     return $banUntil;
 }
@@ -146,7 +151,7 @@ class HlogService
     function GetBannedUntil($ip){
     $now = now();
     $viol = DB::table("genxlo.xgen_hlog")->where("ip",$ip)->where("dom",SD())->select("violations")->orderByDesc("violations")->first();
-    $hours = $this->banDurations[($viol->violations+1)] ?? 10;
+    $hours = $this->banDurations[(@$viol->violations+1)] ?? 10;
     return $now->copy()->addHours($hours);
 
     }
