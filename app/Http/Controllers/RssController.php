@@ -86,6 +86,9 @@ class RssController extends Controller
     {
         libxml_use_internal_errors(true);
 
+        // NACKTE & absichern
+        $xml = preg_replace('/&(?!amp;|lt;|gt;|quot;|apos;)/', '&amp;', $xml);
+
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
@@ -98,6 +101,7 @@ class RssController extends Controller
 
         return $dom->saveXML();
     }
+
 
     private function buildRss($items)
     {

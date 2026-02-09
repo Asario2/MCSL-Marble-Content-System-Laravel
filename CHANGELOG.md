@@ -211,3 +211,4 @@
 ![Version](https://img.shields.io/badge/version-4.62.0-orange) Hotfix - Removed Bug in UserRights (#386)  
 ![Version](https://img.shields.io/badge/version-4.67.6-orange) Feature - Add IDS functions to MCSL (#385)  
 ![Version](https://img.shields.io/badge/version-4.68.7-orange) Hotfix - added redirect to www. (#387)  
+![Version](https://img.shields.io/badge/version-4.69.5-orange) Hotfix - fixed small bug in rss.xml (#388)  
