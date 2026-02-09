@@ -210,3 +210,4 @@
 ![Version](https://img.shields.io/badge/version-4.61.9-orange) Feature - Order of Contacts changed (#384)  
 ![Version](https://img.shields.io/badge/version-4.62.0-orange) Hotfix - Removed Bug in UserRights (#386)  
 ![Version](https://img.shields.io/badge/version-4.67.6-orange) Feature - Add IDS functions to MCSL (#385)  
+![Version](https://img.shields.io/badge/version-4.68.7-orange) Hotfix - added redirect to www. (#387)  
