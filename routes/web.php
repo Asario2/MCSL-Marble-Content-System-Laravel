@@ -206,7 +206,7 @@ Route::middleware(\App\Http\Middleware\CheckSubd::class . ':ab,asario')->group(f
     Route::get('/home/didyouknow', [HomeController::class, 'home_didyouknow'])->name('home.didyouknow');
 
     // Blogs
-    Route::get('/blogs', [HomeController::class, 'home_blog_index'])->name('home.blog.index')->middleware('remember');
+    Route::get('/blogs', [HomeController::class, 'home_blog_index'])->name('home.blog.index');
     Route::get('/blogs/show/{autoslug}', [HomeController::class, 'home_blog_show'])->name('home.blog.show');
 
     // Root-Redirect
@@ -670,7 +670,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         // =====
         // Liste der Blogartikel (blogs)
         Route::get('/admin/blogs/index', [BlogController::class, 'admin_blog_index'])
-            ->name('admin.blog.index')->middleware('remember');
+            ->name('admin.blog.index');
         // Create a new Blogartikel
         Route::get('/admin/blogs/create', [BlogController::class, 'admin_blog_create'])
             ->name('admin.blog.create');

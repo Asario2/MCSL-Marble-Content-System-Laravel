@@ -88,6 +88,7 @@ AddSmiley(code) {
 
 <style>
 .inline_alt {
+    margin:0;
   display: inline;
   vertical-align: middle;
 }

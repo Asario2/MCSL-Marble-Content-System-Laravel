@@ -1,5 +1,5 @@
     <template>
-<div v-if="showComments" class="w-full zi relative" @click.stop.prevent="dummy">
+<div v-if="showComments" class="w-full zi relative" @click.stop>
 <div v-if="comments && comments.length > 0" class="space-y-4">
     <div v-for="comment in comments" :key="comment?.id"
     class="flex items-start p-2 pra mt-4 rounded-lg bg-layout-sun-200 dark:bg-layout-night-200 border border-layout-sun-300 dark:border-layout-night-300"
@@ -16,7 +16,14 @@
         <!-- Kommentarinhalt -->
         <div class="flex-1 pr-14">
         <p class="text-sm flex items-center gap-2 mxy">
-            {{ comment?.author ?? comment?.nick}}
+
+            <span v-if="comment.users_id && comment.users_id != '0' && comment.users_id != '7' ">
+                <a class="twi" :href="'home/users/show/' + comment.author + '/' + comment.users_id">{{comment.author}}</a>
+            </span>
+            <span v-else>
+            {{ comment?.nick}}
+            </span>
+
             <span v-if="AID" @click="confirmDelete(comment?.id)" class="text-red-500 cursor-pointer hover:text-red-700">
             <IconTrash class="w-4 h-4" />
             </span>
