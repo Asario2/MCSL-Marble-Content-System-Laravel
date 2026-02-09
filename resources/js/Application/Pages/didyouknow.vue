@@ -58,11 +58,7 @@
         >
           <p>{{ item.answer || 'Kein Text vorhanden.' }}</p>
           <editbtns :id="item.id" table="didyouknow" /><br />
-          <RatingWrapper
-            :post-id="item.id"
-            table="didyouknow"
-            />
-          <SocialButtons :postId="item.id" :xslug="true" :sse="item.headline"/>
+          <SocialButtons :postId="item.id" :xslug="true" :nostars="true" :sse="item.headline"/>
         </div>
       </div>
     </section>
