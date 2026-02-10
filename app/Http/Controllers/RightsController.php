@@ -163,7 +163,7 @@ public function AddFunction(Request $request)
     $this->onl_con = $sqlu->GetDBCon(0,SD());
 
 
-    // $this->addColumn($request);
+    $this->addColumn($request);
     // 3) Alphabetische Position finden
     $insertAfter = null;
     foreach ($xkisColumns as $col) {

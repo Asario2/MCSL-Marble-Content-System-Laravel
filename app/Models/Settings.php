@@ -15,7 +15,7 @@
         public static array $excl_heads = ["date_begin"];
         public static array $excl_disabled = ['id'];
         public static array $excl_datefields  = []; //['birthday','created_at'];
-            public static array $exl = [
+        public static array $exl = [
         'text' => 'Text',
         'title' => 'Titel',
         'content_en' => 'Text Englisch',
@@ -162,6 +162,7 @@
         'test dzads' => 'asdasd',
         'UnusedImages' => 'Unbenutzte Bilder Galerie',
         'Hlog' => 'Hacking Log',
+        'DumpDB' => 'Datenbank Sicherung',
     ];
     public static array $regdom =   ['ab'=>true];
     public static array $connect_dbname = ["ab"=>"mariadb","dag"=>"mariadb_dag","mfx"=>"mariadb_mfx"];
@@ -172,7 +173,7 @@
 
     */
 
-    public static array $excl_dump_tables = ["xgen_migrations","mcs_backup_doku","mcsdoku2","password_reset_tokens","personal_access_tokens","blog_images","private_messages","xgen_page_views","xgen_migrations","privacy_orig","colors","dbhash","tenant","cache","cache_locks","comments","countpixel","newsletter_blacklist","newsletter_reci","prvacy_orig","privaze_messages","private_messages_text","ratings","sessions"];
+    public static array $excl_dump_tables = ["xgen_migrations","mcs_backup_doku","mcsdoku2","password_reset_tokens","personal_access_tokens","blog_images","private_messages","xgen_hlog","xgen_page_views","xgen_migrations","privacy_orig","colors","dbhash","tenant","cache","cache_locks","comments","countpixel","newsletter_blacklist","newsletter_reci","prvacy_orig","private_messages","private_messages_text","ratings","sessions"];
 
         public static array $no_req = ['exif_copyright','exif_comp','exif_model','Mpixel','modul','is_admin','is_customer','is_employee','customer_id','admin_id','company_id',
                                        'profile_photo_path',"category_id","type_id",'message','message_en',
@@ -434,6 +435,11 @@ public static array $image_sizes =
     8 => 'ab_users_remember_token',
     9 => 'ab_users_rights_xkis_UnusedImages',
     10 => 'dag_sprueche_month',
+    11 => 'ab_users_two_factor_secret',
+    12 => 'ab_users_two_factor_recovery_codes',
+    13 => 'ab_users_two_factor_enabled',
+    14 => 'ab_users_two_factor_confirmed_at',
+    15 => 'ab_users_password',
 ];
 public static array $doms = [
     "ab_lh"=>"http://ab.test.mcs",

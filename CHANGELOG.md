@@ -215,3 +215,4 @@
 ![Version](https://img.shields.io/badge/version-4.70.6-orange) Hotfix - Removed Ratings on DidYouKnow (#389)  
 ![Version](https://img.shields.io/badge/version-4.71.3-orange) Hotfix - Changed smilies box (#390)  
 ![Version](https://img.shields.io/badge/version-4.72.6-orange) Feature - Add link to user profile on comments (#379)  
+![Version](https://img.shields.io/badge/version-4.73.8-orange) Hotfix - smaller bug eliminated (#391)  

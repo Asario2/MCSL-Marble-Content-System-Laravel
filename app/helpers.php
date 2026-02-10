@@ -125,8 +125,12 @@ if (!function_exists('Notify')) {
         $output = '';
         $xx = '';
         foreach ($entries as $entry) {
-
             $entry = (array) $entry;
+
+            if($entry['rights'] && !CheckZRights($entry['rights']))
+            {
+                continue;
+            }
 
             // --------------------------------------------------
             // 1️⃣ Zeitpunkt aus timespy-Datei lesen
