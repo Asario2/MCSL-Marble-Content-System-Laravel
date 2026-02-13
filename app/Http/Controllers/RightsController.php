@@ -27,6 +27,16 @@ class RightsController extends Controller
         $exists = Schema::hasTable($table) && Schema::hasColumn($table, 'created_at');
         return response()->json($exists);
     }
+    public function remFN(Request $request)
+    {
+        if(!CheckRights(Auth::id(),"users_rights","delete"))
+        {
+            header("Location: /no-rights");
+            exit;
+        }
+        DB::statement("ALTER TABLE users_rights DROP COLUMN ".$request->xkis);
+        return response()->json(1);
+    }
     public function getUserRights(Request $request,$table,$right)
     {
         if(!Auth::check())

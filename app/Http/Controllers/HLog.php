@@ -44,6 +44,9 @@ class Hlog extends Controller
         });
         return Inertia::render('Admin/Hlog', [
             "data"=>$data,
+             'breadcrumbs' => [
+            'MCSL IDS - Hacking Log' => route('admin.hlog'),
+        ],
         ]);
     }
 }

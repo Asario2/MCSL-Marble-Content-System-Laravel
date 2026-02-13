@@ -216,3 +216,4 @@
 ![Version](https://img.shields.io/badge/version-4.71.3-orange) Hotfix - Changed smilies box (#390)  
 ![Version](https://img.shields.io/badge/version-4.72.6-orange) Feature - Add link to user profile on comments (#379)  
 ![Version](https://img.shields.io/badge/version-4.73.8-orange) Hotfix - smaller bug eliminated (#391)  
+![Version](https://img.shields.io/badge/version-4.74.8-orange) Feature - Add Delete Button in UserRights (#354)  

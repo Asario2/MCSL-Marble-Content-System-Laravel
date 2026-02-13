@@ -288,12 +288,12 @@
                                 @click.prevent="copyUrl"
                                 >
                                 <IconRSS width="18" height="18" />
-                                <span style="color:#fb9d3a;">Newsfeed abonnieren</span>
+                                <span style="color:#fb9d3a;" class="font-bold">Newsfeed abonnieren</span>
                                 </button>
                             </li>
                         </ul>
                         <br />
-                        <NewsletterSubscribe class="ml-[8px] mb-[-2px]" />
+                        <NewsletterSubscribe class="ml-[8px] mb-[-2px] color-[#ffc800]" />
                         </div>
                         <div class="text-center md:text-left">
                         <h3 class="text-sm font-semibold leading-6 px-2">

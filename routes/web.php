@@ -581,7 +581,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         )->name('admin.dashboard');
 
 ### ============== API ISADMIN QI ================ ###
-
+        Route::delete("api/del/function/userrights/{xkis}",[RightsController::class,"remFN"])->name('del.uright.function');
         Route::delete("/api/remlog/{id}",[RightsController::class,"remLog"])->name("remlogg");
         Route::get("/admin/get_unused_imgz/{dom?}", [TablesController::class,"getunused"])->name("admin.getunused");
         Route::get("/admin/Hlog", [Hlog::class,"show"])->name("admin.hlog");

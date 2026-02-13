@@ -163,6 +163,10 @@
         'UnusedImages' => 'Unbenutzte Bilder Galerie',
         'Hlog' => 'Hacking Log',
         'DumpDB' => 'Datenbank Sicherung',
+        'asdadsasds' => 'asdssssssssss',
+        'aaaaaaaasdfdsssaa' => '',
+        'aaaaaaaaaasdad' => 'asds',
+        'aaaaaaaaaasd' => 'test asd',
     ];
     public static array $regdom =   ['ab'=>true];
     public static array $connect_dbname = ["ab"=>"mariadb","dag"=>"mariadb_dag","mfx"=>"mariadb_mfx"];

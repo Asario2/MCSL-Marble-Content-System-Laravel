@@ -3283,6 +3283,9 @@ return response()->json($user);
             "urid"=>$urid,
             "func"=>$func,
             "roles"=>$this->GetAdmins($urid),
+            'breadcrumbs' => [
+            'MCSL IDS' => route('admin.hlog'),
+        ],
         ]);
     }
     public function GetURights(Request $request)

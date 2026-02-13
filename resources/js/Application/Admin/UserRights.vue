@@ -89,7 +89,12 @@
                 <td class="px-4 py-3 text-left">{{ stripXkis(key) }}</td>
                 <td class="px-4 py-3 text-left">{{ getLabel(key) }}</td>
                 <td class="px-4 py-3 text-left">
-                  <input-checkbox v-model="localFunc[key]" />
+                    <div class="flex items-center gap-2">
+                        <input-checkbox v-model="localFunc[key]" />
+                        <button @click="remove_xkis(key)" class="hover:text-red-500">
+                            <Trash />
+                        </button>
+                    </div>
                 </td>
               </tr>
             </tbody>
@@ -299,10 +304,13 @@ import InputCheckbox from "@/Application/Components/Form/InputCheckbox.vue";
 import IconDarr from "@/Application/Components/Icons/IconDarr.vue";
 import ErrorSVG from "@/Application/Components/Icons/ErrorSVG.vue";
 import SearchFilter from "@/Application/Components/Lists/SearchFilter.vue";
+import { route } from 'ziggy-js';
+import Trash from "@/Application/Components/Icons/Trash.vue";
+
 
 export default {
   name: "UserRights",
-  components: { ErrorSVG, SearchFilter, InputSelect, InputCheckbox, IconDarr, InputFormText },
+  components: { ErrorSVG, SearchFilter, InputSelect, InputCheckbox, IconDarr, InputFormText,Trash },
   props: {
     adminTables: { type: Array, default: () => [] },
     urid: [String, Number],
@@ -707,11 +715,37 @@ export default {
       const key = this.stripXkis(k);
       return this.labels?.[key] || this.settings.exl?.[key] || key;
     },
-
+   async remove_xkis(key)
+    {
+        if (!confirm("Sind Sie sicher, dass Sie diesen Eintrag löschen möchten?"))
+        return;
+      this.deleteXkis(key);
+    },
     ucf(str) { return String(str).split('_').map(s => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()).join(' '); },
     ucf2(str) { return this.settings.exl?.[str] ?? str; },
-  },
 
+  async deleteXkis(key)
+  {
+  try {
+    await axios.delete(route("del.uright.function", { xkis: key }));
+
+    window.toastBus.emit({
+      type: "success",
+      message: "Funktion erfolgreich entfernt"
+    });
+
+    // 🔥 Funktionen neu laden (Tab aktualisieren)
+    await this.loadFunctions(this.selected);
+
+  } catch (e) {
+    window.toastBus.emit({
+      message: "Konnte Funktion nicht löschen " + e,
+      type: 'error'
+    });
+  }
+},
+
+  },
   async mounted() {
     // initial settings
     this.settings = await GetSettings();

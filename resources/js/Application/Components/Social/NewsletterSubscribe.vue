@@ -7,7 +7,8 @@
             dark:text-layout-night-700 dark:hover:bg-primary-night-300 dark:hover:text-layout-night-900"
     >
         <IconMail lcol="#ffc800" wi="20" he="20" />
-        <span class="font-sans ora">Newsletter abonnieren</span>
+        <span class="font-sans oria">Newsletter abonnieren</span>
+
     </button>
 
     <!-- Modal -->
@@ -183,6 +184,15 @@ export default {
 <style>
 .ora{
   color:#ffc800;
+}
+.oria{
+    color:#ffc800 !important;
+    text-shadow: none !important;
+    border:none !important;
+
+}
+.oria {
+    opacity:'0.9999';
 }
 button {
   outline: none;

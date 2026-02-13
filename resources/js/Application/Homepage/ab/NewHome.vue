@@ -50,7 +50,7 @@
                     Hier gibt’s fast alles von mir: <a class='as' href="home/pictures" itemprop="hasOccupation">Bilder</a> & <a class='as' href="home/shortpoems" itemprop="hasOccupation">Gedichte</a>.<br />
                 </p><br />
                 <p class="border border-gray-300 dark:border-gray-700 text-center max-w-xl mx-auto my-8 p-8">
-                <strong>MCSL-Points.</strong><br />
+               ⭐⭐⭐ <strong>MCSL-Points.</strong> ⭐⭐⭐<br />
                 Registrierte Nutzer sammeln Punkte, indem sie lesen, bleiben und wiederkommen.
                 Die Punkte sind kein Spielzeug. Sie haben einen Zweck.
                 Man kann sie gegen gemalte Bilder eintauschen. Echte Arbeiten. Kein Zufall.<br /><br />

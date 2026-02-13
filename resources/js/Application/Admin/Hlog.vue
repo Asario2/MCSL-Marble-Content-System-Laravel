@@ -1,6 +1,10 @@
 <template>
     <MetaHeader title="HackLog" />
-  <Layout>
+
+    <Layout>
+    <template #header>
+      <Breadcrumb :breadcrumbs="breadcrumbs" />
+    </template>
     <div class="p-6 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">
       <h2 class="text-xl font-semibold mb-4">HackLog</h2>
 
@@ -100,6 +104,7 @@
 </template>
 
 <script>
+import Breadcrumb from "@/Application/Components/Content/Breadcrumb.vue";
 import Layout from "@/Application/Admin/Shared/ab/Layout.vue";
 import delhlog from "@/Application/Admin/Shared/delhlog.vue"
 import MetaHeader from "@/Application/Homepage/Shared/MetaHeader.vue"
@@ -109,6 +114,7 @@ export default {
     Layout,
     delhlog,
     MetaHeader,
+    Breadcrumb,
 
   },
   props: {
@@ -116,6 +122,7 @@ export default {
       type: Array,
       required: true,
     },
+    breadcrumbs:String,
   },
   data() {
     return {
